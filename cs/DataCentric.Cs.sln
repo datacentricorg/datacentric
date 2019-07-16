@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataCentric.Cs", "src\DataCentric\DataCentric.Cs.csproj", "{2D80FBED-1F5B-47CF-80B1-4A2850E59BEE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataCentric.Test.Cs", "src\DataCentric.Test\DataCentric.Test.Cs.csproj", "{B74D41F7-C6C0-417A-AECB-458EBBA1B81A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D80FBED-1F5B-47CF-80B1-4A2850E59BEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D80FBED-1F5B-47CF-80B1-4A2850E59BEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D80FBED-1F5B-47CF-80B1-4A2850E59BEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D80FBED-1F5B-47CF-80B1-4A2850E59BEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B74D41F7-C6C0-417A-AECB-458EBBA1B81A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B74D41F7-C6C0-417A-AECB-458EBBA1B81A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B74D41F7-C6C0-417A-AECB-458EBBA1B81A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B74D41F7-C6C0-417A-AECB-458EBBA1B81A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C98D80C4-747C-4DF3-9C30-FC4BADD43EB8}
+	EndGlobalSection
+EndGlobal

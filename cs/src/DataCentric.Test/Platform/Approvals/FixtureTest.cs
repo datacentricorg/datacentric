@@ -1,0 +1,92 @@
+/*
+Copyright (C) 2013-present The DataCentric Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+using System;
+using Xunit;
+using DataCentric;
+
+namespace DataCentric.Test
+{
+    /// <summary>Test the base class (fixture) for unit tests.</summary>
+    public class FixtureTest
+    {
+        /// <summary>Unit test of logging.</summary>
+        [Fact]
+        public void Logging()
+        {
+            using (IUnitTestContext context = new UnitTestContext(this))
+            {
+                // Log entries other than Exception
+                context.Log.Warning("Warning log entry with params {0} and {1}", "Param1", "Param2");
+                context.Log.Status("Status log entry with params {0} and {1}", "Param1", "Param2");
+
+                // Verify entries
+                context.Verify.Text("Result verify entry with params {0} and {1}", "Param1", "Param2");
+                context.Verify.Assert(true, "Assert(true) verify entry with params {0} and {1}", "Param1", "Param2");
+                context.Verify.Assert(false, "Assert(false) verify entry with params {0} and {1}", "Param1", "Param2");
+                context.Verify.Value(123, "Value(123) verify entry with params {0} and {1}", "Param1", "Param2");
+
+                // File verify entry and saving
+                // FIXME - check that file is saved when enabled
+                context.Verify.File("FileName.txt", "File verify entry");
+            }
+        }
+
+        /// <summary>Test exception logging after context initialization.</summary>
+        [Fact]
+        public void EngineException()
+        {
+            using (IUnitTestContext context = new UnitTestContext(this))
+            {
+                // The test checks that the entry preceding exception is recorded
+                context.Log.Status("Normal status entry preceding exception");
+
+                try
+                {
+                    // This should record exception into the log and then throw
+                    throw context.Log.Exception("Engine exception with {0}, {1}", "Param1", "Param2");
+                }
+                catch (Exception e)
+                {
+                    // The message is recorded second time by the catch
+                    context.Verify.Value(e.Message, "Message");
+                }
+            }
+        }
+
+        /// <summary>Test native .NET exception logging after context initialization.</summary>
+        [Fact]
+        public void NativeException()
+        {
+            using (IUnitTestContext context = new UnitTestContext(this))
+            {
+                // The test checks that the entry preceding exception is recorded
+                context.Log.Status("Normal status entry preceding exception");
+
+                try
+                {
+                    // Exception is not recorded to log in unit test
+                    throw new Exception(string.Format("Engine exception with {0}, {1}", "Param1", "Param2"));
+                }
+                catch (Exception e)
+                {
+                    // The message is recorded by the catch only
+                    context.Verify.Value(e.Message, "Message");
+                }
+            }
+        }
+    }
+}

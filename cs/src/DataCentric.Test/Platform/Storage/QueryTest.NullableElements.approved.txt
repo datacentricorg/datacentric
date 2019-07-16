@@ -1,0 +1,7 @@
+Verify.Text: Unconstrained query
+Verify.Text:     0 (record index 4).
+Verify.Text:     1 (record index 5).
+Verify.Text:     2 (record index 6).
+Verify.Text:     3 (record index 7).
+Verify.Text: Constrained query
+Verify.Text:     1 (record index 5).

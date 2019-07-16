@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <LangVersion>7.3</LangVersion>
+    <PackageId>DataCentric</PackageId>
+    <Version>2.1.1</Version>
+    <Authors>The DataCentric Authors</Authors>
+    <Company>DataCentric</Company>
+    <Product>DataCentric Library</Product>
+    <Description>Core services library for data-centric development in C#.</Description>
+    <Copyright>The DataCentric Authors</Copyright>
+    <AssemblyName>DataCentric</AssemblyName>
+    <RootNamespace>DataCentric</RootNamespace>
+    <PackageLicenseUrl>https://licenses.nuget.org/Apache-2.0</PackageLicenseUrl>
+    <PackageProjectUrl>www.datacentric.org</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/datacentricorg/datacentric-cs</RepositoryUrl>
+    <PackageTags>data-centric, mongodb</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="12.1.2" />
+    <PackageReference Include="MongoDb.Bson.NodaTime" Version="2.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.7.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="NodaTime" Version="2.4.2" />
+    <PackageReference Include="NodaTime.Serialization.JsonNet" Version="2.0.0" />
+    <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

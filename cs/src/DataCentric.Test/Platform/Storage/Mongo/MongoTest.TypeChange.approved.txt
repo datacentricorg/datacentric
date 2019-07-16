@@ -1,0 +1,28 @@
+Verify.Text: Initial load
+Verify.Text: Record A;0 in dataset A found and has Type=DerivedData.
+Verify.Text: Record A;0 in dataset B found and has Type=DerivedData.
+Verify.Text: Record B;0 in dataset A not found.
+Verify.Text: Record B;0 in dataset B found and has Type=DerivedFromDerivedData.
+Verify.Text: Query in dataset A for type MongoTestDerivedData
+Verify.Text: Record A;0 returned by query in dataset A and has Type=DerivedData.
+Verify.Text: Query in dataset B for type MongoTestDerivedData
+Verify.Text: Record A;0 returned by query in dataset B and has Type=DerivedData.
+Verify.Text: Record B;0 returned by query in dataset B and has Type=DerivedFromDerivedData.
+Verify.Text: Change A0 record type in B dataset to C
+Verify.Text: Record A;0 in dataset A found and has Type=DerivedData.
+Verify.Text: Record A;0 in dataset B found and has Type=OtherDerivedData.
+Verify.Text: Query in dataset A for type MongoTestDerivedData
+Verify.Text: Record A;0 returned by query in dataset A and has Type=DerivedData.
+Verify.Text: Query in dataset B for type MongoTestDerivedData
+Verify.Text: Record B;0 returned by query in dataset B and has Type=DerivedFromDerivedData.
+Verify.Text: Change A0 record type in A dataset to C
+Verify.Text: Record A;0 in dataset A found and has Type=OtherDerivedData.
+Verify.Text: Record A;0 in dataset B found and has Type=OtherDerivedData.
+Verify.Text: Query in dataset A for type MongoTestDerivedData
+Verify.Text: Query in dataset B for type MongoTestDerivedData
+Verify.Text: Record B;0 returned by query in dataset B and has Type=DerivedFromDerivedData.
+Verify.Text: Change B0 record type in B dataset to C
+Verify.Text: Record B;0 in dataset A not found.
+Verify.Text: Record B;0 in dataset B found and has Type=OtherDerivedData.
+Verify.Text: Query in dataset A for type MongoTestDerivedData
+Verify.Text: Query in dataset B for type MongoTestDerivedData

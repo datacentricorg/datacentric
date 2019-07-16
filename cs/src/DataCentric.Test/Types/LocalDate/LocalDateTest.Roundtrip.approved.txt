@@ -1,0 +1,2 @@
+Verify.Text: ISO 8601 format: 2003-05-01
+Verify.Text: Readable int format: 20030501

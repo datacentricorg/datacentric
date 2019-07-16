@@ -1,0 +1,2 @@
+Status: Normal status entry preceding exception
+Verify.Value: Message = Engine exception with Param1, Param2

@@ -1,0 +1,3 @@
+Verify.File: XmlRecordSerializationTest.Complete.Original.approved.xml (827 bytes)
+Verify.File: XmlRecordSerializationTest.Complete.Copy.approved.xml (827 bytes)
+Verify.Passed: Serialization roundtrip

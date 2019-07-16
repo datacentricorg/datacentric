@@ -1,0 +1,4 @@
+Verify.Text: A;B
+Verify.Text: A;B
+Verify.Text: A;B
+Verify.Text: A;B

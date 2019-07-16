@@ -1,0 +1,5 @@
+Verify.Text: Disposing resources of BaseClassSample
+Verify.Text: Disposing resources of DerivedClassSample
+Verify.Text: Disposing resources of BaseClassSample
+Verify.Text: Disposing resources of DerivedClassSample
+Verify.Text: Disposing resources of BaseClassSample

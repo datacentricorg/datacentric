@@ -1,0 +1,41 @@
+Verify.Text: Load all types by key to type A
+Verify.Text:     Key=A;0 Type=Data
+Verify.Text:     Key=B;0 Type=DerivedData
+Verify.Text:     Key=C;0 Type=OtherDerivedData
+Verify.Text:     Key=D;0 Type=DerivedFromDerivedData
+Verify.Text: Query by MongoTestData, unconstrained
+Verify.Text:     Key=A;0 Type=Data
+Verify.Text:     Key=A;1 Type=Data
+Verify.Text:     Key=A;2 Type=Data
+Verify.Text:     Key=A;3 Type=Data
+Verify.Text:     Key=B;0 Type=DerivedData
+Verify.Text:     Key=B;1 Type=DerivedData
+Verify.Text:     Key=B;2 Type=DerivedData
+Verify.Text:     Key=B;3 Type=DerivedData
+Verify.Text:     Key=C;0 Type=OtherDerivedData
+Verify.Text:     Key=C;1 Type=OtherDerivedData
+Verify.Text:     Key=C;2 Type=OtherDerivedData
+Verify.Text:     Key=C;3 Type=OtherDerivedData
+Verify.Text:     Key=D;0 Type=DerivedFromDerivedData
+Verify.Text:     Key=D;1 Type=DerivedFromDerivedData
+Verify.Text:     Key=D;2 Type=DerivedFromDerivedData
+Verify.Text:     Key=D;3 Type=DerivedFromDerivedData
+Verify.Text: Query by MongoTestDerivedData : MongoTestData which also picks up MongoTestDerivedFromDerivedData : MongoTestDerivedData, unconstrained
+Verify.Text:     Key=B;0 Type=DerivedData
+Verify.Text:     Key=B;1 Type=DerivedData
+Verify.Text:     Key=B;2 Type=DerivedData
+Verify.Text:     Key=B;3 Type=DerivedData
+Verify.Text:     Key=D;0 Type=DerivedFromDerivedData
+Verify.Text:     Key=D;1 Type=DerivedFromDerivedData
+Verify.Text:     Key=D;2 Type=DerivedFromDerivedData
+Verify.Text:     Key=D;3 Type=DerivedFromDerivedData
+Verify.Text: Query by MongoTestOtherDerivedData : MongoTestData, unconstrained
+Verify.Text:     Key=C;0 Type=OtherDerivedData
+Verify.Text:     Key=C;1 Type=OtherDerivedData
+Verify.Text:     Key=C;2 Type=OtherDerivedData
+Verify.Text:     Key=C;3 Type=OtherDerivedData
+Verify.Text: Query by MongoTestDerivedFromDerivedData : MongoTestDerivedData, where MongoTestDerivedData : MongoTestData, unconstrained
+Verify.Text:     Key=D;0 Type=DerivedFromDerivedData
+Verify.Text:     Key=D;1 Type=DerivedFromDerivedData
+Verify.Text:     Key=D;2 Type=DerivedFromDerivedData
+Verify.Text:     Key=D;3 Type=DerivedFromDerivedData

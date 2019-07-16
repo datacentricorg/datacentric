@@ -1,0 +1,4 @@
+Verify.File: ValueTableSerializationTest.MultiType.NoHeaders.approved.csv (197 bytes)
+Verify.File: ValueTableSerializationTest.MultiType.RowHeaders.approved.csv (212 bytes)
+Verify.File: ValueTableSerializationTest.MultiType.ColHeaders.approved.csv (243 bytes)
+Verify.File: ValueTableSerializationTest.MultiType.RowAndColHeaders.approved.csv (265 bytes)
