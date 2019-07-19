@@ -90,7 +90,11 @@ namespace DataCentric
                     throw new Exception($"Key element {elementInfo.Name} of type {obj.GetType().Name} is null. " +
                                         $"Null elements are not permitted in key.");
                 case string stringValue:
-                    // Return the string after checking that it does not contain semicolon delimiters
+                    // Return the string after checking that it is not empty
+                    // and that it does not itself contain semicolon delimiters
+                    if (stringValue == String.Empty) throw new Exception(
+                            $"String key element {elementInfo.Name} is empty." +
+                            $"Empty elements are not permitted in key.");
                     if (stringValue.Contains(";")) throw new Exception(
                         $"Key element {elementInfo.Name} of type {obj.GetType().Name} includes semicolon delimiter. " +
                         $"The use of this delimiter is reserved for separating key tokens.");
