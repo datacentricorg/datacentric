@@ -39,7 +39,7 @@ namespace DataCentric
         public ISettings Settings { get; }
 
         /// <summary>Namespace prefixes including dot separators ignored by class mapping.</summary>
-        public ICollection<string> IgnoredNamespacePrefixes { get; } = new List<string> {"Cl."};
+        public ICollection<string> IgnoredNamespacePrefixes { get; } = new List<string> { };
 
         /// <summary>Namespace suffixes including dot separators ignored by class mapping.</summary>
         public ICollection<string> IgnoredNamespaceSuffixes { get; } = new List<string>
