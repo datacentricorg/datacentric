@@ -52,8 +52,6 @@ namespace DataCentric.Test
         {
             using (IDataTestContext context = new DataTestContext(this))
             {
-                context.KeepDb = true;
-
                 // Create queue record and save, then get its ID
                 var queue = new JobQueueData();
                 context.Save(queue, context.DataSet);
