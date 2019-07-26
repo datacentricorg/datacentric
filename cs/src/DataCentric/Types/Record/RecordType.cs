@@ -30,9 +30,6 @@ namespace DataCentric
         /// <summary>Backing variable for the ID property.</summary>
         private ObjectId id_;
 
-        /// <summary>Backing variable for the DataSet property.</summary>
-        private ObjectId dataSet_;
-
         //--- PROPERTIES
 
         /// <summary>
@@ -76,24 +73,11 @@ namespace DataCentric
         /// <summary>
         /// ObjectId of the dataset where the record is stored.
         ///
-        /// Records in root dataset must override this property to remove the error
-        /// message that would otherwise be triggered when saving into root dataset.
+        /// For records stored in root dataset, the value of
+        /// DataSet field should be ObjectId.Empty.
         /// </summary>
         [BsonElement("_dataset")]
-        public virtual ObjectId DataSet
-        {
-            get
-            {
-                if (!dataSet_.HasValue())
-                {
-                    string key = Key;
-                    if (key.HasValue()) throw new Exception($"DataSet property is not set for type {GetType().Name} with key {Key}.");
-                    else throw new Exception($"DataSet property is not set for type {GetType().Name}.");
-                }
-                return dataSet_;
-            }
-            set => dataSet_ = value;
-        }
+        public ObjectId DataSet { get; set; }
 
         /// <summary>
         /// String key consists of semicolon delimited primary key elements:
@@ -129,15 +113,6 @@ namespace DataCentric
                 $"Null context is passed to the Init(...) method for {GetType().Name}.");
             Context = context;
         }
-
-        /// <summary>
-        /// Return true if dataset has value.
-        ///
-        /// This method is needed because accessing dataset property
-        /// before it is set throws an exception in order to avoid
-        /// the called incorrectly assuming the object is in root dataset.
-        /// </summary>
-        public virtual bool DataSetHasValue() { return dataSet_.HasValue(); }
 
         /// <summary>Return string representation of the record's key.</summary>
         public override string ToString() { return Key; }

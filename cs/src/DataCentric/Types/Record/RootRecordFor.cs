@@ -29,23 +29,20 @@ namespace DataCentric
         where TRecord : RootRecordFor<TKey, TRecord>
     {
         /// <summary>
-        /// ObjectId of the dataset where the record is stored.
+        /// Set context and perform initialization or validation of object data.
         ///
-        /// Records in root dataset must override this property to remove the error
-        /// message that would otherwise be triggered when saving into root dataset.
-        ///
-        /// This override's getter always returns the root dataset and its setter
-        /// does nothing. Accordingly, the records derived from this class will
-        /// always be saved in root dataset.
+        /// All derived classes overriding this method must call base.Init(context)
+        /// before executing the the rest of the code in the method override.
         /// </summary>
-        public override ObjectId DataSet { get => ObjectId.Empty; set { } }
+        public virtual void Init(IContext context)
+        {
+            // Initialize the base class
+            base.Init(context);
 
-        /// Always returns true for root records
-        ///
-        /// This method is needed because accessing dataset property
-        /// before it is set throws an exception in order to avoid
-        /// the called incorrectly assuming the object is in root dataset.
-        /// </summary>
-        public override bool DataSetHasValue() { return true; }
+            // For this base type of records stored in root dataset,
+            // DataSet field has the value designated for the
+            // root dataset: ObjectId.Empty.
+            DataSet = ObjectId.Empty;
+        }
     }
 }

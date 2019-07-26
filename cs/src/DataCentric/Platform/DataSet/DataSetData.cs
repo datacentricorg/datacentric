@@ -52,23 +52,13 @@ namespace DataCentric
     public class DataSetData : RecordFor<DataSetKey, DataSetData>
     {
         /// <summary>
-        /// ObjectId of the dataset where the record is stored.
-        ///
-        /// Records in root dataset must override this property to remove the error
-        /// message that would otherwise be triggered when saving into root dataset.
-        ///
-        /// This override does not force the record to be stored in root
-        /// dataset, but allows to do so if this is what the caller specified.
-        /// </summary>
-        public override ObjectId DataSet { get; set; }
-
-        /// <summary>
         /// Unique dataset identifier.
         ///
         /// By convention, Common dataset must be stored in root dataset.
         /// Other datasets may be stored inside any dataset including
         /// the root dataset, Common dataset, or another dataset.
         /// </summary>
+        [BsonRequired]
         public string DataSetID { get; set; }
 
         /// <summary>

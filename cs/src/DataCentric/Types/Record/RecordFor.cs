@@ -117,16 +117,6 @@ namespace DataCentric
         {
             TKey result = new TKey();
 
-            // Check if record.DataSet is set, so that a reference to the
-            // record can be cached inside the key for a specific dataset
-            if (!DataSetHasValue())
-                throw new Exception(
-                    $"Method record.ToKey() requires that record.DataSet is set. " +
-                    $"This is necessary because the key returned by ToKey() method " +
-                    $"holds a reference to the object for which ToKey() was called, " +
-                    $"and the decision on whether or not the cached reference can " + 
-                    $"be used depends on the value of the dataset.");
-
             // The cached value will be used only for lookup in the dataset
             // passed to this method, but not for lookup in another dataset
             // for which the current dataset is an import
