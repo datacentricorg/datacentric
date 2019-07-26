@@ -27,9 +27,6 @@ namespace DataCentric
     [BsonDiscriminator(RootClass = true)]
     public abstract class RecordType : DataType, IRecordType
     {
-        /// <summary>Use context to access resources provided by the library.</summary>
-        private IContext context_;
-
         /// <summary>Backing variable for the ID property.</summary>
         private ObjectId id_;
 
@@ -38,18 +35,17 @@ namespace DataCentric
 
         //--- PROPERTIES
 
-        /// <summary>Use context to access resources provided by the library.</summary>
+        /// <summary>
+        /// Execution context provides access to key resources including:
+        ///
+        /// * Logging and error reporting
+        /// * Cloud calculation service
+        /// * Data sources
+        /// * Filesystem
+        /// * Progress reporting
+        /// </summary>
         [Ignore]
-        public IContext Context
-        {
-            get
-            {
-                // Check that context is set
-                if (context_ == null) throw new Exception(
-                    $"Init(context) method has not been called for {GetType().Name}.");
-                return context_;
-            }
-        }
+        public IContext Context { get; private set; }
 
         //--- ELEMENTS
 
@@ -128,9 +124,10 @@ namespace DataCentric
             // Initialize the base class
             // base.Init(context);
 
-            context_ = context;
+            // Check that argument is not null and assign to the Context field
             if (context == null) throw new Exception(
                 $"Null context is passed to the Init(...) method for {GetType().Name}.");
+            Context = context;
         }
 
         /// <summary>
