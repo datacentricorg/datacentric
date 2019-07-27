@@ -25,7 +25,7 @@ namespace DataCentric
     /// Base class of records stored in data source.
     /// </summary>
     [BsonDiscriminator(RootClass = true)]
-    public abstract class RecordType : DataType, IRecordType
+    public abstract class RecordType : DataType
     {
         /// <summary>Backing variable for the ID property.</summary>
         private ObjectId id_;
