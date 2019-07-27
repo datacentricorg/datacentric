@@ -27,11 +27,6 @@ namespace DataCentric
     [BsonDiscriminator(RootClass = true)]
     public abstract class RecordType : DataType
     {
-        /// <summary>Backing variable for the ID property.</summary>
-        private ObjectId id_;
-
-        //--- PROPERTIES
-
         /// <summary>
         /// Execution context provides access to key resources including:
         ///
@@ -44,8 +39,8 @@ namespace DataCentric
         [Ignore]
         public IContext Context { get; private set; }
 
-        //--- ELEMENTS
-
+        //--- FIELDS
+ 
         /// <summary>
         /// ObjectId of the record is specific to its version.
         ///
@@ -55,20 +50,7 @@ namespace DataCentric
         /// </summary>
         [BsonId]
         [BsonRequired]
-        public virtual ObjectId ID
-        {
-            get
-            {
-                if (!id_.HasValue())
-                {
-                    string key = Key;
-                    if (key.HasValue()) throw new Exception($"ID property is not set for the record with class name {GetType().Name} and key {Key}.");
-                    else throw new Exception($"ID property is not set for class {GetType().Name}.");
-                }
-                return id_;
-            }
-            set => id_ = value;
-        }
+        public virtual ObjectId ID { get; set; } // TODO - make non-virtual
 
         /// <summary>
         /// ObjectId of the dataset where the record is stored.
