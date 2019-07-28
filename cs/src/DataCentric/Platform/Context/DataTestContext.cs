@@ -65,7 +65,7 @@ namespace DataCentric
             string mappedClassName = ClassInfo.GetOrCreate(classInstance).MappedClassName;
             DataSource = new MongoDataSourceData()
             {
-                DbServer = new MongoDefaultServerData(),
+                DataStore = new LocalMongoDataStoreData(),
                 DbName = new DbNameKey()
                 {
                     InstanceType = InstanceType.TEST,

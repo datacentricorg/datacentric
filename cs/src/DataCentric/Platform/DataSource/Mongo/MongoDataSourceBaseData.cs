@@ -120,7 +120,7 @@ namespace DataCentric
                     $"MongoDB database name {dbName_} exceeds the maximum length of 64 characters.");
 
             // Get client interface using the server instance loaded from root dataset
-            string dbUri = DbServer.Load(Context, ObjectId.Empty).CastTo<MongoServerData>().GetMongoServerUri();
+            string dbUri = DataStore.Load(Context, ObjectId.Empty).CastTo<MongoDataStoreData>().GetMongoServerUri();
             client_ = new MongoClient(dbUri);
 
             // Get database interface using the client and database name

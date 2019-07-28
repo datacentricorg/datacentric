@@ -477,7 +477,7 @@ namespace DataCentric.Test
 
                 // Set new value for the DB server key so that the reference to in-memory
                 // record is stored inside the key, otherwise it would not be found
-                context.DataSource.DbServer = new MongoDefaultServerData();
+                context.DataSource.DataStore = new LocalMongoDataStoreData();
 
                 // Set revision time constraint
                 context.DataSource.SavedById = cutoffObjectId;

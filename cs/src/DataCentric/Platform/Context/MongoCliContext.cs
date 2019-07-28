@@ -27,12 +27,12 @@ namespace DataCentric
         /// <summary>
         /// Create with environment and source passed cli arguments.
         /// </summary>
-        public MongoCliContext(DbNameKey db, DbServerKey server)
+        public MongoCliContext(DbNameKey db, DataStoreData dataStore)
         {
             DataSource = new MongoDataSourceData
             {
-                DataSourceID = server.DbServerID + db.Value,
-                DbServer = server,
+                DataSourceID = dataStore.DataStoreID + db.Value,
+                DataStore = dataStore,
                 DbName = db
             };
 
