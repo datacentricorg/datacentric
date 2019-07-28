@@ -24,23 +24,34 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>
-    /// Assembles MongoDB URI using the standard (``mongodb'') connection
-    /// string format for a single server or a cluster.
+    /// Data store definition for the MongoDB server running on a cluster.
+    ///
+    /// If the port is not specified, the default Mongo port 27017
+    /// will be used.
     /// </summary>
-    public sealed class MongoStandardFormatServerData : MongoServerData
+    public sealed class ClusterMongoDataStoreData : MongoDataStoreData
     {
         /// <summary>
-        /// MongoDB server hostname or the list of MongoDB cluster
-        /// hostnames with optional port in ``host'' or ``host::port''
-        /// format.
+        /// MongoDB server hostname or the list of MongoDB cluster hostnames
+        /// with optional port in either ``host'' or ``host::port'' format.
         /// </summary>
+        [BsonRequired]
         public List<string> Hosts { get; set; }
 
-        /// <summary>Get Mongo server URI without database name.</summary>
+        //--- METHODS
+
+        /// <summary>
+        /// Get Mongo server URI.
+        ///
+        /// The data store specifies the Mongo server but not the specific
+        /// database on the server. Accordingly, the server URI returned by
+        /// this method does not include the database and only specifies
+        /// the server.
+        /// </summary>
         public override string GetMongoServerUri()
         {
             if (Hosts == null || Hosts.Count == 0) throw new Exception(
-                $"The list of hosts provided for MongoDB server {DbServerID} is null or empty.");
+                $"The list of hosts provided for MongoDB server {DataStoreID} is null or empty.");
 
             string hostNames = String.Join(",", Hosts);
             string result = String.Concat("mongodb://", hostNames, "/");
