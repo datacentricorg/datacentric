@@ -21,7 +21,7 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Derived type sample for unit testing.</summary>
-    public class DerivedTypeSampleData : BaseTypeSampleData, IDerivedTypeSample
+    public class DerivedTypeSampleData : BaseTypeSampleData
     {
         /// <summary>Integer element of derived type.</summary>
         public int? IntElement { get; set; }
