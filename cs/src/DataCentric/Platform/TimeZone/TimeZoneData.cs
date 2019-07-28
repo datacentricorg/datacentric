@@ -44,7 +44,7 @@ namespace DataCentric
     /// has two slash-delimited tokens, the first referencing the
     /// country and the other the city, for example America/New_York.
     /// </summary>
-    public class TimeZoneData : RecordFor<TimeZoneKey, TimeZoneData>, ITimeZone
+    public class TimeZoneData : RecordFor<TimeZoneKey, TimeZoneData>
     {
         /// <summary>
         /// Unique timezone identifier.
