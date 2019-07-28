@@ -20,9 +20,15 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace DataCentric
 {
     /// <summary>
-    /// Data store provides the ability to import and export records
-    /// individually or in bulk. It does not have the ability to
-    /// load individual records by key or by query.
+    /// Data store represents a database server or similar concept for non-database
+    /// storage. It is not the same as data source (database) as it only specifies
+    /// the server, and each server can host multiple data sources (databases).
+    ///
+    /// Separating the data store from the data source helps separate server
+    /// specifics such as URI, connection string, etc in data store from the
+    /// definition of how the data is stored on the server, including the
+    /// environment (which usually maps to database name) and data representation
+    /// (basic or temporal).
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<DataStoreKey>))]
     public class DataStoreKey : RootKeyFor<DataStoreKey, DataStoreData>
@@ -34,17 +40,5 @@ namespace DataCentric
 
         /// <summary>Keys in which string ID is the only element support implicit conversion from value.</summary>
         public static implicit operator DataStoreKey(string value) { return new DataStoreKey { DataStoreID = value }; }
-
-        //--- STATIC
-
-        /// <summary>
-        /// By convention, Settings is the name of the data store for system settings.
-        /// </summary>
-        public static DataStoreKey Settings { get; } = new DataStoreKey() { DataStoreID = "Settings" };
-
-        /// <summary>
-        /// By convention, Configuration is the name of data store for configuring the analytics.
-        /// </summary>
-        public static DataStoreKey Configuration { get; } = new DataStoreKey() { DataStoreID = "Configuration" };
     }
 }

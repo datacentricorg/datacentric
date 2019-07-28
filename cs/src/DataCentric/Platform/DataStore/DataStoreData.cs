@@ -23,11 +23,17 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>
-    /// Data store provides the ability to import and export records
-    /// individually or in bulk. It does not have the ability to
-    /// load individual records by key or by query.
+    /// Data store represents a database server or similar concept for non-database
+    /// storage. It is not the same as data source (database) as it only specifies
+    /// the server, and each server can host multiple data sources (databases).
+    ///
+    /// Separating the data store from the data source helps separate server
+    /// specifics such as URI, connection string, etc in data store from the
+    /// definition of how the data is stored on the server, including the
+    /// environment (which usually maps to database name) and data representation
+    /// (basic or temporal).
     /// </summary>
-    public abstract class DataStoreData : RootRecordFor<DataStoreKey, DataStoreData>, IDataStore
+    public abstract class DataStoreData : RootRecordFor<DataStoreKey, DataStoreData>
     {
         /// <summary>Unique data store identifier.</summary>
         [BsonRequired]
