@@ -88,11 +88,11 @@ namespace DataCentric.Test
                 var dataListItem1 = new ElementTypeSampleData();
                 dataListItem1.SampleID = "DDD";
                 dataListItem1.DoubleElement = 3.0;
-                obj.DataList.Append(dataListItem1);
+                obj.DataList.Add(dataListItem1);
                 var dataListItem2 = new ElementTypeSampleData();
                 dataListItem2.SampleID = "DDD";
                 dataListItem2.DoubleElement = 4.0;
-                obj.DataList.Append(dataListItem2);
+                obj.DataList.Add(dataListItem2);
 
                 string xmlString = obj.ToXml();
                 string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;

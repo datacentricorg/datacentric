@@ -27,17 +27,6 @@ namespace DataCentric
     /// <summary>Extension methods for ICollection.</summary>
     public static class ICollectionEx
     {
-        /// <summary>
-        /// Add value to the collection and return self.
-        ///
-        /// This extension method is used by the Fluent API.
-        ///</summary>
-        public static ICollection<TValue> Append<TValue>(this ICollection<TValue> obj, TValue value)
-        {
-            obj.Add(value);
-            return obj;
-        }
-
         /// <summary>Deserialize by reading element from the tree reader.</summary>
         public static void DeserializeFrom(this IList obj, string elementName, ITreeReader reader)
         {
