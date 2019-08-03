@@ -271,9 +271,4 @@ namespace DataCentric
                 value.GetType());
         }
     }
-
-    /// <summary>Extension methods related to Variant.</summary>
-    public static class VariantEx
-    {
-    }
 }

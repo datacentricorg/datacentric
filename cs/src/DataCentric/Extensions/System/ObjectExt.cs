@@ -21,7 +21,7 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>Extension methods for System.Object.</summary>
-    public static class ObjectEx
+    public static class ObjectExt
     {
         /// <summary>Checks if the value is null or has special value treated as empty.</summary>
         public static bool IsEmpty(this object obj)

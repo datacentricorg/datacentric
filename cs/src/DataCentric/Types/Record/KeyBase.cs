@@ -28,7 +28,7 @@ namespace DataCentric
     ///
     /// The curiously recurring template pattern (CRTP) key class
     /// Key(TKey,TRecord) is derived from this class.
-    /// 
+    ///
     /// Any elements of defined in the type specific key record
     /// become key tokens. Property Value and method ToString() of
     /// the key consists of key tokens with semicolon delimiter.
@@ -52,7 +52,7 @@ namespace DataCentric
                 foreach (var elementInfo in elementInfoArray)
                 {
                     // Convert key element to string key token.
-                    // 
+                    //
                     // Note that string representation of certain types inside the key
                     // is not the same as what is returned by AsString().
                     //
@@ -71,7 +71,7 @@ namespace DataCentric
 
         /// <summary>
         /// Convert key element to string key token.
-        /// 
+        ///
         /// Note that string representation of certain types inside the key
         /// is not the same as what is returned by AsString().
         ///
@@ -101,7 +101,7 @@ namespace DataCentric
                     result = stringValue;
                     break;
                 case double doubleValue:
-                    // Double key elements are not permitted due to the risk of 
+                    // Double key elements are not permitted due to the risk of
                     // key mismatch as a result of different serialization settings
                     // across multiple libraries and programming languages
                     throw new Exception(
@@ -225,7 +225,7 @@ namespace DataCentric
                     if (!Int32.TryParse(token, out int isoInt))
                     {
                         throw new Exception(
-                            $"Element {elementInfo.Name} of key type {GetType().Name} has type LocalDate and value {token} " + 
+                            $"Element {elementInfo.Name} of key type {GetType().Name} has type LocalDate and value {token} " +
                             $"that cannot be converted to readable int in non-delimited yyyymmdd format.");
                     }
 
@@ -295,42 +295,6 @@ namespace DataCentric
 
                 elementInfo.SetValue(this, tokenValue);
             }
-        }
-    }
-
-    /// <summary>Extension methods for Key.</summary>
-    public static class KeyEx
-    {
-        /// <summary>Deserialize record from XML using short
-        /// class name without namespace for the root XML element.</summary>
-        public static void ParseXml(this KeyBase obj, string xmlString)
-        {
-            IXmlReader reader = new XmlReader(xmlString);
-
-            // Root node of serialized XML must be the same as mapped class name without namespace
-            var mappedFullName = ClassInfo.GetOrCreate(obj).MappedClassName;
-            ITreeReader recordNodes = reader.ReadElement(mappedFullName);
-
-            // Deserialize from XML nodes inside the root node
-            obj.DeserializeFrom(recordNodes);
-        }
-
-        /// <summary>Serialize record to XML using short
-        /// class name without namespace for the root XML element.</summary>
-        public static string ToXml(this KeyBase obj)
-        {
-            // Get root XML element name using mapped final type of the object
-            string rootName = ClassInfo.GetOrCreate(obj).MappedClassName;
-
-            // Serialize to XML
-            ITreeWriter writer = new XmlWriter();
-            writer.WriteStartDocument(rootName);
-            obj.SerializeTo(writer);
-            writer.WriteEndDocument(rootName);
-
-            // Convert to string
-            string result = writer.ToString();
-            return result;
         }
     }
 }

@@ -21,7 +21,7 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>Extension methods for NodaTime.LocalTime.</summary>
-    public static class LocalTimeEx
+    public static class LocalTimeExt
     {
         /// <summary>Return false if equal to default constructed value.</summary>
         public static bool HasValue(this LocalTime? value)

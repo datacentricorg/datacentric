@@ -38,9 +38,4 @@ namespace DataCentric
         /// Error message if more than one element with the specified name is present.</summary>
         string ReadValueElement(string elementName);
     }
-
-    /// <summary>Extension methods for ITreeReader.</summary>
-    public static class ITreeReaderEx
-    {
-    }
 }

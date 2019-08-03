@@ -25,7 +25,7 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>Extension methods for ICollection.</summary>
-    public static class ICollectionEx
+    public static class ICollectionExt
     {
         /// <summary>Deserialize by reading element from the tree reader.</summary>
         public static void DeserializeFrom(this IList obj, string elementName, ITreeReader reader)

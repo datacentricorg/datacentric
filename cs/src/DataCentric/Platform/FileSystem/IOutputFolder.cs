@@ -41,28 +41,4 @@ namespace DataCentric
         /// This method accepts dot delimited folder path.</summary>
         void Delete(string filePath);
     }
-
-    /// <summary>Extension methods for IOutputFolder.</summary>
-    public static class IOutputFolderEx
-    {
-        /// <summary>Appends text to the specified file, creating it if does not exist.</summary>
-        public static void AppendText(this IOutputFolder obj, string filePath, string fileContents)
-        {
-            obj.SaveText(filePath, fileContents, FileWriteMode.Append);
-        }
-
-        /// <summary>Writes text to the specified file, overwriting it if exists and crating otherwise.</summary>
-        public static void WriteText(this IOutputFolder obj, string filePath, string fileContents)
-        {
-            obj.SaveText(filePath, fileContents, FileWriteMode.Replace);
-        }
-
-        /// <summary>Appends or overwrites the specified file with text followed by EOL.</summary>
-        private static void SaveText(this IOutputFolder obj, string filePath, string text, FileWriteMode writeMode)
-        {
-            ITextWriter textWriter = obj.CreateTextWriter(filePath, writeMode);
-            textWriter.Write(text);
-            textWriter.Flush();
-        }
-    }
 }

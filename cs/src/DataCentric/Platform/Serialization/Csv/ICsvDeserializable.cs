@@ -26,9 +26,4 @@ namespace DataCentric
         /// The object must be empty when this method is invoked.</summary>
         void DeserializeFrom(ICsvReader reader);
     }
-
-    /// <summary>Extension methods for ICsvDeserializable.</summary>
-    public static class ICsvDeserializableEx
-    {
-    }
 }

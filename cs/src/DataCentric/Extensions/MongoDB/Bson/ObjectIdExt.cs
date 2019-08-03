@@ -22,7 +22,7 @@ using NodaTime.Extensions;
 namespace DataCentric
 {
     /// <summary>Extension methods for MongoDB.Bson.ObjectId.</summary>
-    public static class ObjectIdEx
+    public static class ObjectIdExt
     {
         /// <summary>Return false if equal to the default constructed value.</summary>
         public static bool HasValue(this ObjectId value)

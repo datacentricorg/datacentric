@@ -19,7 +19,7 @@ using System;
 namespace DataCentric
 {
     /// <summary>Extension methods for System.Boolean.</summary>
-    public static class BooleanEx
+    public static class BooleanExt
     {
         /// <summary>Convert bool to variant.</summary>
         public static Variant ToVariant(this bool value)

@@ -25,9 +25,4 @@ namespace DataCentric
         /// <summary>(ICsvSerializable) Serialize to multi-line CSV data.</summary>
         void SerializeTo(ICsvWriter writer);
     }
-
-    /// <summary>Extension methods for ICsvSerializable.</summary>
-    public static class ICsvSerializableEx
-    {
-    }
 }

@@ -15,49 +15,53 @@ limitations under the License.
 */
 
 using System;
-using System.Runtime.InteropServices.ComTypes;
-using MongoDB.Bson;
 using NodaTime;
 
 namespace DataCentric
 {
-    /// <summary>Extension methods for NodaTime.IsoDayOfWeek.</summary>
-    public static class IsoDayOfWeekExt
+    /// <summary>Static and extension methods for ShortDayOfWeek.</summary>
+    public static class ShortDayOfWeekExt
     {
         /// <summary>Return false if equal to the default constructed value.</summary>
-        public static bool HasValue(this IsoDayOfWeek value)
+        public static bool HasValue(this ShortDayOfWeek value)
         {
             return value != default;
         }
 
         /// <summary>Return false if null or equal to the default constructed value.</summary>
-        public static bool HasValue(this IsoDayOfWeek? value)
+        public static bool HasValue(this ShortDayOfWeek? value)
         {
             return value.HasValue && value.HasValue();
         }
 
         /// <summary>Error message if equal to the default constructed value.</summary>
-        public static void CheckHasValue(this IsoDayOfWeek value)
+        public static void CheckHasValue(this ShortDayOfWeek value)
         {
-            if (!value.HasValue()) throw new Exception("Required IsoDayOfWeek value is not set.");
+            if (!value.HasValue()) throw new Exception("Required ShortDayOfWeek value is not set.");
         }
 
         /// <summary>Error message if null or equal to the default constructed value.</summary>
-        public static void CheckHasValue(this IsoDayOfWeek? value)
+        public static void CheckHasValue(this ShortDayOfWeek? value)
         {
-            if (!value.HasValue()) throw new Exception("Required IsoDayOfWeek value is not set.");
+            if (!value.HasValue()) throw new Exception("Required ShortDayOfWeek value is not set.");
         }
 
-        /// <summary>Convert to ShortDayOfWeek enum that uses three-letter abbreviation.</summary>
-        public static ShortDayOfWeek ToShortDayOfWeek(this IsoDayOfWeek value)
+        /// <summary>
+        /// Convert to IsoDayOfWeek enum that uses full names for the days of week
+        /// rather than the three-letter abbreviation used by ShortDayOfWeek.
+        /// </summary>
+        public static IsoDayOfWeek ToIsoDayOfWeek(this ShortDayOfWeek value)
         {
-            return (ShortDayOfWeek) value;
+            return (IsoDayOfWeek) value;
         }
 
-        /// <summary>Convert to ShortDayOfWeek enum that uses three-letter abbreviation.</summary>
-        public static ShortDayOfWeek? ToShortDayOfWeek(this IsoDayOfWeek? value)
+        /// <summary>
+        /// Convert to IsoDayOfWeek enum that uses full names for the days of week
+        /// rather than the three-letter abbreviation used by ShortDayOfWeek.
+        /// </summary>
+        public static IsoDayOfWeek? ToIsoDayOfWeek(this ShortDayOfWeek? value)
         {
-            if (value != null) return (ShortDayOfWeek) value;
+            if (value != null) return (IsoDayOfWeek) value;
             else return null;
         }
     }

@@ -19,7 +19,7 @@ using System;
 namespace DataCentric
 {
     /// <summary>Static helper class for System.Enum.</summary>
-    public static class EnumEx
+    public static class EnumExt
     {
         /// <summary>Return true if not null and not equal to the default constructed value.</summary>
         public static bool HasValue(this Enum value)
