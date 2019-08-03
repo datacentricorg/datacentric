@@ -26,7 +26,7 @@ namespace DataCentric
     /// <summary>
     /// Abstract base class to data structures.
     /// </summary>
-    public abstract class DataType : IXmlSerializable, IXmlDeserializable
+    public abstract class Data : IXmlSerializable, IXmlDeserializable
     {
         /// <summary>Creates dictionary at current writer level.</summary>
         public void SerializeTo(ITreeWriter writer)
@@ -65,7 +65,7 @@ namespace DataCentric
                         // Embedded enumerable such as array or list
                         enumerableElement.SerializeTo(innerElementName, writer);
                         break;
-                    case DataType dataElement:
+                    case Data dataElement:
                         if (dataElement.GetType().Name.EndsWith("Key"))
                         {
                             // Embedded as string key
@@ -187,7 +187,7 @@ namespace DataCentric
                         case IList listElement:
                             listElement.DeserializeFrom(elementName, reader);
                             break;
-                        case DataType dataElement:
+                        case Data dataElement:
                             if (dataElement.GetType().Name.EndsWith("Key"))
                             {
                                 // Deserialize key from value node containing semicolon delimited string

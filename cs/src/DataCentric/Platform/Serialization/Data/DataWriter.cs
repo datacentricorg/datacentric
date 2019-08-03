@@ -29,7 +29,7 @@ namespace DataCentric
         {
             public string CurrentElementName { get; set; }
             public TreeWriterState CurrentState { get; set; }
-            public DataType CurrentDict { get; set; }
+            public Data CurrentDict { get; set; }
             public Dictionary<string, PropertyInfo> CurrentDictElements  { get; set; }
             public PropertyInfo CurrentElementInfo { get; set; }
             public IList CurrentArray { get; set; }
@@ -40,14 +40,14 @@ namespace DataCentric
         private string rootElementName_;
         private string currentElementName_;
         private TreeWriterState currentState_;
-        private DataType currentDict_;
+        private Data currentDict_;
         private Dictionary<string, PropertyInfo> currentDictElements_;
         private PropertyInfo currentElementInfo_;
         private IList currentArray_;
         private Type currentArrayItemType_;
 
         /// <summary>Will write to Data using reflection.</summary>
-        public DataWriter(DataType data)
+        public DataWriter(Data data)
         {
             currentDict_ = data;
         }
@@ -158,21 +158,21 @@ namespace DataCentric
             else throw new Exception($"Value can only be added to a dictionary or array.");
 
             object createdDictObj = Activator.CreateInstance(createdDictType);
-            if (!(createdDictObj is DataType)) // TODO Also support native dictionaries
+            if (!(createdDictObj is Data)) // TODO Also support native dictionaries
             {
                 string mappedClassName = ClassInfo.GetOrCreate(currentElementInfo_.PropertyType).MappedClassName;
                 throw new Exception(
                     $"Element {currentElementInfo_.Name} of type {mappedClassName} does not implement Data.");
             }
 
-            var createdDict = (DataType) createdDictObj;
+            var createdDict = (Data) createdDictObj;
 
             // Add to array or dictionary, depending on what we are inside of
             if (currentArray_ != null) currentArray_[currentArray_.Count-1] = createdDict;
             else if (currentDict_ != null) currentElementInfo_.SetValue(currentDict_, createdDict);
             else throw new Exception($"Value can only be added to a dictionary or array.");
 
-            currentDict_ = (DataType) createdDict;
+            currentDict_ = (Data) createdDict;
             var currentDictInfoList = DataInfo.GetOrCreate(createdDictType).DataElements;
             currentDictElements_ = new Dictionary<string, PropertyInfo>();
             foreach (var elementInfo in currentDictInfoList) currentDictElements_.Add( elementInfo.Name, elementInfo);

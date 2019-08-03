@@ -20,7 +20,7 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Base type sample for unit testing.</summary>
-    public class ElementTypeSampleData : DataType
+    public class ElementTypeSampleData : Data
     {
         /// <summary>Unique identifier.</summary>
         public string SampleID { get; set; }

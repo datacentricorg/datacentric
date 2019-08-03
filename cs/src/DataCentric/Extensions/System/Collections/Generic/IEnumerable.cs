@@ -53,7 +53,7 @@ namespace DataCentric
                     case IEnumerable enumerableItem:
                         throw new Exception($"Serialization is not supported for element {elementName} " +
                                             $"which is collection containing another collection.");
-                    case DataType dataItem:
+                    case Data dataItem:
                         if (dataItem.GetType().Name.EndsWith("Key"))
                         {
                             // Write key as serialized delimited string

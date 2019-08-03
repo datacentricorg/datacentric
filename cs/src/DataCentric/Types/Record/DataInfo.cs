@@ -145,7 +145,7 @@ namespace DataCentric
                 inheritanceChain.Add(currentType);
 
                 string baseClassName = currentType.BaseType.Name;
-                if (baseClassName == "DataType")
+                if (baseClassName == "Data")
                 {
                     RootKind = RootKind.Element;
                     RootType = currentType;
@@ -179,7 +179,7 @@ namespace DataCentric
             // Error message if the type is not derived from one of the permitted base classes 
             if (RootKind == RootKind.Empty)
                 throw new Exception(
-                    $"Data type {type.Name} is not derived from DataType, Key<TKey, TRecord>, or Record<TKey, TRecord>.");
+                    $"Data type {type.Name} is not derived from Data, Key<TKey, TRecord>, or Record<TKey, TRecord>.");
 
             // Add elements in the order from from base to derived
             var rootElementList = new List<PropertyInfo>();
@@ -204,7 +204,7 @@ namespace DataCentric
                     {
                         // This is an override, skip unless defined in types below root
                         var declaringTypeName = propGetterBaseDefinition.DeclaringType.Name;
-                        if (declaringTypeName != "DataType"
+                        if (declaringTypeName != "Data"
                             && declaringTypeName != "Key`2"
                             && declaringTypeName != "RootKey`2"
                             && declaringTypeName != "Record`2"

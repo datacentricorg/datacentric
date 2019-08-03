@@ -165,7 +165,7 @@ namespace DataCentric
                             case ICollection collectionItem:
                                 throw new Exception($"Deserialization is not supported for element {elementName} " +
                                                     $"which is collection containing another collection.");
-                            case DataType dataItem:
+                            case Data dataItem:
                                 if (dataItem.GetType().Name.EndsWith("Key"))
                                 {
                                     string token = selectedXmlNode.ReadValue();

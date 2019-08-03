@@ -25,7 +25,7 @@ namespace DataCentric
     /// Base class of records stored in data source.
     /// </summary>
     [BsonDiscriminator(RootClass = true)]
-    public abstract class RecordBase : DataType
+    public abstract class RecordBase : Data
     {
         /// <summary>
         /// Execution context provides access to key resources including:

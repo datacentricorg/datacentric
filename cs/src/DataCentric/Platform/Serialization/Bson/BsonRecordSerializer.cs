@@ -31,7 +31,7 @@ namespace DataCentric
         {
             // Create instance to which BSON will be deserialized
             TRecord result = new TRecord();
-            ITreeWriter writer = new DataWriter((DataType) result);
+            ITreeWriter writer = new DataWriter((Data) result);
 
             // Checks that type matches
             IBsonReader reader = context.Reader;

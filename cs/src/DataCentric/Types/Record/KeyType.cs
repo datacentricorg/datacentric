@@ -33,7 +33,7 @@ namespace DataCentric
     /// become key tokens. Property Value and method ToString() of
     /// the key consists of key tokens with semicolon delimiter.
     /// </summary>
-    public abstract class KeyBase : DataType
+    public abstract class KeyBase : Data
     {
         /// <summary>
         /// String key consists of semicolon delimited primary key elements:
