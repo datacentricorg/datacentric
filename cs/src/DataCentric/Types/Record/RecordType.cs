@@ -25,7 +25,7 @@ namespace DataCentric
     /// Base class of records stored in data source.
     /// </summary>
     [BsonDiscriminator(RootClass = true)]
-    public abstract class RecordType : DataType
+    public abstract class RecordBase : DataType
     {
         /// <summary>
         /// Execution context provides access to key resources including:
@@ -105,7 +105,7 @@ namespace DataCentric
     {
         /// <summary>Deserialize record from XML using short
         /// class name without namespace for the root XML element.</summary>
-        public static void ParseXml(this RecordType obj, string xmlString)
+        public static void ParseXml(this RecordBase obj, string xmlString)
         {
             IXmlReader reader = new XmlReader(xmlString);
 
@@ -119,7 +119,7 @@ namespace DataCentric
 
         /// <summary>Serialize record to XML using short
         /// class name without namespace for the root XML element.</summary>
-        public static string ToXml(this RecordType obj)
+        public static string ToXml(this RecordBase obj)
         {
             // Get root XML element name using mapped final type of the object
             string rootName = ClassInfo.GetOrCreate(obj).MappedClassName;

@@ -37,13 +37,13 @@ namespace DataCentric.Test
 
     /// <summary>Key class that has all of the permitted non-nullable key elements included.</summary>
     [BsonSerializer(typeof(BsonKeySerializer<EnumTestNonNullableSampleKey>))]
-    public class EnumTestNonNullableSampleKey : KeyFor<EnumTestNonNullableSampleKey, EnumTestNonNullableSampleData>
+    public class EnumTestNonNullableSampleKey : Key<EnumTestNonNullableSampleKey, EnumTestNonNullableSampleData>
     {
         public EnumTestSampleType EnumID { get; set; }
     }
 
     /// <summary>Key class that has all of the permitted non-nullable key elements included.</summary>
-    public class EnumTestNonNullableSampleData : RecordFor<EnumTestNonNullableSampleKey, EnumTestNonNullableSampleData>
+    public class EnumTestNonNullableSampleData : Record<EnumTestNonNullableSampleKey, EnumTestNonNullableSampleData>
     {
         public EnumTestSampleType EnumID { get; set; }
         public EnumTestSampleType EnumValue { get; set; }
@@ -52,13 +52,13 @@ namespace DataCentric.Test
 
     /// <summary>Key class that has all of the permitted nullable key elements included.</summary>
     [BsonSerializer(typeof(BsonKeySerializer<EnumTestNullableSampleKey>))]
-    public class EnumTestNullableSampleKey : KeyFor<EnumTestNullableSampleKey, EnumTestNullableSampleData>
+    public class EnumTestNullableSampleKey : Key<EnumTestNullableSampleKey, EnumTestNullableSampleData>
     {
         public EnumTestSampleType? EnumID { get; set; }
     }
 
     /// <summary>Key class that has all of the permitted nullable key elements included.</summary>
-    public class EnumTestNullableSampleData : RecordFor<EnumTestNullableSampleKey, EnumTestNullableSampleData>
+    public class EnumTestNullableSampleData : Record<EnumTestNullableSampleKey, EnumTestNullableSampleData>
     {
         public EnumTestSampleType? EnumID { get; set; }
         public EnumTestSampleType? EnumValue { get; set; }

@@ -24,7 +24,7 @@ using MongoDB.Bson.Serialization.Serializers;
 namespace DataCentric
 {
     /// <summary>Serializes record as BSON document.</summary>
-    public class BsonRecordSerializer<TRecord> : SerializerBase<TRecord> where TRecord : KeyType, new()
+    public class BsonRecordSerializer<TRecord> : SerializerBase<TRecord> where TRecord : KeyBase, new()
     {
         /// <summary>Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.</summary>
         public override TRecord Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)

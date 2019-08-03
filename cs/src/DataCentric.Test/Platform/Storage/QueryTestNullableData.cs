@@ -21,7 +21,7 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Key class that has all of the permitted nullable key elements included.</summary>
-    public class QueryTestNullableData : RecordFor<QueryTestNullableKey, QueryTestNullableData>
+    public class QueryTestNullableData : Record<QueryTestNullableKey, QueryTestNullableData>
     {
         public string RecordID { get; set; }
         public int RecordIndex { get; set; }

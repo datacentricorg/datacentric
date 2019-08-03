@@ -28,7 +28,7 @@ namespace DataCentric.Test
 {
     /// <summary>Key class.</summary>
     [BsonSerializer(typeof(BsonKeySerializer<MongoTestKey>))]
-    public class MongoTestKey : KeyFor<MongoTestKey, MongoTestData>
+    public class MongoTestKey : Key<MongoTestKey, MongoTestData>
     {
         public string RecordID { get; set; }
         public int? RecordIndex { get; set; }

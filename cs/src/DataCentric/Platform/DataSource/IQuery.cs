@@ -28,7 +28,7 @@ namespace DataCentric
     /// multiple datasets.
     /// </summary>
     public interface IQuery<TRecord>
-        where TRecord : RecordType
+        where TRecord : RecordBase
     {
         /// <summary>Context for which this interface is defined.
         /// Use to access other interfaces of the same context.</summary>

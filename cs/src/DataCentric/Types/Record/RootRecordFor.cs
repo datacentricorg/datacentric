@@ -24,9 +24,9 @@ namespace DataCentric
     ///
     /// This class overrides DataSet property to always return ObjectId.Empty.
     /// </summary>
-    public abstract class RootRecordFor<TKey, TRecord> : RecordFor<TKey, TRecord>
-        where TKey : RootKeyFor<TKey, TRecord>, new()
-        where TRecord : RootRecordFor<TKey, TRecord>
+    public abstract class RootRecord<TKey, TRecord> : Record<TKey, TRecord>
+        where TKey : RootKey<TKey, TRecord>, new()
+        where TRecord : RootRecord<TKey, TRecord>
     {
         /// <summary>
         /// Set context and perform initialization or validation of object data.

@@ -33,7 +33,7 @@ namespace DataCentric
     /// environment (which usually maps to database name) and data representation
     /// (basic or temporal).
     /// </summary>
-    public abstract class DataStoreData : RootRecordFor<DataStoreKey, DataStoreData>
+    public abstract class DataStoreData : RootRecord<DataStoreKey, DataStoreData>
     {
         /// <summary>Unique data store identifier.</summary>
         [BsonRequired]

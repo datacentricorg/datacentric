@@ -40,7 +40,7 @@ namespace DataCentric
     /// The Run() method must be implemented defensively to ensure
     /// that the job runs successfully in all of these cases.
     /// </summary>
-    public abstract class JobData : RecordFor<JobKey, JobData>
+    public abstract class JobData : Record<JobKey, JobData>
     {
         /// <summary>
         /// Overriding element ID here includes the record's ObjectId

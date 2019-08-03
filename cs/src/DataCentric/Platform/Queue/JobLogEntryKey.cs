@@ -28,7 +28,7 @@ namespace DataCentric
     /// order of their ObjectId.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<JobLogEntryKey>))]
-    public class JobLogEntryKey : KeyFor<JobLogEntryKey, JobLogEntryData>
+    public class JobLogEntryKey : Key<JobLogEntryKey, JobLogEntryData>
     {
         /// <summary>
         /// Defining element ID here includes the record's ObjectId

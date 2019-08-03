@@ -22,7 +22,7 @@ namespace DataCentric.Test
 {
 
     /// <summary>Key class that has all of the permitted non-nullable key elements included.</summary>
-    public class QueryTestNonNullableData : RecordFor<QueryTestNonNullableKey, QueryTestNonNullableData>
+    public class QueryTestNonNullableData : Record<QueryTestNonNullableKey, QueryTestNonNullableData>
     {
         public string RecordID { get; set; }
         public int RecordIndex { get; set; }

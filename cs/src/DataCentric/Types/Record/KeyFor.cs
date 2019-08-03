@@ -31,9 +31,9 @@ namespace DataCentric
     /// become key tokens. Property Value and method ToString() of
     /// the key consists of key tokens with semicolon delimiter.
     /// </summary>
-    public abstract class KeyFor<TKey, TRecord> : KeyType
-        where TKey : KeyFor<TKey, TRecord>, new()
-        where TRecord : RecordFor<TKey, TRecord>
+    public abstract class Key<TKey, TRecord> : KeyBase
+        where TKey : Key<TKey, TRecord>, new()
+        where TRecord : Record<TKey, TRecord>
     {
         /// <summary>
         /// Cached reference to a record inside the key.
@@ -281,7 +281,7 @@ namespace DataCentric
         /// the dataset where the object has been looked up, not the
         /// one where it is stored.
         /// </summary>
-        public void SetCachedRecord(RecordFor<TKey, TRecord> record, ObjectId dataSet)
+        public void SetCachedRecord(Record<TKey, TRecord> record, ObjectId dataSet)
         {
             // Before doing anything else, clear the cached record
             // This will ensure that the previous cached copy is 
@@ -308,7 +308,7 @@ namespace DataCentric
         }
 
         /// <summary>Assign key elements from record to key.</summary>
-        public void AssignKeyElements(RecordFor<TKey, TRecord> record)
+        public void AssignKeyElements(Record<TKey, TRecord> record)
         {
             // Assign elements of the record to the matching elements
             // of the key. This will also make string representation

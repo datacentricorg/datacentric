@@ -524,9 +524,9 @@ namespace DataCentric.Test
         }
 
         /// <summary>Load the object and verify the outcome.</summary>
-        private void VerifyLoad<TKey, TRecord>(IUnitTestContext context, KeyFor<TKey, TRecord> key, string dataSetID)
-            where TKey : KeyFor<TKey, TRecord>, new()
-            where TRecord : RecordFor<TKey, TRecord>
+        private void VerifyLoad<TKey, TRecord>(IUnitTestContext context, Key<TKey, TRecord> key, string dataSetID)
+            where TKey : Key<TKey, TRecord>, new()
+            where TRecord : Record<TKey, TRecord>
         {
             // Get dataset and try loading the record
             var dataSet = context.GetDataSet(dataSetID, context.DataSet);
@@ -551,7 +551,7 @@ namespace DataCentric.Test
 
         /// <summary>Query over all records of the specified type in the specified dataset.</summary>
         private void VerifyQuery<TRecord>(IUnitTestContext context, string dataSetID)
-            where TRecord : RecordType
+            where TRecord : RecordBase
         {
             // Get dataset and query
             var dataSet = context.GetDataSet(dataSetID, context.DataSet);

@@ -31,7 +31,7 @@ namespace DataCentric
 
         /// <summary>
         /// Type of the class at the root of the inheritance chain, one
-        /// level above Data, KeyFor(TRecord), or RecordFor(TKey).
+        /// level above Data, Key(TRecord), or Record(TKey).
         /// </summary>
         public Type RootType { get; }
 
@@ -44,7 +44,7 @@ namespace DataCentric
         /// is used to generate the value of _t BSON attribute.
         ///
         /// Root data type is the type that inherits directly
-        /// from KeyFor(TKey, TRecord).
+        /// from Key(TKey, TRecord).
         /// </summary>
         public string[] InheritanceChain { get; }
 
@@ -64,7 +64,7 @@ namespace DataCentric
         /// elements and optionally also non-key elements.
         ///
         /// Root data type is the type that inherits directly
-        /// from KeyFor(TKey, TRecord).
+        /// from Key(TKey, TRecord).
         /// </summary>
         public PropertyInfo[] RootElements { get; }
 
@@ -74,7 +74,7 @@ namespace DataCentric
         /// elements and optionally also non-key elements.
         ///
         /// Root data type is the type that inherits directly
-        /// from KeyFor(TKey, TRecord).
+        /// from Key(TKey, TRecord).
         /// </summary>
         public Dictionary<string, PropertyInfo> RootElementDict { get; }
 
@@ -151,22 +151,22 @@ namespace DataCentric
                     RootType = currentType;
                     break;
                 }
-                else if (baseClassName == "KeyFor`2"
-                         || baseClassName == "RootKeyFor`2")
+                else if (baseClassName == "Key`2"
+                         || baseClassName == "RootKey`2")
                 {
                     RootKind = RootKind.Key;
                     RootType = currentType;
 
                     if (inheritanceChain.Count > 1)
                         throw new Exception(
-                            $"Key type {type.Name} is not derived directly from KeyFor(TRecord). " +
+                            $"Key type {type.Name} is not derived directly from Key(TRecord). " +
                             $"Key classes cannot have an inheritance hierarchy, only data classes can.");
 
                     break;
                 }
-                else if (baseClassName == "RecordFor`2"
-                         || baseClassName == "RootRecordFor`2"
-                         || baseClassName == "RecordType")
+                else if (baseClassName == "Record`2"
+                         || baseClassName == "RootRecord`2"
+                         || baseClassName == "RecordBase")
                 {
                     RootKind = RootKind.Record;
                     RootType = currentType;
@@ -179,7 +179,7 @@ namespace DataCentric
             // Error message if the type is not derived from one of the permitted base classes 
             if (RootKind == RootKind.Empty)
                 throw new Exception(
-                    $"Data type {type.Name} is not derived from DataType, KeyFor<TKey, TRecord>, or RecordFor<TKey, TRecord>.");
+                    $"Data type {type.Name} is not derived from DataType, Key<TKey, TRecord>, or Record<TKey, TRecord>.");
 
             // Add elements in the order from from base to derived
             var rootElementList = new List<PropertyInfo>();
@@ -205,11 +205,11 @@ namespace DataCentric
                         // This is an override, skip unless defined in types below root
                         var declaringTypeName = propGetterBaseDefinition.DeclaringType.Name;
                         if (declaringTypeName != "DataType"
-                            && declaringTypeName != "KeyFor`2"
-                            && declaringTypeName != "RootKeyFor`2"
-                            && declaringTypeName != "RecordFor`2"
-                            && declaringTypeName != "RootRecordFor`2"
-                            && declaringTypeName != "RecordType")
+                            && declaringTypeName != "Key`2"
+                            && declaringTypeName != "RootKey`2"
+                            && declaringTypeName != "Record`2"
+                            && declaringTypeName != "RootRecord`2"
+                            && declaringTypeName != "RecordBase")
                         {
                             continue;
                         }
@@ -220,7 +220,7 @@ namespace DataCentric
                     dataElementList.Add(propInfo);
 
                     // RootElements has properties only from the class that inherits
-                    // directly from KeyFor(TKey, TRecord)
+                    // directly from Key(TKey, TRecord)
                     if (i == inheritanceChain.Count - 1)
                     {
                         rootElementList.Add(propInfo);

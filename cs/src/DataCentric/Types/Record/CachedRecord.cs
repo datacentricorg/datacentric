@@ -48,7 +48,7 @@ namespace DataCentric
         ///
         /// Delete marker will be cached as null.
         /// </summary>
-        public CachedRecord(ObjectId dataSet, RecordType record = null)
+        public CachedRecord(ObjectId dataSet, RecordBase record = null)
         {
             // Dataset for which the record is cached
             DataSet = dataSet;
@@ -69,6 +69,6 @@ namespace DataCentric
         /// Record passed to the constructor, or null for an
         /// empty cached record or a delete marker.
         /// </summary>
-        public RecordType Record { get; }
+        public RecordBase Record { get; }
     }
 }

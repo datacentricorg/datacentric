@@ -458,10 +458,10 @@ namespace DataCentric
             {
                 // We run out of value types at this point, now we can create
                 // a reference type and check that it implements Key
-                object keyObj = (KeyType) Activator.CreateInstance(elementType);
-                if (keyObj is KeyType)
+                object keyObj = (KeyBase) Activator.CreateInstance(elementType);
+                if (keyObj is KeyBase)
                 {
-                    KeyType key = (KeyType) keyObj;
+                    KeyBase key = (KeyBase) keyObj;
 
                     // Check type match
                     if (valueType != typeof(string) && valueType != elementType)

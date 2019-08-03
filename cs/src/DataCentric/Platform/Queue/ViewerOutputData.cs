@@ -40,7 +40,7 @@ namespace DataCentric
     /// The Run() method must be implemented defensively to ensure
     /// that the job runs successfully in all of these cases.
     /// </summary>
-    public abstract class ViewerOutputData : RecordFor<JobKey, JobData>
+    public abstract class ViewerOutputData : Record<JobKey, JobData>
     {
         /// <summary>
         /// ObjectId of the record is specific to its version.

@@ -87,7 +87,7 @@ namespace DataCentric
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord. 
         /// </summary>
-        public override TRecord ReloadOrNull<TKey, TRecord>(KeyFor<TKey, TRecord> key, ObjectId loadFrom)
+        public override TRecord ReloadOrNull<TKey, TRecord>(Key<TKey, TRecord> key, ObjectId loadFrom)
         {
             ErrorMessage();
             return null;
@@ -145,7 +145,7 @@ namespace DataCentric
         /// To avoid an additional roundtrip to the data store, the delete
         /// marker is written even when the record does not exist.
         /// </summary>
-        public override void Delete<TKey, TRecord>(KeyFor<TKey, TRecord> key, ObjectId deleteIn)
+        public override void Delete<TKey, TRecord>(Key<TKey, TRecord> key, ObjectId deleteIn)
         {
             ErrorMessage();
         }

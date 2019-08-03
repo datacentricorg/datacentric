@@ -42,7 +42,7 @@ namespace DataCentric
     /// that the job runs successfully in all of these cases.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<JobKey>))]
-    public sealed class JobKey : KeyFor<JobKey, JobData>
+    public sealed class JobKey : Key<JobKey, JobData>
     {
         /// <summary>
         /// Defining element ID here includes the record's ObjectId

@@ -315,7 +315,7 @@ namespace DataCentric
                     string enumString = enumValue.AsString();
                     xmlTextWriter_.WriteString(enumString);
                     break;
-                case KeyType keyElement:
+                case KeyBase keyElement:
                     // Serialize key as semicolon delimited string
                     string semicolonDelimitedKeyString = keyElement.AsString();
                     xmlTextWriter_.WriteString(semicolonDelimitedKeyString);

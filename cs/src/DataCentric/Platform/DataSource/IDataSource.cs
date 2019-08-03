@@ -69,7 +69,7 @@ namespace DataCentric
         /// is not derived from TRecord. 
         /// </summary>
         TRecord LoadOrNull<TRecord>(ObjectId id)
-            where TRecord : RecordType;
+            where TRecord : RecordBase;
 
         /// <summary>
         /// This method does not use cached value inside the key
@@ -99,9 +99,9 @@ namespace DataCentric
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord. 
         /// </summary>
-        TRecord ReloadOrNull<TKey, TRecord>(KeyFor<TKey, TRecord> key, ObjectId loadFrom)
-            where TKey : KeyFor<TKey, TRecord>, new()
-            where TRecord : RecordFor<TKey, TRecord>;
+        TRecord ReloadOrNull<TKey, TRecord>(Key<TKey, TRecord> key, ObjectId loadFrom)
+            where TKey : Key<TKey, TRecord>, new()
+            where TRecord : Record<TKey, TRecord>;
 
         /// <summary>
         /// Get query for the specified type.
@@ -121,7 +121,7 @@ namespace DataCentric
         /// it may also be a type derived from the root data type.
         /// </summary>
         IQuery<TRecord> GetQuery<TRecord>(ObjectId loadFrom)
-            where TRecord : RecordType;
+            where TRecord : RecordBase;
 
         /// <summary>
         /// Save record to the specified dataset. After the method exits,
@@ -139,7 +139,7 @@ namespace DataCentric
         /// second.
         /// </summary>
         void Save<TRecord>(TRecord record, ObjectId saveTo)
-            where TRecord : RecordType;
+            where TRecord : RecordBase;
 
         /// <summary>
         /// Write a delete marker in deleteIn dataset for the specified key
@@ -150,9 +150,9 @@ namespace DataCentric
         /// To avoid an additional roundtrip to the data store, the delete
         /// marker is written even when the record does not exist.
         /// </summary>
-        void Delete<TKey, TRecord>(KeyFor<TKey, TRecord> key, ObjectId deleteIn)
-            where TKey : KeyFor<TKey, TRecord>, new()
-            where TRecord : RecordFor<TKey, TRecord>;
+        void Delete<TKey, TRecord>(Key<TKey, TRecord> key, ObjectId deleteIn)
+            where TKey : Key<TKey, TRecord>, new()
+            where TRecord : Record<TKey, TRecord>;
 
         /// <summary>
         /// Permanently deletes (drops) the database with all records
@@ -207,7 +207,7 @@ namespace DataCentric
         /// or if the record exists but is not derived from TRecord. 
         /// </summary>
         public static TRecord Load<TRecord>(this IDataSource obj, ObjectId id)
-            where TRecord : RecordType
+            where TRecord : RecordBase
         {
             var result = obj.LoadOrNull<TRecord>(id);
             if (result == null) throw new Exception(
@@ -237,9 +237,9 @@ namespace DataCentric
         /// 
         /// Error message if the record is not found or is a delete marker.
         /// </summary>
-        public static TRecord Load<TKey, TRecord>(this IDataSource obj, KeyFor<TKey, TRecord> key, ObjectId loadFrom)
-            where TKey : KeyFor<TKey, TRecord>, new()
-            where TRecord : RecordFor<TKey, TRecord>
+        public static TRecord Load<TKey, TRecord>(this IDataSource obj, Key<TKey, TRecord> key, ObjectId loadFrom)
+            where TKey : Key<TKey, TRecord>, new()
+            where TRecord : Record<TKey, TRecord>
         {
             return key.Load(obj.Context, loadFrom);
         }
@@ -272,17 +272,17 @@ namespace DataCentric
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord. 
         /// </summary>
-        public static TRecord LoadOrNull<TKey, TRecord>(this IDataSource obj, KeyFor<TKey, TRecord> key, ObjectId loadFrom)
-            where TKey : KeyFor<TKey, TRecord>, new()
-            where TRecord : RecordFor<TKey, TRecord>
+        public static TRecord LoadOrNull<TKey, TRecord>(this IDataSource obj, Key<TKey, TRecord> key, ObjectId loadFrom)
+            where TKey : Key<TKey, TRecord>, new()
+            where TRecord : Record<TKey, TRecord>
         {
-            // This method forwards to the implementation in KeyFor(TKey, TRecord),
+            // This method forwards to the implementation in Key(TKey, TRecord),
             // which in turn uses the non-caching variant of the same method,
             // in this class, ReloadOrNull(key,dataSet).
             //
             // While it would have been cleaner to keep all of the implementations
             // here, this method requires access to cachedRecord_ which is a private
-            // field of KeyFor(TKey, TRecord) that is not accessible to this class.
+            // field of Key(TKey, TRecord) that is not accessible to this class.
             return key.LoadOrNull(obj.Context, loadFrom);
         }
 

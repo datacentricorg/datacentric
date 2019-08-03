@@ -24,7 +24,7 @@ namespace DataCentric.Test
 
     /// <summary>Key class that has all of the permitted non-nullable key elements included.</summary>
     [BsonSerializer(typeof(BsonKeySerializer<MongoKeyTestNonNullableSampleKey>))]
-    public class MongoKeyTestNonNullableSampleKey : KeyFor<MongoKeyTestNonNullableSampleKey, MongoKeyTestNonNullableSampleData>
+    public class MongoKeyTestNonNullableSampleKey : Key<MongoKeyTestNonNullableSampleKey, MongoKeyTestNonNullableSampleData>
     {
         public string StringToken { get; set; }
         public bool BoolToken { get; set; }

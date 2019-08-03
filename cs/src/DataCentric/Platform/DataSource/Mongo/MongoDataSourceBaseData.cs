@@ -176,7 +176,7 @@ namespace DataCentric
         /// * The constraint on ID being strictly less than SavedBy (if not null)
         /// </summary>
         public IQueryable<TRecord> ApplyFinalConstraints<TRecord>(IQueryable<TRecord> queryable, ObjectId loadFrom)
-            where TRecord : RecordType
+            where TRecord : RecordBase
         {
             // Get lookup list by expanding the list of imports to arbitrary
             // depth with duplicates and cyclic references removed.
@@ -273,7 +273,7 @@ namespace DataCentric
         /// for further performance optimization.
         /// </summary>
         protected MongoCollection<TRecord> GetOrCreateCollection<TRecord>()
-            where TRecord : RecordType
+            where TRecord : RecordBase
         {
             // Check if collection object has already been cached
             // for this type and return cached result if found
@@ -296,7 +296,7 @@ namespace DataCentric
             string collectionName = ClassInfo.GetOrCreate(rootType).MappedClassName;
 
             // Get interfaces to base and typed collections for the same name
-            var baseCollection = Db.GetCollection<RecordType>(collectionName);
+            var baseCollection = Db.GetCollection<RecordBase>(collectionName);
             var typedCollection = Db.GetCollection<TRecord>(collectionName);
 
             // Each data type has an index for optimized loading by key.

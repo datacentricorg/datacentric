@@ -26,9 +26,9 @@ namespace DataCentric
     /// <summary>
     /// Base class of records stored in data source.
     /// </summary>
-    public abstract class RecordFor<TKey, TRecord> : RecordType
-        where TKey : KeyFor<TKey, TRecord>, new()
-        where TRecord : RecordFor<TKey, TRecord>
+    public abstract class Record<TKey, TRecord> : RecordBase
+        where TKey : Key<TKey, TRecord>, new()
+        where TRecord : Record<TKey, TRecord>
     {
         /// <summary>
         /// String key consists of semicolon delimited primary key elements:
@@ -86,7 +86,7 @@ namespace DataCentric
                     // but use delimited ISO format (yyyy-mm-dd,
                     // hh:mm:ss.fff, and hh:mm) when serialized using
                     // ToString()
-                    var token = KeyType.GetKeyToken(this, dataElementInfo);
+                    var token = KeyBase.GetKeyToken(this, dataElementInfo);
                     tokens.Add(token);
                 }
 
@@ -224,6 +224,6 @@ namespace DataCentric
         /// and reading it back when record A has property that is a key for record B,
         /// and both records are created in-memory without any need to save them to storage.
         /// </summary>
-        public static implicit operator TKey(RecordFor<TKey, TRecord> value) { return value.ToKey(); }
+        public static implicit operator TKey(Record<TKey, TRecord> value) { return value.ToKey(); }
     }
 }

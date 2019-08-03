@@ -58,7 +58,7 @@ namespace DataCentric
         public override void Run()
         {
             // Load record by its ObjectId, error message if not found
-            var record = Context.DataSource.Load<RecordType>(TargetID);
+            var record = Context.DataSource.Load<RecordBase>(TargetID);
 
             // Get handler method info using string handler name 
             var type = record.GetType();

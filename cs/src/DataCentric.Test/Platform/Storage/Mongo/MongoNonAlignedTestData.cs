@@ -30,7 +30,7 @@ namespace DataCentric.Test
     /// Data type where key fields are not the first in the record, and
     /// key fields are not in the same order in the record as in the key.
     /// </summary>
-    public class MongoNonAlignedTestData : RecordFor<MongoNonAlignedTestKey, MongoNonAlignedTestData>
+    public class MongoNonAlignedTestData : Record<MongoNonAlignedTestKey, MongoNonAlignedTestData>
     {
         public int InitialElement1 { get; set; }
         public int InitialElement2 { get; set; }

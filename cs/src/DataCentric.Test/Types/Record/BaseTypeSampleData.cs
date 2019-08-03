@@ -23,7 +23,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace DataCentric.Test
 {
     /// <summary>Base type sample for unit testing.</summary>
-    public class BaseTypeSampleData : RecordFor<BaseTypeSampleKey, BaseTypeSampleData>
+    public class BaseTypeSampleData : Record<BaseTypeSampleKey, BaseTypeSampleData>
     {
         /// <summary>Unique identifier.</summary>
         public string SampleID { get; set; }

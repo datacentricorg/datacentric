@@ -24,10 +24,10 @@ namespace DataCentric
         /// <summary>Empty</summary>
         Empty,
 
-        /// <summary>Root type is derived from RecordFor(TKey).</summary>
+        /// <summary>Root type is derived from Record(TKey).</summary>
         Record,
 
-        /// <summary>Root type is derived from KeyFor(TRecord).</summary>
+        /// <summary>Root type is derived from Key(TRecord).</summary>
         Key,
 
         /// <summary>Root type is derived from Element.</summary>

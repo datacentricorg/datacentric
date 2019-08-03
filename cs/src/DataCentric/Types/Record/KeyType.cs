@@ -27,13 +27,13 @@ namespace DataCentric
     /// Base class of a foreign key.
     ///
     /// The curiously recurring template pattern (CRTP) key class
-    /// KeyFor(TKey,TRecord) is derived from this class.
+    /// Key(TKey,TRecord) is derived from this class.
     /// 
     /// Any elements of defined in the type specific key record
     /// become key tokens. Property Value and method ToString() of
     /// the key consists of key tokens with semicolon delimiter.
     /// </summary>
-    public abstract class KeyType : DataType
+    public abstract class KeyBase : DataType
     {
         /// <summary>
         /// String key consists of semicolon delimited primary key elements:
@@ -128,7 +128,7 @@ namespace DataCentric
                 case long longValue:
                 case ObjectId objectIdValue:
                 case Enum enumValue:
-                case KeyType keyValue:
+                case KeyBase keyValue:
                     // Use AsString() for all remaining types including the key
                     //
                     // A token representing another key can contain a semicolon delimiter
@@ -303,7 +303,7 @@ namespace DataCentric
     {
         /// <summary>Deserialize record from XML using short
         /// class name without namespace for the root XML element.</summary>
-        public static void ParseXml(this KeyType obj, string xmlString)
+        public static void ParseXml(this KeyBase obj, string xmlString)
         {
             IXmlReader reader = new XmlReader(xmlString);
 
@@ -317,7 +317,7 @@ namespace DataCentric
 
         /// <summary>Serialize record to XML using short
         /// class name without namespace for the root XML element.</summary>
-        public static string ToXml(this KeyType obj)
+        public static string ToXml(this KeyBase obj)
         {
             // Get root XML element name using mapped final type of the object
             string rootName = ClassInfo.GetOrCreate(obj).MappedClassName;

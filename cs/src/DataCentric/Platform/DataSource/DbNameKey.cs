@@ -30,7 +30,7 @@ namespace DataCentric
     /// This record is stored in root dataset.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<DbNameKey>))]
-    public class DbNameKey : RootKeyFor<DbNameKey, DbNameData>
+    public class DbNameKey : RootKey<DbNameKey, DbNameData>
     {
         /// <summary>
         /// Instance type enumeration.

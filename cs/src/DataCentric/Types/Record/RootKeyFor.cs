@@ -23,9 +23,9 @@ namespace DataCentric
     /// <summary>
     /// Record derived from Key rather than Key is recorded without a dataset.
     /// </summary>
-    public abstract class RootKeyFor<TKey, TRecord> : KeyFor<TKey, TRecord>
-        where TKey : RootKeyFor<TKey, TRecord>, new()
-        where TRecord : RootRecordFor<TKey, TRecord>
+    public abstract class RootKey<TKey, TRecord> : Key<TKey, TRecord>
+        where TKey : RootKey<TKey, TRecord>, new()
+        where TRecord : RootRecord<TKey, TRecord>
     {
     }
 }

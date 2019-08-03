@@ -63,7 +63,7 @@ namespace DataCentric
         /// is not derived from TRecord. 
         /// </summary>
         public static TRecord LoadOrNull<TRecord>(this IContext obj, ObjectId id)
-            where TRecord : RecordType
+            where TRecord : RecordBase
         {
             return obj.DataSource.LoadOrNull<TRecord>(id);
         }
@@ -96,9 +96,9 @@ namespace DataCentric
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord. 
         /// </summary>
-        public static TRecord LoadOrNull<TKey, TRecord>(this IContext obj, KeyFor<TKey, TRecord> key, ObjectId loadFrom)
-            where TKey : KeyFor<TKey, TRecord>, new()
-            where TRecord : RecordFor<TKey, TRecord>
+        public static TRecord LoadOrNull<TKey, TRecord>(this IContext obj, Key<TKey, TRecord> key, ObjectId loadFrom)
+            where TKey : Key<TKey, TRecord>, new()
+            where TRecord : Record<TKey, TRecord>
         {
             return obj.DataSource.LoadOrNull(key, loadFrom);
         }
@@ -131,9 +131,9 @@ namespace DataCentric
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord. 
         /// </summary>
-        public static TRecord ReloadOrNull<TKey, TRecord>(this IContext obj, KeyFor<TKey, TRecord> key, ObjectId loadFrom)
-            where TKey : KeyFor<TKey, TRecord>, new()
-            where TRecord : RecordFor<TKey, TRecord>
+        public static TRecord ReloadOrNull<TKey, TRecord>(this IContext obj, Key<TKey, TRecord> key, ObjectId loadFrom)
+            where TKey : Key<TKey, TRecord>, new()
+            where TRecord : Record<TKey, TRecord>
         {
             return obj.DataSource.ReloadOrNull(key, loadFrom);
         }
@@ -156,7 +156,7 @@ namespace DataCentric
         /// it may also be a type derived from the root data type.
         /// </summary>
         public static IQuery<TRecord> GetQuery<TRecord>(this IContext obj)
-            where TRecord : RecordType
+            where TRecord : RecordBase
         {
             return obj.DataSource.GetQuery<TRecord>(obj.DataSet);
         }
@@ -179,7 +179,7 @@ namespace DataCentric
         /// it may also be a type derived from the root data type.
         /// </summary>
         public static IQuery<TRecord> GetQuery<TRecord>(this IContext obj, ObjectId loadFrom)
-            where TRecord : RecordType
+            where TRecord : RecordBase
         {
             return obj.DataSource.GetQuery<TRecord>(loadFrom);
         }
@@ -200,7 +200,7 @@ namespace DataCentric
         /// second.
         /// </summary>
         public static void Save<TRecord>(this IContext obj, TRecord record)
-            where TRecord : RecordType
+            where TRecord : RecordBase
         {
             // All Save methods ignore the value of record.DataSet before the
             // Save method is called. When dataset is not specified explicitly,
@@ -226,7 +226,7 @@ namespace DataCentric
         /// second.
         /// </summary>
         public static void Save<TRecord>(this IContext obj, TRecord record, ObjectId saveTo)
-            where TRecord : RecordType
+            where TRecord : RecordBase
         {
             obj.DataSource.Save(record, saveTo);
         }
@@ -240,9 +240,9 @@ namespace DataCentric
         /// To avoid an additional roundtrip to the data store, the delete
         /// marker is written even when the record does not exist.
         /// </summary>
-        public static void Delete<TKey, TRecord>(this IContext obj, KeyFor<TKey, TRecord> key)
-            where TKey : KeyFor<TKey, TRecord>, new()
-            where TRecord : RecordFor<TKey, TRecord>
+        public static void Delete<TKey, TRecord>(this IContext obj, Key<TKey, TRecord> key)
+            where TKey : Key<TKey, TRecord>, new()
+            where TRecord : Record<TKey, TRecord>
         {
             // Delete in the dataset of the context
             obj.DataSource.Delete(key, obj.DataSet);
@@ -257,9 +257,9 @@ namespace DataCentric
         /// To avoid an additional roundtrip to the data store, the delete
         /// marker is written even when the record does not exist.
         /// </summary>
-        public static void Delete<TKey, TRecord>(this IContext obj, KeyFor<TKey, TRecord> key, ObjectId deleteIn)
-            where TKey : KeyFor<TKey, TRecord>, new()
-            where TRecord : RecordFor<TKey, TRecord>
+        public static void Delete<TKey, TRecord>(this IContext obj, Key<TKey, TRecord> key, ObjectId deleteIn)
+            where TKey : Key<TKey, TRecord>, new()
+            where TRecord : Record<TKey, TRecord>
         {
             obj.DataSource.Delete(key, deleteIn);
         }

@@ -27,7 +27,7 @@ namespace DataCentric
     /// the interrupt record, and job status is updated accordingly.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<JobInterruptKey>))]
-    public class JobInterruptKey : KeyFor<JobInterruptKey, JobInterruptData>
+    public class JobInterruptKey : Key<JobInterruptKey, JobInterruptData>
     {
         /// <summary>Job to which the interrupt record applies.</summary>
         [BsonRequired]

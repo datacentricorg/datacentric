@@ -42,7 +42,7 @@ namespace DataCentric
     /// The Run() method must be implemented defensively to ensure
     /// that the job runs successfully in all of these cases.
     /// </summary>
-    public class JobQueueData : RecordFor<JobQueueKey, JobQueueData>
+    public class JobQueueData : Record<JobQueueKey, JobQueueData>
     {
         /// <summary>
         /// Overriding element ID here includes the record's ObjectId

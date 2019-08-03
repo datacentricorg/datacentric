@@ -35,7 +35,7 @@ namespace DataCentric
     ///
     /// This record is stored in root dataset.
     /// </summary>
-    public abstract class DataSourceData : RootRecordFor<DataSourceKey, DataSourceData>, IDataSource
+    public abstract class DataSourceData : RootRecord<DataSourceKey, DataSourceData>, IDataSource
     {
         //--- FIELDS
 
@@ -143,7 +143,7 @@ namespace DataCentric
         /// is not derived from TRecord. 
         /// </summary>
         public abstract TRecord LoadOrNull<TRecord>(ObjectId id)
-            where TRecord : RecordType;
+            where TRecord : RecordBase;
 
         /// <summary>
         /// This method does not use cached value inside the key
@@ -173,9 +173,9 @@ namespace DataCentric
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord. 
         /// </summary>
-        public abstract TRecord ReloadOrNull<TKey, TRecord>(KeyFor<TKey, TRecord> key, ObjectId loadFrom)
-            where TKey : KeyFor<TKey, TRecord>, new()
-            where TRecord : RecordFor<TKey, TRecord>;
+        public abstract TRecord ReloadOrNull<TKey, TRecord>(Key<TKey, TRecord> key, ObjectId loadFrom)
+            where TKey : Key<TKey, TRecord>, new()
+            where TRecord : Record<TKey, TRecord>;
 
         /// <summary>
         /// Get query for the specified type.
@@ -195,7 +195,7 @@ namespace DataCentric
         /// it may also be a type derived from the root data type.
         /// </summary>
         public abstract IQuery<TRecord> GetQuery<TRecord>(ObjectId loadFrom)
-            where TRecord : RecordType;
+            where TRecord : RecordBase;
 
         /// <summary>
         /// Save record to the specified dataset. After the method exits,
@@ -213,7 +213,7 @@ namespace DataCentric
         /// second.
         /// </summary>
         public abstract void Save<TRecord>(TRecord record, ObjectId saveTo)
-            where TRecord : RecordType;
+            where TRecord : RecordBase;
 
         /// <summary>
         /// Write a delete marker in deleteIn dataset for the specified key
@@ -224,9 +224,9 @@ namespace DataCentric
         /// To avoid an additional roundtrip to the data store, the delete
         /// marker is written even when the record does not exist. 
         /// </summary>
-        public abstract void Delete<TKey, TRecord>(KeyFor<TKey, TRecord> key, ObjectId deleteIn)
-            where TKey : KeyFor<TKey, TRecord>, new()
-            where TRecord : RecordFor<TKey, TRecord>;
+        public abstract void Delete<TKey, TRecord>(Key<TKey, TRecord> key, ObjectId deleteIn)
+            where TKey : Key<TKey, TRecord>, new()
+            where TRecord : Record<TKey, TRecord>;
 
         /// <summary>
         /// Permanently deletes (drops) the database with all records

@@ -31,7 +31,7 @@ namespace DataCentric
     /// multiple datasets.
     /// </summary>
     public class Query<TRecord> : IQuery<TRecord>
-        where TRecord : RecordType
+        where TRecord : RecordBase
     {
         private readonly MongoCollection<TRecord> collection_;
         private readonly ObjectId loadFrom_;
@@ -243,7 +243,7 @@ namespace DataCentric
             }
 
             // Create pipeline definition with removed match for _t
-            PipelineDefinition<RecordType, RecordType> pipeline = stages.Select(m => BsonSerializer.Deserialize<BsonDocument>(m)).ToList();
+            PipelineDefinition<RecordBase, RecordBase> pipeline = stages.Select(m => BsonSerializer.Deserialize<BsonDocument>(m)).ToList();
 
             // Run the aggregation pipeline on the base collection (not typed collection)
             //
