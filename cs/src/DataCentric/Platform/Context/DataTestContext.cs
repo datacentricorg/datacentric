@@ -39,7 +39,7 @@ namespace DataCentric
     ///
     /// For tests that do not require MongoDB, use UnitTestDataContext.
     /// </summary>
-    public class DataTestContext : UnitTestContext, IDataTestContext
+    public class DataTestContext : UnitTestContext, IDataTestContext, IDisposable
     {
         /// <summary>
         /// Create with class name, method name, and source file path.
@@ -85,30 +85,7 @@ namespace DataCentric
             DataSet = DataSource.CreateCommon();
         }
 
-        /// <summary>
-        /// Releases resources and calls base.Dispose().
-        ///
-        /// This method will NOT be called by the garbage
-        /// collector, therefore instantiating it inside
-        /// the ``using'' clause is essential to ensure
-        /// that Dispose() method gets invoked.
-        ///
-        /// ATTENTION:
-        ///
-        /// Each class must call base.Dispose() at the end
-        /// of its own Dispose() method.
-        /// </summary>
-        public override void Dispose()
-        {
-            if (!KeepDb)
-            {
-                // Permanently delete the unit test database
-                // unless KeepDb is true
-                DataSource.DeleteDb();
-            }
-
-            base.Dispose();
-        }
+        //--- PROPERTIES
 
         /// <summary>Get the default data source of the context.</summary>
         public override IDataSource DataSource { get; }
@@ -121,5 +98,36 @@ namespace DataCentric
         /// KeepDb property is set to true.
         /// </summary>
         public bool KeepDb { get; set; }
+
+        //--- METHODS
+
+        /// <summary>
+        /// Releases resources and calls base.Dispose().
+        ///
+        /// This method will NOT be called by the garbage
+        /// collector, therefore instantiating it inside
+        /// the ``using'' clause is essential to ensure
+        /// that Dispose() method gets invoked.
+        ///
+        /// ATTENTION:
+        ///
+        /// Each class that overrides this method must
+        ///
+        /// (a) Specify IDisposable in interface list; and
+        /// (b) Call base.Dispose() at the end of its own
+        ///     Dispose() method.
+        /// </summary>
+        public override void Dispose()
+        {
+            if (!KeepDb)
+            {
+                // Permanently delete the unit test database
+                // unless KeepDb is true
+                DataSource.DeleteDb();
+            }
+
+            // Dispose base
+            base.Dispose();
+        }
     }
 }

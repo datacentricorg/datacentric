@@ -22,7 +22,7 @@ namespace DataCentric
     /// <summary>Log only context provides logging to the output but no other functionality.
     /// It does not support loading or saving objects to a cache or file storage.
     /// Progress is reported only if progress interface is passed to the constructor.</summary>
-    public class LogOnlyContext : Context, IContext
+    public class LogOnlyContext : IContext, IDisposable
     {
         /// <summary>Create with logging to the output, progress messages are ignored.
         /// Log and progress destinations can be modified after construction.</summary>
@@ -34,6 +34,8 @@ namespace DataCentric
             Log = new ConsoleLog(this);
             Progress = new LogProgress(this);
         }
+
+        //--- PROPERTIES
 
         /// <summary>Get interface to the context data source.</summary>
         public IDataSource DataSource { get; }
@@ -53,20 +55,35 @@ namespace DataCentric
         /// <summary>Approval testing interface.</summary>
         public IVerify Verify { get; }
 
-        /// <summary>Get interface to the cache (operational data store).</summary>
-        public DataSourceData GetCache()
-        {
-            throw new Exception("Master data source is not available in log-only context.");
-        }
+        //--- METHODS
 
-        /// <summary>Get interface to the master data store. Error message if not available for this context.</summary>
-        public DataSourceData GetMaster()
+        /// <summary>
+        /// Releases resources and calls base.Dispose().
+        ///
+        /// This method will NOT be called by the garbage
+        /// collector, therefore instantiating it inside
+        /// the ``using'' clause is essential to ensure
+        /// that Dispose() method gets invoked.
+        ///
+        /// ATTENTION:
+        ///
+        /// Each class that overrides this method must
+        ///
+        /// (a) Specify IDisposable in interface list; and
+        /// (b) Call base.Dispose() at the end of its own
+        ///     Dispose() method.
+        /// </summary>
+        public virtual void Dispose()
         {
-            throw new Exception("Master data source is not available in log-only context.");
-        }
+            // Flush all buffers
+            Flush();
 
+            // Close the log
+            Log.Close();
+        }
+ 
         /// <summary>Flush context data to permanent storage.</summary>
-        public override void Flush()
+        public void Flush()
         {
             // Flush to permanent storage
             Log.Flush();

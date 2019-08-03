@@ -33,7 +33,7 @@ namespace DataCentric
     ///
     /// For tests that require MongoDB, use IDataTestDataContext.
     /// </summary>
-    public class UnitTestContext : Context, IUnitTestContext
+    public class UnitTestContext : IUnitTestContext, IDisposable
     {
         /// <summary>
         /// Create with class name, method name, and source file path.
@@ -92,25 +92,40 @@ namespace DataCentric
         /// <summary>Approval testing interface.</summary>
         public IVerify Verify { get; }
 
+        //--- METHODS
+
+        /// <summary>
+        /// Releases resources and calls base.Dispose().
+        ///
+        /// This method will NOT be called by the garbage
+        /// collector, therefore instantiating it inside
+        /// the ``using'' clause is essential to ensure
+        /// that Dispose() method gets invoked.
+        ///
+        /// ATTENTION:
+        ///
+        /// Each class that overrides this method must
+        ///
+        /// (a) Specify IDisposable in interface list; and
+        /// (b) Call base.Dispose() at the end of its own
+        ///     Dispose() method.
+        /// </summary>
+        public virtual void Dispose()
+        {
+            // Flush all buffers
+            Flush();
+
+            // Close the log
+            Log.Close();
+        }
+
         /// <summary>Flush context data to permanent storage.</summary>
-        public override void Flush()
+        public void Flush()
         {
             // Flush to permanent storage
             Log.Flush();
             Verify.Flush();
             Progress.Flush();
-        }
-
-        /// <summary>
-        /// Releases log and calls base.Dispose().
-        /// </summary>
-        public override void Dispose()
-        {
-            // base.Dispose() should be called first, since it flushes and uses log
-            base.Dispose();
-
-            // ose the log to avoid resource conflicts.
-            Log.Close();
         }
     }
 }

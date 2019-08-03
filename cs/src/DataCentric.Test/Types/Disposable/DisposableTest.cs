@@ -22,7 +22,7 @@ using NodaTime;
 namespace DataCentric.Test
 {
     /// <summary>Sample base class implementing IDisposable.</summary>
-    public class DisposableTestBaseSample : Disposable
+    public class DisposableTestBaseSample : IDisposable
     {
         /// <summary>Context.</summary>
         public IUnitTestContext Context { get; }
@@ -43,14 +43,18 @@ namespace DataCentric.Test
         ///
         /// ATTENTION:
         ///
-        /// Each class must call base.Dispose() at the end
-        /// of its own Dispose() method.
+        /// Each class that overrides this method must
+        ///
+        /// (a) Specify IDisposable in interface list; and
+        /// (b) Call base.Dispose() at the end of its own
+        ///     Dispose() method.
         /// </summary>
-        public override void Dispose()
+        public virtual void Dispose()
         {
             Context.Verify.Text("Disposing resources of BaseClassSample");
 
-            base.Dispose();
+            // Dispose base
+            // base.Dispose();
         }
     }
 
@@ -72,13 +76,17 @@ namespace DataCentric.Test
         ///
         /// ATTENTION:
         ///
-        /// Each class must call base.Dispose() at the end
-        /// of its own Dispose() method.
+        /// Each class that overrides this method must
+        ///
+        /// (a) Specify IDisposable in interface list; and
+        /// (b) Call base.Dispose() at the end of its own
+        ///     Dispose() method.
         /// </summary>
         public override void Dispose()
         {
             Context.Verify.Text("Disposing resources of DerivedClassSample");
 
+            // Dispose base
             base.Dispose();
         }
     }

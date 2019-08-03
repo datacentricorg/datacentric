@@ -28,13 +28,15 @@ namespace DataCentric
     ///
     /// When destination is not specified, System.Console.Out is used.
     /// </summary>
-    public class CustomTextWriter : Disposable, ITextWriter
+    public class CustomTextWriter : ITextWriter, IDisposable
     {
         private IContext context_;
         private TextWriter output_;
         private bool continuingLine_ = false;
         private int indent_ = 0;
         private const string singleIndentStop_ = "    ";
+
+        //--- CONSTRUCTORS
 
         /// <summary>Create with the specified instance of System.IO.TextWriter as destination.</summary>
         public CustomTextWriter(IContext context, TextWriter output)
@@ -50,6 +52,8 @@ namespace DataCentric
             output_ = new StreamWriter(output);
         }
 
+        //--- METHODS
+
         /// <summary>
         /// Releases resources and calls base.Dispose().
         ///
@@ -60,10 +64,13 @@ namespace DataCentric
         ///
         /// ATTENTION:
         ///
-        /// Each class must call base.Dispose() at the end
-        /// of its own Dispose() method.
+        /// Each class that overrides this method must
+        ///
+        /// (a) Specify IDisposable in interface list; and
+        /// (b) Call base.Dispose() at the end of its own
+        ///     Dispose() method.
         /// </summary>
-        public override void Dispose()
+        public virtual void Dispose()
         {
             // Flush all data to permanent storage
             Flush();
@@ -71,7 +78,8 @@ namespace DataCentric
             // ose output stream
             output_.Close();
 
-            base.Dispose();
+            // Dispose base
+            // base.Dispose();
         }
 
         /// <summary>Write message with optional parameters to the output.
