@@ -20,10 +20,8 @@ using System.Text;
 
 namespace DataCentric
 {
-    /// <summary>Abstract base class contains static methods
-    /// and functionality common to all implementations.
-    /// Deriving from this class is optional.</summary>
-    public abstract class Log
+    /// <summary>Static helper class for ILog.</summary>
+    public abstract class LogUtil
     {
         private const int maxMessageParamLength_ = 255;
 
