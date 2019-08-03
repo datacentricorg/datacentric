@@ -27,7 +27,7 @@ namespace DataCentric
     public interface IContext : IDisposable
     {
         /// <summary>Get the default data source of the context.</summary>
-        DataSourceData DataSource { get; }
+        IDataSource DataSource { get; }
 
         /// <summary>Returns ObjectId of the context dataset.</summary>
         ObjectId DataSet { get; }

@@ -36,7 +36,7 @@ namespace DataCentric
         }
 
         /// <summary>Get interface to the context data source.</summary>
-        public DataSourceData DataSource { get; }
+        public IDataSource DataSource { get; }
 
         /// <summary>Returns ObjectId of the context dataset.</summary>
         public ObjectId DataSet { get; }

@@ -475,12 +475,8 @@ namespace DataCentric.Test
                     }
                 }
 
-                // Set new value for the DB server key so that the reference to in-memory
-                // record is stored inside the key, otherwise it would not be found
-                context.DataSource.DataStore = new LocalMongoDataStoreData();
-
                 // Set revision time constraint
-                context.DataSource.SavedById = cutoffObjectId;
+                context.DataSource.CastTo<DataSourceData>().SavedById = cutoffObjectId;
 
                 // Get each record by ObjectId
                 context.Verify.Text("Load records by ObjectId with SavedById constraint");
@@ -519,7 +515,7 @@ namespace DataCentric.Test
                 // ear revision time constraint before exiting to avoid an error
                 // about deleting readonly database. The error occurs because
                 // revision time constraint makes the data source readonly.
-                context.DataSource.SavedById = null;
+                context.DataSource.CastTo<DataSourceData>().SavedById = null;
             }
         }
 

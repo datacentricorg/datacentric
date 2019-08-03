@@ -63,7 +63,7 @@ namespace DataCentric
             // This does not create the database until the data source
             // is actually used to access data.
             string mappedClassName = ClassInfo.GetOrCreate(classInstance).MappedClassName;
-            DataSource = new MongoDataSourceData()
+            var dataSource = new MongoDataSourceData()
             {
                 DataStore = new LocalMongoDataStoreData(),
                 DbName = new DbNameKey()
@@ -74,8 +74,9 @@ namespace DataCentric
                 }
             };
 
-            // Initialize the data source
-            DataSource.Init(this);
+            // Initialize and assign to property
+            dataSource.Init(this);
+            DataSource = dataSource;
 
             // Delete (drop) the database to clear the existing data
             DataSource.DeleteDb();
@@ -110,7 +111,7 @@ namespace DataCentric
         }
 
         /// <summary>Get the default data source of the context.</summary>
-        public override DataSourceData DataSource { get; }
+        public override IDataSource DataSource { get; }
 
         /// <summary>Returns ObjectId of the context dataset.</summary>
         public override ObjectId DataSet { get; }

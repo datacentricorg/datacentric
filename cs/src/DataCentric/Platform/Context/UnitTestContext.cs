@@ -69,7 +69,7 @@ namespace DataCentric
         }
 
         /// <summary>Get the default data source of the context.</summary>
-        public virtual DataSourceData DataSource
+        public virtual IDataSource DataSource
         {
             get { throw new Exception("Class UnitTestContext does not provide access to DataSource. Use DataTestContext instead."); }
         }

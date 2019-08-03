@@ -29,20 +29,22 @@ namespace DataCentric
         /// </summary>
         public MongoCliContext(DbNameKey db, DataStoreData dataStore)
         {
-            DataSource = new MongoDataSourceData
+            var dataSource = new MongoDataSourceData
             {
                 DataSourceID = dataStore.DataStoreID + db.Value,
                 DataStore = dataStore,
                 DbName = db
             };
 
-            DataSource.Init(this);
+            // Initialize and assign to property
+            dataSource.Init(this);
+            DataSource = dataSource;
 
             DataSet = DataSource.GetCommon();
         }
 
         /// <summary>Get the default data source of the context.</summary>
-        public DataSourceData DataSource { get; }
+        public IDataSource DataSource { get; }
 
         /// <summary>Returns ObjectId of the context dataset.</summary>
         public ObjectId DataSet { get; }
