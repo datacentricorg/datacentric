@@ -177,7 +177,7 @@ namespace DataCentric
         {
             // Get or create collection, then create query from collection
             var collection = GetOrCreateCollection<TRecord>();
-            return new Query<TRecord>(collection, loadFrom);
+            return new MongoQuery<TRecord>(collection, loadFrom);
         }
 
         /// <summary>
