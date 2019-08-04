@@ -36,7 +36,7 @@ namespace DataCentric.Test
         [Fact]
         public void Smoke()
         {
-            using (var context = new DataTestContext(this))
+            using (var context = new MongoTestContext(this))
             {
                 SaveBasicData(context);
 
@@ -68,7 +68,7 @@ namespace DataCentric.Test
         [Fact]
         public void MultipleDataSetQuery()
         {
-            using (var context = new DataTestContext(this))
+            using (var context = new MongoTestContext(this))
             {
                 // Create datasets
                 var dataSetA = context.CreateDataSet("A", context.DataSet);
@@ -125,7 +125,7 @@ namespace DataCentric.Test
         [Fact]
         public void CreateOrderedObjectId()
         {
-            using (var context = new DataTestContext(this))
+            using (var context = new MongoTestContext(this))
             {
                 for (int i = 0; i < 10_000; ++i)
                 {
@@ -142,7 +142,7 @@ namespace DataCentric.Test
         [Fact]
         public void Delete()
         {
-            using (var context = new DataTestContext(this))
+            using (var context = new MongoTestContext(this))
             {
                 SaveBasicData(context);
 
@@ -218,7 +218,7 @@ namespace DataCentric.Test
         [Fact]
         public void TypeChange()
         {
-            using (var context = new DataTestContext(this))
+            using (var context = new MongoTestContext(this))
             {
                 // Create datasets
                 var dataSetA = context.CreateDataSet("A", context.DataSet);
@@ -288,7 +288,7 @@ namespace DataCentric.Test
         [Fact]
         public void ElementTypesQuery()
         {
-            using (var context = new DataTestContext(this))
+            using (var context = new MongoTestContext(this))
             {
                 // Saves data in A and B datasets, A is an import of B
                 SaveCompleteData(context);
@@ -322,7 +322,7 @@ namespace DataCentric.Test
         [Fact]
         public void PolymorphicQuery()
         {
-            using (var context = new DataTestContext(this))
+            using (var context = new MongoTestContext(this))
             {
                 // Saves data in A and B datasets, A is an import of B
                 SaveCompleteData(context);
@@ -391,7 +391,7 @@ namespace DataCentric.Test
         [Fact]
         public void Sort()
         {
-            using (var context = new DataTestContext(this))
+            using (var context = new MongoTestContext(this))
             {
                 // Saves data in A and B datasets, A is an import of B
                 SaveCompleteData(context);
@@ -417,7 +417,7 @@ namespace DataCentric.Test
         [Fact]
         public void SavedBy()
         {
-            using (var context = new DataTestContext(this))
+            using (var context = new MongoTestContext(this))
             {
                 // Create datasets
                 var dataSetA = context.CreateDataSet("A", context.DataSet);

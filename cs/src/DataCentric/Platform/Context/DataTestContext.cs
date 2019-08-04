@@ -39,7 +39,7 @@ namespace DataCentric
     ///
     /// For tests that do not require MongoDB, use UnitTestDataContext.
     /// </summary>
-    public class DataTestContext : UnitTestContext, IVerifyable, IDisposable
+    public class MongoTestContext : UnitTestContext, IVerifyable, IDisposable
     {
         /// <summary>
         /// Create with class name, method name, and source file path.
@@ -48,15 +48,15 @@ namespace DataCentric
         /// constructor, the latter two arguments are provided by
         /// the compiler.
         /// </summary>
-        public DataTestContext(
+        public MongoTestContext(
             object classInstance,
             [CallerMemberName] string methodName = null,
             [CallerFilePath] string sourceFilePath = null)
             :
             base(classInstance, methodName, sourceFilePath)
         {
-            if (methodName == null) throw new Exception("Method name passed to DataTestContext is null.");
-            if (sourceFilePath == null) throw new Exception("Source file path passed to DataTestContext is null.");
+            if (methodName == null) throw new Exception("Method name passed to MongoTestContext is null.");
+            if (sourceFilePath == null) throw new Exception("Source file path passed to MongoTestContext is null.");
 
             // Create and initialize data source with TEST instance type.
             //

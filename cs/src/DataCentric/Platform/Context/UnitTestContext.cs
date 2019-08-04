@@ -71,13 +71,13 @@ namespace DataCentric
         /// <summary>Get the default data source of the context.</summary>
         public virtual IDataSource DataSource
         {
-            get { throw new Exception("Class UnitTestContext does not provide access to DataSource. Use DataTestContext instead."); }
+            get { throw new Exception("Class UnitTestContext does not provide access to DataSource. Use MongoTestContext instead."); }
         }
 
         /// <summary>Returns ObjectId of the context dataset.</summary>
         public virtual ObjectId DataSet
         {
-            get { throw new Exception("Class UnitTestContext does not provide access to DataSet. Use DataTestContext instead."); }
+            get { throw new Exception("Class UnitTestContext does not provide access to DataSet. Use MongoTestContext instead."); }
         }
 
         /// <summary>Output folder root of the context's virtualized filesystem.</summary>

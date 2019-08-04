@@ -72,7 +72,7 @@ namespace DataCentric.Test
         [Fact]
         public void CompleteNonNullableQuery()
         {
-            using (var context = new DataTestContext(this))
+            using (var context = new MongoTestContext(this))
             {
                 for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
                 {
@@ -122,7 +122,7 @@ namespace DataCentric.Test
         [Fact]
         public void CompleteNullableQuery()
         {
-            using (var context = new DataTestContext(this))
+            using (var context = new MongoTestContext(this))
             {
                 for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
                 {
