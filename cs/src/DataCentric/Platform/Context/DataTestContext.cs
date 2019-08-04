@@ -39,7 +39,7 @@ namespace DataCentric
     ///
     /// For tests that do not require MongoDB, use UnitTestDataContext.
     /// </summary>
-    public class DataTestContext : UnitTestContext, IVerifyable, IDataTestContext, IDisposable
+    public class DataTestContext : UnitTestContext, IVerifyable, IDisposable
     {
         /// <summary>
         /// Create with class name, method name, and source file path.
@@ -94,8 +94,11 @@ namespace DataCentric
         public override ObjectId DataSet { get; }
 
         /// <summary>
-        /// Test database is dropped on Dispose() unless
-        /// KeepDb property is set to true.
+        /// The data in test database is erased when the context is created
+        /// irrespective of KeepDb value. However it is only erased on
+        /// Dispose() if the value of KeepDb is true.
+        ///
+        /// The default value of KeepDb is false.
         /// </summary>
         public bool KeepDb { get; set; }
 
