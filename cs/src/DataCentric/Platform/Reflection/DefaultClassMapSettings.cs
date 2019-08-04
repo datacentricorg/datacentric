@@ -23,45 +23,61 @@ namespace DataCentric
 {
     /// <summary>
     /// Settings for mapping namespaces, class names, and method names.
-    ///
-    /// Use 'ClSettings.ClassMapSettings = newSettings' to use alternative mapping settings,
-    /// or add individual settings using e.g. 'IgnoredNamespacePrefixes.Add(newPrefix)'.
     /// </summary>
-    public class DefaultClassMapSettings : IClassMapSettings
+    public static class ClassMapSettings
     {
-        /// <summary>Create with default class map settings.</summary>
-        public DefaultClassMapSettings(ISettings settings)
-        {
-            Settings = settings;
-        }
+        /// <summary>
+        /// Namespace prefixes including dot separators ignored by class mapping (empty by default).
+        ///
+        /// Thread safety requires that this property is modified as a whole by
+        /// assigning a new instance of List; values should not be appended to
+        /// an existing list.
+        /// </summary>
+        public static List<string> IgnoredNamespacePrefixes { get; set; } = new List<string>();
 
-        /// <summary>Provides access to other settings of the same root settings object.</summary>
-        public ISettings Settings { get; }
+        /// <summary>
+        /// Namespace suffixes including dot separators ignored by class mapping (empty by default).
+        ///
+        /// Thread safety requires that this property is modified as a whole by
+        /// assigning a new instance of List; values should not be appended to
+        /// an existing list.
+        /// </summary>
+        public static List<string> IgnoredNamespaceSuffixes { get; set; } = new List<string>();
 
-        /// <summary>Namespace prefixes including dot separators ignored by class mapping.</summary>
-        public ICollection<string> IgnoredNamespacePrefixes { get; } = new List<string> { };
+        /// <summary>
+        /// Class name prefixes ignored by class mapping (empty by default).
+        ///
+        /// Thread safety requires that this property is modified as a whole by
+        /// assigning a new instance of List; values should not be appended to
+        /// an existing list.
+        /// </summary>
+        public static List<string> IgnoredClassNamePrefixes { get; set; } = new List<string>();
 
-        /// <summary>Namespace suffixes including dot separators ignored by class mapping.</summary>
-        public ICollection<string> IgnoredNamespaceSuffixes { get; } = new List<string>
-        {
-            ".Api",
-            ".Impl"
-        };
+        /// <summary>
+        /// Class name prefixes ignored by class mapping.
+        ///
+        /// Thread safety requires that this property is modified as a whole by
+        /// assigning a new instance of List; values should not be appended to
+        /// an existing list.
+        /// </summary>
+        public static List<string> IgnoredClassNameSuffixes { get; set; } = new List<string> { "Data", "Key" };
 
-        /// <summary>Class name prefixes ignored by class mapping.</summary>
-        public ICollection<string> IgnoredClassNamePrefixes { get; } = new List<string> { };
+        /// <summary>
+        /// Method name prefixes ignored by class mapping (empty by default).
+        ///
+        /// Thread safety requires that this property is modified as a whole by
+        /// assigning a new instance of List; values should not be appended to
+        /// an existing list.
+        /// </summary>
+        public static List<string> IgnoredMethodNamePrefixes { get; set; } = new List<string>();
 
-        /// <summary>Class name prefixes ignored by class mapping.</summary>
-        public ICollection<string> IgnoredClassNameSuffixes { get; } = new List<string>
-        {
-            "Data",
-            "Key"
-        };
-
-        /// <summary>Method name prefixes ignored by class mapping.</summary>
-        public ICollection<string> IgnoredMethodNamePrefixes { get; } = new List<string>();
-
-        /// <summary>Method name prefixes ignored by class mapping.</summary>
-        public ICollection<string> IgnoredMethodNameSuffixes { get; } = new List<string>();
+        /// <summary>
+        /// Method name prefixes ignored by class mapping (empty by default).
+        ///
+        /// Thread safety requires that this property is modified as a whole by
+        /// assigning a new instance of List; values should not be appended to
+        /// an existing list.
+        /// </summary>
+        public static List<string> IgnoredMethodNameSuffixes { get; set; } = new List<string>();
     }
 }

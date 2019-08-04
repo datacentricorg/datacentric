@@ -21,9 +21,6 @@ namespace DataCentric
     /// <summary>Provides access component settings via the root settings object.</summary>
     public interface ISettings
     {
-        /// <summary>Class map settings.</summary>
-        IClassMapSettings ClassMap { get; }
-
         /// <summary>Locale settings.</summary>
         ILocaleSettings Locale { get; }
     }

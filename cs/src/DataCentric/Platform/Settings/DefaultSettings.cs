@@ -24,12 +24,8 @@ namespace DataCentric
         /// <summary>Create temporary context with logging to the current output.</summary>
         public DefaultSettings()
         {
-            ClassMap = new DefaultClassMapSettings(this);
             Locale = new DefaultLocaleSettings(this);
         }
-
-        /// <summary>Class map settings.</summary>
-        public IClassMapSettings ClassMap { get; }
 
         /// <summary>Locale settings.</summary>
         public ILocaleSettings Locale { get; }

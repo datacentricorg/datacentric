@@ -54,7 +54,7 @@ namespace DataCentric
 
         /// <summary>
         /// Get cached instance for the specified object, or create
-        /// using settings from Settings.Default.ClassMap
+        /// using settings from ClassMapSettings
         /// and add to thread static cache if does not exist.
         ///
         /// This object contains information about the
@@ -67,7 +67,7 @@ namespace DataCentric
 
         /// <summary>
         /// Get cached instance for the specified type, or create
-        /// using settings from Settings.Default.ClassMap
+        /// using settings from ClassMapSettings
         /// and add to thread static cache if does not exist.
         ///
         /// This object contains information about the
@@ -98,7 +98,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create using settings from Settings.Default.ClassMap.
+        /// Create using settings from ClassMapSettings.
         ///
         /// This constructor is private because it is only called
         /// from the GetOrCreate(...) method. Users should rely
@@ -116,7 +116,7 @@ namespace DataCentric
 
             // Remove ignored class name prefix
             MappedClassName = RawClassName;
-            foreach (var ignoredTypeNamePrefix in Settings.Default.ClassMap.IgnoredClassNamePrefixes)
+            foreach (var ignoredTypeNamePrefix in ClassMapSettings.IgnoredClassNamePrefixes)
             {
                 if (MappedClassName.StartsWith(ignoredTypeNamePrefix))
                 {
@@ -128,7 +128,7 @@ namespace DataCentric
             }
 
             // Remove ignored class name suffix
-            foreach (var ignoredTypeNameSuffix in Settings.Default.ClassMap.IgnoredClassNameSuffixes)
+            foreach (var ignoredTypeNameSuffix in ClassMapSettings.IgnoredClassNameSuffixes)
             {
                 if (MappedClassName.EndsWith(ignoredTypeNameSuffix))
                 {
@@ -141,7 +141,7 @@ namespace DataCentric
 
             // Remove ignored namespace prefix
             MappedNamespace = RawNamespace;
-            foreach (var ignoredModuleNamePrefix in Settings.Default.ClassMap.IgnoredNamespacePrefixes)
+            foreach (var ignoredModuleNamePrefix in ClassMapSettings.IgnoredNamespacePrefixes)
             {
                 if (MappedNamespace.StartsWith(ignoredModuleNamePrefix))
                 {
@@ -153,7 +153,7 @@ namespace DataCentric
             }
 
             // Remove ignored namespace suffix
-            foreach (var ignoredModuleNameSuffix in Settings.Default.ClassMap.IgnoredNamespaceSuffixes)
+            foreach (var ignoredModuleNameSuffix in ClassMapSettings.IgnoredNamespaceSuffixes)
             {
                 if (MappedNamespace.EndsWith(ignoredModuleNameSuffix))
                 {
