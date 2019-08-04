@@ -26,9 +26,9 @@ namespace DataCentric
     /// <summary>
     /// Abstract base class to data structures.
     /// </summary>
-    public abstract class Data : ITreeSerializable, IXmlDeserializable
+    public abstract class Data : ITreeSerializable, ITreeDeserializable
     {
-        /// <summary>Creates dictionary at current writer level.</summary>
+        /// <summary>Serialize by writing into ITreeWriter.</summary>
         public void SerializeTo(ITreeWriter writer)
         {
             // Write start tag
@@ -93,7 +93,7 @@ namespace DataCentric
             writer.WriteEndDict();
         }
 
-        /// <summary>Deserialize from reader pointing to a list of XML nodes.</summary>
+        /// <summary>Deserialize from data in ITreeReader.</summary>
         public void DeserializeFrom(ITreeReader reader)
         {
             // Do nothing if the selected XML node is empty

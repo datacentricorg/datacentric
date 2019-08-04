@@ -22,7 +22,7 @@ namespace DataCentric
     /// <summary>Serialize in tree format using ITreeWriter.</summary>
     public interface ITreeSerializable
     {
-        /// <summary>Serialize in tree format.</summary>
+        /// <summary>Serialize by writing into ITreeWriter.</summary>
         void SerializeTo(ITreeWriter writer);
     }
 }

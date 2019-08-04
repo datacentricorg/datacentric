@@ -19,12 +19,10 @@ using System.Xml;
 
 namespace DataCentric
 {
-    /// <summary>Deserialize from data in tree format using ITreeReader.</summary>
+    /// <summary>Deserialize from data in ITreeReader.</summary>
     public interface ITreeDeserializable
     {
-        /// <summary>Deserialize from data in tree format under the specified element name.
-        /// Atomic types must throw an exception if this function is called and instead implement
-        /// static T FromVariant(Variant value). The object must be empty when this method is invoked.</summary>
-        void DeserializeFrom(string elementName, ITreeReader reader);
+        /// <summary>Deserialize from data in ITreeReader.</summary>
+        void DeserializeFrom(ITreeReader reader);
     }
 }
