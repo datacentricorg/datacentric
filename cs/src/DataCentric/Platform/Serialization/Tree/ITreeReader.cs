@@ -37,5 +37,14 @@ namespace DataCentric
         /// <summary>Read a single element containing atomic value (returns empty string if not found).
         /// Error message if more than one element with the specified name is present.</summary>
         string ReadValueElement(string elementName);
+
+        /// <summary>
+        /// Read XML attribute (returns empty string if not found).
+        ///
+        /// When deserializing from a representation format that does not support
+        /// attributes, such as JSON, the attribute is read as element with
+        /// underscore prefix before its name.
+        /// </summary>
+        string ReadAttribute(string attributeName);
     }
 }

@@ -47,9 +47,9 @@ namespace DataCentric.Test
                 // Read root element with two attributes
                 ITreeReader firstElement = reader.ReadElement("firstElement");
                 context.Verify.Text("attributeOfFirstElement1={0}",
-                    firstElement.As<IXmlReader>().ReadAttribute("attributeOfFirstElement1"));
+                    firstElement.ReadAttribute("attributeOfFirstElement1"));
                 context.Verify.Text("attributeOfFirstElement2={0}",
-                    firstElement.As<IXmlReader>().ReadAttribute("attributeOfFirstElement2"));
+                    firstElement.ReadAttribute("attributeOfFirstElement2"));
 
                 // Read embedded element
                 ITreeReader secondElement = firstElement.ReadElement("secondElement");
@@ -62,7 +62,7 @@ namespace DataCentric.Test
                 ITreeReader valueElementNode2 = secondElement.ReadElement("valueElement2");
                 string valueElement2 = valueElementNode2.ReadValue();
                 context.Verify.Text("attributeOfValueElement={0}",
-                    valueElementNode2.As<IXmlReader>().ReadAttribute("attributeOfValueElement"));
+                    valueElementNode2.ReadAttribute("attributeOfValueElement"));
                 context.Verify.Text("valueElement2={0}", valueElement2);
             }
         }

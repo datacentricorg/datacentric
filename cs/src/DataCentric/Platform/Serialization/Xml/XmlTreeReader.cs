@@ -24,7 +24,7 @@ using System.Linq;
 namespace DataCentric
 {
     /// <summary>Implementation of IXmlReader using C# XmlNode.</summary>
-    public class XmlTreeReader : IXmlReader
+    public class XmlTreeReader : ITreeReader
     {
         private XmlNode xmlNode_;
         private bool isRootNode_;
@@ -122,7 +122,13 @@ namespace DataCentric
             return string.IsNullOrEmpty(result) ? string.Empty : result;
         }
 
-        /// <summary>Read XML attribute (returns empty string if not found).</summary>
+        /// <summary>
+        /// Read XML attribute (returns empty string if not found).
+        ///
+        /// When deserializing from a representation format that does not support
+        /// attributes, such as JSON, the attribute is read as element with
+        /// underscore prefix before its name.
+        /// </summary>
         public string ReadAttribute(string attributeName)
         {
             var attributes = xmlNode_.Attributes;

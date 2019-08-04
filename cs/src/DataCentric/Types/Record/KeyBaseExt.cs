@@ -30,7 +30,7 @@ namespace DataCentric
         /// class name without namespace for the root XML element.</summary>
         public static void ParseXml(this KeyBase obj, string xmlString)
         {
-            IXmlReader reader = new XmlTreeReader(xmlString);
+            ITreeReader reader = new XmlTreeReader(xmlString);
 
             // Root node of serialized XML must be the same as mapped class name without namespace
             var mappedFullName = ClassInfo.GetOrCreate(obj).MappedClassName;

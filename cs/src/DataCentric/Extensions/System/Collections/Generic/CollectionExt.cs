@@ -49,7 +49,7 @@ namespace DataCentric
 
             // Select XML node list with the specified name and iterate over XML nodes
             IEnumerable<ITreeReader> selectedXmlNodes = reader.ReadElements(elementName);
-            foreach (IXmlReader selectedXmlNode in selectedXmlNodes)
+            foreach (ITreeReader selectedXmlNode in selectedXmlNodes)
             {
                 if (selectedXmlNode == null)
                 {
