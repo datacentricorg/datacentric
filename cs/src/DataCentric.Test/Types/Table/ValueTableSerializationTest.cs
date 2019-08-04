@@ -67,7 +67,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Test serialization.</summary>
-        private void TestSerialization(IUnitTestContext context, AtomicType[] valueTypes, TableLayout layout)
+        private void TestSerialization(IContext context, AtomicType[] valueTypes, TableLayout layout)
         {
             // Create and resize
             int rowCount = 3;
@@ -79,7 +79,7 @@ namespace DataCentric.Test
 
             // Serialize the generated table and save serialized string to file
             string originalNoHeadersString = originalTable.ToString();
-            context.Verify.File($"{layout}.csv", originalNoHeadersString);
+            context.CastTo<IVerifyable>().Verify.File($"{layout}.csv", originalNoHeadersString);
 
             // Deserialize from string back into table
             var parsedNoHeadersTable = new ValueTableData();

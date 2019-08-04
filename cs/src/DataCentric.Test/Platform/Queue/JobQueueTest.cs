@@ -42,7 +42,7 @@ namespace DataCentric.Test
             /// </summary>
             public override void Run()
             {
-                Context.CastTo<IUnitTestContext>().Verify.Text("Running");
+                Context.CastTo<IVerifyable>().Verify.Text("Running");
             }
         }
 

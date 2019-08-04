@@ -34,19 +34,19 @@ namespace DataCentric.Test
             }
         }
 
-        private void VerifyRoundtrip(IUnitTestContext context, LocalDate value)
+        private void VerifyRoundtrip(IContext context, LocalDate value)
         {
             // Verify string serialization roundtrip
             string stringValue = value.AsString();
             LocalDate parsedStringValue = LocalDateUtils.Parse(stringValue);
             Assert.Equal(value, parsedStringValue);
-            context.Verify.Text($"ISO 8601 format: {stringValue}");
+            context.CastTo<IVerifyable>().Verify.Text($"ISO 8601 format: {stringValue}");
 
             // Verify int serialization roundtrip
             int intValue = value.ToIsoInt();
             LocalDate parsedIntValue = LocalDateUtils.ParseIsoInt(intValue);
             Assert.Equal(value, parsedIntValue);
-            context.Verify.Text($"Readable int format: {intValue}");
+            context.CastTo<IVerifyable>().Verify.Text($"Readable int format: {intValue}");
         }
     }
 }

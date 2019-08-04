@@ -33,7 +33,7 @@ namespace DataCentric
     ///
     /// For tests that do not require MongoDB, use IUnitTestDataContext.
     /// </summary>
-    public interface IDataTestContext : IUnitTestContext
+    public interface IDataTestContext : IContext
     {
         /// <summary>
         /// The data in the test database is erased before

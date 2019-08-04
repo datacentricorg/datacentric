@@ -27,7 +27,7 @@ namespace DataCentric
     ///
     /// For tests that require MongoDB, use IDataTestDataContext.
     /// </summary>
-    public interface IUnitTestContext : IContext
+    public interface IVerifyable
     {
         /// <summary>Approval testing interface.</summary>
         IVerify Verify { get; }

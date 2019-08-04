@@ -25,10 +25,10 @@ namespace DataCentric.Test
     public class DisposableTestBaseSample : IDisposable
     {
         /// <summary>Context.</summary>
-        public IUnitTestContext Context { get; }
+        public IContext Context { get; }
 
         /// <summary>Create from context.</summary>
-        public DisposableTestBaseSample(IUnitTestContext context)
+        public DisposableTestBaseSample(IContext context)
         {
             Context = context;
         }
@@ -51,7 +51,7 @@ namespace DataCentric.Test
         /// </summary>
         public virtual void Dispose()
         {
-            Context.Verify.Text("Disposing resources of BaseClassSample");
+            Context.CastTo<IVerifyable>().Verify.Text("Disposing resources of BaseClassSample");
 
             // Dispose base
             // base.Dispose();
@@ -62,7 +62,7 @@ namespace DataCentric.Test
     public class DisposableTestDerivedSample : DisposableTestBaseSample
     {
         /// <summary>Create from context.</summary>
-        public DisposableTestDerivedSample(IUnitTestContext context) : base(context)
+        public DisposableTestDerivedSample(IContext context) : base(context)
         {
         }
 
@@ -84,7 +84,7 @@ namespace DataCentric.Test
         /// </summary>
         public override void Dispose()
         {
-            Context.Verify.Text("Disposing resources of DerivedClassSample");
+            Context.CastTo<IVerifyable>().Verify.Text("Disposing resources of DerivedClassSample");
 
             // Dispose base
             base.Dispose();

@@ -67,14 +67,14 @@ namespace DataCentric.Test
         }
 
         /// <summary>Create DB instance.</summary>
-        public IMongoDatabase GetDb(IUnitTestContext context)
+        public IMongoDatabase GetDb(IContext context)
         {
             var result = context.DataSource.CastTo<MongoDataSourceBaseData>().Db;
             return result;
         }
 
         /// <summary>Insert N non-versioned instances.</summary>
-        public void InsertRecordsA(IUnitTestContext context)
+        public void InsertRecordsA(IContext context)
         {
             var db = GetDb(context);
 
@@ -105,11 +105,11 @@ namespace DataCentric.Test
             collection.Indexes.CreateOne(indexModel);
             collection.InsertMany(records);
 
-            context.Verify.Text($"Inserted {records.Count} records.");
+            context.CastTo<IVerifyable>().Verify.Text($"Inserted {records.Count} records.");
         }
 
         /// <summary>Insert M copies of each of N versioned instances B.</summary>
-        public void InsertRecordsB(IUnitTestContext context)
+        public void InsertRecordsB(IContext context)
         {
             var db = GetDb(context);
             var collection = db.GetCollection<B>("B");
@@ -172,7 +172,7 @@ namespace DataCentric.Test
             }
             collection.InsertMany(records);
 
-            context.Verify.Text($"Inserted {records.Count} record versions.");
+            context.CastTo<IVerifyable>().Verify.Text($"Inserted {records.Count} record versions.");
         }
 
         /// <summary>Insert N non-versioned instances.</summary>

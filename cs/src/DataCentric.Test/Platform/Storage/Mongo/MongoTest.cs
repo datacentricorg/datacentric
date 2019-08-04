@@ -520,7 +520,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Load the object and verify the outcome.</summary>
-        private void VerifyLoad<TKey, TRecord>(IUnitTestContext context, Key<TKey, TRecord> key, string dataSetID)
+        private void VerifyLoad<TKey, TRecord>(IContext context, Key<TKey, TRecord> key, string dataSetID)
             where TKey : Key<TKey, TRecord>, new()
             where TRecord : Record<TKey, TRecord>
         {
@@ -531,7 +531,7 @@ namespace DataCentric.Test
             if (record == null)
             {
                 // Not found
-                context.Verify.Text($"Record {key} in dataset {dataSetID} not found.");
+                context.CastTo<IVerifyable>().Verify.Text($"Record {key} in dataset {dataSetID} not found.");
             }
             else
             {
@@ -539,14 +539,14 @@ namespace DataCentric.Test
                 Assert.True(record.Key == key.ToString(),
                     $"Record found for key={key} in dataset {dataSetID} " +
                     $"has wrong key record.Key={record.Key}");
-                context.Verify.Text(
+                context.CastTo<IVerifyable>().Verify.Text(
                     $"Record {key} in dataset {dataSetID} found and " +
                     $"has Type={record.GetType().Name.Replace(Prefix, String.Empty)}.");
             }
         }
 
         /// <summary>Query over all records of the specified type in the specified dataset.</summary>
-        private void VerifyQuery<TRecord>(IUnitTestContext context, string dataSetID)
+        private void VerifyQuery<TRecord>(IContext context, string dataSetID)
             where TRecord : RecordBase
         {
             // Get dataset and query
@@ -556,14 +556,14 @@ namespace DataCentric.Test
             // Iterate over records
             foreach (var record in query.AsEnumerable())
             {
-                context.Verify.Text(
+                context.CastTo<IVerifyable>().Verify.Text(
                     $"Record {record.Key} returned by query in dataset {dataSetID} and " +
                     $"has Type={record.GetType().Name.Replace(Prefix, String.Empty)}.");
             }
         }
 
         /// <summary>Two datasets and two objects, one base and one derived.</summary>
-        private void SaveBasicData(IUnitTestContext context)
+        private void SaveBasicData(IContext context)
         {
             // Create datasets
             var dataSetA = context.CreateDataSet("A", context.DataSet);
@@ -575,7 +575,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Two datasets and eight objects, split between base and derived.</summary>
-        private void SaveCompleteData(IUnitTestContext context)
+        private void SaveCompleteData(IContext context)
         {
             // Create datasets
             var dataSetA = context.CreateDataSet("A", context.DataSet);
@@ -603,7 +603,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Minimal data in multiple datasets with overlapping imports.</summary>
-        private void SaveMultiDataSetData(IUnitTestContext context)
+        private void SaveMultiDataSetData(IContext context)
         {
             // Create datasets
             var dataSetA = context.CreateDataSet("A", context.DataSet);
@@ -623,7 +623,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Save record with minimal data for testing how the records are found. </summary>
-        private ObjectId SaveMinimalRecord(IUnitTestContext context, string dataSetID, string recordID, int recordIndex, int? version = null)
+        private ObjectId SaveMinimalRecord(IContext context, string dataSetID, string recordID, int recordIndex, int? version = null)
         {
             var rec = new MongoTestData();
             rec.RecordID = recordID;
@@ -637,7 +637,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Save base record</summary>
-        private ObjectId SaveBaseRecord(IUnitTestContext context, string dataSetID, string recordID, int recordIndex)
+        private ObjectId SaveBaseRecord(IContext context, string dataSetID, string recordID, int recordIndex)
         {
             var rec = new MongoTestData();
             rec.RecordID = recordID;
@@ -655,7 +655,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Save derived record</summary>
-        private ObjectId SaveDerivedRecord(IUnitTestContext context, string dataSetID, string recordID, int recordIndex)
+        private ObjectId SaveDerivedRecord(IContext context, string dataSetID, string recordID, int recordIndex)
         {
             var rec = new MongoTestDerivedData();
             rec.RecordID = recordID;
@@ -718,7 +718,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Save other derived record.</summary>
-        private ObjectId SaveOtherDerivedRecord(IUnitTestContext context, string dataSetID, string recordID, int recordIndex)
+        private ObjectId SaveOtherDerivedRecord(IContext context, string dataSetID, string recordID, int recordIndex)
         {
             var rec = new MongoTestOtherDerivedData();
             rec.RecordID = recordID;
@@ -737,7 +737,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Save record that is derived from derived.</summary>
-        private ObjectId SaveDerivedFromDerivedRecord(IUnitTestContext context, string dataSetID, string recordID, int recordIndex)
+        private ObjectId SaveDerivedFromDerivedRecord(IContext context, string dataSetID, string recordID, int recordIndex)
         {
             var rec = new MongoTestDerivedFromDerivedData();
             rec.RecordID = recordID;

@@ -37,7 +37,7 @@ namespace DataCentric.Test
             }
         }
 
-        private void VerifyRoundtrip(IUnitTestContext context, LocalTime value)
+        private void VerifyRoundtrip(IContext context, LocalTime value)
         {
             // To be used in assert message
             string nameAsString = value.AsString();
@@ -45,12 +45,12 @@ namespace DataCentric.Test
             // Verify string serialization roundtrip
             string stringValue = value.AsString();
             LocalTime parsedStringValue = LocalTimeUtils.Parse(stringValue);
-            context.Verify.Assert(value == parsedStringValue, $"String roundtrip for {nameAsString}");
+            context.CastTo<IVerifyable>().Verify.Assert(value == parsedStringValue, $"String roundtrip for {nameAsString}");
 
             // Verify int serialization roundtrip
             int intValue = value.ToIsoInt();
             LocalTime parsedIntValue = LocalTimeUtils.ParseIsoInt(intValue);
-            context.Verify.Assert(value == parsedIntValue, $"Int roundtrip for {nameAsString}");
+            context.CastTo<IVerifyable>().Verify.Assert(value == parsedIntValue, $"Int roundtrip for {nameAsString}");
         }
     }
 }

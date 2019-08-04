@@ -39,7 +39,7 @@ namespace DataCentric
     ///
     /// For tests that do not require MongoDB, use UnitTestDataContext.
     /// </summary>
-    public class DataTestContext : UnitTestContext, IDataTestContext, IDisposable
+    public class DataTestContext : UnitTestContext, IVerifyable, IDataTestContext, IDisposable
     {
         /// <summary>
         /// Create with class name, method name, and source file path.
