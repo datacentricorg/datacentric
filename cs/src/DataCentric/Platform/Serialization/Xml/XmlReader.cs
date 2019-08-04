@@ -24,13 +24,13 @@ using System.Linq;
 namespace DataCentric
 {
     /// <summary>Implementation of IXmlReader using C# XmlNode.</summary>
-    public class XmlReader : IXmlReader
+    public class XmlTreeReader : IXmlReader
     {
         private XmlNode xmlNode_;
         private bool isRootNode_;
 
         /// <summary>Create an implementation of IXmlReader from XML document.</summary>
-        public XmlReader(string xmlText)
+        public XmlTreeReader(string xmlText)
         {
             // Check if the XML string empty
             if (string.IsNullOrEmpty(xmlText)) throw new Exception("Empty XML document is pased to XML reader.");
@@ -52,7 +52,7 @@ namespace DataCentric
         }
 
         /// <summary>This private constructor creates an implementation of IXmlReader from C# XmlNode.</summary>
-        private XmlReader(XmlNode xmlNode)
+        private XmlTreeReader(XmlNode xmlNode)
         {
             if(xmlNode == null) throw new Exception("Attempting to create XML reader from null XmlNode.");
             xmlNode_ = xmlNode;
@@ -69,7 +69,7 @@ namespace DataCentric
             {
                 // If this is not the root node, select and return a reader for the child node
                 XmlNode result = xmlNode_.SelectSingleNode(elementName);
-                if (result != null) return new XmlReader(result);
+                if (result != null) return new XmlTreeReader(result);
                 else return null;
             }
             else
@@ -81,7 +81,7 @@ namespace DataCentric
                         $"Root element name ({xmlNode_.Name}) does not match the " +
                         $"name passed to ReadElement ({elementName}).");
 
-                return new XmlReader(xmlNode_);
+                return new XmlTreeReader(xmlNode_);
             }
         }
 
@@ -98,7 +98,7 @@ namespace DataCentric
                 foreach (XmlNode xmlNode in xmlNodeList)
                 {
                     // Return a sequence of readers created from each node
-                    yield return new XmlReader(xmlNode);
+                    yield return new XmlTreeReader(xmlNode);
                 }
             }
             else throw new Exception($"XML standard does not permit multiple elements at XML document root.");

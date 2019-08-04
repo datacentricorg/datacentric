@@ -21,7 +21,7 @@ using Xunit;
 
 namespace DataCentric.Test
 {
-    /// <summary>Unit tests for XmlReader.</summary>
+    /// <summary>Unit tests for XmlTreeReader.</summary>
     public class XmlReaderTest
     {
         /// <summary>Test for reading XML with attributes.</summary>
@@ -42,7 +42,7 @@ namespace DataCentric.Test
                     "</firstElement>" + eol;
 
                 // Create XML reader
-                ITreeReader reader = new XmlReader(xmlText);
+                ITreeReader reader = new XmlTreeReader(xmlText);
 
                 // Read root element with two attributes
                 ITreeReader firstElement = reader.ReadElement("firstElement");
