@@ -486,6 +486,24 @@ namespace DataCentric
             }
         }
 
+        /// <summary>
+        /// Add an attribute to the current element.
+        ///
+        /// One or multiple call(s) to this method must immediately follow
+        /// WriteStartElement(name) before any other calls are made.
+        ///
+        /// When serializing into a representation format that does not support
+        /// attributes, such as JSON, the attribute is written as element with
+        /// underscore prefix before its name.
+        /// </summary>
+        public void WriteAttribute(string attributeName, string attributeValue)
+        {
+            // Because output format does not support native attributes, they are
+            // written as elements with underscore prefix before the name
+            string elementName = string.Concat("_", attributeName);
+            this.WriteValueElement(elementName, attributeValue);
+        }
+
         /// <summary>Convert to BSON string without checking that BSON document is complete.
         /// This permits the use of this method to inspect the BSON content during creation.</summary>
         public override string ToString()

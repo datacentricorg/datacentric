@@ -23,8 +23,8 @@ using NodaTime;
 
 namespace DataCentric
 {
-    /// <summary>Implementation of ITreeWriter using C# XmlWriter.</summary>
-    public class XmlTreeWriter : IXmlWriter
+    /// <summary>Implementation of ITreeWriter for XML documents using C# XmlWriter.</summary>
+    public class XmlTreeWriter : ITreeWriter
     {
         private MemoryStream stream_;
         private XmlTextWriter xmlTextWriter_;
@@ -326,9 +326,16 @@ namespace DataCentric
             }
         }
 
-        /// <summary>Add XML attribute to the current element.
+        /// <summary>
+        /// Add an attribute to the current element.
+        ///
         /// One or multiple call(s) to this method must immediately follow
-        /// WriteStartElement(name) before any other calls are made.</summary>
+        /// WriteStartElement(name) before any other calls are made.
+        ///
+        /// When serializing into a representation format that does not support
+        /// attributes, such as JSON, the attribute is written as element with
+        /// underscore prefix before its name.
+        /// </summary>
         public void WriteAttribute(string attributeName, string attributeValue)
         {
             // Check state transition matrix

@@ -36,13 +36,13 @@ namespace DataCentric.Test
                 // Add root element with two attributes
                 writer.WriteStartDocument("rootElement");
                 writer.WriteStartDict();
-                writer.As<IXmlWriter>().WriteAttribute("attributeOfRootElement1", "AttributeValue1");
-                writer.As<IXmlWriter>().WriteAttribute("attributeOfRootElement2", "AttributeValue2");
+                writer.WriteAttribute("attributeOfRootElement1", "AttributeValue1");
+                writer.WriteAttribute("attributeOfRootElement2", "AttributeValue2");
 
                 // Add embedded element
                 writer.WriteStartDictElement("secondElement");
-                writer.As<IXmlWriter>().WriteAttribute("attributeOfSecondElement1", "AttributeValue1");
-                writer.As<IXmlWriter>().WriteAttribute("attributeOfSecondElement2", "AttributeValue2");
+                writer.WriteAttribute("attributeOfSecondElement1", "AttributeValue1");
+                writer.WriteAttribute("attributeOfSecondElement2", "AttributeValue2");
 
                 // Add value element without attributes
                 writer.WriteValueElement("valueElement1", "TestValue1");
@@ -53,8 +53,8 @@ namespace DataCentric.Test
                 // Add value element with two attributes
                 writer.WriteStartElement("valueElement2");
                 writer.WriteStartValue();
-                writer.As<IXmlWriter>().WriteAttribute("attributeOfValueElement1", "AttributeValue1");
-                writer.As<IXmlWriter>().WriteAttribute("attributeOfValueElement2", "AttributeValue2");
+                writer.WriteAttribute("attributeOfValueElement1", "AttributeValue1");
+                writer.WriteAttribute("attributeOfValueElement2", "AttributeValue2");
                 writer.WriteValue("TestValue2");
                 writer.WriteEndValue();
                 writer.WriteEndElement("valueElement2");
@@ -65,16 +65,16 @@ namespace DataCentric.Test
 
                 writer.WriteStartArrayItem();
                 writer.WriteStartValue();
-                writer.As<IXmlWriter>().WriteAttribute("attributeOfValueArray1", "AttributeValue1");
-                writer.As<IXmlWriter>().WriteAttribute("attributeOfValueArray2", "AttributeValue2");
+                writer.WriteAttribute("attributeOfValueArray1", "AttributeValue1");
+                writer.WriteAttribute("attributeOfValueArray2", "AttributeValue2");
                 writer.WriteValue("TestValue2");
                 writer.WriteEndValue();
                 writer.WriteEndArrayItem();
 
                 writer.WriteStartArrayItem();
                 writer.WriteStartValue();
-                writer.As<IXmlWriter>().WriteAttribute("attributeOfValueArray1", "AttributeValue1");
-                writer.As<IXmlWriter>().WriteAttribute("attributeOfValueArray2", "AttributeValue2");
+                writer.WriteAttribute("attributeOfValueArray1", "AttributeValue1");
+                writer.WriteAttribute("attributeOfValueArray2", "AttributeValue2");
                 writer.WriteValue("TestValue3");
                 writer.WriteEndValue();
                 writer.WriteEndArrayItem();

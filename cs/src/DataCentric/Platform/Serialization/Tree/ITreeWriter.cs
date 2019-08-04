@@ -93,5 +93,17 @@ namespace DataCentric
         /// <summary>Write atomic value. Value type
         /// will be inferred from object.GetType().</summary>
         void WriteValue(object value);
+
+        /// <summary>
+        /// Add an attribute to the current element.
+        ///
+        /// One or multiple call(s) to this method must immediately follow
+        /// WriteStartElement(name) before any other calls are made.
+        ///
+        /// When serializing into a representation format that does not support
+        /// attributes, such as JSON, the attribute is written as element with
+        /// underscore prefix before its name.
+        /// </summary>
+        void WriteAttribute(string attributeName, string attributeValue);
     }
 }
