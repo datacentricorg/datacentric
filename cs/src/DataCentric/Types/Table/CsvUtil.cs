@@ -38,8 +38,8 @@ namespace DataCentric
             // Check if a single line is provided
             if (csvLine.Contains(StringUtils.Eol)) throw new Exception($"Multi-line string encountered in CSV file: {csvLine}");
 
-            char separator = Settings.Default.Locale.ListSeparator;
-            char quote =  Settings.Default.Locale.QuoteSymbol;
+            char separator = LocaleSettings.ListSeparator;
+            char quote =  LocaleSettings.QuoteSymbol;
 
             bool isInsideQuotes = false;
             char[] chars = csvLine.ToCharArray();
@@ -104,8 +104,8 @@ namespace DataCentric
         /// <summary>Escape list separator if encountered in token.</summary>
         public static string EscapeListSeparator(string token)
         {
-            string listSeparator =  Settings.Default.Locale.ListSeparator.ToString();
-            char quoteSymbol =  Settings.Default.Locale.QuoteSymbol;
+            string listSeparator =  LocaleSettings.ListSeparator.ToString();
+            char quoteSymbol =  LocaleSettings.QuoteSymbol;
             string quoteString = quoteSymbol.ToString();
             string repeatedQuoteString = quoteString + quoteString;
 
@@ -152,15 +152,15 @@ namespace DataCentric
         {
             StringBuilder result = new StringBuilder();
 
-            string listSeparator =  Settings.Default.Locale.ListSeparator.ToString();
-            string singleQuote =  Settings.Default.Locale.QuoteSymbol.ToString();
+            string listSeparator =  LocaleSettings.ListSeparator.ToString();
+            string singleQuote =  LocaleSettings.QuoteSymbol.ToString();
             string doubleQuote = singleQuote + singleQuote;
 
             int tokenCount = 0;
             foreach (string token in tokens)
             {
                 // Add list separator except in front of the first symbol
-                if (tokenCount++ > 0) result.Append( Settings.Default.Locale.ListSeparator);
+                if (tokenCount++ > 0) result.Append( LocaleSettings.ListSeparator);
 
                 // Check that there is no newline
                 if (token.Contains(StringUtils.Eol)) throw new Exception($"Multi-line string encountered in CSV file: {token}");

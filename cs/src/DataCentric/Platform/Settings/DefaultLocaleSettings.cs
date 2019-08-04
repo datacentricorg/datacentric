@@ -19,24 +19,28 @@ using System;
 namespace DataCentric
 {
     /// <summary>Default locale settings are based on .NET universal locale.</summary>
-    public class DefaultLocaleSettings : ILocaleSettings
+    public static class LocaleSettings
     {
-        /// <summary>Default locale settings are based on .NET universal locale.</summary>
-        public DefaultLocaleSettings(ISettings settings)
-        {
-            Settings = settings;
+        /// <summary>
+        /// List separator used in serialization.
+        ///
+        /// The default based on universal locale is comma.
+        ///
+        /// Thread safety requires that this property is modified as a whole by
+        /// assigning a new instance of List; values should not be appended to
+        /// an existing list.
+        /// </summary>
+        public static char ListSeparator { get; set; } = ',';
 
-            ListSeparator = ',';
-            QuoteSymbol = '\"';
-        }
-
-        /// <summary>Provides access to other settings of the same root settings object.</summary>
-        public ISettings Settings { get; }
-
-        /// <summary>List separator for the universal locale is comma.</summary>
-        public char ListSeparator { get; }
-
-        /// <summary>Quote symbol for the universal locale is double quote.</summary>
-        public char QuoteSymbol { get; }
+        /// <summary>
+        /// Quote symbol used in serialization.
+        ///
+        /// The default based on universal locale is double quote.
+        ///
+        /// Thread safety requires that this property is modified as a whole by
+        /// assigning a new instance of List; values should not be appended to
+        /// an existing list.
+        /// </summary>
+        public static char QuoteSymbol { get; set; } = '\"';
     }
 }
