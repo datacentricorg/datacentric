@@ -24,9 +24,6 @@ namespace DataCentric
         /// <summary>Class map settings.</summary>
         IClassMapSettings ClassMap { get; }
 
-        /// <summary>Activator settings.</summary>
-        IActivatorSettings Activator { get; }
-
         /// <summary>Locale settings.</summary>
         ILocaleSettings Locale { get; }
     }

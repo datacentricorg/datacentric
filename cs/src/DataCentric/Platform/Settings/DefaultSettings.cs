@@ -25,15 +25,11 @@ namespace DataCentric
         public DefaultSettings()
         {
             ClassMap = new DefaultClassMapSettings(this);
-            Activator = new DefaultActivatorSettings(this);
             Locale = new DefaultLocaleSettings(this);
         }
 
         /// <summary>Class map settings.</summary>
         public IClassMapSettings ClassMap { get; }
-
-        /// <summary>Activator settings.</summary>
-        public IActivatorSettings Activator { get; }
 
         /// <summary>Locale settings.</summary>
         public ILocaleSettings Locale { get; }
