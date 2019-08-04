@@ -36,7 +36,7 @@ namespace DataCentric
             // Checks that type matches
             IBsonReader reader = context.Reader;
             reader.ReadStartDocument();
-            string mappedBsonClassName = "DerivedCollectionType"; //context.Reader.FindStringElement("-t");
+            string mappedBsonClassName = "DerivedCollectionType"; // TODO - restore context.Reader.FindStringElement("-t");
             writer.WriteStartDocument(mappedBsonClassName);
             DeserializeDocument(reader, writer);
             reader.ReadEndDocument();
