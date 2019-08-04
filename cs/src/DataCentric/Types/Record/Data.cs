@@ -26,7 +26,7 @@ namespace DataCentric
     /// <summary>
     /// Abstract base class to data structures.
     /// </summary>
-    public abstract class Data : IXmlSerializable, IXmlDeserializable
+    public abstract class Data : ITreeSerializable, IXmlDeserializable
     {
         /// <summary>Creates dictionary at current writer level.</summary>
         public void SerializeTo(ITreeWriter writer)
