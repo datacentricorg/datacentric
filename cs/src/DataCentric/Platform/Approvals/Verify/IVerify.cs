@@ -20,7 +20,7 @@ using System.Text;
 
 namespace DataCentric
 {
-    /// <summary>Approval interface.</summary>
+    /// <summary>Approval testing interface.</summary>
     public interface IVerify
     {
         /// <summary>Context for which this interface is defined.
@@ -36,10 +36,6 @@ namespace DataCentric
         /// <summary>Indicates whether approval data is recorded by the context.
         /// Check to avoid performing expensive calculations that will not be recorded.</summary>
         bool IsSet { get; }
-
-        /// <summary>Append new log entry with Verify type if log verbosity is at least Verify.
-        /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
-        void Append(string entrySubType, string message, params object[] messageParams);
 
         /// <summary>Flush approval log contents to permanent storage.</summary>
         void Flush();

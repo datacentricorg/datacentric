@@ -29,7 +29,7 @@ namespace DataCentric
     /// </summary>
     public interface IVerifyable
     {
-        /// <summary>Approval testing interface.</summary>
+        /// <summary>Return approval testing interface.</summary>
         IVerify Verify { get; }
     }
 }

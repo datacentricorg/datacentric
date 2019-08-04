@@ -23,21 +23,21 @@ namespace DataCentric
     /// <summary>Extension methods for IVerify.</summary>
     public static class VerifyExt
     {
-        /// <summary>Record 'Approval.Text: {message}'.</summary>
+        /// <summary>Record 'Verify.Text: {message}'.</summary>
         public static void Text(this IVerify obj, string message, params object[] messageParams)
         {
             obj.Context.Log.Append(LogEntryType.Verify, "Text", message, messageParams);
         }
 
-        /// <summary>Record 'Approval.Passed: {message}' when condition
-        /// is true and 'Approval.Failed: {message}' when condition is false.</summary>
+        /// <summary>Record 'Verify.Passed: {message}' when condition
+        /// is true and 'Verify.Failed: {message}' when condition is false.</summary>
         public static void Assert(this IVerify obj, bool condition, string messageWhenFalse, params object[] messageParams)
         {
             string conditionString = condition ? "Passed" : "Failed";
             obj.Context.Log.Append(LogEntryType.Verify, conditionString, messageWhenFalse, messageParams);
         }
 
-        /// <summary>Record 'Approval.Value: {message} = {value}'.</summary>
+        /// <summary>Record 'Verify.Value: {message} = {value}'.</summary>
         public static void Value(this IVerify obj, object value, string message, params object[] messageParams)
         {
             if (obj.IsSet)
@@ -48,7 +48,7 @@ namespace DataCentric
             }
         }
 
-        /// <summary>Record 'Approval.File: {fileName} ({N} bytes) and save contents to a file.</summary>
+        /// <summary>Record 'Verify.File: {fileName} ({N} bytes) and save contents to a file.</summary>
         public static void File(this IVerify obj, string fileName, string fileContents)
         {
             if (obj.IsSet)

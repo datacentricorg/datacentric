@@ -18,7 +18,7 @@ using System;
 
 namespace DataCentric
 {
-    /// <summary>Approval data is recorded in Context.Log under Approval entry type.</summary>
+    /// <summary>Approval data is recorded in context log under Verify entry type.</summary>
     public class LogVerify : IVerify
     {
         /// <summary>Create from the execution context and folder path.</summary>
@@ -46,16 +46,9 @@ namespace DataCentric
             get
             {
                 // Returns true if verbosity level is at least Verify
-                var verbosity = Context.Log. Verbosity;
+                var verbosity = Context.Log.Verbosity;
                 return verbosity == LogEntryType.Empty || verbosity >= LogEntryType.Verify;
             }
-        }
-
-        /// <summary>Append new log entry with Verify type if log verbosity is at least Verify.
-        /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
-        public void Append(string entrySubType, string message, params object[] messageParams)
-        {
-            Context.Log.Append(LogEntryType.Verify, entrySubType, message, messageParams);
         }
 
         /// <summary>Flush approval log contents to permanent storage.</summary>

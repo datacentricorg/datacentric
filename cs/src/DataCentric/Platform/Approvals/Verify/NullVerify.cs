@@ -49,13 +49,6 @@ namespace DataCentric
             get { return false; }
         }
 
-        /// <summary>Append new log entry with Verify type if log verbosity is at least Verify.
-        /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
-        public void Append(string entrySubType, string message, params object[] messageParams)
-        {
-            // Skip recording approval data
-        }
-
         /// <summary>Flush approval log contents to permanent storage.</summary>
         public void Flush()
         {

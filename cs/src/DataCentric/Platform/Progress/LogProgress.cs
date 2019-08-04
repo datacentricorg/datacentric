@@ -62,12 +62,5 @@ namespace DataCentric
         {
             Context.Log.Flush();
         }
-
-        /// <summary>Append new log entry with Progress type if log verbosity is at least Progress.
-        /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
-        public void Append(string entrySubType, string message, params object[] messageParams)
-        {
-            Context.Log.Append(LogEntryType.Progress, entrySubType, message, messageParams);
-        }
     }
 }
