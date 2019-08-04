@@ -29,7 +29,7 @@ namespace DataCentric.Test
         [Fact]
         public void Writing()
         {
-            using (IUnitTestContext context = new UnitTestContext(this))
+            using (var context = new UnitTestContext(this))
             {
                 // Create text writer
                 var fileNames = new string[]

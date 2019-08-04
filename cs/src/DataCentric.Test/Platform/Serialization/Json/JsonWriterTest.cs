@@ -32,7 +32,7 @@ namespace DataCentric.Test
         [Fact]
         public void NewtonsoftWriter()
         {
-            using (IUnitTestContext context = new UnitTestContext(this))
+            using (var context = new UnitTestContext(this))
             {
                 var stringBuilder = new StringBuilder();
                 var stringWriter = new StringWriter(stringBuilder);

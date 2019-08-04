@@ -179,7 +179,7 @@ namespace DataCentric.Test
         [Fact]
         public void InsertA()
         {
-            using (IDataTestContext context = new DataTestContext(this))
+            using (var context = new DataTestContext(this))
             {
                 InsertRecordsA(context);
             }
@@ -189,7 +189,7 @@ namespace DataCentric.Test
         [Fact]
         public void InsertB()
         {
-            using (IDataTestContext context = new DataTestContext(this))
+            using (var context = new DataTestContext(this))
             {
                 InsertRecordsB(context);
             }
@@ -199,7 +199,7 @@ namespace DataCentric.Test
         [Fact]
         public void FindOneA()
         {
-            using (IDataTestContext context = new DataTestContext(this))
+            using (var context = new DataTestContext(this))
             {
                 InsertRecordsA(context);
 
@@ -225,7 +225,7 @@ namespace DataCentric.Test
         [Fact]
         public void FindOneB()
         {
-            using (IDataTestContext context = new DataTestContext(this))
+            using (var context = new DataTestContext(this))
             {
                 InsertRecordsB(context);
 
@@ -253,7 +253,7 @@ namespace DataCentric.Test
         [Fact]
         public void OneStepQueryA()
         {
-            using (IDataTestContext context = new DataTestContext(this))
+            using (var context = new DataTestContext(this))
             {
                 InsertRecordsA(context);
 
@@ -279,7 +279,7 @@ namespace DataCentric.Test
         [Fact]
         public void OneStepQueryB()
         {
-            using (IDataTestContext context = new DataTestContext(this))
+            using (var context = new DataTestContext(this))
             {
                 InsertRecordsB(context);
 
@@ -321,7 +321,7 @@ namespace DataCentric.Test
         [Fact]
         public void TwoStepQueryB()
         {
-            using (IDataTestContext context = new DataTestContext(this))
+            using (var context = new DataTestContext(this))
             {
                 InsertRecordsB(context);
 

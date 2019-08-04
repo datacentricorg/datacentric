@@ -35,7 +35,7 @@ namespace DataCentric.Test
         [Fact]
         public void Smoke()
         {
-            using (IDataTestContext context = new DataTestContext(this))
+            using (var context = new DataTestContext(this))
             {
                 var record = new MongoNonAlignedTestData();
                 record.DataSet = context.DataSet;

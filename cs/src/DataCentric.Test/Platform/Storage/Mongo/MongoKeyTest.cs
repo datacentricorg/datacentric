@@ -32,7 +32,7 @@ namespace DataCentric.Test
         [Fact]
         public void CompleteNonNullableKey()
         {
-            using (IDataTestContext context = new DataTestContext(this))
+            using (var context = new DataTestContext(this))
             {
                 var record = new MongoKeyTestNonNullableSampleData();
                 record.DataSet = context.DataSet;
@@ -71,7 +71,7 @@ namespace DataCentric.Test
         [Fact]
         public void CompleteNullableKey()
         {
-            using (IDataTestContext context = new DataTestContext(this))
+            using (var context = new DataTestContext(this))
             {
                 var record = new MongoKeyTestNullableSampleData();
                 record.DataSet = context.DataSet;

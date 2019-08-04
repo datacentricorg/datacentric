@@ -29,7 +29,7 @@ namespace DataCentric.Test
         [Fact]
         public void NullableElements()
         {
-            using (IDataTestContext context = new DataTestContext(this))
+            using (var context = new DataTestContext(this))
             {
                 for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
                 {
@@ -97,7 +97,7 @@ namespace DataCentric.Test
         [Fact]
         public void NonNullableElements()
         {
-            using (IDataTestContext context = new DataTestContext(this))
+            using (var context = new DataTestContext(this))
             {
                 for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
                 {

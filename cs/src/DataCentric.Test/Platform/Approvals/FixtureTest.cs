@@ -27,7 +27,7 @@ namespace DataCentric.Test
         [Fact]
         public void Logging()
         {
-            using (IUnitTestContext context = new UnitTestContext(this))
+            using (var context = new UnitTestContext(this))
             {
                 // Log entries other than Exception
                 context.Log.Warning("Warning log entry with params {0} and {1}", "Param1", "Param2");
@@ -49,7 +49,7 @@ namespace DataCentric.Test
         [Fact]
         public void EngineException()
         {
-            using (IUnitTestContext context = new UnitTestContext(this))
+            using (var context = new UnitTestContext(this))
             {
                 // The test checks that the entry preceding exception is recorded
                 context.Log.Status("Normal status entry preceding exception");
@@ -71,7 +71,7 @@ namespace DataCentric.Test
         [Fact]
         public void NativeException()
         {
-            using (IUnitTestContext context = new UnitTestContext(this))
+            using (var context = new UnitTestContext(this))
             {
                 // The test checks that the entry preceding exception is recorded
                 context.Log.Status("Normal status entry preceding exception");

@@ -27,7 +27,7 @@ namespace DataCentric.Test
         [Fact]
         public void EmptyCells()
         {
-            using (IUnitTestContext context = new UnitTestContext(this))
+            using (var context = new UnitTestContext(this))
             {
                 CsvWriter writer = new CsvWriter(context);
 
@@ -74,7 +74,7 @@ namespace DataCentric.Test
         [Fact]
         public void EscapedCharacters()
         {
-            using (IUnitTestContext context = new UnitTestContext(this))
+            using (var context = new UnitTestContext(this))
             {
                 CsvWriter writer = new CsvWriter(context);
 
@@ -103,7 +103,7 @@ namespace DataCentric.Test
         [Fact]
         public void Writing()
         {
-            using (IUnitTestContext context = new UnitTestContext(this))
+            using (var context = new UnitTestContext(this))
             {
                 CsvWriter writer = new CsvWriter(context);
 
@@ -153,7 +153,7 @@ namespace DataCentric.Test
         [Fact]
         public void Roundtrip()
         {
-            using (IUnitTestContext context = new UnitTestContext(this))
+            using (var context = new UnitTestContext(this))
             {
                 // Parsing to serialization roundtrip for CSV matrix without serialization
                 string eol = StringUtils.Eol;

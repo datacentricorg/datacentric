@@ -50,7 +50,7 @@ namespace DataCentric.Test
         [Fact]
         public void Load()
         {
-            using (IDataTestContext context = new DataTestContext(this))
+            using (var context = new DataTestContext(this))
             {
                 // Create queue record and save, then get its ID
                 var queue = new JobQueueData();
