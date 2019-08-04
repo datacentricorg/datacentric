@@ -82,7 +82,7 @@ namespace DataCentric.Test
                 writer.WriteEndArray();
                 writer.WriteEndElement("valueArray2");
 
-                // ose the previously opened elements
+                // Close the previously opened elements
                 writer.WriteEndDictElement("secondElement");
 
                 writer.WriteStartElement("thirdElement");

@@ -80,7 +80,7 @@ namespace DataCentric
                     }
                     else if (c == separator)
                     {
-                        // ose token
+                        // Close token
                         result.Add(token.ToString());
                         token = new StringBuilder();
                     }
@@ -92,7 +92,7 @@ namespace DataCentric
                 }
             }
 
-            // ose final token
+            // Close final token
             if (token != null)
             {
                 result.Add(token.ToString());

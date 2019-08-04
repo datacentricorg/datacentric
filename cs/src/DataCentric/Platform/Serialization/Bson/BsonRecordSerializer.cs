@@ -232,7 +232,7 @@ namespace DataCentric
         /// <summary>Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.</summary>
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, TRecord value)
         {
-            // ass name without namespace
+            // Class name without namespace
             string className = value.GetType().Name;
 
             var bsonWriter = new BsonWriter(context.Writer);

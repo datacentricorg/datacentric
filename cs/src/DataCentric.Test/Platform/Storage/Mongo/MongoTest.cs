@@ -512,7 +512,7 @@ namespace DataCentric.Test
                     }
                 }
 
-                // ear revision time constraint before exiting to avoid an error
+                // Clear revision time constraint before exiting to avoid an error
                 // about deleting readonly database. The error occurs because
                 // revision time constraint makes the data source readonly.
                 context.DataSource.CastTo<DataSourceData>().SavedById = null;

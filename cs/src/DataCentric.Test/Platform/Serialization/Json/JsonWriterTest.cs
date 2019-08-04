@@ -53,7 +53,7 @@ namespace DataCentric.Test
                 writer.WriteValue("TestValue2");
                 writer.WriteEndObject();
 
-                // ose the previosly opened elements
+                // Close the previosly opened elements
                 writer.WriteEndObject();
 
                 // Output the result

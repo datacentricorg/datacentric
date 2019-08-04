@@ -68,7 +68,7 @@ namespace DataCentric
         ///
         /// Once the record has been cached, the same version will be
         /// returned in subsequent calls with the same key instance.
-        /// Create a new key or call earRecord() method to force
+        /// Create a new key or call ClearCachedRecord() method to force
         /// reloading new version of the record from storage.
         /// 
         /// Error message if the record is not found or is a delete marker.
@@ -95,7 +95,7 @@ namespace DataCentric
         ///
         /// Once the record has been cached, the same version will be
         /// returned in subsequent calls with the same key instance.
-        /// Create a new key or call earRecord() method to force
+        /// Create a new key or call ClearCachedRecord() method to force
         /// reloading new version of the record from storage.
         /// 
         /// Error message if the record is not found or is a delete marker.
@@ -125,7 +125,7 @@ namespace DataCentric
         ///
         /// Once the record has been cached, the same version will be
         /// returned in subsequent calls with the same key instance.
-        /// Create a new key or call earRecord() method to force
+        /// Create a new key or call ClearCachedRecord() method to force
         /// reloading new version of the record from storage.
         /// 
         /// Return null if the record is not found or is a delete marker.
@@ -152,7 +152,7 @@ namespace DataCentric
         ///
         /// Once the record has been cached, the same version will be
         /// returned in subsequent calls with the same key instance.
-        /// Create a new key or call earRecord() method to force
+        /// Create a new key or call ClearCachedRecord() method to force
         /// reloading new version of the record from storage.
         /// 
         /// Return null if the record is not found or is a delete marker.
@@ -298,7 +298,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// ear the previously cached record so that a
+        /// Clear the previously cached record so that a
         /// new value can be loaded from storage or set using
         /// SetCachedRecord(record).
         /// </summary>

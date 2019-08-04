@@ -63,13 +63,6 @@ namespace DataCentric
             return stringWriter_.ToString();
         }
 
-        /// <summary>Clear existing data in log and prepare for recording more data.</summary>
-        public void ear()
-        {
-            stringWriter_.Close();
-            stringWriter_ = new StringWriter();
-        }
-
         /// <summary>Flush log contents to permanent storage.</summary>
         public void Flush()
         {

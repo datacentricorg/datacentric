@@ -381,7 +381,7 @@ namespace DataCentric
             // Set savedBy_ based on either SavedByTime or SavedById element
             if (SavedByTime == null && SavedById == null)
             {
-                // ear the revision time constraint.
+                // Clear the revision time constraint.
                 //
                 // This is only required when  running Init(...) again
                 // on an object that has been initialized before.
