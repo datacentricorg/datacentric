@@ -33,7 +33,7 @@ namespace DataCentric
     /// dataset in the database and assigns its ObjectId to
     /// the DataSet property of the context.
     ///
-    /// If the test sets KeepDb = true, the data is retained
+    /// If the test sets KeepTestData = true, the data is retained
     /// after the text exits. This data will be cleared on the
     /// next launch of the test.
     ///
@@ -95,12 +95,12 @@ namespace DataCentric
 
         /// <summary>
         /// The data in test database is erased when the context is created
-        /// irrespective of KeepDb value. However it is only erased on
-        /// Dispose() if the value of KeepDb is true.
+        /// irrespective of KeepTestData value. However it is only erased on
+        /// Dispose() if the value of KeepTestData is true.
         ///
-        /// The default value of KeepDb is false.
+        /// The default value of KeepTestData is false.
         /// </summary>
-        public bool KeepDb { get; set; }
+        public bool KeepTestData { get; set; }
 
         //--- METHODS
 
@@ -122,10 +122,10 @@ namespace DataCentric
         /// </summary>
         public override void Dispose()
         {
-            if (!KeepDb)
+            if (!KeepTestData)
             {
                 // Permanently delete the unit test database
-                // unless KeepDb is true
+                // unless KeepTestData is true
                 DataSource.DeleteDb();
             }
 
