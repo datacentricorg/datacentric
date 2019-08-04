@@ -20,7 +20,22 @@ using System.Xml;
 
 namespace DataCentric
 {
-    /// <summary>Interface for writing tree data.</summary>
+    /// <summary>
+    /// Provides a common API for writing tree data in JSON, XML, or YAML format,
+    /// or to a hierarchical in-memory structure.
+    ///
+    /// A document representing tree data consists of elements. Each element
+    /// can be a dictionary, an array, or an atomic value. A dictionary or an
+    /// array can contain other elements or atomic values.
+    ///
+    /// Some of the representation formats have limitations and may not represent
+    /// every tree structure that can be written using this interface. If a limitation
+    /// is encountered, the class implementing this interface will raise an error.
+    /// Some of the limitations include:
+    ///
+    /// * XML cannot represent arrays of arrays
+    /// * JSON, XML, or YAML can represent attributes for elements but not values
+    /// </summary>
     public interface ITreeWriter
     {
         /// <summary>Write start document tags. This method

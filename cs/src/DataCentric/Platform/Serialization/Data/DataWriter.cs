@@ -23,7 +23,7 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>Implementation of ITreeWriter for Data.</summary>
-    public class DataWriter : ITreeWriter
+    public class DataTreeWriter : ITreeWriter
     {
         private struct DataWriterPosition
         {
@@ -47,7 +47,7 @@ namespace DataCentric
         private Type currentArrayItemType_;
 
         /// <summary>Will write to Data using reflection.</summary>
-        public DataWriter(Data data)
+        public DataTreeWriter(Data data)
         {
             currentDict_ = data;
         }

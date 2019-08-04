@@ -22,14 +22,14 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>Implementation of IBsonWriter using MongoDB IBsonWriter.</summary>
-    public class BsonWriter : ITreeWriter
+    public class BsonTreeWriter : ITreeWriter
     {
         private IBsonWriter bsonWriter_;
         private Stack<(string,TreeWriterState)> elementStack_ = new Stack<(string,TreeWriterState)>();
         private TreeWriterState currentState_;
 
         /// <summary>Create with empty BSON document.</summary>
-        public BsonWriter(IBsonWriter bsonWriter)
+        public BsonTreeWriter(IBsonWriter bsonWriter)
         {
             bsonWriter_ = bsonWriter;
         }

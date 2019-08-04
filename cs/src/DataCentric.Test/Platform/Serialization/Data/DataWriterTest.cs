@@ -21,8 +21,8 @@ using Xunit;
 
 namespace DataCentric.Test
 {
-    /// <summary>Unit tests for IlTreeWriter support in Data.</summary>
-    public class DataWriterTest
+    /// <summary>Unit tests for DataTreeWriter.</summary>
+    public class DataTreeWriterTest
     {
         /// <summary>Test for serialization of a basic data structure.</summary>
         [Fact]
@@ -40,7 +40,7 @@ namespace DataCentric.Test
                 context.Verify.File("Original.xml", xmlString);
 
                 var copy = new BaseTypeSampleData();
-                var copyWriter = new DataWriter(copy);
+                var copyWriter = new DataTreeWriter(copy);
                 copyWriter.WriteStartDocument(mappedClassName);
                 ((ITreeSerializable) obj).SerializeTo(copyWriter);
                 copyWriter.WriteEndDocument(mappedClassName);
@@ -102,7 +102,7 @@ namespace DataCentric.Test
                 string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;
 
                 var copy = new DerivedTypeSampleData();
-                var copyWriter = new DataWriter(copy);
+                var copyWriter = new DataTreeWriter(copy);
                 copyWriter.WriteStartDocument(mappedClassName);
                 ((ITreeSerializable) obj).SerializeTo(copyWriter);
                 copyWriter.WriteEndDocument(mappedClassName);

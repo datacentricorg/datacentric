@@ -21,8 +21,8 @@ using Xunit;
 
 namespace DataCentric.Test
 {
-    /// <summary>Unit tests for XmlWriter.</summary>
-    public class XmlWriterTest
+    /// <summary>Unit tests for XmlTreeWriter.</summary>
+    public class XmlTreeWriterTest
     {
         /// <summary>Test for writing XML with attributes.</summary>
         [Fact]
@@ -31,7 +31,7 @@ namespace DataCentric.Test
             using (var context = new UnitTestContext(this))
             {
                 // Create XML writer
-                ITreeWriter writer = new XmlWriter();
+                ITreeWriter writer = new XmlTreeWriter();
 
                 // Add root element with two attributes
                 writer.WriteStartDocument("rootElement");

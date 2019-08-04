@@ -46,7 +46,7 @@ namespace DataCentric
             string rootName = ClassInfo.GetOrCreate(obj).MappedClassName;
 
             // Serialize to XML
-            ITreeWriter writer = new XmlWriter();
+            ITreeWriter writer = new XmlTreeWriter();
             writer.WriteStartDocument(rootName);
             obj.SerializeTo(writer);
             writer.WriteEndDocument(rootName);

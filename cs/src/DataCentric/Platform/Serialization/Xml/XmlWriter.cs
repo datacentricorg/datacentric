@@ -23,8 +23,8 @@ using NodaTime;
 
 namespace DataCentric
 {
-    /// <summary>Implementation of IXmlWriter using C# XmlWriter.</summary>
-    public class XmlWriter : IXmlWriter
+    /// <summary>Implementation of ITreeWriter using C# XmlWriter.</summary>
+    public class XmlTreeWriter : IXmlWriter
     {
         private MemoryStream stream_;
         private XmlTextWriter xmlTextWriter_;
@@ -32,7 +32,7 @@ namespace DataCentric
         private TreeWriterState currentState_;
 
         /// <summary>Create with empty XML document.</summary>
-        public XmlWriter()
+        public XmlTreeWriter()
         {
             // Create a memory stream
             stream_ = new MemoryStream();

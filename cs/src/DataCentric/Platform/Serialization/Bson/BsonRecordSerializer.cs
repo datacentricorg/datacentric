@@ -31,7 +31,7 @@ namespace DataCentric
         {
             // Create instance to which BSON will be deserialized
             TRecord result = new TRecord();
-            ITreeWriter writer = new DataWriter((Data) result);
+            ITreeWriter writer = new DataTreeWriter((Data) result);
 
             // Checks that type matches
             IBsonReader reader = context.Reader;
@@ -235,7 +235,7 @@ namespace DataCentric
             // Class name without namespace
             string className = value.GetType().Name;
 
-            var bsonWriter = new BsonWriter(context.Writer);
+            var bsonWriter = new BsonTreeWriter(context.Writer);
             bsonWriter.WriteStartDocument(className);
             value.SerializeTo(bsonWriter);
             bsonWriter.WriteEndDocument(className);
