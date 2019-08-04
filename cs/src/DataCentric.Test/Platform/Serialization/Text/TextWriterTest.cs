@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Xunit;
 using DataCentric;
@@ -41,7 +42,7 @@ namespace DataCentric.Test
 
                 foreach (var fileName in fileNames)
                 {
-                    ITextWriter writer = context.Out.CreateTextWriter(fileName, FileWriteMode.Replace);
+                    TextWriter writer = context.Out.CreateTextWriter(fileName, FileWriteMode.Replace);
                     writer.WriteLine("Sample line");
                     writer.Flush();
                 }

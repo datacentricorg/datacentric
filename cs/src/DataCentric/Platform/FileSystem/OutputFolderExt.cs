@@ -38,7 +38,7 @@ namespace DataCentric
         /// <summary>Appends or overwrites the specified file with text followed by EOL.</summary>
         private static void SaveText(this IOutputFolder obj, string filePath, string text, FileWriteMode writeMode)
         {
-            ITextWriter textWriter = obj.CreateTextWriter(filePath, writeMode);
+            TextWriter textWriter = obj.CreateTextWriter(filePath, writeMode);
             textWriter.Write(text);
             textWriter.Flush();
         }

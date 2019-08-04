@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.CodeDom.Compiler;
 using System.Diagnostics;
 using System.IO;
 using System.Linq.Expressions;
@@ -25,14 +26,18 @@ namespace DataCentric
     /// <summary>Writes log output to the specified text file as it arrives.</summary>
     public class FileLog : ILog
     {
-        private ITextWriter textWriter_;
+        private TextWriter indentedTextWriter_;
 
         /// <summary>Create log file at path specified relative to output folder root
         /// using regular path separator or in dot delimited (``namespace'') format.</summary>
         public FileLog(IContext context, string logFilePath)
         {
             Context = context;
-            textWriter_ = context.Out.CreateTextWriter(logFilePath, FileWriteMode.Replace);
+
+            // Create text writer for the file, then wrap
+            // IndentedTextWriter using 4 space indent string
+            var textWriter = context.Out.CreateTextWriter(logFilePath, FileWriteMode.Replace);
+            indentedTextWriter_ = new IndentedTextWriter(textWriter, "    ");
         }
 
         /// <summary>Context for which this interface is defined.
@@ -54,20 +59,20 @@ namespace DataCentric
             {
                 var logEntry = new LogEntry(entryType, entrySubType, message, messageParams);
                 string logString = logEntry.ToString();
-                textWriter_.WriteLine(logString);
+                indentedTextWriter_.WriteLine(logString);
             }
         }
 
         /// <summary>Flush log contents to permanent storage.</summary>
         public void Flush()
         {
-            textWriter_.Flush();
+            indentedTextWriter_.Flush();
         }
 
         /// <summary>Close log and release handle to permanent storage.</summary>
         public void Close()
         {
-            textWriter_.Close();
+            indentedTextWriter_.Close();
         }
     }
 }

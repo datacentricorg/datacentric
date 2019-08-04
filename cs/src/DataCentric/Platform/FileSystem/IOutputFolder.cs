@@ -35,7 +35,7 @@ namespace DataCentric
         /// <summary>Creates or opens the specified file for writing
         /// using UTF-8 encoding. Append vs. overwrite behavior is determined by writeMode.
         /// This method accepts dot delimited folder path.</summary>
-        ITextWriter CreateTextWriter(string filePath, FileWriteMode writeMode);
+        TextWriter CreateTextWriter(string filePath, FileWriteMode writeMode);
 
         /// <summary>Deletes the specified file.
         /// This method accepts dot delimited folder path.</summary>

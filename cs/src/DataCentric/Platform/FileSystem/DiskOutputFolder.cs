@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 
@@ -50,7 +51,7 @@ namespace DataCentric
         /// <summary>Creates or opens the specified file for writing
         /// using UTF-8 encoding. Append vs. overwrite behavior is determined by writeMode.
         /// This method accepts dot delimited folder path.</summary>
-        public ITextWriter CreateTextWriter(string filePath, FileWriteMode writeMode)
+        public TextWriter CreateTextWriter(string filePath, FileWriteMode writeMode)
         {
             // Create full path by combining with output folder path
             string fullFilePath = Path.Combine(outputFolderPath_, filePath);
@@ -62,12 +63,13 @@ namespace DataCentric
             switch (writeMode)
             {
                 case FileWriteMode.Append:
-                    return new CustomTextWriter(Context, File.AppendText(fullFilePath));
+                    return new StreamWriter(fullFilePath);
                 case FileWriteMode.Replace:
-                    return new CustomTextWriter(Context, File.CreateText(fullFilePath));
+                    if (File.Exists(fullFilePath)) File.Delete(fullFilePath);
+                    return new StreamWriter(fullFilePath);
                 case FileWriteMode.CreateNew:
                     if (File.Exists(fullFilePath)) Context.Log.Error("File {0} already exists.", fullFilePath);
-                    return new CustomTextWriter(Context, File.CreateText(fullFilePath));
+                    return new StreamWriter(fullFilePath);
                 default:
                     throw Context.Log.Exception("FileMode={0} is not supported.", writeMode.ToString());
             }
