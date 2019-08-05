@@ -25,8 +25,10 @@ using MongoDB.Bson.Serialization.IdGenerators;
 namespace DataCentric
 {
     /// <summary>
-    /// Context for use in test fixtures that require MongoDB.
+    /// Specialization of DataTestContext with MongoDB data source.
     /// 
+    /// DataTestContext is the context for use in test fixtures that
+    /// require a data source, parameterized by data source type.
     /// It extends UnitTestContext by creating an empty test
     /// database specific to the test method, and deleting
     /// it after the test exits. The context creates Common
@@ -37,9 +39,9 @@ namespace DataCentric
     /// after the text exits. This data will be cleared on the
     /// next launch of the test.
     ///
-    /// For tests that do not require MongoDB, use UnitTestDataContext.
+    /// For tests that do not require a data source, use UnitTestContext.
     /// </summary>
-    public class MongoTestContext : UnitTestContext, IVerifyable, IDisposable
+    public class MongoTestContext : DataTestContext<MongoDataSourceData>
     {
         /// <summary>
         /// Create with class name, method name, and source file path.
@@ -55,6 +57,41 @@ namespace DataCentric
             :
             base(classInstance, methodName, sourceFilePath)
         {
+        }
+    }
+
+    /// <summary>
+    /// Context for use in test fixtures that require a data source.
+    /// 
+    /// It extends UnitTestContext by creating an empty test
+    /// database specific to the test method, and deleting
+    /// it after the test exits. The context creates Common
+    /// dataset in the database and assigns its ObjectId to
+    /// the DataSet property of the context.
+    ///
+    /// If the test sets KeepTestData = true, the data is retained
+    /// after the text exits. This data will be cleared on the
+    /// next launch of the test.
+    ///
+    /// For tests that do not require a data source, use UnitTestContext.
+    /// </summary>
+    public class DataTestContext<TDataSource> : UnitTestContext, IVerifyable, IDisposable
+        where TDataSource : DataSourceData, IDataSource, new()
+    {
+        /// <summary>
+        /// Create with class name, method name, and source file path.
+        ///
+        /// When ``this'' is passed as the the only argument to the
+        /// constructor, the latter two arguments are provided by
+        /// the compiler.
+        /// </summary>
+        public DataTestContext(
+            object classInstance,
+            [CallerMemberName] string methodName = null,
+            [CallerFilePath] string sourceFilePath = null)
+            :
+            base(classInstance, methodName, sourceFilePath)
+        {
             if (methodName == null) throw new Exception("Method name passed to MongoTestContext is null.");
             if (sourceFilePath == null) throw new Exception("Source file path passed to MongoTestContext is null.");
 
@@ -63,15 +100,15 @@ namespace DataCentric
             // This does not create the database until the data source
             // is actually used to access data.
             string mappedClassName = ClassInfo.GetOrCreate(classInstance).MappedClassName;
-            var dataSource = new MongoDataSourceData()
+
+            // Create data source specified as generic argument
+            var dataSource = new TDataSource();
+            dataSource.DataStore = new LocalMongoDataStoreData();
+            dataSource.DbName = new DbNameKey()
             {
-                DataStore = new LocalMongoDataStoreData(),
-                DbName = new DbNameKey()
-                {
-                    InstanceType = InstanceType.TEST,
-                    InstanceName = mappedClassName,
-                    EnvName = methodName
-                }
+                InstanceType = InstanceType.TEST,
+                InstanceName = mappedClassName,
+                EnvName = methodName
             };
 
             // Initialize and assign to property
