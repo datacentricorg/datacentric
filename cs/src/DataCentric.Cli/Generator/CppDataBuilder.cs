@@ -119,7 +119,7 @@ namespace DataCentric.Cli
             writer.AppendLine("};");
             writer.AppendNewLineWithoutIndent();
 
-            writer.AppendLine("/// <summary>Create an empty instance.</summary>");
+            writer.AppendLine("/// Create an empty instance.");
             writer.AppendLine($"inline {type}_data make_{type}_data() {{ return new {type}_data_impl(); }}");
         }
     }

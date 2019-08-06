@@ -28,7 +28,7 @@ namespace DataCentric.Cli
 
             comment = comment.Replace("\r\n","\n").Replace("\n", Environment.NewLine).TrimEnd(Environment.NewLine);
 
-            comment = $"<summary> {comment} </summary>";
+            comment = $"{comment}";
 
             var sb = new StringBuilder();
             var lines = comment.Split(new []{Environment.NewLine}, StringSplitOptions.None);
