@@ -105,7 +105,7 @@ namespace DataCentric.Cli
             var data = new HeaderFileInfo
             {
                 Content = CppEnumBuilder.BuildEnumFile(decl),
-                FileName = $"{decl.Name}.hpp",
+                FileName = $"{decl.Name.Underscore()}.hpp",
                 FolderName = $"{settings.Namespace}.{decl.Category}".ToLower().Replace('.', '/')
             };
 
