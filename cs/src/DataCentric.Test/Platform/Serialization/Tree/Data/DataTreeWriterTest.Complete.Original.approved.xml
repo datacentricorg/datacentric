@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <DerivedTypeSample>
-  <SampleID>AAA</SampleID>
+  <SampleId>AAA</SampleId>
   <DoubleElement>1</DoubleElement>
   <IntElement>1</IntElement>
   <NonNullableIntList>100</NonNullableIntList>
@@ -14,15 +14,15 @@
   <KeyList>BBB</KeyList>
   <KeyList>BBB</KeyList>
   <DataElement>
-    <SampleID>CCC</SampleID>
+    <SampleId>CCC</SampleId>
     <DoubleElement>2</DoubleElement>
   </DataElement>
   <DataList>
-    <SampleID>DDD</SampleID>
+    <SampleId>DDD</SampleId>
     <DoubleElement>3</DoubleElement>
   </DataList>
   <DataList>
-    <SampleID>DDD</SampleID>
+    <SampleId>DDD</SampleId>
     <DoubleElement>4</DoubleElement>
   </DataList>
 </DerivedTypeSample>
