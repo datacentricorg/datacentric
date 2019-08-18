@@ -31,7 +31,7 @@ namespace DataCentric
         {
             var dataSource = new MongoDataSourceData
             {
-                DataSourceID = dataStore.DataStoreID + db.Value,
+                DataSourceId = dataStore.DataStoreId + db.Value,
                 DataStore = dataStore,
                 DbName = db
             };

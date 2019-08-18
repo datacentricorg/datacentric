@@ -48,7 +48,7 @@ namespace DataCentric.Test
         public class B
         {
             [BsonId]
-            public ObjectId ID { get; set; }
+            public ObjectId Id { get; set; }
             public ObjectId DataSet { get; set; }
             public string KeyElement { get; set; }
             public string StringElement1 { get; set; }
@@ -62,7 +62,7 @@ namespace DataCentric.Test
         public class Cursor
         {
             [BsonId]
-            public ObjectId ID { get; set; }
+            public ObjectId Id { get; set; }
             public string KeyElement { get; set; }
         }
 
@@ -116,14 +116,14 @@ namespace DataCentric.Test
             if (false)
             {
                 var indexOptions = new CreateIndexOptions();
-                var indexKeys = Builders<B>.IndexKeys.Descending(p => p.DataSet).Descending(p => p.ID);
+                var indexKeys = Builders<B>.IndexKeys.Descending(p => p.DataSet).Descending(p => p.Id);
                 var indexModel = new CreateIndexModel<B>(indexKeys, indexOptions);
                 collection.Indexes.CreateOne(indexModel);
             }
             if (true)
             {
                 var indexOptions = new CreateIndexOptions();
-                var indexKeys = Builders<B>.IndexKeys.Ascending(p => p.KeyElement).Descending(p => p.DataSet).Descending(p => p.ID);
+                var indexKeys = Builders<B>.IndexKeys.Ascending(p => p.KeyElement).Descending(p => p.DataSet).Descending(p => p.Id);
                 var indexModel = new CreateIndexModel<B>(indexKeys, indexOptions);
                 collection.Indexes.CreateOne(indexModel);
             }
@@ -136,7 +136,7 @@ namespace DataCentric.Test
                     .Ascending(p => p.DoubleElement)
                     .Ascending(p => p.IntElement)
                     // .Ascending(p => p.KeyElement)
-                    .Descending(p => p.DataSet).Descending(p => p.ID);
+                    .Descending(p => p.DataSet).Descending(p => p.Id);
                 var indexModel = new CreateIndexModel<B>(indexKeys, indexOptions);
                 collection.Indexes.CreateOne(indexModel);
             }
@@ -150,7 +150,7 @@ namespace DataCentric.Test
                     for (int recordIndex = 0; recordIndex < recordCount_; ++recordIndex)
                     {
                         var rec = new B();
-                        rec.ID = ObjectId.GenerateNewId();
+                        rec.Id = ObjectId.GenerateNewId();
                         rec.DataSet = dataSet;
                         rec.KeyElement = String.Concat("KeyPrefix", recordIndex);
                         rec.StringElement1 = (recordIndex % 2).ToString();
@@ -237,7 +237,7 @@ namespace DataCentric.Test
                 for (int recordIndex = 0; recordIndex < recordCount_; ++recordIndex)
                 {
                     string key = String.Concat("KeyPrefix", recordIndex);
-                    var query = collection.AsQueryable().Where(p => p.KeyElement == key).OrderByDescending(p => p.DataSet).ThenByDescending(p => p.ID);
+                    var query = collection.AsQueryable().Where(p => p.KeyElement == key).OrderByDescending(p => p.DataSet).ThenByDescending(p => p.Id);
                     var obj = query.FirstOrDefault();
 
                     count++;
@@ -300,7 +300,7 @@ namespace DataCentric.Test
                     .ThenBy(p => p.DoubleElement)
                     .ThenBy(p => p.IntElement)
                     .ThenByDescending(p => p.DataSet)
-                    .ThenByDescending(p => p.ID);
+                    .ThenByDescending(p => p.Id);
 
                 HashSet<string> keys = new HashSet<string>();
                 foreach (var obj in query)
@@ -341,8 +341,8 @@ namespace DataCentric.Test
                     .ThenBy(p => p.DoubleElement)
                     .ThenBy(p => p.IntElement)
                     .ThenByDescending(p => p.DataSet)
-                    .ThenByDescending(p => p.ID)
-                    .Select(p => new Cursor {ID = p.ID, KeyElement = p.KeyElement});
+                    .ThenByDescending(p => p.Id)
+                    .Select(p => new Cursor {Id = p.Id, KeyElement = p.KeyElement});
 
                 // Get ObjectIds of the query results
                 int objectIdCount = 0;
@@ -352,7 +352,7 @@ namespace DataCentric.Test
                 {
                     if (keys.Add(obj.KeyElement))
                     {
-                        objectIds.Add(obj.ID);
+                        objectIds.Add(obj.Id);
                         objectIdCount++;
                     }
                 }
@@ -360,7 +360,7 @@ namespace DataCentric.Test
                 // Iterate over ObjectIds
                 int recordCount = 0;
                 var recordQuery = collection.AsQueryable()
-                    .Where(p => objectIds.Contains(p.ID));
+                    .Where(p => objectIds.Contains(p.Id));
                 foreach (var record in recordQuery)
                 {
                     sum += record.DoubleElement;

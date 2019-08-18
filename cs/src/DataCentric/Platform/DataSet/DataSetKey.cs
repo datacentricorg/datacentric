@@ -50,10 +50,10 @@ namespace DataCentric
     public class DataSetKey : Key<DataSetKey, DataSetData>
     {
         /// <summary>Dataset identifier.</summary>
-        public string DataSetID { get; set; }
+        public string DataSetId { get; set; }
 
-        /// <summary>Keys in which string ID is the only element support implicit conversion from value.</summary>
-        public static implicit operator DataSetKey(string value) { return new DataSetKey { DataSetID = value }; }
+        /// <summary>Keys in which string id is the only element support implicit conversion from value.</summary>
+        public static implicit operator DataSetKey(string value) { return new DataSetKey { DataSetId = value }; }
 
         /// <summary>
         /// By convention, Common is the default dataset in each data source.
@@ -69,6 +69,6 @@ namespace DataCentric
         /// and a few other record types, should set DataSet property to
         /// ObjectId.Empty (root dataset).
         /// </summary>
-        public static DataSetKey Common { get; } = new DataSetKey() {DataSetID = "Common"};
+        public static DataSetKey Common { get; } = new DataSetKey() {DataSetId = "Common"};
     }
 }

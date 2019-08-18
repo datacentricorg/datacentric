@@ -50,7 +50,7 @@ namespace DataCentric
             var baseResult = GetOrCreateCollection<TRecord>()
                 .BaseCollection
                 .AsQueryable()
-                .FirstOrDefault(p => p.ID == id);
+                .FirstOrDefault(p => p.Id == id);
 
             // Check not only for null but also for the delete marker
             if (baseResult != null && !baseResult.Is<DeleteMarker>())
@@ -124,7 +124,7 @@ namespace DataCentric
             // Order by dataset and then by ID in descending order
             var orderedQueryable = queryableWithFinalConstraints
                 .OrderByDescending(p => p.DataSet)
-                .OrderByDescending(p => p.ID);
+                .OrderByDescending(p => p.Id);
 
             // Result will be null if the record is not found
             var baseResult = orderedQueryable.FirstOrDefault();
@@ -216,7 +216,7 @@ namespace DataCentric
 
             // Assign ID and DataSet, and only then initialize, because 
             // initialization code may use record.ID and record.DataSet
-            record.ID = objectId;
+            record.Id = objectId;
             record.DataSet = saveTo;
             record.Init(Context);
 
@@ -248,7 +248,7 @@ namespace DataCentric
             // all processes and machine if they are not created within the same
             // second.
             var objectId = CreateOrderedObjectId();
-            record.ID = objectId;
+            record.Id = objectId;
 
             // Assign dataset and then initialize, as the results of 
             // initialization may depend on record.DataSet

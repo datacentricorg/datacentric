@@ -26,7 +26,7 @@ namespace DataCentric.Test
     public class BaseTypeSampleData : Record<BaseTypeSampleKey, BaseTypeSampleData>
     {
         /// <summary>Unique identifier.</summary>
-        public string SampleID { get; set; }
+        public string SampleId { get; set; }
 
         /// <summary>Double element of base type.</summary>
         public double? DoubleElement { get; set; }

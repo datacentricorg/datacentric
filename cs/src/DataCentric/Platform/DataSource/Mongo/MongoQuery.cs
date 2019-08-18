@@ -191,7 +191,7 @@ namespace DataCentric
                 orderedQueryable = queryableWithDataSetConstraint
                     .OrderBy(p => p.Key)
                     .ThenByDescending(p => p.DataSet) // _dataset
-                    .ThenByDescending(p => p.ID); // _id
+                    .ThenByDescending(p => p.Id); // _id
             }
             else if (queryable_ == null && orderedQueryable_ != null)
             {
@@ -202,7 +202,7 @@ namespace DataCentric
                 orderedQueryable = orderedQueryable_
                     .ThenBy(p => p.Key) // _key
                     .ThenByDescending(p => p.DataSet) // _dataset
-                    .ThenByDescending(p => p.ID); // _id
+                    .ThenByDescending(p => p.Id); // _id
 
             }
             else

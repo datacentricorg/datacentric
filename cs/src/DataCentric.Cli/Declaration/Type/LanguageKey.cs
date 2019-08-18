@@ -20,6 +20,6 @@ namespace DataCentric.Cli
     public class LanguageKey
     {
         /// <summary>Language.</summary>
-        public string LanguageID { get; set; }
+        public string LanguageId { get; set; }
     }
 }

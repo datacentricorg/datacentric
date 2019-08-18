@@ -25,9 +25,9 @@ namespace DataCentric.Test
     public class BaseTypeSampleKey : Key<BaseTypeSampleKey, BaseTypeSampleData>
     {
         /// <summary>Unique identifier.</summary>
-        public string SampleID { get; set; }
+        public string SampleId { get; set; }
 
-        /// <summary>Keys in which string ID is the only element support implicit conversion from value.</summary>
-        public static implicit operator BaseTypeSampleKey(string value) { return new BaseTypeSampleKey { SampleID = value }; }
+        /// <summary>Keys in which string id is the only element support implicit conversion from value.</summary>
+        public static implicit operator BaseTypeSampleKey(string value) { return new BaseTypeSampleKey { SampleId = value }; }
     }
 }

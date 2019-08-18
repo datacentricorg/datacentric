@@ -40,7 +40,7 @@ namespace DataCentric
         //--- FIELDS
 
         /// <summary>
-        /// Dictionary of dataset ObjectIds stored under string dataSetID.
+        /// Dictionary of dataset ObjectIds stored under string dataSetId.
         /// </summary>
         private Dictionary<string, ObjectId> dataSetDict_ { get; } = new Dictionary<string, ObjectId>();
 
@@ -55,7 +55,7 @@ namespace DataCentric
 
         /// <summary>Unique data source identifier.</summary>
         [BsonRequired]
-        public string DataSourceID { get; set; }
+        public string DataSourceId { get; set; }
 
         /// <summary>
         /// This class enforces strict naming conventions
@@ -69,7 +69,7 @@ namespace DataCentric
 
         /// <summary>
         /// Identifies the data store used by this data source.
-        /// 
+        ///
         /// Data store represents a database server or similar concept for non-database
         /// storage. It is not the same as data source (database) as it only specifies
         /// the server, and each server can host multiple data sources (databases).
@@ -99,7 +99,7 @@ namespace DataCentric
         ///
         /// The value of this element must fall precisely on the second,
         /// error message otherwise.
-        /// 
+        ///
         /// SavedByTime and SavedById elements are alternates;
         /// they cannot be specified at the same time.
         ///
@@ -111,7 +111,7 @@ namespace DataCentric
         /// <summary>
         /// Records where _id is greater than SavedById will be
         /// ignored by the data source.
-        /// 
+        ///
         /// SavedByTime and SavedById elements are alternates;
         /// they cannot be specified at the same time.
         ///
@@ -140,7 +140,7 @@ namespace DataCentric
         ///
         /// Return null if there is no record for the specified ObjectId;
         /// however an exception will be thrown if the record exists but
-        /// is not derived from TRecord. 
+        /// is not derived from TRecord.
         /// </summary>
         public abstract TRecord LoadOrNull<TRecord>(ObjectId id)
             where TRecord : RecordBase;
@@ -152,14 +152,14 @@ namespace DataCentric
         /// the caching variant of this method:
         ///
         /// LoadOrNull(key, loadFrom)
-        /// 
+        ///
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
         /// order of dataset ObjectIds, and then in the descending
         /// order of record ObjectIds within the first dataset that
         /// has at least one record. Both dataset and record ObjectIds
         /// are ordered chronologically to one second resolution,
-        /// and are unique within the database server or cluster. 
+        /// and are unique within the database server or cluster.
         ///
         /// The root dataset has empty ObjectId value that is less
         /// than any other ObjectId value. Accordingly, the root
@@ -171,7 +171,7 @@ namespace DataCentric
         ///
         /// Return null if there is no record for the specified ObjectId;
         /// however an exception will be thrown if the record exists but
-        /// is not derived from TRecord. 
+        /// is not derived from TRecord.
         /// </summary>
         public abstract TRecord ReloadOrNull<TKey, TRecord>(Key<TKey, TRecord> key, ObjectId loadFrom)
             where TKey : Key<TKey, TRecord>, new()
@@ -222,7 +222,7 @@ namespace DataCentric
         /// lookup in a sequence of datasets.
         ///
         /// To avoid an additional roundtrip to the data store, the delete
-        /// marker is written even when the record does not exist. 
+        /// marker is written even when the record does not exist.
         /// </summary>
         public abstract void Delete<TKey, TRecord>(Key<TKey, TRecord> key, ObjectId deleteIn)
             where TKey : Key<TKey, TRecord>, new()
@@ -266,14 +266,14 @@ namespace DataCentric
         {
             if (IsReadOnly())
                 throw new Exception(
-                    $"Attempting write operation for readonly data source {DataSourceID}. " +
+                    $"Attempting write operation for readonly data source {DataSourceId}. " +
                     $"A data source is readonly if either (a) its ReadOnly flag is set, or (b) " +
                     $"one of SavedByTime or SavedById is set.");
         }
 
         /// <summary>
         /// Return ObjectId for the latest dataset record with
-        /// matching dataSetID string from in-memory cache. Try
+        /// matching dataSetId string from in-memory cache. Try
         /// loading from storage only if not found in cache.
         ///
         /// Return ObjectId.Empty if not found.
@@ -284,12 +284,12 @@ namespace DataCentric
         /// if not found in cache. Use LoadDataSet method to
         /// force reloading the dataset from storage.
         ///
-        /// Error message if no matching dataSetID string is found
+        /// Error message if no matching dataSetId string is found
         /// or a delete marker is found instead.
         /// </summary>
-        public ObjectId GetDataSetOrEmpty(string dataSetID, ObjectId loadFrom)
+        public ObjectId GetDataSetOrEmpty(string dataSetId, ObjectId loadFrom)
         {
-            if (dataSetDict_.TryGetValue(dataSetID, out ObjectId result))
+            if (dataSetDict_.TryGetValue(dataSetId, out ObjectId result))
             {
                 // Check if already cached, return if found
                 return result;
@@ -297,31 +297,31 @@ namespace DataCentric
             else
             {
                 // Otherwise load from storage (this also updates the dictionaries)
-                return LoadDataSetOrEmpty(dataSetID, loadFrom);
+                return LoadDataSetOrEmpty(dataSetId, loadFrom);
             }
         }
 
         /// <summary>
         /// Save new version of the dataset.
         ///
-        /// This method sets ID field of the argument to be the
+        /// This method sets Id field of the argument to be the
         /// new ObjectId assigned to the record when it is saved.
         /// The timestamp of the new ObjectId is the current time.
-        /// 
+        ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
         public void SaveDataSet(DataSetData dataSetData, ObjectId saveTo)
         {
-            // Save dataset to storage. This updates its ID
+            // Save dataset to storage. This updates its Id
             // to the new ObjectId created during save
             Save<DataSetData>(dataSetData, saveTo);
 
-            // Update dataset dictionary with the new ID
-            dataSetDict_[dataSetData.Key] = dataSetData.ID;
+            // Update dataset dictionary with the new Id
+            dataSetDict_[dataSetData.Key] = dataSetData.Id;
 
             // Update lookup list dictionary
             var lookupList = BuildDataSetLookupList(dataSetData);
-            importDict_.Add(dataSetData.ID, lookupList);
+            importDict_.Add(dataSetData.Id, lookupList);
         }
 
         /// <summary>
@@ -417,7 +417,7 @@ namespace DataCentric
 
         /// <summary>
         /// Load ObjectId for the latest dataset record with
-        /// matching dataSetID string from storage even if
+        /// matching dataSetId string from storage even if
         /// present in in-memory cache. Update the cache with
         /// the loaded value.
         ///
@@ -430,26 +430,26 @@ namespace DataCentric
         /// because it will return the value from in-memory
         /// cache when present.
         /// </summary>
-        private ObjectId LoadDataSetOrEmpty(string dataSetID, ObjectId loadFrom)
+        private ObjectId LoadDataSetOrEmpty(string dataSetId, ObjectId loadFrom)
         {
             // Always load even if present in cache
-            DataSetKey dataSetKey = new DataSetKey() { DataSetID = dataSetID };
+            DataSetKey dataSetKey = new DataSetKey() { DataSetId = dataSetId };
             DataSetData dataSetData = this.LoadOrNull(dataSetKey, loadFrom);
 
             // If not found, return ObjectId.Empty
             if (dataSetData == null) return ObjectId.Empty;
 
             // If found, cache result in ObjectId dictionary
-            dataSetDict_[dataSetID] = dataSetData.ID;
+            dataSetDict_[dataSetId] = dataSetData.Id;
 
             // Build and cache dataset lookup list if not found
-            if (!importDict_.TryGetValue(dataSetData.ID, out HashSet<ObjectId> importSet))
+            if (!importDict_.TryGetValue(dataSetData.Id, out HashSet<ObjectId> importSet))
             {
                 importSet = BuildDataSetLookupList(dataSetData);
-                importDict_.Add(dataSetData.ID, importSet);
+                importDict_.Add(dataSetData.Id, importSet);
             }
 
-            return dataSetData.ID;
+            return dataSetData.Id;
         }
 
         /// <summary>
@@ -463,8 +463,8 @@ namespace DataCentric
         /// even those imports that are earlier than the constraint).
         ///
         /// This overload of the method will return the result hashset.
-        /// 
-        /// This private helper method should not be used directly. 
+        ///
+        /// This private helper method should not be used directly.
         /// It provides functionality for the public API of this class.
         /// </summary>
         private HashSet<ObjectId> BuildDataSetLookupList(DataSetData dataSetData)
@@ -486,8 +486,8 @@ namespace DataCentric
         /// even those imports that are earlier than the constraint).
         ///
         /// This overload of the method will return the result hashset.
-        /// 
-        /// This private helper method should not be used directly. 
+        ///
+        /// This private helper method should not be used directly.
         /// It provides functionality for the public API of this class.
         /// </summary>
         private void BuildDataSetLookupList(DataSetData dataSetData, HashSet<ObjectId> result)
@@ -495,12 +495,12 @@ namespace DataCentric
             // Return if the dataset is null or has no imports
             if (dataSetData == null) return;
 
-            // Error message if dataset has no ID or Key
-            dataSetData.ID.CheckHasValue();
+            // Error message if dataset has no Id or Key set
+            dataSetData.Id.CheckHasValue();
             dataSetData.Key.CheckHasValue();
 
             var savedBy = GetSavedBy();
-            if (savedBy != null && dataSetData.ID > savedBy.Value)
+            if (savedBy != null && dataSetData.Id > savedBy.Value)
             {
                 // Do not add if revision time constraint is set and is before this dataset.
                 // In this case the import datasets should not be added either, even if they
@@ -509,7 +509,7 @@ namespace DataCentric
             }
 
             // Add self to the result
-            result.Add(dataSetData.ID);
+            result.Add(dataSetData.Id);
 
             // Add imports to the result
             if (dataSetData.Import != null)
@@ -517,9 +517,9 @@ namespace DataCentric
                 foreach (var dataSetId in dataSetData.Import)
                 {
                     // Dataset cannot include itself as its import
-                    if (dataSetData.ID == dataSetId)
+                    if (dataSetData.Id == dataSetId)
                         throw new Exception(
-                            $"Dataset {dataSetData.Key} with ObjectId={dataSetData.ID} includes itself in the list of its imports.");
+                            $"Dataset {dataSetData.Key} with ObjectId={dataSetData.Id} includes itself in the list of its imports.");
 
                     // The Add method returns true if the argument is not yet present in the hashset
                     if (result.Add(dataSetId))

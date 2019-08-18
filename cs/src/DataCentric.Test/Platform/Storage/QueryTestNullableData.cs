@@ -23,7 +23,7 @@ namespace DataCentric.Test
     /// <summary>Key class that has all of the permitted nullable key elements included.</summary>
     public class QueryTestNullableData : Record<QueryTestNullableKey, QueryTestNullableData>
     {
-        public string RecordID { get; set; }
+        public string RecordId { get; set; }
         public int RecordIndex { get; set; }
         public string StringToken { get; set; }
         public bool? BoolToken { get; set; }

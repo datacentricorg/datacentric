@@ -195,7 +195,7 @@ namespace DataCentric.Cli
             dbName.AssignString(dbNameString);
             LocalMongoDataStoreData dbServer = new LocalMongoDataStoreData
             {
-                DataStoreID = "LOCAL_TEST",
+                DataStoreId = "LOCAL_TEST",
             };
 
             IContext context = new MongoCliContext(dbName, dbServer);
@@ -264,7 +264,7 @@ namespace DataCentric.Cli
                     // Interfaces are not serializable, so use dynamic to propagate TypeDeclData|EnumDeclData
                     dynamic decl = DeclarationConvertor.ToDecl(type, docNavigator, projNavigator);
 
-                    string outputFolder = Path.Combine(options.OutputFolder, decl.Module.ModuleID.Replace('.','\\'));
+                    string outputFolder = Path.Combine(options.OutputFolder, decl.Module.ModuleId.Replace('.','\\'));
                     Directory.CreateDirectory(outputFolder);
 
                     string extension = type.IsSubclassOf(typeof(Enum)) ? "clenum" : "cltype";

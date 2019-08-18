@@ -38,7 +38,7 @@ namespace DataCentric
     /// between winter and summer time automatically for those
     /// regions where winter time is defined.
     ///
-    /// Because TimeZoneID is used to look up timezone conventions,
+    /// Because TimeZoneId is used to look up timezone conventions,
     /// it must match either the string UTC or the code in IANA
     /// timezone database precisely. The IANA city timezone code
     /// has two slash-delimited tokens, the first referencing the
@@ -59,21 +59,21 @@ namespace DataCentric
         /// between winter and summer time automatically for those
         /// regions where winter time is defined.
         ///
-        /// Because TimeZoneID is used to look up timezone conventions,
+        /// Because TimeZoneId is used to look up timezone conventions,
         /// it must match either the string UTC or the code in IANA
         /// timezone database precisely. The IANA city timezone code
         /// has two slash-delimited tokens, the first referencing the
         /// country and the other the city, for example America/New_York.
         /// </summary>
         [BsonRequired]
-        public string TimeZoneID { get; set; }
+        public string TimeZoneId { get; set; }
 
         /// <summary>
         /// NodaTime timezone object used for conversion between
         /// UTC and local date, time, minute, and datetime.
         ///
-        /// This property is set in Init(...) method based on TimeZoneID.
-        /// Because TimeZoneID is used to look up timezone conventions,
+        /// This property is set in Init(...) method based on TimeZoneId.
+        /// Because TimeZoneId is used to look up timezone conventions,
         /// it must match the code in IANA timezone database precisely.
         ///
         /// The IANA city timezone code has two slash-delimited tokens,
@@ -93,26 +93,26 @@ namespace DataCentric
         {
             base.Init(context);
 
-            // Check that TimeZoneID is set
-            if (!TimeZoneID.HasValue()) throw new Exception("TimeZoneID is not set.");
+            // Check that TimeZoneId is set
+            if (!TimeZoneId.HasValue()) throw new Exception("TimeZoneId is not set.");
 
-            if (TimeZoneID != "UTC" && !TimeZoneID.Contains("/"))
+            if (TimeZoneId != "UTC" && !TimeZoneId.Contains("/"))
                 throw new Exception(
-                    $"TimeZoneID={TimeZoneID} is not UTC and is not a forward slash  " +
+                    $"TimeZoneId={TimeZoneId} is not UTC and is not a forward slash  " +
                     $"delimited city timezone. Only (a) UTC timezone and (b) IANA TZDB " + 
                     $"city timezones such as America/New_York are permitted " +
-                    $"as TimeZoneID values, but not three-symbol timezones without " +
+                    $"as TimeZoneId values, but not three-symbol timezones without " +
                     $"delimiter such as EST or EDT that do not handle the switch " +
                     $"between winter and summer time automatically when winter time " +
                     $"is defined.");
 
             // Initialize TimeZone property
-            TimeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(TimeZoneID);
+            TimeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(TimeZoneId);
 
-            // If still null after initialization, TimeZoneID
+            // If still null after initialization, TimeZoneId
             // was not found in the IANA database of city codes
             if (TimeZone == null)
-                throw new Exception($"TimeZoneID={TimeZoneID} not found in IANA TZDB timezone database.");
+                throw new Exception($"TimeZoneId={TimeZoneId} not found in IANA TZDB timezone database.");
         }
     }
 }

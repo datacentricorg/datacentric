@@ -36,7 +36,7 @@ namespace DataCentric
     /// * Executed in a different process or thread
     /// * Executed on a different machine
     /// * Executed in parallel or out of sequence
-    ///  
+    ///
     /// The Run() method must be implemented defensively to ensure
     /// that the job runs successfully in all of these cases.
     /// </summary>
@@ -49,12 +49,12 @@ namespace DataCentric
         /// update operations must assign a new ObjectId with the
         /// timestamp that matches update time.
         ///
-        /// This definition includes the record's ID in its key.
+        /// This definition includes the record's _id in its key.
         /// </summary>
-        public override ObjectId ID
+        public override ObjectId Id
         {
-            get => base.ID;
-            set => base.ID = value;
+            get => base.Id;
+            set => base.Id = value;
         }
 
         /// <summary>Job which produced the output.</summary>

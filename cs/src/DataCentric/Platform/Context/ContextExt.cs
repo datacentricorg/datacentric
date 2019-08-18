@@ -35,7 +35,7 @@ namespace DataCentric
         ///
         /// Return null if there is no record for the specified ObjectId;
         /// however an exception will be thrown if the record exists but
-        /// is not derived from TRecord. 
+        /// is not derived from TRecord.
         /// </summary>
         public static TRecord LoadOrNull<TRecord>(this IContext obj, ObjectId id)
             where TRecord : RecordBase
@@ -50,14 +50,14 @@ namespace DataCentric
         /// the non-caching variant of this method:
         ///
         /// ReloadOrNull(key,dataSet)
-        /// 
+        ///
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
         /// order of dataset ObjectIds, and then in the descending
         /// order of record ObjectIds within the first dataset that
         /// has at least one record. Both dataset and record ObjectIds
         /// are ordered chronologically to one second resolution,
-        /// and are unique within the database server or cluster. 
+        /// and are unique within the database server or cluster.
         ///
         /// The root dataset has empty ObjectId value that is less
         /// than any other ObjectId value. Accordingly, the root
@@ -69,7 +69,7 @@ namespace DataCentric
         ///
         /// Return null if there is no record for the specified ObjectId;
         /// however an exception will be thrown if the record exists but
-        /// is not derived from TRecord. 
+        /// is not derived from TRecord.
         /// </summary>
         public static TRecord LoadOrNull<TKey, TRecord>(this IContext obj, Key<TKey, TRecord> key, ObjectId loadFrom)
             where TKey : Key<TKey, TRecord>, new()
@@ -85,14 +85,14 @@ namespace DataCentric
         /// the caching variant of this method:
         ///
         /// LoadOrNull(key, loadFrom)
-        /// 
+        ///
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
         /// order of dataset ObjectIds, and then in the descending
         /// order of record ObjectIds within the first dataset that
         /// has at least one record. Both dataset and record ObjectIds
         /// are ordered chronologically to one second resolution,
-        /// and are unique within the database server or cluster. 
+        /// and are unique within the database server or cluster.
         ///
         /// The root dataset has empty ObjectId value that is less
         /// than any other ObjectId value. Accordingly, the root
@@ -104,7 +104,7 @@ namespace DataCentric
         ///
         /// Return null if there is no record for the specified ObjectId;
         /// however an exception will be thrown if the record exists but
-        /// is not derived from TRecord. 
+        /// is not derived from TRecord.
         /// </summary>
         public static TRecord ReloadOrNull<TKey, TRecord>(this IContext obj, Key<TKey, TRecord> key, ObjectId loadFrom)
             where TKey : Key<TKey, TRecord>, new()
@@ -267,7 +267,7 @@ namespace DataCentric
 
         /// <summary>
         /// Return ObjectId for the latest dataset record with
-        /// matching dataSetID string from in-memory cache. Try
+        /// matching dataSetId string from in-memory cache. Try
         /// loading from storage only if not found in cache.
         ///
         /// This overload of the GetDataSet method does not
@@ -282,14 +282,14 @@ namespace DataCentric
         /// if not found in cache. Use LoadDataSet method to
         /// force reloading the dataset from storage.
         /// </summary>
-        public static ObjectId GetDataSet(this IContext obj, string dataSetID)
+        public static ObjectId GetDataSet(this IContext obj, string dataSetId)
         {
-            return obj.DataSource.GetDataSet(dataSetID, obj.DataSet);
+            return obj.DataSource.GetDataSet(dataSetId, obj.DataSet);
         }
 
         /// <summary>
         /// Return ObjectId for the latest dataset record with
-        /// matching dataSetID string from in-memory cache. Try
+        /// matching dataSetId string from in-memory cache. Try
         /// loading from storage only if not found in cache.
         ///
         /// This overload of the GetDataSet method specifies
@@ -303,14 +303,14 @@ namespace DataCentric
         /// if not found in cache. Use LoadDataSet method to
         /// force reloading the dataset from storage.
         /// </summary>
-        public static ObjectId GetDataSet(this IContext obj, string dataSetID, ObjectId loadFrom)
+        public static ObjectId GetDataSet(this IContext obj, string dataSetId, ObjectId loadFrom)
         {
-            return obj.DataSource.GetDataSet(dataSetID, loadFrom);
+            return obj.DataSource.GetDataSet(dataSetId, loadFrom);
         }
 
         /// <summary>
         /// Return ObjectId for the latest dataset record with
-        /// matching dataSetID string from in-memory cache. Try
+        /// matching dataSetId string from in-memory cache. Try
         /// loading from storage only if not found in cache.
         ///
         /// This overload of the GetDataSetOrEmpty method does not
@@ -325,17 +325,17 @@ namespace DataCentric
         /// if not found in cache. Use LoadDataSet method to
         /// force reloading the dataset from storage.
         ///
-        /// Error message if no matching dataSetID string is found
+        /// Error message if no matching dataSetId string is found
         /// or a delete marker is found instead.
         /// </summary>
-        public static ObjectId GetDataSetOrEmpty(this IContext obj, string dataSetID)
+        public static ObjectId GetDataSetOrEmpty(this IContext obj, string dataSetId)
         {
-            return obj.DataSource.GetDataSetOrEmpty(dataSetID, obj.DataSet);
+            return obj.DataSource.GetDataSetOrEmpty(dataSetId, obj.DataSet);
         }
 
         /// <summary>
         /// Return ObjectId for the latest dataset record with
-        /// matching dataSetID string from in-memory cache. Try
+        /// matching dataSetId string from in-memory cache. Try
         /// loading from storage only if not found in cache.
         ///
         /// This overload of the GetDataSetOrEmpty method specifies
@@ -349,12 +349,12 @@ namespace DataCentric
         /// if not found in cache. Use LoadDataSet method to
         /// force reloading the dataset from storage.
         ///
-        /// Error message if no matching dataSetID string is found
+        /// Error message if no matching dataSetId string is found
         /// or a delete marker is found instead.
         /// </summary>
-        public static ObjectId GetDataSetOrEmpty(this IContext obj, string dataSetID, ObjectId loadFrom)
+        public static ObjectId GetDataSetOrEmpty(this IContext obj, string dataSetId, ObjectId loadFrom)
         {
-            return obj.DataSource.GetDataSetOrEmpty(dataSetID, loadFrom);
+            return obj.DataSource.GetDataSetOrEmpty(dataSetId, loadFrom);
         }
 
         /// <summary>
@@ -366,10 +366,10 @@ namespace DataCentric
         ///
         /// The Common dataset is always stored in root dataset.
         ///
-        /// This method sets ID field of the argument to be the
+        /// This method sets Id field of the argument to be the
         /// new ObjectId assigned to the record when it is saved.
         /// The timestamp of the new ObjectId is the current time.
-        /// 
+        ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
         public static ObjectId CreateCommon(this IContext obj)
@@ -378,7 +378,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create new version of the dataset with the specified dataSetID
+        /// Create new version of the dataset with the specified dataSetId
         /// and no import datasets.
         ///
         /// This overload of the CreateDataSet method does not
@@ -387,13 +387,13 @@ namespace DataCentric
         ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetID)
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetId)
         {
-            return obj.DataSource.CreateDataSet(dataSetID, obj.DataSet);
+            return obj.DataSource.CreateDataSet(dataSetId, obj.DataSet);
         }
 
         /// <summary>
-        /// Create new version of the dataset with the specified dataSetID
+        /// Create new version of the dataset with the specified dataSetId
         /// and no import datasets.
         ///
         /// This overload of the CreateDataSet method specifies
@@ -401,13 +401,13 @@ namespace DataCentric
         ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetID, ObjectId saveTo)
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, ObjectId saveTo)
         {
-            return obj.DataSource.CreateDataSet(dataSetID, saveTo);
+            return obj.DataSource.CreateDataSet(dataSetId, saveTo);
         }
 
         /// <summary>
-        /// Create new version of the dataset with the specified dataSetID
+        /// Create new version of the dataset with the specified dataSetId
         /// and imported dataset ObjectIds passed as an array, and return
         /// the new ObjectId assigned to the saved dataset.
         ///
@@ -417,13 +417,13 @@ namespace DataCentric
         ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetID, IEnumerable<ObjectId> importDataSets)
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, IEnumerable<ObjectId> importDataSets)
         {
-            return obj.DataSource.CreateDataSet(dataSetID, importDataSets, obj.DataSet);
+            return obj.DataSource.CreateDataSet(dataSetId, importDataSets, obj.DataSet);
         }
 
         /// <summary>
-        /// Create new version of the dataset with the specified dataSetID
+        /// Create new version of the dataset with the specified dataSetId
         /// and imported dataset ObjectIds passed as an array, and return
         /// the new ObjectId assigned to the saved dataset.
         ///
@@ -432,9 +432,9 @@ namespace DataCentric
         ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetID, IEnumerable<ObjectId> importDataSets, ObjectId saveTo)
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, IEnumerable<ObjectId> importDataSets, ObjectId saveTo)
         {
-            return obj.DataSource.CreateDataSet(dataSetID, importDataSets, saveTo);
+            return obj.DataSource.CreateDataSet(dataSetId, importDataSets, saveTo);
         }
 
         /// <summary>
@@ -444,10 +444,10 @@ namespace DataCentric
         /// specify the saveTo parameter explicitly and instead
         /// uses context.DataSet for its value.
         ///
-        /// This method sets ID field of the argument to be the
+        /// This method sets Id field of the argument to be the
         /// new ObjectId assigned to the record when it is saved.
         /// The timestamp of the new ObjectId is the current time.
-        /// 
+        ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
         public static void SaveDataSet(this IContext obj, DataSetData dataSetData)
@@ -461,10 +461,10 @@ namespace DataCentric
         /// This overload of the SaveDataSet method specifies
         /// the saveTo parameter explicitly.
         ///
-        /// This method sets ID field of the argument to be the
+        /// This method sets Id field of the argument to be the
         /// new ObjectId assigned to the record when it is saved.
         /// The timestamp of the new ObjectId is the current time.
-        /// 
+        ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
         public static void SaveDataSet(this IContext obj, DataSetData dataSetData, ObjectId saveTo)

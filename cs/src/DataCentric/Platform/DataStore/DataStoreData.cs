@@ -37,6 +37,6 @@ namespace DataCentric
     {
         /// <summary>Unique data store identifier.</summary>
         [BsonRequired]
-        public string DataStoreID { get; set; }
+        public string DataStoreId { get; set; }
     }
 }

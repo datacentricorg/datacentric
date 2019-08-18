@@ -36,23 +36,23 @@ namespace DataCentric
     public class DataSourceKey : RootKey<DataSourceKey, DataSourceData>
     {
         /// <summary>Unique data source identifier.</summary>
-        public string DataSourceID { get; set; }
+        public string DataSourceId { get; set; }
 
         //--- OPERATORS
 
-        /// <summary>Keys in which string ID is the only element support implicit conversion from value.</summary>
-        public static implicit operator DataSourceKey(string value) { return new DataSourceKey { DataSourceID = value }; }
+        /// <summary>Keys in which string id is the only element support implicit conversion from value.</summary>
+        public static implicit operator DataSourceKey(string value) { return new DataSourceKey { DataSourceId = value }; }
 
         //--- STATIC
 
         /// <summary>
         /// By convention, Cache is the name of the Operational Data Store (ODS).
         /// </summary>
-        public static DataSourceKey Cache { get; } = new DataSourceKey() { DataSourceID = "Cache" };
+        public static DataSourceKey Cache { get; } = new DataSourceKey() { DataSourceId = "Cache" };
 
         /// <summary>
         /// By convention, Master is the name of the Master Data Store (MDS).
         /// </summary>
-        public static DataSourceKey Master { get; } = new DataSourceKey() { DataSourceID = "Master" };
+        public static DataSourceKey Master { get; } = new DataSourceKey() { DataSourceId = "Master" };
     }
 }

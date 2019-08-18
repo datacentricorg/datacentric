@@ -41,7 +41,7 @@ namespace DataCentric
         IContext Context { get; }
 
         /// <summary>Unique data source identifier.</summary>
-        string DataSourceID { get; }
+        string DataSourceId { get; }
 
         //--- METHODS
 
@@ -166,7 +166,7 @@ namespace DataCentric
 
         /// <summary>
         /// Return ObjectId for the latest dataset record with
-        /// matching dataSetID string from in-memory cache. Try
+        /// matching dataSetId string from in-memory cache. Try
         /// loading from storage only if not found in cache.
         ///
         /// Return ObjectId.Empty if not found.
@@ -177,10 +177,10 @@ namespace DataCentric
         /// if not found in cache. Use LoadDataSet method to
         /// force reloading the dataset from storage.
         ///
-        /// Error message if no matching dataSetID string is found
+        /// Error message if no matching dataSetId string is found
         /// or a delete marker is found instead.
         /// </summary>
-        ObjectId GetDataSetOrEmpty(string dataSetID, ObjectId loadFrom);
+        ObjectId GetDataSetOrEmpty(string dataSetId, ObjectId loadFrom);
 
         /// <summary>
         /// Save new version of the dataset.

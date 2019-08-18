@@ -198,7 +198,7 @@ namespace DataCentric
             var savedBy = GetSavedBy();
             if (savedBy != null)
             {
-                result = result.Where(p => p.ID <= savedBy.Value);
+                result = result.Where(p => p.Id <= savedBy.Value);
             }
 
             return result;
@@ -253,7 +253,7 @@ namespace DataCentric
         /// <summary>
         /// Returned object holds two collection references - one for the base
         /// type of all records and the other for the record type specified
-        /// as generic parameter. 
+        /// as generic parameter.
         ///
         /// The need to hold two collection arises from the requirement
         /// that query for a derived type takes into account that another
@@ -269,7 +269,7 @@ namespace DataCentric
         /// Additional indices may be created using property attribute
         ///
         /// [Indexed]
-        /// 
+        ///
         /// for further performance optimization.
         /// </summary>
         protected MongoCollection<TRecord> GetOrCreateCollection<TRecord>()
@@ -288,7 +288,7 @@ namespace DataCentric
             if (!discriminatorConvention.Is<ScalarDiscriminatorConvention>())
                 throw new Exception(
                     $"Scalar discriminator convention is not set for type {typeof(TRecord).Name}. " +
-                    $"The convention should have been set set in the static constructor of " + 
+                    $"The convention should have been set set in the static constructor of " +
                     $"MongoDataSourceBaseData");
 
             // Collection name is root class name of the record without prefix
@@ -310,7 +310,7 @@ namespace DataCentric
                 var indexKeys = Builders<TRecord>.IndexKeys
                     .Ascending(new StringFieldDefinition<TRecord>("_key")) // .Key
                     .Descending(new StringFieldDefinition<TRecord>("_dataset")) // .DataSet
-                    .Descending(new StringFieldDefinition<TRecord>("_id")); // .ID
+                    .Descending(new StringFieldDefinition<TRecord>("_id")); // .Id
 
                 var indexName = typeof(TRecord).Name + ".Key";
                 var indexModel = new CreateIndexModel<TRecord>(indexKeys, new CreateIndexOptions {Name = indexName });
@@ -364,7 +364,7 @@ namespace DataCentric
                         int elementOrder = attribute.Order;
 
                         if (indexName == "Key") throw new Exception(
-                            $"Index name 'Key' is reserved for the index used for lookup by key. " + 
+                            $"Index name 'Key' is reserved for the index used for lookup by key. " +
                             $"It cannot be the value of Index parameter of the [Indexed] attribute.");
                         if (indexName == "Default") throw new Exception(
                             $"Index name 'Default' is reserved for the index for which no name is specified. " +

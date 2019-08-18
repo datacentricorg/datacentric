@@ -35,7 +35,7 @@ namespace DataCentric.Test
             /// * Executed in a different process or thread
             /// * Executed on a different machine
             /// * Executed in parallel or out of sequence
-            ///  
+            ///
             /// This method should be implemented defensively to
             /// ensure that the job runs successfully in all of
             /// these cases.
@@ -52,21 +52,21 @@ namespace DataCentric.Test
         {
             using (var context = new MongoTestContext(this))
             {
-                // Create queue record and save, then get its ID
+                // Create queue record and save, then get its id
                 var queue = new JobQueueData();
                 context.Save(queue, context.DataSet);
-                var queueId = queue.ID;
+                var queueId = queue.Id;
 
-                // Create job record and save, then get its ID
+                // Create job record and save, then get its id
                 var job = new SampleJobData();
                 job.Queue = queue.ToKey();
                 context.Save(job, context.DataSet);
-                var jobID = job.ID;
+                var jobId = job.Id;
 
                 // Load the records back
-                var queueKey = new JobQueueKey {ID = queueId};
+                var queueKey = new JobQueueKey {Id = queueId};
                 var loadedQueue = queueKey.Load(context);
-                var jobKey = new JobKey { ID = jobID };
+                var jobKey = new JobKey { Id = jobId };
                 var loadedJob = jobKey.Load(context);
 
                 // Check that ObjectId based key works correctly

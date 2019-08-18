@@ -59,7 +59,7 @@ namespace DataCentric
         /// the root dataset, Common dataset, or another dataset.
         /// </summary>
         [BsonRequired]
-        public string DataSetID { get; set; }
+        public string DataSetId { get; set; }
 
         /// <summary>
         /// List of imported datasets.
@@ -85,11 +85,11 @@ namespace DataCentric
         {
             base.Init(context);
 
-            if (!DataSetID.HasValue())
+            if (!DataSetId.HasValue())
                 throw new Exception(
-                    $"DataSetID must be set before Init(context) " +
+                    $"DataSetId must be set before Init(context) " +
                     $"method of the dataset is called.");
-            if (DataSetID == DataSetKey.Common.DataSetID && DataSet != ObjectId.Empty)
+            if (DataSetId == DataSetKey.Common.DataSetId && DataSet != ObjectId.Empty)
                 throw new Exception(
                     $"By convention, Common dataset must be stored in root dataset. " +
                     $"Other datasets may be stored inside any dataset including " +
@@ -99,19 +99,19 @@ namespace DataCentric
             {
                 foreach (var importDataSet in Import)
                 {
-                    if (ID <= importDataSet)
+                    if (Id <= importDataSet)
                     {
-                        if (ID == importDataSet)
+                        if (Id == importDataSet)
                         {
                             throw new Exception(
-                                $"Dataset {DataSetID} has an import with the same ObjectId={importDataSet} " +
+                                $"Dataset {DataSetId} has an import with the same ObjectId={importDataSet} " +
                                 $"as its own ObjectId. Each ObjectId must be unique.");
                         }
                         else
                         {
                             throw new Exception(
-                                $"Dataset {DataSetID} has an import whose ObjectId={importDataSet} is greater " +
-                                $"than its own ObjectId={ID}. The ObjectId of each import must be strictly " + 
+                                $"Dataset {DataSetId} has an import whose ObjectId={importDataSet} is greater " +
+                                $"than its own ObjectId={Id}. The ObjectId of each import must be strictly " + 
                                 $"less than the ObjectId of the dataset itself.");
                         }
                     }

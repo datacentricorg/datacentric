@@ -34,11 +34,11 @@ namespace DataCentric
     public class DataStoreKey : RootKey<DataStoreKey, DataStoreData>
     {
         /// <summary>Unique data store identifier.</summary>
-        public string DataStoreID { get; set; }
+        public string DataStoreId { get; set; }
 
         //--- OPERATORS
 
-        /// <summary>Keys in which string ID is the only element support implicit conversion from value.</summary>
-        public static implicit operator DataStoreKey(string value) { return new DataStoreKey { DataStoreID = value }; }
+        /// <summary>Keys in which string id is the only element support implicit conversion from value.</summary>
+        public static implicit operator DataStoreKey(string value) { return new DataStoreKey { DataStoreId = value }; }
     }
 }

@@ -66,7 +66,7 @@ namespace DataCentric.Cli
 
         private static string GetIncludePath(TypeDeclData decl)
         {
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
 
             return $"{settings.Namespace}.{decl.Category}".ToLower().Replace('.', '/');
         }
@@ -101,7 +101,7 @@ namespace DataCentric.Cli
 
         private static HeaderFileInfo ConvertEnum(EnumDeclData decl)
         {
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
             var data = new HeaderFileInfo
             {
                 Content = CppEnumBuilder.BuildEnumFile(decl),

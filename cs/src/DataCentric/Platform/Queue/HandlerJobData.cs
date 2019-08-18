@@ -30,7 +30,7 @@ namespace DataCentric
         /// by the Run() method of this job.
         /// </summary>
         [BsonRequired]
-        public ObjectId TargetID { get; set; }
+        public ObjectId TargetId { get; set; }
 
         /// <summary>
         /// Name of the handler method that will be called by
@@ -58,7 +58,7 @@ namespace DataCentric
         public override void Run()
         {
             // Load record by its ObjectId, error message if not found
-            var record = Context.DataSource.Load<RecordBase>(TargetID);
+            var record = Context.DataSource.Load<RecordBase>(TargetId);
 
             // Get handler method info using string handler name 
             var type = record.GetType();

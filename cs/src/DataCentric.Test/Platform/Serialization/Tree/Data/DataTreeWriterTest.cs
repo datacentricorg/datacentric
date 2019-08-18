@@ -31,7 +31,7 @@ namespace DataCentric.Test
             using (var context = new UnitTestContext(this))
             {
                 var obj = new BaseTypeSampleData();
-                obj.SampleID = "ABC";
+                obj.SampleId = "ABC";
                 obj.DoubleElement = 1.0;
 
                 string xmlString = obj.ToXml();
@@ -58,11 +58,11 @@ namespace DataCentric.Test
             using (var context = new UnitTestContext(this))
             {
                 var obj = new DerivedTypeSampleData();
-                obj.SampleID = "AAA";
+                obj.SampleId = "AAA";
                 obj.DoubleElement = 1.0;
                 obj.IntElement = 1;
                 obj.KeyElement = new BaseTypeSampleKey();
-                obj.KeyElement.SampleID = "BBB";
+                obj.KeyElement.SampleId = "BBB";
 
                 obj.NonNullableIntList = new List<int>();
                 obj.NonNullableIntList.Add(100);
@@ -79,23 +79,23 @@ namespace DataCentric.Test
 
                 obj.KeyList = new List<BaseTypeSampleKey>();
                 var keyListElement1 = new BaseTypeSampleKey();
-                keyListElement1.SampleID = "BBB";
+                keyListElement1.SampleId = "BBB";
                 obj.KeyList.Add(keyListElement1);
                 var keyListElement2 = new BaseTypeSampleKey();
-                keyListElement2.SampleID = "BBB";
+                keyListElement2.SampleId = "BBB";
                 obj.KeyList.Add(keyListElement2);
 
                 obj.DataElement = new ElementTypeSampleData();
-                obj.DataElement.SampleID = "CCC";
+                obj.DataElement.SampleId = "CCC";
                 obj.DataElement.DoubleElement = 2.0;
 
                 obj.DataList = new List<ElementTypeSampleData>();
                 var dataListItem1 = new ElementTypeSampleData();
-                dataListItem1.SampleID = "DDD";
+                dataListItem1.SampleId = "DDD";
                 dataListItem1.DoubleElement = 3.0;
                 obj.DataList.Add(dataListItem1);
                 var dataListItem2 = new ElementTypeSampleData();
-                dataListItem2.SampleID = "DDD";
+                dataListItem2.SampleId = "DDD";
                 dataListItem2.DoubleElement = 4.0;
                 obj.DataList.Add(dataListItem2);
 

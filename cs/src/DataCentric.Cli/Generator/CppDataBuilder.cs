@@ -26,7 +26,7 @@ namespace DataCentric.Cli
         {
             var writer = new CppCodeWriter();
 
-            var module = decl.Module.ModuleID;
+            var module = decl.Module.ModuleId;
             var settings = GeneratorSettingsProvider.Get(module);
 
             writer.AppendLines(settings.Copyright);
@@ -69,7 +69,7 @@ namespace DataCentric.Cli
 
         private static void BuildClass(TypeDeclData decl, CppCodeWriter writer)
         {
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
             var type = decl.Name.Underscore();
 
             // Self-forward

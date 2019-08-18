@@ -51,7 +51,7 @@ namespace DataCentric
         public override string GetMongoServerUri()
         {
             if (Hosts == null || Hosts.Count == 0) throw new Exception(
-                $"The list of hosts provided for MongoDB server {DataStoreID} is null or empty.");
+                $"The list of hosts provided for MongoDB server {DataStoreId} is null or empty.");
 
             string hostNames = String.Join(",", Hosts);
             string result = String.Concat("mongodb://", hostNames, "/");

@@ -35,7 +35,7 @@ namespace DataCentric
     /// between winter and summer time automatically for those
     /// regions where winter time is defined.
     ///
-    /// Because TimeZoneID is used to look up timezone conventions,
+    /// Because TimeZoneId is used to look up timezone conventions,
     /// it must match either the string UTC or the code in IANA
     /// timezone database precisely. The IANA city timezone code
     /// has two slash-delimited tokens, the first referencing the
@@ -57,12 +57,12 @@ namespace DataCentric
         /// between winter and summer time automatically for those
         /// regions where winter time is defined.
         ///
-        /// Because TimeZoneID is used to look up timezone conventions,
+        /// Because TimeZoneId is used to look up timezone conventions,
         /// it must match either the string UTC or the code in IANA
         /// timezone database precisely. The IANA city timezone code
         /// has two slash-delimited tokens, the first referencing the
         /// country and the other the city, for example America/New_York.
         /// </summary>
-        public string TimeZoneID { get; set; }
+        public string TimeZoneId { get; set; }
     }
 }

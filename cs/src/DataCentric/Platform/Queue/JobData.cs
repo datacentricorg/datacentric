@@ -43,7 +43,7 @@ namespace DataCentric
     public abstract class JobData : Record<JobKey, JobData>
     {
         /// <summary>
-        /// Overriding element ID here includes the record's ObjectId
+        /// Overriding element Id here includes the record's ObjectId
         /// in its key. Because ObjectId of the record is specific
         /// to its version, this is equivalent to using an auto-
         /// incrementing column as part of the record's primary key
@@ -53,10 +53,10 @@ namespace DataCentric
         /// update operations must assign a new ObjectId with the
         /// timestamp that matches update time.
         /// </summary>
-        public override ObjectId ID
+        public override ObjectId Id
         {
-            get => base.ID;
-            set => base.ID = value;
+            get => base.Id;
+            set => base.Id = value;
         }
 
         /// <summary>Queue to which the job is submitted.</summary>

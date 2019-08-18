@@ -47,12 +47,12 @@ namespace DataCentric.Test
                 // Create keys
                 var keyA0 = new MongoTestKey()
                 {
-                    RecordID = "A",
+                    RecordId = "A",
                     RecordIndex = 0
                 };
                 var keyB0 = new MongoTestKey()
                 {
-                    RecordID = "B",
+                    RecordId = "B",
                     RecordIndex = 0
                 };
 
@@ -106,17 +106,17 @@ namespace DataCentric.Test
                 SaveMinimalRecord(context, "A", "A", 2, 2);
                 SaveMinimalRecord(context, "A", "B", 3, 2);
 
-                // Query for RecordID=B
+                // Query for RecordId=B
                 var query = context.GetQuery<MongoTestData>(dataSetD)
-                    .Where(p => p.RecordID == "B")
-                    .SortBy(p => p.RecordID)
+                    .Where(p => p.RecordId == "B")
+                    .SortBy(p => p.RecordId)
                     .SortBy(p => p.RecordIndex)
                     .AsEnumerable();
 
                 foreach (var obj in query)
                 {
-                    var dataSetID = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetID;
-                    context.Verify.Text($"Key={obj.Key} DataSet={dataSetID} Version={obj.Version}");
+                    var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetId;
+                    context.Verify.Text($"Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
                 }
             }
         }
@@ -133,7 +133,7 @@ namespace DataCentric.Test
                     context.DataSource.CreateOrderedObjectId();
                 }
 
-                // Confirm no log output indicating non-increasing ID from inside the for loop
+                // Confirm no log output indicating non-increasing id from inside the for loop
                 context.Verify.Text("Log should have no lines before this one.");
             }
         }
@@ -153,12 +153,12 @@ namespace DataCentric.Test
                 // Create keys
                 var keyA0 = new MongoTestKey()
                 {
-                    RecordID = "A",
+                    RecordId = "A",
                     RecordIndex = 0
                 };
                 var keyB0 = new MongoTestKey()
                 {
-                    RecordID = "B",
+                    RecordId = "B",
                     RecordIndex = 0
                 };
 
@@ -231,12 +231,12 @@ namespace DataCentric.Test
                 // Create keys
                 var keyA0 = new MongoTestKey()
                 {
-                    RecordID = "A",
+                    RecordId = "A",
                     RecordIndex = 0
                 };
                 var keyB0 = new MongoTestKey()
                 {
-                    RecordID = "B",
+                    RecordId = "B",
                     RecordIndex = 0
                 };
 
@@ -308,8 +308,8 @@ namespace DataCentric.Test
                     .Where(p => p.LocalDateTimeElement > new LocalDateTime(2003, 5, 1, 10, 14, 59))
                     .Where(p => p.LocalDateTimeElement == new LocalDateTime(2003, 5, 1, 10, 15))
                     .Where(p => p.StringElement2 == String.Empty)
-                    .Where(p => p.KeyElement == new MongoTestKey() {RecordID = "BB", RecordIndex = 2})
-                    .SortBy(p => p.RecordID);
+                    .Where(p => p.KeyElement == new MongoTestKey() {RecordId = "BB", RecordIndex = 2})
+                    .SortBy(p => p.RecordId);
 
                 foreach (var obj in testQuery.AsEnumerable())
                 {
@@ -333,22 +333,22 @@ namespace DataCentric.Test
                 // Load record of derived types by base
                 context.Verify.Text("Load all types by key to type A");
                 {
-                    var key = new MongoTestKey {RecordID = "A", RecordIndex = 0};
+                    var key = new MongoTestKey {RecordId = "A", RecordIndex = 0};
                     var obj = context.LoadOrNull(key, dataSetD);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix,String.Empty)}");
                 }
                 {
-                    var key = new MongoTestKey { RecordID = "B", RecordIndex = 0 };
+                    var key = new MongoTestKey { RecordId = "B", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSetD);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix, String.Empty)}");
                 }
                 {
-                    var key = new MongoTestKey { RecordID = "C", RecordIndex = 0 };
+                    var key = new MongoTestKey { RecordId = "C", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSetD);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix, String.Empty)}");
                 }
                 {
-                    var key = new MongoTestKey { RecordID = "D", RecordIndex = 0 };
+                    var key = new MongoTestKey { RecordId = "D", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSetD);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix, String.Empty)}");
                 }
@@ -451,8 +451,8 @@ namespace DataCentric.Test
                 // Load each record by string key
                 if (true)
                 {
-                    var loadedA0 = new MongoTestKey() {RecordID = "A", RecordIndex = 0}.LoadOrNull(context, dataSetB);
-                    var loadedC0 = new MongoTestKey() {RecordID = "C", RecordIndex = 0}.LoadOrNull(context, dataSetB);
+                    var loadedA0 = new MongoTestKey() {RecordId = "A", RecordIndex = 0}.LoadOrNull(context, dataSetB);
+                    var loadedC0 = new MongoTestKey() {RecordId = "C", RecordIndex = 0}.LoadOrNull(context, dataSetB);
 
                     context.Verify.Text("Load records by string key without constraint");
                     if (loadedA0 != null) context.Verify.Text($"    Version found for key=A;0: {loadedA0.Version}");
@@ -463,15 +463,15 @@ namespace DataCentric.Test
                 if (true)
                 {
                     var query = context.GetQuery<MongoTestData>(dataSetB)
-                        .SortBy(p => p.RecordID)
+                        .SortBy(p => p.RecordId)
                         .SortBy(p => p.RecordIndex)
                         .AsEnumerable();
 
                     context.Verify.Text("Query records without constraint");
                     foreach (var obj in query)
                     {
-                        var dataSetID = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetID;
-                        context.Verify.Text($"    Key={obj.Key} DataSet={dataSetID} Version={obj.Version}");
+                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetId;
+                        context.Verify.Text($"    Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
                     }
                 }
 
@@ -488,8 +488,8 @@ namespace DataCentric.Test
                 // Load each record by string key
                 if (true)
                 {
-                    var loadedA0 = new MongoTestKey() { RecordID = "A", RecordIndex = 0 }.LoadOrNull(context, dataSetB);
-                    var loadedC0 = new MongoTestKey() { RecordID = "C", RecordIndex = 0 }.LoadOrNull(context, dataSetB);
+                    var loadedA0 = new MongoTestKey() { RecordId = "A", RecordIndex = 0 }.LoadOrNull(context, dataSetB);
+                    var loadedC0 = new MongoTestKey() { RecordId = "C", RecordIndex = 0 }.LoadOrNull(context, dataSetB);
 
                     context.Verify.Text("Load records by string key with SavedById constraint");
                     if (loadedA0 != null) context.Verify.Text($"    Version found for key=A;0: {loadedA0.Version}");
@@ -500,15 +500,15 @@ namespace DataCentric.Test
                 if (true)
                 {
                     var query = context.GetQuery<MongoTestData>(dataSetB)
-                        .SortBy(p => p.RecordID)
+                        .SortBy(p => p.RecordId)
                         .SortBy(p => p.RecordIndex)
                         .AsEnumerable();
 
                     context.Verify.Text("Query records with SavedById constraint");
                     foreach (var obj in query)
                     {
-                        var dataSetID = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetID;
-                        context.Verify.Text($"    Key={obj.Key} DataSet={dataSetID} Version={obj.Version}");
+                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetId;
+                        context.Verify.Text($"    Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
                     }
                 }
 
@@ -520,44 +520,44 @@ namespace DataCentric.Test
         }
 
         /// <summary>Load the object and verify the outcome.</summary>
-        private void VerifyLoad<TKey, TRecord>(IContext context, Key<TKey, TRecord> key, string dataSetID)
+        private void VerifyLoad<TKey, TRecord>(IContext context, Key<TKey, TRecord> key, string dataSetId)
             where TKey : Key<TKey, TRecord>, new()
             where TRecord : Record<TKey, TRecord>
         {
             // Get dataset and try loading the record
-            var dataSet = context.GetDataSet(dataSetID, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
             TRecord record = key.LoadOrNull(context, dataSet);
 
             if (record == null)
             {
                 // Not found
-                context.CastTo<IVerifyable>().Verify.Text($"Record {key} in dataset {dataSetID} not found.");
+                context.CastTo<IVerifyable>().Verify.Text($"Record {key} in dataset {dataSetId} not found.");
             }
             else
             {
                 // Found, also checks that the key matches
                 Assert.True(record.Key == key.ToString(),
-                    $"Record found for key={key} in dataset {dataSetID} " +
+                    $"Record found for key={key} in dataset {dataSetId} " +
                     $"has wrong key record.Key={record.Key}");
                 context.CastTo<IVerifyable>().Verify.Text(
-                    $"Record {key} in dataset {dataSetID} found and " +
+                    $"Record {key} in dataset {dataSetId} found and " +
                     $"has Type={record.GetType().Name.Replace(Prefix, String.Empty)}.");
             }
         }
 
         /// <summary>Query over all records of the specified type in the specified dataset.</summary>
-        private void VerifyQuery<TRecord>(IContext context, string dataSetID)
+        private void VerifyQuery<TRecord>(IContext context, string dataSetId)
             where TRecord : RecordBase
         {
             // Get dataset and query
-            var dataSet = context.GetDataSet(dataSetID, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
             var query = context.GetQuery<TRecord>(dataSet);
 
             // Iterate over records
             foreach (var record in query.AsEnumerable())
             {
                 context.CastTo<IVerifyable>().Verify.Text(
-                    $"Record {record.Key} returned by query in dataset {dataSetID} and " +
+                    $"Record {record.Key} returned by query in dataset {dataSetId} and " +
                     $"has Type={record.GetType().Name.Replace(Prefix, String.Empty)}.");
             }
         }
@@ -623,24 +623,24 @@ namespace DataCentric.Test
         }
 
         /// <summary>Save record with minimal data for testing how the records are found. </summary>
-        private ObjectId SaveMinimalRecord(IContext context, string dataSetID, string recordID, int recordIndex, int? version = null)
+        private ObjectId SaveMinimalRecord(IContext context, string dataSetId, string recordId, int recordIndex, int? version = null)
         {
             var rec = new MongoTestData();
-            rec.RecordID = recordID;
+            rec.RecordId = recordId;
             rec.RecordIndex = recordIndex;
             rec.Version = version;
 
-            var dataSet = context.GetDataSet(dataSetID, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
             context.Save(rec, dataSet);
 
-            return rec.ID;
+            return rec.Id;
         }
 
         /// <summary>Save base record</summary>
-        private ObjectId SaveBaseRecord(IContext context, string dataSetID, string recordID, int recordIndex)
+        private ObjectId SaveBaseRecord(IContext context, string dataSetId, string recordId, int recordIndex)
         {
             var rec = new MongoTestData();
-            rec.RecordID = recordID;
+            rec.RecordId = recordId;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 100.0;
             rec.LocalDateElement = new LocalDate(2003, 5, 1);
@@ -649,16 +649,16 @@ namespace DataCentric.Test
             rec.LocalDateTimeElement = new LocalDateTime(2003, 5, 1, 10, 15); // 2003-05-01T10:15:00
             rec.EnumValue = MongoTestEnum.EnumValue2;
 
-            var dataSet = context.GetDataSet(dataSetID, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
             context.Save(rec, dataSet);
-            return rec.ID;
+            return rec.Id;
         }
 
         /// <summary>Save derived record</summary>
-        private ObjectId SaveDerivedRecord(IContext context, string dataSetID, string recordID, int recordIndex)
+        private ObjectId SaveDerivedRecord(IContext context, string dataSetId, string recordId, int recordIndex)
         {
             var rec = new MongoTestDerivedData();
-            rec.RecordID = recordID;
+            rec.RecordId = recordId;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;
             rec.LocalDateElement = new LocalDate(2003, 5, 1);
@@ -698,30 +698,30 @@ namespace DataCentric.Test
 
             // Key element
             rec.KeyElement = new MongoTestKey();
-            rec.KeyElement.RecordID = "BB";
+            rec.KeyElement.RecordId = "BB";
             rec.KeyElement.RecordIndex = 2;
 
             // Key element list
             rec.KeyElementList = new List<MongoTestKey>();
             var keyList0 = new MongoTestKey();
-            keyList0.RecordID = "B0";
+            keyList0.RecordId = "B0";
             keyList0.RecordIndex = 3;
             rec.KeyElementList.Add(keyList0);
             var keyList1 = new MongoTestKey();
-            keyList1.RecordID = "B1";
+            keyList1.RecordId = "B1";
             keyList1.RecordIndex = 4;
             rec.KeyElementList.Add(keyList1);
 
-            var dataSet = context.GetDataSet(dataSetID, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
             context.Save(rec, dataSet);
-            return rec.ID;
+            return rec.Id;
         }
 
         /// <summary>Save other derived record.</summary>
-        private ObjectId SaveOtherDerivedRecord(IContext context, string dataSetID, string recordID, int recordIndex)
+        private ObjectId SaveOtherDerivedRecord(IContext context, string dataSetId, string recordId, int recordIndex)
         {
             var rec = new MongoTestOtherDerivedData();
-            rec.RecordID = recordID;
+            rec.RecordId = recordId;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;
             rec.LocalDateElement = new LocalDate(2003, 5, 1);
@@ -731,16 +731,16 @@ namespace DataCentric.Test
             rec.OtherStringElement2 = String.Empty; // Test how empty value is recorded
             rec.OtherDoubleElement2 = 200.0;
 
-            var dataSet = context.GetDataSet(dataSetID, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
             context.Save(rec, dataSet);
-            return rec.ID;
+            return rec.Id;
         }
 
         /// <summary>Save record that is derived from derived.</summary>
-        private ObjectId SaveDerivedFromDerivedRecord(IContext context, string dataSetID, string recordID, int recordIndex)
+        private ObjectId SaveDerivedFromDerivedRecord(IContext context, string dataSetId, string recordId, int recordIndex)
         {
             var rec = new MongoTestDerivedFromDerivedData();
-            rec.RecordID = recordID;
+            rec.RecordId = recordId;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;
             rec.LocalDateElement = new LocalDate(2003, 5, 1);
@@ -750,9 +750,9 @@ namespace DataCentric.Test
             rec.OtherStringElement3 = String.Empty; // Test how empty value is recorded
             rec.OtherDoubleElement3 = 200.0;
 
-            var dataSet = context.GetDataSet(dataSetID, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
             context.Save(rec, dataSet);
-            return rec.ID;
+            return rec.Id;
         }
     }
 }

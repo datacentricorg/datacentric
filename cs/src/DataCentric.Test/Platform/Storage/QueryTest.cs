@@ -37,7 +37,7 @@ namespace DataCentric.Test
                     int recordIndexMod4 = recordIndex % 4;
 
                     var record = new QueryTestNullableData();
-                    record.RecordID = recordIndexMod4.ToString();
+                    record.RecordId = recordIndexMod4.ToString();
                     record.RecordIndex = recordIndex;
                     record.DataSet = context.DataSet;
                     record.StringToken = "A" + recordIndexMod4.ToString();
@@ -105,7 +105,7 @@ namespace DataCentric.Test
                     int recordIndexMod4 = recordIndex % 4;
 
                     var record = new QueryTestNonNullableData();
-                    record.RecordID = recordIndexMod4.ToString();
+                    record.RecordId = recordIndexMod4.ToString();
                     record.RecordIndex = recordIndex;
                     record.DataSet = context.DataSet;
                     record.StringToken = "A" + recordIndexMod4.ToString();

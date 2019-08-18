@@ -30,7 +30,7 @@ namespace DataCentric.Test
     [BsonSerializer(typeof(BsonKeySerializer<MongoTestKey>))]
     public class MongoTestKey : Key<MongoTestKey, MongoTestData>
     {
-        public string RecordID { get; set; }
+        public string RecordId { get; set; }
         public int? RecordIndex { get; set; }
     }
 }
