@@ -519,6 +519,53 @@ namespace DataCentric.Test
             }
         }
 
+        /// <summary>Test for the query across deleted entities.</summary>
+        [Fact]
+        public void TestDeletedEntitiesQuery()
+        {
+            using (var context = new MongoTestContext(this))
+            {
+                // Create datasets
+                var dataSetA = context.CreateDataSet("A", context.DataSet);
+
+                // Create initial version of the records
+                SaveMinimalRecord(context, "A", "A", 0, 1);
+
+                var keyA0 = new MongoTestKey
+                {
+                    RecordId = "A",
+                    RecordIndex = 0
+                };
+
+                // Verify the result of loading records from datasets A and B
+                context.Verify.Text("Initial load");
+                VerifyLoad(context, keyA0, "A");
+
+                context.Verify.Text("Delete A0 record in A dataset");
+                context.Delete(keyA0, dataSetA);
+
+                // Load from cache
+                VerifyLoad(context, keyA0, "A");
+
+                // Load from storage
+                keyA0.ClearCachedRecord();
+                var loadedRecord = context.LoadOrNull(keyA0, context.DataSet);
+                var condition = loadedRecord == null;
+                context.Verify.Assert(condition, "Should be null");
+
+                // Query for all records
+                var query = context.GetQuery<MongoTestData>(dataSetA)
+                    .Where(p => p.Version == 1)
+                    .AsEnumerable();
+                foreach (var obj in query)
+                {
+                    var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetId;
+                    context.Verify.Text($"Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
+                    context.Verify.Assert(false, "Should be null");
+                }
+            }
+        }
+
         /// <summary>Load the object and verify the outcome.</summary>
         private void VerifyLoad<TKey, TRecord>(IContext context, Key<TKey, TRecord> key, string dataSetId)
             where TKey : Key<TKey, TRecord>, new()
