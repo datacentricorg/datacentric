@@ -77,5 +77,10 @@ limitations under the License.
                 return Settings[module];
             throw new ArgumentOutOfRangeException($"No settings for module: {module}");
         }
+
+        public static List<string> KnownModules()
+        {
+            return Settings.Keys.ToList();
+        }
     }
 }

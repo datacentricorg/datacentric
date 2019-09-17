@@ -2,4 +2,4 @@ dotnet src\DataCentric.Cli\bin\Debug\netcoreapp2.1\DataCentric.Cli.Cs.dll header
 --assembly  src\DataCentric\bin\Debug\netstandard2.0\DataCentric.dll ^
 --output ..\cpp\src\datacentric ^
 --project src\ ^
---settings .\GenerateCppSettings.json
+--settings .\DataCentricSettings.json

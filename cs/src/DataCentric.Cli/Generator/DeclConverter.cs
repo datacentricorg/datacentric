@@ -72,7 +72,7 @@ namespace DataCentric.Cli
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
 
             // Avoid adding trailing path separator
-            return !string.IsNullOrEmpty(decl.Category)
+            return !string.IsNullOrEmpty(decl.Category) && !decl.Category.Equals(".")
                        ? $"{settings.Namespace}.{decl.Category}".Underscore().Replace('.', '/')
                        : $"{settings.Namespace}".Underscore().Replace('.', '/');
         }

@@ -57,7 +57,11 @@ namespace DataCentric.Cli
             includes.AddRange(decl.Elements.Where(t => t.Key != null)
                                   .Select(t => t.Name).Distinct()
                                   .Select(t => $"#include <{declSet[t]}/{t.Underscore()}_key.hpp>"));
+
+            var knownModules = GeneratorSettingsProvider.KnownModules();
             includes.AddRange(decl.Elements.Where(t => t.Enum != null)
+                                   // Skip external enum
+                                  .Where(t => knownModules.Contains(t.Enum.Module.ModuleID))
                                   .Select(t => t.Name).Distinct()
                                   .Select(t => $"#include <{declSet[t]}/{t.Underscore()}.hpp>"));
 
