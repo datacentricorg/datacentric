@@ -68,7 +68,7 @@ namespace DataCentric.Cli
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
 
-            return $"{settings.Namespace}.{decl.Category}".ToLower().Replace('.', '/');
+            return $"{settings.Namespace}.{decl.Category}".Underscore().Replace('.', '/');
         }
 
         private static List<HeaderFileInfo> ConvertType(TypeDeclData decl, Dictionary<string, string> structureInfo)
@@ -106,7 +106,7 @@ namespace DataCentric.Cli
             {
                 Content = CppEnumBuilder.BuildEnumFile(decl),
                 FileName = $"{decl.Name.Underscore()}.hpp",
-                FolderName = $"{settings.Namespace}.{decl.Category}".ToLower().Replace('.', '/')
+                FolderName = $"{settings.Namespace}.{decl.Category}".Underscore().Replace('.', '/')
             };
 
             return data;
