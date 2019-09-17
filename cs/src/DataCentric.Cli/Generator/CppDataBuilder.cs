@@ -89,11 +89,15 @@ namespace DataCentric.Cli
             bool isRecordBase = decl.Keys.Any();
             bool isDerived = decl.Inherit != null;
 
-            var baseType = isRecordBase ? $"record_impl<{type}_key_impl, {type}_data_impl>" :
-                           isDerived    ? $"{decl.Inherit.Name.Underscore()}_data_impl" :
-                           "data_impl";
+            var baseTypeImpl = isRecordBase ? $"record_impl<{type}_key_impl, {type}_data_impl>" :
+                               isDerived    ? $"{decl.Inherit.Name.Underscore()}_data_impl" :
+                                              "data_impl";
 
-            writer.AppendLine($"class {settings.DeclSpec} {type}_data_impl : public {baseType}");
+            var baseType = isRecordBase ? $"record<{type}_key, {type}_data>" :
+                           isDerived    ? $"{decl.Inherit.Name.Underscore()}_data" :
+                                          "data";
+
+            writer.AppendLine($"class {settings.DeclSpec} {type}_data_impl : public {baseTypeImpl}");
             writer.AppendLine("{");
 
             writer.PushIndent();
@@ -102,15 +106,32 @@ namespace DataCentric.Cli
             writer.PopIndent();
             writer.AppendNewLineWithoutIndent();
 
+            writer.AppendLine("public: // FIELDS");
+            writer.AppendNewLineWithoutIndent();
+
             var elements = decl.Elements;
             if (elements.Any())
             {
-                writer.AppendLine("public: // PROPERTIES");
-                writer.AppendNewLineWithoutIndent();
                 writer.PushIndent();
                 CppElementBuilder.WriteElements(decl.Elements, writer);
                 writer.PopIndent();
             }
+
+            #region REFLECTION
+            writer.PushIndent();
+            writer.AppendLine($"DOT_TYPE_BEGIN(\"{decl.Module.ModuleID}\", \"{decl.Name}\")");
+            writer.PushIndent();
+            foreach (var element in elements)
+            {
+                writer.AppendLine($"// DOT_TYPE_FIELD(\"{element.Name}\", {element.Name.Underscore()})");
+            }
+            writer.AppendLine($"DOT_TYPE_CTOR(make_{type}_data)");
+            writer.AppendLine($"DOT_TYPE_BASE({baseType})");
+            writer.PopIndent();
+            writer.AppendLine("DOT_TYPE_END()");
+            writer.PopIndent();
+            writer.AppendNewLineWithoutIndent();
+            #endregion
 
             writer.AppendLine("protected: // CONSTRUCTORS");
             writer.AppendNewLineWithoutIndent();

@@ -81,14 +81,31 @@ namespace DataCentric.Cli
             writer.PopIndent();
             writer.AppendNewLineWithoutIndent();
 
+            writer.AppendLine("public: // FIELDS");
+            writer.AppendNewLineWithoutIndent();
+
             if (keyElements.Any())
             {
-                writer.AppendLine("public: // PROPERTIES");
-                writer.AppendNewLineWithoutIndent();
                 writer.PushIndent();
                 CppElementBuilder.WriteElements(keyElements, writer);
                 writer.PopIndent();
             }
+
+            #region REFLECTION
+            writer.PushIndent();
+            writer.AppendLine($"DOT_TYPE_BEGIN(\"{decl.Module.ModuleID}\", \"{decl.Name}\")");
+            writer.PushIndent();
+            foreach (var element in keyElements)
+            {
+                writer.AppendLine($"// DOT_TYPE_FIELD(\"{element.Name}\", {element.Name.Underscore()})");
+            }
+            writer.AppendLine($"DOT_TYPE_CTOR(make_{type}_key)");
+            writer.AppendLine($"DOT_TYPE_BASE(key<{type}_key, {type}_data>)");
+            writer.PopIndent();
+            writer.AppendLine("DOT_TYPE_END()");
+            writer.PopIndent();
+            writer.AppendNewLineWithoutIndent();
+            #endregion
 
             writer.AppendLine("protected: // CONSTRUCTORS");
             writer.AppendNewLineWithoutIndent();
