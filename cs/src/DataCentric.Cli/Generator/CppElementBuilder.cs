@@ -35,7 +35,7 @@ namespace DataCentric.Cli
             }
         }
 
-        private static string GetType(TypeElementDeclData element)
+        public static string GetType(TypeElementDeclData element)
         {
             string type = element.Value != null ? GetValue(element.Value) :
                           element.Data != null  ? $"{element.Data.Name.Underscore()}_data" :
@@ -46,7 +46,7 @@ namespace DataCentric.Cli
             return element.Vector == YesNo.Y ? $"dot::list<{type}>" : type;
         }
 
-        private static string GetValue(ValueDeclData valueDecl)
+        public static string GetValue(ValueDeclData valueDecl)
         {
             var atomicType = valueDecl.Type;
             return

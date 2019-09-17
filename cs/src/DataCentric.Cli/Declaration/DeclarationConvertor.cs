@@ -133,12 +133,11 @@ namespace DataCentric.Cli
                 {
                     declares.Add(ToDeclare(method, navigator));
                 }
-                // Overriden methods have only implementation tag and are marked with ovveride
+                // Overriden methods are marked with ovveride
                 else if(method.GetBaseDefinition() != method)
                 {
-                    HandlerImplementDeclData implement = ToImplement(method);
-                    implement.Override = YesNo.Y;
-                    implements.Add(implement);
+                    declares.Add(ToDeclare(method, navigator));
+                    implements.Add(ToImplement(method).WithOverride());
                 }
                 // Case for methods without modifiers
                 else
@@ -310,6 +309,7 @@ namespace DataCentric.Cli
                 Label = method.GetLabelFromAttribute(),
                 Comment = method.GetCommentFromAttribute() ?? navigator?.GetXmlComment(method),
                 Hidden = method.IsHidden(),
+                Static = method.IsStatic ? YesNo.Y : (YesNo?) null,
                 Params = method.GetParameters().Select(ToHandlerParam).ToList(),
                 Return = method.ReturnType != typeof(void) ? ToReturnType(method.ReturnType) : null
             };
@@ -325,6 +325,12 @@ namespace DataCentric.Cli
                 Name = method.Name,
                 Language = new LanguageKey {LanguageId = "cs"}
             };
+        }
+
+        private static HandlerImplementDeclData WithOverride(this HandlerImplementDeclData impl)
+        {
+            impl.Override = YesNo.Y;
+            return impl;
         }
 
         /// <summary>

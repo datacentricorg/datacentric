@@ -132,6 +132,15 @@ namespace DataCentric.Cli
                 writer.PopIndent();
             }
 
+            if (decl.Declare != null)
+            {
+                writer.AppendLine("public: // METHODS");
+                writer.AppendNewLineWithoutIndent();
+                writer.PushIndent();
+                CppMethodBuilder.WriteElements(decl, writer);
+                writer.PopIndent();
+            }
+
             writer.AppendLine("public:");
             writer.PushIndent();
             writer.AppendLine("virtual dot::type_t type();");
