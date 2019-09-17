@@ -26,7 +26,7 @@ namespace DataCentric
     /// Dataset is a concept similar to a folder, applied to
     /// data in any storage type including relational or
     /// document database, OData endpoint, etc.
-    /// 
+    ///
     /// Dataset is identified by ObjectId value of the
     /// record's DataSet element. This record contains
     /// dataset identifier (folder path) and other information
@@ -59,6 +59,7 @@ namespace DataCentric
         /// the root dataset, Common dataset, or another dataset.
         /// </summary>
         [BsonRequired]
+        [BsonElement("DataSetID")] // TODO - review for a possible rename
         public string DataSetId { get; set; }
 
         /// <summary>
@@ -69,10 +70,16 @@ namespace DataCentric
         /// order of record ObjectIds within the first dataset that
         /// has at least one record. Both dataset and record ObjectIds
         /// are ordered chronologically to one second resolution,
-        /// and are unique within the database server or cluster. 
+        /// and are unique within the database server or cluster.
         /// </summary>
         public List<ObjectId> Import { get; set; }
 
+        /// <summary>
+        /// Flag value indicating whether this DataSet is readonly.
+        /// Obsolete.
+        /// </summary>
+        [Obsolete]
+        public bool? Readonly { get; set; }
         //--- METHODS
 
         /// <summary>
@@ -111,7 +118,7 @@ namespace DataCentric
                         {
                             throw new Exception(
                                 $"Dataset {DataSetId} has an import whose ObjectId={importDataSet} is greater " +
-                                $"than its own ObjectId={Id}. The ObjectId of each import must be strictly " + 
+                                $"than its own ObjectId={Id}. The ObjectId of each import must be strictly " +
                                 $"less than the ObjectId of the dataset itself.");
                         }
                     }
