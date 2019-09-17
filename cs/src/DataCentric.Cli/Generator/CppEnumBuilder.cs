@@ -53,9 +53,7 @@ namespace DataCentric.Cli
         public static string BuildEnumSource(EnumDeclData decl, Dictionary<string, string> includePath)
         {
             var writer = new CppCodeWriter();
-
-            var module = decl.Module.ModuleID;
-            var settings = GeneratorSettingsProvider.Get(module);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
 
             writer.AppendLines(settings.Copyright);
             writer.AppendNewLineWithoutIndent();
@@ -137,7 +135,7 @@ protected:
 
         private static void BuildEnumImplementation(EnumDeclData decl, CppCodeWriter writer)
         {
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
             var type = decl.Name.Underscore();
 
             writer.AppendLines($@"{type}::operator dot::object() {{ return new dot::struct_wrapper_impl<self>(*this); }}

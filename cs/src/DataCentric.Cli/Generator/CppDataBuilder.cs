@@ -54,7 +54,7 @@ namespace DataCentric.Cli
         {
             var writer = new CppCodeWriter();
 
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
 
             writer.AppendLines(settings.Copyright);
             writer.AppendNewLineWithoutIndent();
@@ -90,11 +90,11 @@ namespace DataCentric.Cli
 
             // Get unique keys and data from elements
             var dataForwards = decl.Elements.Where(e => e.Data != null)
-                                   .Where(e => e.Data.Module.ModuleID == decl.Module.ModuleID)
+                                   .Where(e => e.Data.Module.ModuleId == decl.Module.ModuleId)
                                    .Select(e => $"{e.Data.Name.Underscore()}_data").ToList();
 
             var keysForwards = decl.Elements.Where(e => e.Key != null)
-                                   .Where(e => e.Key.Module.ModuleID == decl.Module.ModuleID)
+                                   .Where(e => e.Key.Module.ModuleId == decl.Module.ModuleId)
                                    .Select(e => $"{e.Key.Name.Underscore()}_key").ToList();
 
             var forwards = keysForwards.Union(dataForwards).Distinct();
@@ -156,7 +156,7 @@ namespace DataCentric.Cli
 
         private static void BuildClassImplementation(TypeDeclData decl, CppCodeWriter writer)
         {
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
             var type = decl.Name.Underscore();
             bool isRecordBase = decl.Keys.Any();
             bool isDerived = decl.Inherit != null;

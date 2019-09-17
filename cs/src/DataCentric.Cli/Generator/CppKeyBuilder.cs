@@ -52,7 +52,7 @@ namespace DataCentric.Cli
         public static string BuildKeySource(TypeDeclData decl, Dictionary<string, string> declSet)
         {
             var writer = new CppCodeWriter();
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
 
             writer.AppendLines(settings.Copyright);
             writer.AppendNewLineWithoutIndent();
@@ -76,7 +76,7 @@ namespace DataCentric.Cli
 
         private static void BuildClassDeclaration(TypeDeclData decl, CppCodeWriter writer)
         {
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
             var type = decl.Name.Underscore();
 
             // forwards
@@ -86,10 +86,10 @@ namespace DataCentric.Cli
             // Get unique keys and data from elements
             var keyElements = decl.Elements.Where(e => decl.Keys.Contains(e.Name)).ToList();
             var dataForwards = keyElements.Where(e => e.Data != null)
-                                          .Where(e => e.Data.Module.ModuleID == decl.Module.ModuleID)
+                                          .Where(e => e.Data.Module.ModuleId == decl.Module.ModuleId)
                                           .Select(e => $"{e.Data.Name.Underscore()}_data").ToList();
             var keysForwards = keyElements.Where(e => e.Key != null)
-                                          .Where(e => e.Key.Module.ModuleID == decl.Module.ModuleID)
+                                          .Where(e => e.Key.Module.ModuleId == decl.Module.ModuleId)
                                           .Select(e => $"{e.Key.Name.Underscore()}_key").ToList();
             var forwards = keysForwards.Union(dataForwards).Distinct();
             // Appends forwards
