@@ -36,6 +36,7 @@ namespace DataCentric
         /// * Filesystem
         /// * Progress reporting
         /// </summary>
+        [BsonIgnore]
         [Ignore]
         public IContext Context { get; private set; }
 
