@@ -25,9 +25,7 @@ namespace DataCentric.Cli
         public static string BuildKeyHeader(TypeDeclData decl, Dictionary<string, string> declSet)
         {
             var writer = new CppCodeWriter();
-
-            var module = decl.Module.ModuleId;
-            var settings = GeneratorSettingsProvider.Get(module);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
 
             writer.AppendLines(settings.Copyright);
             writer.AppendNewLineWithoutIndent();
@@ -36,9 +34,9 @@ namespace DataCentric.Cli
             writer.AppendNewLineWithoutIndent();
 
             // includes
-            writer.AppendLine($"#include <{settings.Namespace}/declare.hpp>");
-            writer.AppendLine($"#include <dc/types/record/key.hpp>");
-            // key with keys
+            var includes = IncludesProvider.ForKeyHeader(decl, declSet);
+            foreach (string include in includes)
+                writer.AppendLine(include);
             writer.AppendNewLineWithoutIndent();
 
             writer.AppendLine($"namespace {settings.Namespace}");
@@ -54,16 +52,16 @@ namespace DataCentric.Cli
         public static string BuildKeySource(TypeDeclData decl, Dictionary<string, string> declSet)
         {
             var writer = new CppCodeWriter();
-
-            var module = decl.Module.ModuleID;
-            var settings = GeneratorSettingsProvider.Get(module);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
 
             writer.AppendLines(settings.Copyright);
             writer.AppendNewLineWithoutIndent();
 
             // includes
+            writer.AppendLine($"#include <{settings.Namespace}/precompiled.hpp>");
             writer.AppendLine($"#include <{settings.Namespace}/implement.hpp>");
             writer.AppendLine($"#include <{declSet[decl.Name]}/{decl.Name.Underscore()}_key.hpp>");
+            writer.AppendLine($"#include <dc/platform/context/context_base.hpp>");
             writer.AppendNewLineWithoutIndent();
 
             writer.AppendLine($"namespace {settings.Namespace}");
@@ -89,7 +87,7 @@ namespace DataCentric.Cli
             var keyElements = decl.Elements.Where(e => decl.Keys.Contains(e.Name)).ToList();
             var dataForwards = keyElements.Where(e => e.Data != null).Select(e => $"{e.Data.Name.Underscore()}_data").ToList();
             var keysForwards = keyElements.Where(e => e.Key != null).Select(e => $"{e.Key.Name.Underscore()}_key").ToList();
-            var forwards = keysForwards.Union(dataForwards);
+            var forwards = keysForwards.Union(dataForwards).Distinct();
             // Appends forwards
             foreach (var f in forwards)
                 writer.AppendLine($"class {f}_impl; using {f} = dot::ptr<{f}_impl>;");

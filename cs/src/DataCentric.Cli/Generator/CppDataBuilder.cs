@@ -35,26 +35,9 @@ namespace DataCentric.Cli
             writer.AppendNewLineWithoutIndent();
 
             // includes
-            writer.AppendLine($"#include <{settings.Namespace}/declare.hpp>");
-            if (decl.Keys.Any())
-            {
-                writer.AppendLine($"#include <dc/types/record/record.hpp>");
-                writer.AppendLine($"#include <{declSet[decl.Name]}/{decl.Name.Underscore()}_key.hpp>");
-            }
-            else if (decl.Inherit != null)
-            {
-                var baseName = decl.Inherit.Name;
-                if (declSet.ContainsKey(baseName))
-                {
-                    writer.AppendLine($"#include <{declSet[baseName]}/{baseName.Underscore()}_data.hpp>");
-                }
-            }
-            // pure data
-            else
-            {
-                writer.AppendLine($"#include <dc/types/record/data.hpp>");
-            }
-            // any other includes from types in fields?
+            var includes = IncludesProvider.ForDataHeader(decl, declSet);
+            foreach (string include in includes)
+                writer.AppendLine(include);
             writer.AppendNewLineWithoutIndent();
 
             writer.AppendLine($"namespace {settings.Namespace}");
@@ -76,8 +59,10 @@ namespace DataCentric.Cli
             writer.AppendLines(settings.Copyright);
             writer.AppendNewLineWithoutIndent();
 
+            writer.AppendLine($"#include <{settings.Namespace}/precompiled.hpp>");
             writer.AppendLine($"#include <{settings.Namespace}/implement.hpp>");
             writer.AppendLine($"#include <{declSet[decl.Name]}/{decl.Name.Underscore()}_data.hpp>");
+            writer.AppendLine($"#include <dc/platform/context/context_base.hpp>");
 
             writer.AppendNewLineWithoutIndent();
 
@@ -106,7 +91,7 @@ namespace DataCentric.Cli
             // Get unique keys and data from elements
             var dataForwards = decl.Elements.Where(e => e.Data != null).Select(e => $"{e.Data.Name.Underscore()}_data").ToList();
             var keysForwards = decl.Elements.Where(e => e.Key != null).Select(e => $"{e.Key.Name.Underscore()}_key").ToList();
-            var forwards = keysForwards.Union(dataForwards);
+            var forwards = keysForwards.Union(dataForwards).Distinct();
             // Appends forwards
             foreach (var f in forwards)
                 writer.AppendLine($"class {f}_impl; using {f} = dot::ptr<{f}_impl>;");
@@ -118,8 +103,8 @@ namespace DataCentric.Cli
             writer.AppendLines(CommentHelper.FormatComment(decl.Comment));
 
             var baseType = isRecordBase ? $"record_impl<{type}_key_impl, {type}_data_impl>" :
-                               isDerived    ? $"{decl.Inherit.Name.Underscore()}_data_impl" :
-                                              "data_impl";
+                           isDerived    ? $"{decl.Inherit.Name.Underscore()}_data_impl" :
+                                          "data_impl";
 
             writer.AppendLine($"class {settings.DeclSpec} {type}_data_impl : public {baseType}");
             writer.AppendLine("{");

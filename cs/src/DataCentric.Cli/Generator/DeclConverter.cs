@@ -59,8 +59,10 @@ namespace DataCentric.Cli
             var typeIncludes = typeDecls.ToDictionary(t => t.Name, GetIncludePath);
             var enumIncludes = enumDecls.ToDictionary(t => t.Name, GetIncludePath);
 
-            var types = typeDecls.SelectMany(d => ConvertType(d, typeIncludes));
-            var enums = enumDecls.SelectMany(d => ConvertEnum(d, enumIncludes));
+            var includes = typeIncludes.Concat(enumIncludes).ToDictionary(t => t.Key, t => t.Value);
+
+            var types = typeDecls.SelectMany(d => ConvertType(d, includes));
+            var enums = enumDecls.SelectMany(d => ConvertEnum(d, includes));
 
             return types.Concat(enums).ToList();
         }
