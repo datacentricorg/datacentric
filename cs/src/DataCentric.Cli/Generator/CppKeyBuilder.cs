@@ -38,6 +38,7 @@ namespace DataCentric.Cli
             // includes
             writer.AppendLine($"#include <{settings.Namespace}/declare.hpp>");
             writer.AppendLine($"#include <dc/types/record/key.hpp>");
+            // key with keys
             writer.AppendNewLineWithoutIndent();
 
             writer.AppendLine($"namespace {settings.Namespace}");
@@ -60,18 +61,15 @@ namespace DataCentric.Cli
             writer.AppendLines(settings.Copyright);
             writer.AppendNewLineWithoutIndent();
 
-            writer.AppendLine("#pragma once");
-            writer.AppendNewLineWithoutIndent();
-
             // includes
             writer.AppendLine($"#include <{settings.Namespace}/implement.hpp>");
-            writer.AppendLine($"#include <dc/types/record/key.hpp>");
+            writer.AppendLine($"#include <{declSet[decl.Name]}/{decl.Name.Underscore()}_key.hpp>");
             writer.AppendNewLineWithoutIndent();
 
             writer.AppendLine($"namespace {settings.Namespace}");
             writer.AppendLine("{");
             writer.PushIndent();
-            BuildClassDeclaration(decl, writer);
+            BuildClassImplementation(decl, writer);
             writer.PopIndent();
             writer.AppendLine("}");
 
@@ -100,9 +98,7 @@ namespace DataCentric.Cli
             writer.AppendLine($"inline {type}_key make_{type}_key();");
             writer.AppendNewLineWithoutIndent();
 
-            var declComment = decl.Comment;
-            var comment = CommentHelper.FormatComment(declComment);
-            writer.AppendLines(comment);
+            writer.AppendLines(CommentHelper.FormatComment(decl.Comment));
 
             writer.AppendLine($"class {settings.DeclSpec} {type}_key_impl : public key_impl<{type}_key_impl,{type}_data_impl>");
             writer.AppendLine("{");
@@ -123,18 +119,10 @@ namespace DataCentric.Cli
                 writer.PopIndent();
             }
 
+            writer.AppendLine("public:");
             writer.PushIndent();
-            writer.AppendLine($"DOT_TYPE_BEGIN(\"{decl.Module.ModuleID}\", \"{decl.Name}\")");
-            writer.PushIndent();
-            foreach (var element in keyElements)
-            {
-                if (element.BsonIgnore != YesNo.Y)
-                    writer.AppendLine($"DOT_TYPE_FIELD(\"{element.Name}\", {element.Name.Underscore()})");
-            }
-            writer.AppendLine($"DOT_TYPE_CTOR(make_{type}_key)");
-            writer.AppendLine($"DOT_TYPE_BASE(key<{type}_key_impl, {type}_data_impl>)");
-            writer.PopIndent();
-            writer.AppendLine("DOT_TYPE_END()");
+            writer.AppendLine("virtual dot::type_t type();");
+            writer.AppendLine("static dot::type_t typeof();");
             writer.PopIndent();
 
             writer.AppendLine("};");
@@ -149,65 +137,32 @@ namespace DataCentric.Cli
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
             var type = decl.Name.Underscore();
 
-            // forwards
-            writer.AppendLine($"class {type}_key_impl; using {type}_key = dot::ptr<{type}_key_impl>;");
-            writer.AppendLine($"class {type}_data_impl; using {type}_data = dot::ptr<{type}_data_impl>;");
+            writer.AppendLine($"dot::type_t {type}_key_impl::type() {{ return typeof(); }}");
+            writer.AppendLine($"dot::type_t {type}_key_impl::typeof()");
 
-            // Get unique keys and data from elements
-            var keyElements = decl.Elements.Where(e => decl.Keys.Contains(e.Name)).ToList();
-            var dataForwards = keyElements.Where(e => e.Data != null).Select(e => $"{e.Data.Name.Underscore()}_data").ToList();
-            var keysForwards = keyElements.Where(e => e.Key != null).Select(e => $"{e.Key.Name.Underscore()}_key").ToList();
-            var forwards = keysForwards.Union(dataForwards);
-            // Appends forwards
-            foreach (var f in forwards)
-                writer.AppendLine($"class {f}_impl; using {f} = dot::ptr<{f}_impl>;");
-            writer.AppendNewLineWithoutIndent();
-
-            writer.AppendLine($"inline {type}_key make_{type}_key();");
-            writer.AppendNewLineWithoutIndent();
-
-            var declComment = decl.Comment;
-            var comment = CommentHelper.FormatComment(declComment);
-            writer.AppendLines(comment);
-
-            writer.AppendLine($"class {settings.DeclSpec} {type}_key_impl : public key_impl<{type}_key_impl,{type}_data_impl>");
             writer.AppendLine("{");
-
             writer.PushIndent();
-            writer.AppendLine($"typedef {type}_key_impl self;");
-            writer.AppendLine($"friend {type}_key make_{type}_key();");
-            writer.PopIndent();
-            writer.AppendNewLineWithoutIndent();
 
-            writer.AppendLine("public: // FIELDS");
-            writer.AppendNewLineWithoutIndent();
+            writer.AppendLine("static dot::type_t type_");
+            writer.PushIndent();
 
-            if (keyElements.Any())
+            writer.AppendLine($"dot::make_type_builder<self>(\"{settings.Namespace}\", \"{type}\")");
+            var keyElements = decl.Elements.Where(e => decl.Keys.Contains(e.Name)).ToList();
+            foreach (var element in keyElements.Where(e => e.BsonIgnore != YesNo.Y))
             {
-                writer.PushIndent();
-                CppElementBuilder.WriteElements(keyElements, writer);
-                writer.PopIndent();
+                var name = element.Name.Underscore();
+                writer.AppendLine($"->with_field(\"{name}\", &self::{name})");
             }
 
-            writer.PushIndent();
-            writer.AppendLine($"DOT_TYPE_BEGIN(\"{decl.Module.ModuleID}\", \"{decl.Name}\")");
-            writer.PushIndent();
-            foreach (var element in keyElements)
-            {
-                if (element.BsonIgnore != YesNo.Y)
-                    writer.AppendLine($"DOT_TYPE_FIELD(\"{element.Name}\", {element.Name.Underscore()})");
-            }
-            writer.AppendLine($"DOT_TYPE_CTOR(make_{type}_key)");
-            writer.AppendLine($"DOT_TYPE_BASE(key<{type}_key_impl, {type}_data_impl>)");
-            writer.PopIndent();
-            writer.AppendLine("DOT_TYPE_END()");
-            writer.PopIndent();
+            writer.AppendLine($"->template with_base<key<{type}_key_impl, {type}_data_impl>>()");
+            writer.AppendLine($"->with_constructor(&make_{type}_key, {{  }})");
+            writer.AppendLine("->build();");
 
-            writer.AppendLine("};");
-            writer.AppendNewLineWithoutIndent();
+            writer.PopIndent();
+            writer.AppendLine("return type_;");
 
-            writer.AppendLine("/// Create an empty instance.");
-            writer.AppendLine($"inline {type}_key make_{type}_key() {{ return new {type}_key_impl; }}");
+            writer.PopIndent();
+            writer.AppendLine("}");
         }
     }
 }
