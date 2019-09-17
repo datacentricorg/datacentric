@@ -280,7 +280,7 @@ namespace DataCentric
                 {
                     tokenValue = ObjectId.Parse(token);
                 }
-                else if (elementType == typeof(Enum)) // TODO Support nullable Enum in key
+                else if (elementType.BaseType == typeof(Enum)) // TODO Support nullable Enum in key
                 {
                     tokenValue = Enum.Parse(elementType, token);
                 }
