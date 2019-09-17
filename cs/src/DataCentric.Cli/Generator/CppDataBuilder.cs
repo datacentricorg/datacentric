@@ -76,9 +76,6 @@ namespace DataCentric.Cli
             writer.AppendLines(settings.Copyright);
             writer.AppendNewLineWithoutIndent();
 
-            writer.AppendLine("#pragma once");
-            writer.AppendNewLineWithoutIndent();
-
             writer.AppendLine($"#include <{settings.Namespace}/implement.hpp>");
             writer.AppendLine($"#include <{declSet[decl.Name]}/{decl.Name.Underscore()}_data.hpp>");
 

@@ -47,7 +47,11 @@ namespace DataCentric.Cli
             var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             foreach (var line in lines)
             {
-                writer.WriteLine(line);
+                // Do not add spaces for empty line
+                if (string.IsNullOrEmpty(line))
+                    writer.WriteLineNoTabs("");
+                else
+                    writer.WriteLine(line);
             }
         }
 

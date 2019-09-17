@@ -127,7 +127,7 @@ namespace DataCentric.Cli
 
             var enumHeader = new CppFileInfo
             {
-                Content = CppEnumBuilder.BuildEnumHeader(decl),
+                Content = CppEnumBuilder.BuildEnumHeader(decl, includePath),
                 FileName = $"{decl.Name.Underscore()}.hpp",
                 FolderName = folderName
             };
@@ -135,7 +135,7 @@ namespace DataCentric.Cli
 
             var enumSource = new CppFileInfo
             {
-                Content = CppEnumBuilder.BuildEnumSource(decl),
+                Content = CppEnumBuilder.BuildEnumSource(decl, includePath),
                 FileName = $"{decl.Name.Underscore()}.cpp",
                 FolderName = folderName
             };
