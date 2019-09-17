@@ -77,5 +77,8 @@ namespace DataCentric.Cli
 
         /// <summary>Element Modification Type.</summary>
         public ElementModificationType? ModificationType { get; set; }
+
+        /// <summary>Flag indicating BsonIgnore attribute.</summary>
+        public YesNo? BsonIgnore { get; set; }
     }
 }

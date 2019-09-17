@@ -21,6 +21,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using NodaTime;
 
 namespace DataCentric.Cli
@@ -357,6 +358,7 @@ namespace DataCentric.Cli
             element.Comment = property.GetCommentFromAttribute() ?? navigator?.GetXmlComment(property);
             element.Viewer = property.GetCustomAttribute<DisplayAttribute>()?.GetGroupName();
             element.Optional = property.GetCustomAttribute<RequiredAttribute>() == null ? YesNo.Y : (YesNo?) null;
+            element.BsonIgnore = property.GetCustomAttribute<BsonIgnoreAttribute>() != null ? YesNo.Y : (YesNo?) null;
             element.Hidden = property.IsHidden();
             element.Indices = Attribute.IsDefined(property, typeof(IndexedAttribute))
                                 ? property.GetCustomAttributes<IndexedAttribute>().Select(ToIndex).ToList()

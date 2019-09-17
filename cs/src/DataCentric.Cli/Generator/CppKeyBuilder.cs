@@ -100,7 +100,8 @@ namespace DataCentric.Cli
             writer.PushIndent();
             foreach (var element in keyElements)
             {
-                writer.AppendLine($"DOT_TYPE_FIELD(\"{element.Name}\", {element.Name.Underscore()})");
+                if (element.BsonIgnore != YesNo.Y)
+                    writer.AppendLine($"DOT_TYPE_FIELD(\"{element.Name}\", {element.Name.Underscore()})");
             }
             writer.AppendLine($"DOT_TYPE_CTOR(make_{type}_key)");
             writer.AppendLine($"DOT_TYPE_BASE(key<{type}_key_impl, {type}_data_impl>)");

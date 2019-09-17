@@ -128,7 +128,8 @@ namespace DataCentric.Cli
             writer.PushIndent();
             foreach (var element in elements)
             {
-                writer.AppendLine($"DOT_TYPE_FIELD(\"{element.Name}\", {element.Name.Underscore()})");
+                if (element.BsonIgnore != YesNo.Y)
+                    writer.AppendLine($"DOT_TYPE_FIELD(\"{element.Name}\", {element.Name.Underscore()})");
             }
             writer.AppendLine($"DOT_TYPE_CTOR(make_{type}_data)");
 
