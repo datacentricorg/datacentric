@@ -75,8 +75,8 @@ namespace DataCentric.Cli
 
                 ParameterInfo[] parameters = method.GetParameters();
                 List<string> paramNames = parameters.Select(p => p.ParameterType.FullName).ToList();
-
-                nameBuilder.Append($"({string.Join(',', paramNames)})");
+                if (paramNames.Any())
+                    nameBuilder.Append($"({string.Join(',', paramNames)})");
             }
             else if (member is PropertyInfo property)
                 nameBuilder.Append($"P:{property.DeclaringType.FullName}.{property.Name}");
