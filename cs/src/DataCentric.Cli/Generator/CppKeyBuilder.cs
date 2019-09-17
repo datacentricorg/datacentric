@@ -141,7 +141,7 @@ namespace DataCentric.Cli
             writer.AppendLine("{");
             writer.PushIndent();
 
-            writer.AppendLine("static dot::type_t type_");
+            writer.AppendLine("static dot::type_t type_ =");
             writer.PushIndent();
 
             writer.AppendLine($"dot::make_type_builder<self>(\"{settings.Namespace}\", \"{type}\")");
