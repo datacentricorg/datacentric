@@ -67,7 +67,7 @@ namespace DataCentric.Cli
         public string GetXmlComment(MemberInfo member)
         {
             StringBuilder nameBuilder = new StringBuilder();
-            if (member is System.Type type)
+            if (member is Type type)
                 nameBuilder.Append($"T:{type.FullName}");
             else if (member is MethodInfo method)
             {

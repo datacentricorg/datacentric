@@ -33,7 +33,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Contains all allowed primitive types which could be converted in declarations.
         /// </summary>
-        private static readonly System.Type[] AllowedPrimitiveTypes = {
+        private static readonly Type[] AllowedPrimitiveTypes = {
             typeof(ObjectId),
             typeof(bool),
             typeof(DateTime),
@@ -56,7 +56,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Factory method which creates declaration corresponding to given type.
         /// </summary>
-        public static IDeclData ToDecl(System.Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
+        public static IDeclData ToDecl(Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
         {
             if (type.IsSubclassOf(typeof(Enum)))
                 return EnumToDecl(type, navigator, projNavigator);
@@ -70,7 +70,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Converts enum to EnumDeclData
         /// </summary>
-        public static EnumDeclData EnumToDecl(System.Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
+        public static EnumDeclData EnumToDecl(Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
         {
             if (!type.IsSubclassOf(typeof(Enum)))
                 throw new ArgumentException($"Cannot create enum declaration from type: {type.FullName}.");
@@ -92,7 +92,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Converts type inherited from Data to TypeDeclData
         /// </summary>
-        public static TypeDeclData TypeToDecl(System.Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
+        public static TypeDeclData TypeToDecl(Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
         {
             if (!type.IsSubclassOf(typeof(Data)))
                 throw new ArgumentException($"Cannot create type declaration from type: {type.FullName}.");
@@ -157,14 +157,14 @@ namespace DataCentric.Cli
         /// <summary>
         /// Checks if given type is any of Data, Record&lt;,&gt;, RootRecord&lt;,&gt;
         /// </summary>
-        private static bool IsRoot(System.Type type)
+        private static bool IsRoot(Type type)
         {
             if (type == typeof(DataType) || type == typeof(RecordBase))
                 return true;
 
             if (type.IsGenericType)
             {
-                System.Type genericType = type.GetGenericTypeDefinition();
+                Type genericType = type.GetGenericTypeDefinition();
                 return genericType == typeof(Record<,>) ||
                        genericType == typeof(Key<,>) ||
                        genericType == typeof(RootRecord<,>) ||
@@ -203,7 +203,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Extracts argument type from List&lt;&gt;, [], Nullable&lt;&gt;.
         /// </summary>
-        private static System.Type ResolveGenericType(System.Type type)
+        private static Type ResolveGenericType(Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
                 type = type.GetGenericArgument(0);
@@ -219,7 +219,7 @@ namespace DataCentric.Cli
         /// Checks if type could be used in declaration.
         /// Namely, it checks if it is one of the following: is primitive, is enum or derived from Data
         /// </summary>
-        private static bool IsAllowedType(System.Type type)
+        private static bool IsAllowedType(Type type)
         {
             if (type.IsGenericMethodParameter)
                 return false;
@@ -237,7 +237,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Returns properties for corresponding key class if exist.
         /// </summary>
-        private static List<PropertyInfo> GetKeyProperties(this System.Type type)
+        private static List<PropertyInfo> GetKeyProperties(this Type type)
         {
             var baseType = type.BaseType;
             if (baseType.IsGenericType && (baseType.GetGenericTypeDefinition() == typeof(Record<,>) ||
@@ -253,7 +253,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Determines kind of declaration.
         /// </summary>
-        private static TypeKind? GetKind(this System.Type type)
+        private static TypeKind? GetKind(this Type type)
         {
             // Kind
             return type.IsAbstract                        ? TypeKind.Abstract :
@@ -335,7 +335,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Converts method return type into corresponding handler return type declaration section.
         /// </summary>
-        private static HandlerVariableDeclData ToReturnType(System.Type type)
+        private static HandlerVariableDeclData ToReturnType(Type type)
         {
             var returnType = ToTypeMember<HandlerVariableDeclData>(type);
 
@@ -394,7 +394,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Creates type member declaration for the given type.
         /// </summary>
-        private static T ToTypeMember<T>(System.Type type) where T : TypeMemberDeclData, new()
+        private static T ToTypeMember<T>(Type type) where T : TypeMemberDeclData, new()
         {
             var typeDecl = new T();
 
@@ -407,7 +407,7 @@ namespace DataCentric.Cli
             {
                 typeDecl.Value = new ValueDeclData();
 
-                TypeCode typeCode = System.Type.GetTypeCode(type);
+                TypeCode typeCode = Type.GetTypeCode(type);
                 typeDecl.Value.Type =
                     typeCode == TypeCode.Boolean  ? AtomicType.Bool :
                     typeCode == TypeCode.DateTime ? AtomicType.DateTime :
@@ -448,7 +448,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Check if given type is List&lt;&gt; or array instance.
         /// </summary>
-        private static YesNo? IsVector(this System.Type type)
+        private static YesNo? IsVector(this Type type)
         {
             bool isList = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>);
             bool isArray = type.IsArray;
