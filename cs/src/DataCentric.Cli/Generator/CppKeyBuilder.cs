@@ -57,6 +57,7 @@ namespace DataCentric.Cli
 
             // forwards
             writer.AppendLine($"class {type}_key_impl; using {type}_key = dot::ptr<{type}_key_impl>;");
+            writer.AppendLine($"class {type}_data_impl; using {type}_data = dot::ptr<{type}_data_impl>;");
 
             // Get unique keys and data from elements
             var keyElements = decl.Elements.Where(e => decl.Keys.Contains(e.Name)).ToList();
@@ -68,6 +69,9 @@ namespace DataCentric.Cli
                 writer.AppendLine($"class {f}_impl; using {f} = dot::ptr<{f}_impl>;");
             writer.AppendNewLineWithoutIndent();
 
+            writer.AppendLine($"inline {type}_key make_{type}_key();");
+            writer.AppendNewLineWithoutIndent();
+
             var declComment = decl.Comment;
             var comment = CommentHelper.FormatComment(declComment);
             writer.AppendLines(comment);
@@ -77,7 +81,7 @@ namespace DataCentric.Cli
 
             writer.PushIndent();
             writer.AppendLine($"typedef {type}_key_impl self;");
-            writer.AppendLine($"friend {type}_key new_{type}_key();");
+            writer.AppendLine($"friend {type}_key make_{type}_key();");
             writer.PopIndent();
             writer.AppendNewLineWithoutIndent();
 
@@ -91,33 +95,24 @@ namespace DataCentric.Cli
                 writer.PopIndent();
             }
 
-            #region REFLECTION
             writer.PushIndent();
             writer.AppendLine($"DOT_TYPE_BEGIN(\"{decl.Module.ModuleID}\", \"{decl.Name}\")");
             writer.PushIndent();
             foreach (var element in keyElements)
             {
-                writer.AppendLine($"// DOT_TYPE_FIELD(\"{element.Name}\", {element.Name.Underscore()})");
+                writer.AppendLine($"DOT_TYPE_FIELD(\"{element.Name}\", {element.Name.Underscore()})");
             }
             writer.AppendLine($"DOT_TYPE_CTOR(make_{type}_key)");
-            writer.AppendLine($"DOT_TYPE_BASE(key<{type}_key, {type}_data>)");
+            writer.AppendLine($"DOT_TYPE_BASE(key<{type}_key_impl, {type}_data_impl>)");
             writer.PopIndent();
             writer.AppendLine("DOT_TYPE_END()");
-            writer.PopIndent();
-            writer.AppendNewLineWithoutIndent();
-            #endregion
-
-            writer.AppendLine("protected: // CONSTRUCTORS");
-            writer.AppendNewLineWithoutIndent();
-            writer.PushIndent();
-            writer.AppendLine($"inline {type}_key_impl() = default;");
             writer.PopIndent();
 
             writer.AppendLine("};");
             writer.AppendNewLineWithoutIndent();
 
             writer.AppendLine("/// Create an empty instance.");
-            writer.AppendLine($"inline {type}_key make_{type}_key() {{ return new {type}_key_impl(); }}");
+            writer.AppendLine($"inline {type}_key make_{type}_key() {{ return new {type}_key_impl; }}");
         }
     }
 }

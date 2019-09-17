@@ -71,9 +71,14 @@ namespace DataCentric.Cli
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
             var type = decl.Name.Underscore();
+            bool isRecordBase = decl.Keys.Any();
+            bool isDerived = decl.Inherit != null;
 
             // Self-forward
             writer.AppendLine($"class {type}_data_impl; using {type}_data = dot::ptr<{type}_data_impl>;");
+            if (isRecordBase)
+                writer.AppendLine($"class {type}_key_impl; using {type}_key = dot::ptr<{type}_key_impl>;");
+
             // Get unique keys and data from elements
             var dataForwards = decl.Elements.Where(e => e.Data != null).Select(e => $"{e.Data.Name.Underscore()}_data").ToList();
             var keysForwards = decl.Elements.Where(e => e.Key != null).Select(e => $"{e.Key.Name.Underscore()}_key").ToList();
@@ -83,26 +88,23 @@ namespace DataCentric.Cli
                 writer.AppendLine($"class {f}_impl; using {f} = dot::ptr<{f}_impl>;");
             writer.AppendNewLineWithoutIndent();
 
+            writer.AppendLine($"inline {type}_data make_{type}_data();");
+            writer.AppendNewLineWithoutIndent();
+
             var declComment = decl.Comment;
             var comment = CommentHelper.FormatComment(declComment);
             writer.AppendLines(comment);
-            bool isRecordBase = decl.Keys.Any();
-            bool isDerived = decl.Inherit != null;
 
             var baseTypeImpl = isRecordBase ? $"record_impl<{type}_key_impl, {type}_data_impl>" :
                                isDerived    ? $"{decl.Inherit.Name.Underscore()}_data_impl" :
                                               "data_impl";
-
-            var baseType = isRecordBase ? $"record<{type}_key, {type}_data>" :
-                           isDerived    ? $"{decl.Inherit.Name.Underscore()}_data" :
-                                          "data";
 
             writer.AppendLine($"class {settings.DeclSpec} {type}_data_impl : public {baseTypeImpl}");
             writer.AppendLine("{");
 
             writer.PushIndent();
             writer.AppendLine($"typedef {type}_data_impl self;");
-            writer.AppendLine($"friend {type}_data new_{type}_data();");
+            writer.AppendLine($"friend {type}_data make_{type}_data();");
             writer.PopIndent();
             writer.AppendNewLineWithoutIndent();
 
@@ -117,33 +119,29 @@ namespace DataCentric.Cli
                 writer.PopIndent();
             }
 
-            #region REFLECTION
+            var baseType = isRecordBase ? $"record<{type}_key_impl, {type}_data_impl>" :
+                           isDerived    ? $"{decl.Inherit.Name.Underscore()}_data" :
+                                          "data";
+
             writer.PushIndent();
             writer.AppendLine($"DOT_TYPE_BEGIN(\"{decl.Module.ModuleID}\", \"{decl.Name}\")");
             writer.PushIndent();
             foreach (var element in elements)
             {
-                writer.AppendLine($"// DOT_TYPE_FIELD(\"{element.Name}\", {element.Name.Underscore()})");
+                writer.AppendLine($"DOT_TYPE_FIELD(\"{element.Name}\", {element.Name.Underscore()})");
             }
             writer.AppendLine($"DOT_TYPE_CTOR(make_{type}_data)");
+
             writer.AppendLine($"DOT_TYPE_BASE({baseType})");
             writer.PopIndent();
             writer.AppendLine("DOT_TYPE_END()");
-            writer.PopIndent();
-            writer.AppendNewLineWithoutIndent();
-            #endregion
-
-            writer.AppendLine("protected: // CONSTRUCTORS");
-            writer.AppendNewLineWithoutIndent();
-            writer.PushIndent();
-            writer.AppendLine($"inline {type}_data_impl() = default;");
             writer.PopIndent();
 
             writer.AppendLine("};");
             writer.AppendNewLineWithoutIndent();
 
             writer.AppendLine("/// Create an empty instance.");
-            writer.AppendLine($"inline {type}_data make_{type}_data() {{ return new {type}_data_impl(); }}");
+            writer.AppendLine($"inline {type}_data make_{type}_data() {{ return new {type}_data_impl; }}");
         }
     }
 }
