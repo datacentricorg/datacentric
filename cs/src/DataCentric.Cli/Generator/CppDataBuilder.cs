@@ -22,12 +22,11 @@ namespace DataCentric.Cli
 {
     public static class CppDataBuilder
     {
-        public static string BuildDataFile(TypeDeclData decl, Dictionary<string, string> declSet)
+        public static string BuildDataHeader(TypeDeclData decl, Dictionary<string, string> declSet)
         {
             var writer = new CppCodeWriter();
 
-            var module = decl.Module.ModuleId;
-            var settings = GeneratorSettingsProvider.Get(module);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
 
             writer.AppendLines(settings.Copyright);
             writer.AppendNewLineWithoutIndent();
@@ -36,7 +35,7 @@ namespace DataCentric.Cli
             writer.AppendNewLineWithoutIndent();
 
             // includes
-            writer.AppendLine($"#include <{settings.DeclareInclude}.hpp>");
+            writer.AppendLine($"#include <{settings.Namespace}/declare.hpp>");
             if (decl.Keys.Any())
             {
                 writer.AppendLine($"#include <dc/types/record/record.hpp>");
@@ -55,19 +54,47 @@ namespace DataCentric.Cli
             {
                 writer.AppendLine($"#include <dc/types/record/data.hpp>");
             }
+            // any other includes from types in fields?
             writer.AppendNewLineWithoutIndent();
 
             writer.AppendLine($"namespace {settings.Namespace}");
             writer.AppendLine("{");
             writer.PushIndent();
-            BuildClass(decl, writer);
+            BuildClassDeclaration(decl, writer);
             writer.PopIndent();
             writer.AppendLine("}");
 
             return writer.ToString();
         }
 
-        private static void BuildClass(TypeDeclData decl, CppCodeWriter writer)
+        public static string BuildDataSource(TypeDeclData decl, Dictionary<string, string> declSet)
+        {
+            var writer = new CppCodeWriter();
+
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
+
+            writer.AppendLines(settings.Copyright);
+            writer.AppendNewLineWithoutIndent();
+
+            writer.AppendLine("#pragma once");
+            writer.AppendNewLineWithoutIndent();
+
+            writer.AppendLine($"#include <{settings.Namespace}/implement.hpp>");
+            writer.AppendLine($"#include <{declSet[decl.Name]}/{decl.Name.Underscore()}_data.hpp>");
+
+            writer.AppendNewLineWithoutIndent();
+
+            writer.AppendLine($"namespace {settings.Namespace}");
+            writer.AppendLine("{");
+            writer.PushIndent();
+            BuildClassImplementation(decl, writer);
+            writer.PopIndent();
+            writer.AppendLine("}");
+
+            return writer.ToString();
+        }
+
+        private static void BuildClassDeclaration(TypeDeclData decl, CppCodeWriter writer)
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
             var type = decl.Name.Underscore();
@@ -91,15 +118,13 @@ namespace DataCentric.Cli
             writer.AppendLine($"inline {type}_data make_{type}_data();");
             writer.AppendNewLineWithoutIndent();
 
-            var declComment = decl.Comment;
-            var comment = CommentHelper.FormatComment(declComment);
-            writer.AppendLines(comment);
+            writer.AppendLines(CommentHelper.FormatComment(decl.Comment));
 
-            var baseTypeImpl = isRecordBase ? $"record_impl<{type}_key_impl, {type}_data_impl>" :
+            var baseType = isRecordBase ? $"record_impl<{type}_key_impl, {type}_data_impl>" :
                                isDerived    ? $"{decl.Inherit.Name.Underscore()}_data_impl" :
                                               "data_impl";
 
-            writer.AppendLine($"class {settings.DeclSpec} {type}_data_impl : public {baseTypeImpl}");
+            writer.AppendLine($"class {settings.DeclSpec} {type}_data_impl : public {baseType}");
             writer.AppendLine("{");
 
             writer.PushIndent();
@@ -119,23 +144,10 @@ namespace DataCentric.Cli
                 writer.PopIndent();
             }
 
-            var baseType = isRecordBase ? $"record<{type}_key_impl, {type}_data_impl>" :
-                           isDerived    ? $"{decl.Inherit.Name.Underscore()}_data" :
-                                          "data";
-
+            writer.AppendLine("public:");
             writer.PushIndent();
-            writer.AppendLine($"DOT_TYPE_BEGIN(\"{decl.Module.ModuleID}\", \"{decl.Name}\")");
-            writer.PushIndent();
-            foreach (var element in elements)
-            {
-                if (element.BsonIgnore != YesNo.Y)
-                    writer.AppendLine($"DOT_TYPE_FIELD(\"{element.Name}\", {element.Name.Underscore()})");
-            }
-            writer.AppendLine($"DOT_TYPE_CTOR(make_{type}_data)");
-
-            writer.AppendLine($"DOT_TYPE_BASE({baseType})");
-            writer.PopIndent();
-            writer.AppendLine("DOT_TYPE_END()");
+            writer.AppendLine("virtual dot::type_t type();");
+            writer.AppendLine("static dot::type_t typeof();");
             writer.PopIndent();
 
             writer.AppendLine("};");
@@ -143,6 +155,43 @@ namespace DataCentric.Cli
 
             writer.AppendLine("/// Create an empty instance.");
             writer.AppendLine($"inline {type}_data make_{type}_data() {{ return new {type}_data_impl; }}");
+        }
+
+        private static void BuildClassImplementation(TypeDeclData decl, CppCodeWriter writer)
+        {
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
+            var type = decl.Name.Underscore();
+            bool isRecordBase = decl.Keys.Any();
+            bool isDerived = decl.Inherit != null;
+
+            writer.AppendLine($"dot::type_t {type}_data_impl::type() {{ return typeof(); }}");
+            writer.AppendLine($"dot::type_t {type}_data_impl::typeof()");
+
+            writer.AppendLine("{");
+            writer.PushIndent();
+
+            writer.AppendLine("static dot::type_t type_");
+            writer.PushIndent();
+
+            writer.AppendLine($"dot::make_type_builder<self>(\"{settings.Namespace}\", \"{type}\")");
+            foreach (var element in decl.Elements.Where(e => e.BsonIgnore != YesNo.Y))
+            {
+                var name = element.Name.Underscore();
+                writer.AppendLine($"->with_field(\"{name}\", &self::{name})");
+            }
+
+            var baseType = isRecordBase ? $"record<{type}_key_impl, {type}_data_impl>" :
+                           isDerived ? $"{decl.Inherit.Name.Underscore()}_data" :
+                                          "data";
+            writer.AppendLine($"->template with_base<{baseType}>()");
+            writer.AppendLine($"->with_constructor(&make_{type}_data, {{  }})");
+            writer.AppendLine("->build();");
+
+            writer.PopIndent();
+            writer.AppendLine("return type_;");
+
+            writer.PopIndent();
+            writer.AppendLine("}");
         }
     }
 }
