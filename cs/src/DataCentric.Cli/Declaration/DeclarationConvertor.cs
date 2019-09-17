@@ -36,6 +36,7 @@ namespace DataCentric.Cli
         /// </summary>
         private static readonly Type[] AllowedPrimitiveTypes = {
             typeof(string),
+
             typeof(bool),
             typeof(DateTime),
             typeof(double),
@@ -46,6 +47,7 @@ namespace DataCentric.Cli
             typeof(LocalTime),
             typeof(LocalMinute),
             typeof(ObjectId),
+
             // Nullables
             typeof(bool?),
             typeof(DateTime?),
@@ -160,6 +162,42 @@ namespace DataCentric.Cli
                             .Where(p => IsAllowedType(p.PropertyType))
                             .Where(IsPublicGetSet)
                             .Select(t => t.Name).ToList();
+
+            return decl;
+        }
+
+        public static TypeDeclData ToLegacy(this TypeDeclData decl)
+        {
+            var valueTypes = new List<ValueDeclData>();
+
+            valueTypes.AddRange(decl.Elements?.Where(e => e.Value != null).Select(e => e.Value));
+
+            var handlerParams = decl.Declare?.Handlers?.SelectMany(d=>d.Params);
+            if (handlerParams != null)
+                valueTypes.AddRange(handlerParams.Where(p => p.Value != null).Select(p => p.Value));
+
+            var handlerReturns = decl.Declare?.Handlers?.Where(p => p.Return != null).Where(r => r.Return.Value != null);
+            if (handlerReturns!= null)
+                valueTypes.AddRange(handlerReturns.Select(r => r.Return.Value));
+
+            foreach (ValueDeclData value in valueTypes)
+            {
+                var legacyType =
+                    // Nullable to default
+                    value.Type == AtomicType.NullableBool     ? AtomicType.Bool :
+                    value.Type == AtomicType.NullableDateTime ? AtomicType.DateTime :
+                    value.Type == AtomicType.NullableDouble   ? AtomicType.Double :
+                    value.Type == AtomicType.NullableInt      ? AtomicType.Int :
+                    value.Type == AtomicType.NullableLong     ? AtomicType.Long :
+                    value.Type == AtomicType.NullableDate     ? AtomicType.Date :
+                    value.Type == AtomicType.NullableTime     ? AtomicType.Int :
+                    value.Type == AtomicType.NullableObjectId ? AtomicType.ObjectId :
+                    // Minute to int
+                    value.Type == AtomicType.NullableMinute ? AtomicType.Int :
+                    value.Type == AtomicType.Minute         ? AtomicType.Minute :
+                                                              value.Type;
+                value.Type = legacyType;
+            }
 
             return decl;
         }

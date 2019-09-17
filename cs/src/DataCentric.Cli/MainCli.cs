@@ -258,11 +258,12 @@ namespace DataCentric.Cli
                 }
 
                 List<Type> types = TypesExtractor.GetTypes(assembly, options.Types);
-                List<Type> enums = TypesExtractor.GetEnums(assembly, options.Types);
-                foreach (Type type in types.Concat(enums))
+
+                foreach (Type type in types)
                 {
-                    // Interfaces are not serializable, so use dynamic to propagate TypeDeclData|EnumDeclData
-                    dynamic decl = DeclarationConvertor.ToDecl(type, docNavigator, projNavigator);
+                    TypeDeclData decl = options.Legacy
+                                            ? DeclarationConvertor.TypeToDecl(type, docNavigator, projNavigator).ToLegacy()
+                                            : DeclarationConvertor.TypeToDecl(type, docNavigator, projNavigator);
 
                     string outputFolder = Path.Combine(options.OutputFolder, decl.Module.ModuleId.Replace('.','\\'));
                     Directory.CreateDirectory(outputFolder);
@@ -274,7 +275,25 @@ namespace DataCentric.Cli
                     Console.Write(" => ");
                     Console.WriteLine(outputFile);
 
-                    File.WriteAllText(outputFile, DeclarationSerializer.Serialize(decl));
+                    File.WriteAllText(outputFile, DeclarationSerializer.Serialize(decl, options.Legacy));
+                }
+
+                List<Type> enums = TypesExtractor.GetEnums(assembly, options.Types);
+                foreach (Type type in enums)
+                {
+                    EnumDeclData decl = DeclarationConvertor.EnumToDecl(type, docNavigator, projNavigator);
+
+                    string outputFolder = Path.Combine(options.OutputFolder, decl.Module.ModuleId.Replace('.','\\'));
+                    Directory.CreateDirectory(outputFolder);
+
+                    string extension = type.IsSubclassOf(typeof(Enum)) ? "clenum" : "cltype";
+                    string outputFile = Path.Combine(outputFolder, $"{decl.Name}.{extension}");
+
+                    Console.Write(type.FullName);
+                    Console.Write(" => ");
+                    Console.WriteLine(outputFile);
+
+                    File.WriteAllText(outputFile, DeclarationSerializer.Serialize(decl, options.Legacy));
                 }
             }
         }

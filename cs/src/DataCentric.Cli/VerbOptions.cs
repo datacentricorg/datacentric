@@ -66,6 +66,9 @@ namespace DataCentric.Cli
 
         [Option('p', "project", HelpText = "Path to search for corresponding project location.")]
         public string ProjectPath { get; set; }
+
+        [Option('l', "legacy", HelpText = "Generates declarations in legacy format.", Default = false)]
+        public bool Legacy { get; set; }
     }
 
     [Verb("generate", HelpText = "Generate c++ header files from declarations.")]
