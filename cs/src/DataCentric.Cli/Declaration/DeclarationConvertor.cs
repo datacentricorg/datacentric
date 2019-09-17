@@ -191,11 +191,14 @@ namespace DataCentric.Cli
                     value.Type == AtomicType.NullableLong     ? AtomicType.Long :
                     value.Type == AtomicType.NullableDate     ? AtomicType.Date :
                     value.Type == AtomicType.NullableTime     ? AtomicType.Int :
-                    value.Type == AtomicType.NullableObjectId ? AtomicType.ObjectId :
                     // Minute to int
-                    value.Type == AtomicType.NullableMinute ? AtomicType.Int :
-                    value.Type == AtomicType.Minute         ? AtomicType.Minute :
-                                                              value.Type;
+                    value.Type == AtomicType.NullableMinute   ? AtomicType.Int :
+                    value.Type == AtomicType.Minute           ? AtomicType.Int :
+                    // TODO Remove after ObjectId support
+                    // value.Type == AtomicType.NullableObjectId ? AtomicType.ObjectId :
+                    value.Type == AtomicType.ObjectId         ? AtomicType.String :
+                    value.Type == AtomicType.NullableObjectId ? AtomicType.String :
+                                                                value.Type;
                 value.Type = legacyType;
             }
 
