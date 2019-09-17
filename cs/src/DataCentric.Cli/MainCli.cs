@@ -188,7 +188,7 @@ namespace DataCentric.Cli
 
             // Convert connection string to db name and hosts
             MongoUrl url = MongoUrl.Create(connectionString);
-            string dbNameString = $"{url.DatabaseName}-{options.Environment}";
+            string dbNameString = $"{url.DatabaseName};{options.Environment}";
             List<string> hosts = url.Servers.Select(t => t.ToString()).ToList();
 
             DbNameKey dbName = Activator.CreateInstance<DbNameKey>();
