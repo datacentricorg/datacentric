@@ -60,6 +60,8 @@ namespace DataCentric.Cli
             writer.AppendLines(settings.Copyright);
             writer.AppendNewLineWithoutIndent();
 
+            writer.AppendLine($"#include <{settings.Namespace}/precompiled.hpp>");
+            writer.AppendLine($"#include <{settings.Namespace}/implement.hpp>");
             writer.AppendLine($"#include <{includePath[decl.Name]}/{decl.Name.Underscore()}.hpp>");
             writer.AppendNewLineWithoutIndent();
 
