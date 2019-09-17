@@ -43,20 +43,20 @@ namespace DataCentric.Cli
                           element.Enum != null  ? element.Enum.Name.Underscore() :
                                                   throw new ArgumentException("Can't deduct type");
 
-            return element.Vector == YesNo.Y ? $"list<{type}>" : type;
+            return element.Vector == YesNo.Y ? $"dot::list<{type}>" : type;
         }
 
         private static string GetValue(ValueDeclData valueDecl)
         {
             var atomicType = valueDecl.Type;
-            return atomicType == AtomicType.Bool     ? "Bool" :
-                   atomicType == AtomicType.DateTime ? "local_date_time" :
+            return atomicType == AtomicType.Bool     ? "bool" :
+                   atomicType == AtomicType.DateTime ? "dot::local_date_time" :
                    atomicType == AtomicType.Double   ? "double" :
-                   atomicType == AtomicType.String   ? "String" :
-                   atomicType == AtomicType.Int      ? "Int" :
-                   atomicType == AtomicType.Long     ? "Long" :
-                   atomicType == AtomicType.Date     ? "local_date" :
-                   atomicType == AtomicType.Time     ? "local_time" :
+                   atomicType == AtomicType.String   ? "dot::string" :
+                   atomicType == AtomicType.Int      ? "int" :
+                   atomicType == AtomicType.Long     ? "long" :
+                   atomicType == AtomicType.Date     ? "dot::local_date" :
+                   atomicType == AtomicType.Time     ? "dot::local_time" :
                    // Minute is mapped to int
                    //atomicType == AtomicType.Minute   ? "LocalMinute" :
                                                          throw new ArgumentException($"Unknown value type: {atomicType.ToString()}");

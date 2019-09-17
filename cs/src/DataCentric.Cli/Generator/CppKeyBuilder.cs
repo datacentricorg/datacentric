@@ -37,7 +37,7 @@ namespace DataCentric.Cli
 
             // includes
             writer.AppendLine($"#include <{settings.DeclareInclude}.hpp>");
-            writer.AppendLine($"#include <dc/types/record/key_type.hpp>");
+            writer.AppendLine($"#include <dc/types/record/key.hpp>");
             writer.AppendNewLineWithoutIndent();
 
             writer.AppendLine($"namespace {settings.Namespace}");
@@ -72,7 +72,7 @@ namespace DataCentric.Cli
             var comment = CommentHelper.FormatComment(declComment);
             writer.AppendLines(comment);
 
-            writer.AppendLine($"class {settings.DeclSpec} {type}_key_impl : public key_for_impl<{type}_key_impl,{type}_data_impl>");
+            writer.AppendLine($"class {settings.DeclSpec} {type}_key_impl : public key_impl<{type}_key_impl,{type}_data_impl>");
             writer.AppendLine("{");
 
             writer.PushIndent();

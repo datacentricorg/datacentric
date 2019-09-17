@@ -59,7 +59,6 @@ namespace DataCentric.Cli
 
             writer.AppendLines(CommentHelper.FormatComment(decl.Comment));
 
-
             writer.AppendLine($"class {settings.DeclSpec} {type} : public enum_base");
             writer.AppendLine("{");
 

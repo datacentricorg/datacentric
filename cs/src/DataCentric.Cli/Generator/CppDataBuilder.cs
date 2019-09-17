@@ -39,7 +39,7 @@ namespace DataCentric.Cli
             writer.AppendLine($"#include <{settings.DeclareInclude}.hpp>");
             if (decl.Keys.Any())
             {
-                writer.AppendLine($"#include <dc/types/record/RecordType.hpp>");
+                writer.AppendLine($"#include <dc/types/record/record.hpp>");
                 writer.AppendLine($"#include <{declSet[decl.Name]}/{decl.Name.Underscore()}_key.hpp>");
             }
             else if (decl.Inherit != null)
@@ -53,7 +53,7 @@ namespace DataCentric.Cli
             // pure data
             else
             {
-                writer.AppendLine($"#include <dc/types/record/DataType.hpp>");
+                writer.AppendLine($"#include <dc/types/record/data.hpp>");
             }
             writer.AppendNewLineWithoutIndent();
 
@@ -86,10 +86,12 @@ namespace DataCentric.Cli
             var declComment = decl.Comment;
             var comment = CommentHelper.FormatComment(declComment);
             writer.AppendLines(comment);
+            bool isRecordBase = decl.Keys.Any();
+            bool isDerived = decl.Inherit != null;
 
-            var baseType = decl.Keys.Any()      ? $"record_for_impl<{type}_key_impl, {type}_data_impl>" :
-                           decl.Inherit != null ? $"{decl.Inherit.Name.Underscore()}_data_impl" :
-                                                  "data_impl";
+            var baseType = isRecordBase ? $"record_impl<{type}_key_impl, {type}_data_impl>" :
+                           isDerived    ? $"{decl.Inherit.Name.Underscore()}_data_impl" :
+                           "data_impl";
 
             writer.AppendLine($"class {settings.DeclSpec} {type}_data_impl : public {baseType}");
             writer.AppendLine("{");
