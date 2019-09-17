@@ -25,8 +25,7 @@ namespace DataCentric.Cli
         {
             var writer = new CppCodeWriter();
 
-            var module = decl.Module.ModuleId;
-            var settings = GeneratorSettingsProvider.Get(module);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
 
             writer.AppendLines(settings.Copyright);
             writer.AppendNewLineWithoutIndent();
@@ -35,7 +34,7 @@ namespace DataCentric.Cli
             writer.AppendNewLineWithoutIndent();
 
             // includes
-            writer.AppendLine("#include <dot/system/Enum.hpp>");
+            writer.AppendLine("#include <dot/system/enum.hpp>");
             // pure data
 
             writer.AppendNewLineWithoutIndent();
@@ -64,7 +63,7 @@ namespace DataCentric.Cli
             writer.AppendNewLineWithoutIndent();
 
             // includes
-            writer.AppendLine("#include <dot/system/Enum.hpp>");
+            writer.AppendLine("#include <dot/system/enum.hpp>");
             // pure data
 
             writer.AppendNewLineWithoutIndent();

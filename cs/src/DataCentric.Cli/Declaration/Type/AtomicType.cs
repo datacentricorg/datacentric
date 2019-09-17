@@ -25,20 +25,38 @@ namespace DataCentric.Cli
         /// <summary>Bool value.</summary>
         Bool,
 
+        /// <summary>Nullable bool value.</summary>
+        NullableBool,
+
         /// <summary>Int value.</summary>
         Int,
+
+        /// <summary>Nullable int value.</summary>
+        NullableInt,
 
         /// <summary>Long value.</summary>
         Long,
 
+        /// <summary>Nullable long value.</summary>
+        NullableLong,
+
         /// <summary>Double value.</summary>
         Double,
+
+        /// <summary>Nullable double value.</summary>
+        NullableDouble,
 
         /// <summary>Date value.</summary>
         Date,
 
+        /// <summary>Nullable date value.</summary>
+        NullableDate,
+
         /// <summary>DateTime value.</summary>
         DateTime,
+
+        /// <summary>Nullable DateTime value.</summary>
+        NullableDateTime,
 
         /// <summary>String value.</summary>
         String,
@@ -58,13 +76,25 @@ namespace DataCentric.Cli
         /// <summary>Decimal value.</summary>
         Decimal,
 
+        /// <summary>Nullable decimal value.</summary>
+        NullableDecimal,
+
         /// <summary>Time value.</summary>
         Time,
+
+        /// <summary>Nullable time value.</summary>
+        NullableTime,
 
         /// <summary>Object Id.</summary>
         ObjectId,
 
+        /// <summary>Nullable objectId.</summary>
+        NullableObjectId,
+
         /// <summary>Minute.</summary>
         Minute,
+
+        /// <summary>Nullable minute.</summary>
+        NullableMinute,
     }
 }

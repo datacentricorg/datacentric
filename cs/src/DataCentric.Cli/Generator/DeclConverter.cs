@@ -56,30 +56,34 @@ namespace DataCentric.Cli
             List<TypeDeclData> typeDecls = declarations.OfType<TypeDeclData>().ToList();
             List<EnumDeclData> enumDecls = declarations.OfType<EnumDeclData>().ToList();
 
-            var structureInfo = typeDecls.ToDictionary(t => t.Name, GetIncludePath);
+            var typeIncludes = typeDecls.ToDictionary(t => t.Name, GetIncludePath);
+            var enumIncludes = enumDecls.ToDictionary(t => t.Name, GetIncludePath);
 
-            var typeHeaders = typeDecls.SelectMany(d => ConvertType(d, structureInfo));
-            var enumHeaders = enumDecls.SelectMany(ConvertEnum);
+            var types = typeDecls.SelectMany(d => ConvertType(d, typeIncludes));
+            var enums = enumDecls.SelectMany(d => ConvertEnum(d, enumIncludes));
 
-            return typeHeaders.Concat(enumHeaders).ToList();
+            return types.Concat(enums).ToList();
         }
 
-        private static string GetIncludePath(TypeDeclData decl)
+        private static string GetIncludePath(IDeclData decl)
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
 
-            return $"{settings.Namespace}.{decl.Category}".Underscore().Replace('.', '/');
+            // Avoid adding trailing path separator
+            return !string.IsNullOrEmpty(decl.Category)
+                       ? $"{settings.Namespace}.{decl.Category}".Underscore().Replace('.', '/')
+                       : $"{settings.Namespace}".Underscore().Replace('.', '/');
         }
 
-        private static List<CppFileInfo> ConvertType(TypeDeclData decl, Dictionary<string, string> structureInfo)
+        private static List<CppFileInfo> ConvertType(TypeDeclData decl, Dictionary<string, string> includePath)
         {
-            string pathInProject = structureInfo[decl.Name];
+            string pathInProject = includePath[decl.Name];
 
             List<CppFileInfo> result = new List<CppFileInfo>();
 
             var dataHeader = new CppFileInfo
             {
-                Content = CppDataBuilder.BuildDataHeader(decl, structureInfo),
+                Content = CppDataBuilder.BuildDataHeader(decl, includePath),
                 FileName = $"{decl.Name.Underscore()}_data.hpp",
                 FolderName = pathInProject
             };
@@ -87,7 +91,7 @@ namespace DataCentric.Cli
 
             var dataSource = new CppFileInfo
             {
-                Content = CppDataBuilder.BuildDataSource(decl, structureInfo),
+                Content = CppDataBuilder.BuildDataSource(decl, includePath),
                 FileName = $"{decl.Name.Underscore()}_data.cpp",
                 FolderName = pathInProject
             };
@@ -97,7 +101,7 @@ namespace DataCentric.Cli
             {
                 var keyHeader = new CppFileInfo
                 {
-                    Content = CppKeyBuilder.BuildKeyHeader(decl, structureInfo),
+                    Content = CppKeyBuilder.BuildKeyHeader(decl, includePath),
                     FileName = $"{decl.Name.Underscore()}_key.hpp",
                     FolderName = pathInProject
                 };
@@ -105,7 +109,7 @@ namespace DataCentric.Cli
 
                 var keySource = new CppFileInfo
                 {
-                    Content = CppKeyBuilder.BuildKeySource(decl, structureInfo),
+                    Content = CppKeyBuilder.BuildKeySource(decl, includePath),
                     FileName = $"{decl.Name.Underscore()}_key.cpp",
                     FolderName = pathInProject
                 };
@@ -115,7 +119,7 @@ namespace DataCentric.Cli
             return result;
         }
 
-        private static List<CppFileInfo> ConvertEnum(EnumDeclData decl)
+        private static List<CppFileInfo> ConvertEnum(EnumDeclData decl, Dictionary<string, string> includePath)
         {
             var result = new List<CppFileInfo>();
             IGeneratorSettings settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);

@@ -35,18 +35,28 @@ namespace DataCentric.Cli
         /// Contains all allowed primitive types which could be converted in declarations.
         /// </summary>
         private static readonly Type[] AllowedPrimitiveTypes = {
-            typeof(ObjectId),
+            typeof(string),
             typeof(bool),
             typeof(DateTime),
             typeof(double),
-            typeof(string),
             typeof(int),
             typeof(long),
-            // NodaTime types
             typeof(LocalDateTime),
             typeof(LocalDate),
             typeof(LocalTime),
-            typeof(LocalMinute)
+            typeof(LocalMinute),
+            typeof(ObjectId),
+            // Nullables
+            typeof(bool?),
+            typeof(DateTime?),
+            typeof(double?),
+            typeof(int?),
+            typeof(long?),
+            typeof(LocalDateTime?),
+            typeof(LocalDate?),
+            typeof(LocalTime?),
+            typeof(LocalMinute?),
+            typeof(ObjectId?),
         };
 
         /// <summary>
@@ -202,16 +212,14 @@ namespace DataCentric.Cli
         }
 
         /// <summary>
-        /// Extracts argument type from List&lt;&gt;, [], Nullable&lt;&gt;.
+        /// Extracts argument type from List&lt;&gt;, [].
         /// </summary>
-        private static Type ResolveGenericType(Type type)
+        private static Type GetListArgument(Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
-                type = type.GetGenericArgument(0);
+                return type.GetGenericArgument(0);
             if (type.IsArray)
-                type = type.GetElementType();
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                type = type.GetGenericArgument(0);
+                return type.GetElementType();
 
             return type;
         }
@@ -228,7 +236,7 @@ namespace DataCentric.Cli
             if (IsRoot(type))
                 return false;
 
-            type = ResolveGenericType(type);
+            type = GetListArgument(type);
 
             return AllowedPrimitiveTypes.Contains(type) ||
                    type.IsSubclassOf(typeof(DataType)) ||
@@ -400,30 +408,44 @@ namespace DataCentric.Cli
         {
             var typeDecl = new T();
 
-            type = ResolveGenericType(type);
+            type = GetListArgument(type);
             if (type.IsEnum)
             {
                 typeDecl.Enum = CreateTypeDeclKey(type.Namespace, type.Name);
             }
-            else if (type.IsValueType || type == typeof(string) || type == typeof(ObjectId))
+            else if (type.IsValueType || type == typeof(string))
             {
                 typeDecl.Value = new ValueDeclData();
 
                 TypeCode typeCode = Type.GetTypeCode(type);
                 typeDecl.Value.Type =
+                    typeCode == TypeCode.String ? AtomicType.String :
+                    // Basic value types
                     typeCode == TypeCode.Boolean  ? AtomicType.Bool :
                     typeCode == TypeCode.DateTime ? AtomicType.DateTime :
                     typeCode == TypeCode.Double   ? AtomicType.Double :
-                    typeCode == TypeCode.String   ? AtomicType.String :
                     typeCode == TypeCode.Int32    ? AtomicType.Int :
                     typeCode == TypeCode.Int64    ? AtomicType.Long :
-                    // NodaTime types
+                    // Basic nullable value types
+                    type == typeof(bool?)     ? AtomicType.NullableBool :
+                    type == typeof(DateTime?) ? AtomicType.NullableDateTime :
+                    type == typeof(double?)   ? AtomicType.NullableDouble :
+                    type == typeof(int?)      ? AtomicType.NullableInt :
+                    type == typeof(long?)     ? AtomicType.NullableLong :
+                    // Noda types
                     type == typeof(LocalDateTime) ? AtomicType.DateTime :
                     type == typeof(LocalDate)     ? AtomicType.Date :
                     type == typeof(LocalTime)     ? AtomicType.Time :
-                    type == typeof(LocalMinute)   ? AtomicType.Int :
-                    type == typeof(ObjectId)      ? AtomicType.ObjectId :
-                                                    throw new ArgumentException($"Unknown value type: {type.FullName}");
+                    type == typeof(LocalMinute)   ? AtomicType.Minute :
+                    // Nullable Noda types
+                    type == typeof(LocalDateTime?) ? AtomicType.NullableDateTime :
+                    type == typeof(LocalDate?)     ? AtomicType.NullableDate :
+                    type == typeof(LocalTime?)     ? AtomicType.NullableTime :
+                    type == typeof(LocalMinute?)   ? AtomicType.NullableMinute :
+                    // Mongo's ObjectId
+                    type == typeof(ObjectId)  ? AtomicType.ObjectId :
+                    type == typeof(ObjectId?) ? AtomicType.NullableObjectId :
+                                                throw new ArgumentException($"Unknown value type: {type.FullName}");
             }
             else if (type.IsSubclassOf(typeof(KeyBase)) && type.Name.EndsWith("Key"))
             {

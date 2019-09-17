@@ -49,17 +49,30 @@ namespace DataCentric.Cli
         private static string GetValue(ValueDeclData valueDecl)
         {
             var atomicType = valueDecl.Type;
-            return atomicType == AtomicType.String   ? "dot::string" :
-                   atomicType == AtomicType.Bool     ? "dot::nullable<bool>" :
-                   atomicType == AtomicType.Double   ? "dot::nullable<double>" :
-                   atomicType == AtomicType.Int      ? "dot::nullable<int>" :
-                   atomicType == AtomicType.Long     ? "dot::nullable<long>" :
-                   atomicType == AtomicType.Date     ? "dot::nullable<dot::local_date>" :
-                   atomicType == AtomicType.Time     ? "dot::nullable<dot::local_time>" :
-                   atomicType == AtomicType.Minute   ? "dot::nullable<dot::local_minute>" :
-                   atomicType == AtomicType.DateTime ? "dot::nullable<dot::local_date_time>" :
-                   atomicType == AtomicType.ObjectId ? "dot::object_id" :
-                                                       throw new ArgumentException($"Unknown value type: {atomicType.ToString()}");
+            return
+                atomicType == AtomicType.String           ? "dot::string" :
+                atomicType == AtomicType.Bool             ? "bool" :
+                atomicType == AtomicType.DateTime         ? "dot::local_date_time" :
+                atomicType == AtomicType.Double           ? "double" :
+                atomicType == AtomicType.Int              ? "int" :
+                atomicType == AtomicType.Long             ? "long" :
+                atomicType == AtomicType.NullableBool     ? "dot::nullable<bool>" :
+                atomicType == AtomicType.NullableDateTime ? "dot::nullable<dot::local_date_time>" :
+                atomicType == AtomicType.NullableDouble   ? "dot::nullable<double>" :
+                atomicType == AtomicType.NullableInt      ? "dot::nullable<int>" :
+                atomicType == AtomicType.NullableLong     ? "dot::nullable<long>" :
+                atomicType == AtomicType.DateTime         ? "dot::local_date_time" :
+                atomicType == AtomicType.Date             ? "dot::local_date" :
+                atomicType == AtomicType.Time             ? "dot::local_time" :
+                atomicType == AtomicType.Minute           ? "dot::local_minute" :
+                atomicType == AtomicType.NullableDateTime ? "dot::nullable<dot::local_date_time>" :
+                atomicType == AtomicType.NullableDate     ? "dot::nullable<dot::local_date>" :
+                atomicType == AtomicType.NullableTime     ? "dot::nullable<dot::local_time>" :
+                atomicType == AtomicType.NullableMinute   ? "dot::nullable<dot::local_minute>" :
+                atomicType == AtomicType.ObjectId         ? "dot::object_id" :
+                atomicType == AtomicType.NullableObjectId ? "dot::nullable<dot::object_id>" :
+                                                            throw new
+                                                                ArgumentException($"Unknown value type: {atomicType.ToString()}");
         }
     }
 }
