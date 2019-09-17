@@ -85,8 +85,12 @@ namespace DataCentric.Cli
 
             // Get unique keys and data from elements
             var keyElements = decl.Elements.Where(e => decl.Keys.Contains(e.Name)).ToList();
-            var dataForwards = keyElements.Where(e => e.Data != null).Select(e => $"{e.Data.Name.Underscore()}_data").ToList();
-            var keysForwards = keyElements.Where(e => e.Key != null).Select(e => $"{e.Key.Name.Underscore()}_key").ToList();
+            var dataForwards = keyElements.Where(e => e.Data != null)
+                                          .Where(e => e.Data.Module.ModuleID == decl.Module.ModuleID)
+                                          .Select(e => $"{e.Data.Name.Underscore()}_data").ToList();
+            var keysForwards = keyElements.Where(e => e.Key != null)
+                                          .Where(e => e.Key.Module.ModuleID == decl.Module.ModuleID)
+                                          .Select(e => $"{e.Key.Name.Underscore()}_key").ToList();
             var forwards = keysForwards.Union(dataForwards).Distinct();
             // Appends forwards
             foreach (var f in forwards)

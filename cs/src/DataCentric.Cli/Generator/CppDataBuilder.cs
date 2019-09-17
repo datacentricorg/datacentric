@@ -89,8 +89,14 @@ namespace DataCentric.Cli
                 writer.AppendLine($"class {type}_key_impl; using {type}_key = dot::ptr<{type}_key_impl>;");
 
             // Get unique keys and data from elements
-            var dataForwards = decl.Elements.Where(e => e.Data != null).Select(e => $"{e.Data.Name.Underscore()}_data").ToList();
-            var keysForwards = decl.Elements.Where(e => e.Key != null).Select(e => $"{e.Key.Name.Underscore()}_key").ToList();
+            var dataForwards = decl.Elements.Where(e => e.Data != null)
+                                   .Where(e => e.Data.Module.ModuleID == decl.Module.ModuleID)
+                                   .Select(e => $"{e.Data.Name.Underscore()}_data").ToList();
+
+            var keysForwards = decl.Elements.Where(e => e.Key != null)
+                                   .Where(e => e.Key.Module.ModuleID == decl.Module.ModuleID)
+                                   .Select(e => $"{e.Key.Name.Underscore()}_key").ToList();
+
             var forwards = keysForwards.Union(dataForwards).Distinct();
             // Appends forwards
             foreach (var f in forwards)
