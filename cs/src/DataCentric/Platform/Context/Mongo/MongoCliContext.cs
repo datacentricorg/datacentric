@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 
 namespace DataCentric
 {
@@ -29,9 +30,11 @@ namespace DataCentric
         /// </summary>
         public MongoCliContext(DbNameKey db, DataStoreData dataStore)
         {
+            BsonClassMap.RegisterClassMap<MongoCliContext>();
+
             var dataSource = new MongoDataSourceData
             {
-                DataSourceId = dataStore.DataStoreId + db.Value,
+                DataSourceId = dataStore.DataStoreId + " " + db.Value,
                 DataStore = dataStore,
                 DbName = db
             };
@@ -39,6 +42,9 @@ namespace DataCentric
             // Initialize and assign to property
             dataSource.Init(this);
             DataSource = dataSource;
+
+            var dataSetOrEmpty = DataSource.GetDataSetOrEmpty("Common", ObjectId.Empty);
+            if (dataSetOrEmpty == ObjectId.Empty) DataSource.CreateCommon();
 
             DataSet = DataSource.GetCommon();
         }

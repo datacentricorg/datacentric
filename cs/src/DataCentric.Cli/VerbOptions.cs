@@ -52,6 +52,13 @@ namespace DataCentric.Cli
         public string TestPattern { get; set; }
     }
 
+    [Verb("csv2mongo", HelpText = "Test runner.")]
+    public class CsvConvertVerbOptions
+    {
+        [Option('p', "path", HelpText = "Pattern to filter tests.", Required = true)]
+        public string CsvPath { get; set; }
+    }
+
     [Verb("extract", HelpText = "Extract type info from assemblies and convert to declarations.")]
     public class ExtractVerbOptions
     {

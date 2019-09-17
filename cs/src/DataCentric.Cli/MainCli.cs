@@ -50,6 +50,7 @@ namespace DataCentric.Cli
                         TestVerbOptions,
                         GenerateVerbOptions,
                         HeadersVerbOptions,
+                        CsvConvertVerbOptions,
                         ExitVerbOptions>(args);
 
                     if (parseInteractiveResult is Parsed<object> parsedInteractive)
@@ -71,6 +72,9 @@ namespace DataCentric.Cli
                             case HeadersVerbOptions headersOptions:
                                 DoHeadersGenerate(headersOptions);
                                 break;
+                            case CsvConvertVerbOptions convertOptions:
+                                DoCsvConvert(convertOptions);
+                                break;
                             case ExitVerbOptions _:
                                 return 0;
                             default:
@@ -91,6 +95,7 @@ namespace DataCentric.Cli
                 TestVerbOptions,
                 GenerateVerbOptions,
                 HeadersVerbOptions,
+                CsvConvertVerbOptions,
                 ExitVerbOptions>(args);
 
             if (parseResult is Parsed<object> parsed)
@@ -112,12 +117,73 @@ namespace DataCentric.Cli
                     case HeadersVerbOptions headersOptions:
                         DoHeadersGenerate(headersOptions);
                         break;
+                    case CsvConvertVerbOptions convertOptions:
+                        DoCsvConvert(convertOptions);
+                        break;
                     case ExitVerbOptions _:
                         return 0;
                 }
             }
 
             return -1;
+        }
+
+        /// <summary>
+        /// Convert records stored in csv format to mongo storage.
+        /// </summary>
+        private static void DoCsvConvert(CsvConvertVerbOptions convertOptions)
+        {
+            DbNameKey dbName = new DbNameKey
+            {
+                InstanceType = InstanceType.USER, InstanceName = "user", EnvName = "Default"
+            };
+            LocalMongoDataStoreData dbServer = new LocalMongoDataStoreData
+            {
+                DataStoreId = "From Csv",
+            };
+            IContext context = new MongoCliContext(dbName, dbServer);
+
+            // Process all directories inside given folder
+            foreach (var dir in Directory.GetDirectories(convertOptions.CsvPath))
+            {
+                ProcessDirectory(context, dir, context.GetCommon());
+            }
+        }
+
+        private static void ProcessDirectory(IContext context, string path, ObjectId parentDataset)
+        {
+            var dirName = Path.GetFileName(path);
+
+            // Do not create dataset for Common
+            var currentDataset = dirName != "Common"
+                                     ? context.CreateDataSet(dirName, new[] {parentDataset}, context.DataSet)
+                                     : parentDataset;
+
+            foreach (var csvFile in Directory.GetFiles(path, "*.csv"))
+            {
+                var type = Path.GetFileNameWithoutExtension(csvFile);
+                Type recordType = ActivatorUtils.ResolveType($"{type}Data", ActivatorSettings.Assemblies)
+                                  ?? throw new ArgumentException($"Type '{type}' not found");
+
+                MethodInfo convertToMongo = typeof(MainCli).GetMethod(nameof(ConvertCsvToMongo), BindingFlags.Static | BindingFlags.NonPublic)
+                                                          ?.MakeGenericMethod(recordType);
+
+                convertToMongo?.Invoke(null, new object[] { context, currentDataset, csvFile});
+            }
+
+            var directories = Directory.GetDirectories(path);
+            foreach (string directory in directories)
+            {
+                ProcessDirectory(context, directory, currentDataset);
+            }
+        }
+
+        private static void ConvertCsvToMongo<T>(IContext context, ObjectId dataset, string csvFile) where T : RecordBase
+        {
+            string fileContent = File.ReadAllText(csvFile);
+            var records = CsvRecordsSerializer<T>.Deserialize(fileContent);
+
+            foreach (var record in records) context.Save(record, dataset);
         }
 
         /// <summary>
