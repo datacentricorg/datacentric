@@ -38,6 +38,11 @@ namespace DataCentric
         [BsonRequired]
         public List<string> Hosts { get; set; }
 
+        /// <summary>
+        /// MongoDB server connection string
+        /// </summary>
+        public string ConnectionString { get; set; }
+
         //--- METHODS
 
         /// <summary>
@@ -50,6 +55,9 @@ namespace DataCentric
         /// </summary>
         public override string GetMongoServerUri()
         {
+            if (ConnectionString.HasValue())
+                return ConnectionString;
+
             if (Hosts == null || Hosts.Count == 0) throw new Exception(
                 $"The list of hosts provided for MongoDB server {DataStoreId} is null or empty.");
 
