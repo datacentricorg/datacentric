@@ -59,6 +59,12 @@ namespace DataCentric.Cli
         Decimal,
 
         /// <summary>Time value.</summary>
-        Time
+        Time,
+
+        /// <summary>Object Id.</summary>
+        ObjectId,
+
+        /// <summary>Minute.</summary>
+        Minute,
     }
 }

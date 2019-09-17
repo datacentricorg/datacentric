@@ -420,7 +420,7 @@ namespace DataCentric.Cli
                     type == typeof(LocalDate)     ? AtomicType.Date :
                     type == typeof(LocalTime)     ? AtomicType.Time :
                     type == typeof(LocalMinute)   ? AtomicType.Int :
-                    type == typeof(ObjectId)      ? AtomicType.String :
+                    type == typeof(ObjectId)      ? AtomicType.ObjectId :
                                                     throw new ArgumentException($"Unknown value type: {type.FullName}");
             }
             else if (type.IsSubclassOf(typeof(KeyBase)) && type.Name.EndsWith("Key"))

@@ -49,17 +49,17 @@ namespace DataCentric.Cli
         private static string GetValue(ValueDeclData valueDecl)
         {
             var atomicType = valueDecl.Type;
-            return atomicType == AtomicType.Bool     ? "bool" :
-                   atomicType == AtomicType.DateTime ? "dot::local_date_time" :
-                   atomicType == AtomicType.Double   ? "double" :
-                   atomicType == AtomicType.String   ? "dot::string" :
-                   atomicType == AtomicType.Int      ? "int" :
-                   atomicType == AtomicType.Long     ? "long" :
-                   atomicType == AtomicType.Date     ? "dot::local_date" :
-                   atomicType == AtomicType.Time     ? "dot::local_time" :
-                   // Minute is mapped to int
-                   //atomicType == AtomicType.Minute   ? "LocalMinute" :
-                                                         throw new ArgumentException($"Unknown value type: {atomicType.ToString()}");
+            return atomicType == AtomicType.String   ? "dot::string" :
+                   atomicType == AtomicType.Bool     ? "dot::nullable<bool>" :
+                   atomicType == AtomicType.Double   ? "dot::nullable<double>" :
+                   atomicType == AtomicType.Int      ? "dot::nullable<int>" :
+                   atomicType == AtomicType.Long     ? "dot::nullable<long>" :
+                   atomicType == AtomicType.Date     ? "dot::nullable<dot::local_date>" :
+                   atomicType == AtomicType.Time     ? "dot::nullable<dot::local_time>" :
+                   atomicType == AtomicType.Minute   ? "dot::nullable<dot::local_minute>" :
+                   atomicType == AtomicType.DateTime ? "dot::nullable<dot::local_date_time>" :
+                   atomicType == AtomicType.ObjectId ? "dot::object_id" :
+                                                       throw new ArgumentException($"Unknown value type: {atomicType.ToString()}");
         }
     }
 }
