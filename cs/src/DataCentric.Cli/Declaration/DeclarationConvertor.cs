@@ -170,7 +170,7 @@ namespace DataCentric.Cli
         /// </summary>
         private static bool IsRoot(Type type)
         {
-            if (type == typeof(DataType) || type == typeof(RecordBase))
+            if (type == typeof(Data) || type == typeof(RecordBase))
                 return true;
 
             if (type.IsGenericType)
@@ -239,7 +239,7 @@ namespace DataCentric.Cli
             type = GetListArgument(type);
 
             return AllowedPrimitiveTypes.Contains(type) ||
-                   type.IsSubclassOf(typeof(DataType)) ||
+                   type.IsSubclassOf(typeof(Data)) ||
                    type.IsEnum;
         }
 
@@ -451,7 +451,7 @@ namespace DataCentric.Cli
             {
                 typeDecl.Key = CreateTypeDeclKey(type.Namespace, type.Name.TrimEnd("Key"));
             }
-            else if (type.IsSubclassOf(typeof(DataType)) && type.Name.EndsWith("Data"))
+            else if (type.IsSubclassOf(typeof(Data)) && type.Name.EndsWith("Data"))
             {
                 typeDecl.Data = CreateTypeDeclKey(type.Namespace, type.Name.TrimEnd("Data"));
             }

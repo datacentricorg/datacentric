@@ -52,17 +52,17 @@ namespace DataCentric.Cli
 
             // Include from field types
             includes.AddRange(decl.Elements.Where(t => t.Data != null)
-                                  .Select(t => t.Name).Distinct()
+                                  .Select(t => t.Data.Name).Distinct()
                                   .Select(t => $"#include <{declSet[t]}/{t.Underscore()}_data.hpp>"));
             includes.AddRange(decl.Elements.Where(t => t.Key != null)
-                                  .Select(t => t.Name).Distinct()
+                                  .Select(t => t.Key.Name).Distinct()
                                   .Select(t => $"#include <{declSet[t]}/{t.Underscore()}_key.hpp>"));
 
             var knownModules = GeneratorSettingsProvider.KnownModules();
             includes.AddRange(decl.Elements.Where(t => t.Enum != null)
                                    // Skip external enum
                                   .Where(t => knownModules.Contains(t.Enum.Module.ModuleID))
-                                  .Select(t => t.Name).Distinct()
+                                  .Select(t => t.Enum.Name).Distinct()
                                   .Select(t => $"#include <{declSet[t]}/{t.Underscore()}.hpp>"));
 
             return includes;
@@ -75,22 +75,26 @@ namespace DataCentric.Cli
             {
                 $"#include <{settings.Namespace}/declare.hpp>",
                 "#include <dot/system/ptr.hpp>",
-                "#include <dc/types/record/key.hpp>"
+                "#include <dc/types/record/record.hpp>",
+                $"#include <{declSet[decl.Name]}/{decl.Name.Underscore()}_data.hpp>"
             };
 
             // Include from field types
             includes.AddRange(decl.Elements.Where(t => t.Data != null)
-                                  .Select(t => t.Name).Distinct()
+                                  .Select(t => t.Data.Name).Distinct()
                                   .Select(t => $"#include <{declSet[t]}/{t.Underscore()}_data.hpp>"));
             includes.AddRange(decl.Elements.Where(t => t.Key != null)
-                                  .Select(t => t.Name).Distinct()
+                                  .Select(t => t.Key.Name).Distinct()
                                   .Select(t => $"#include <{declSet[t]}/{t.Underscore()}_key.hpp>"));
+
+            var knownModules = GeneratorSettingsProvider.KnownModules();
             includes.AddRange(decl.Elements.Where(t => t.Enum != null)
-                                  .Select(t => t.Name).Distinct()
+                                   // Skip external enum
+                                  .Where(t => knownModules.Contains(t.Enum.Module.ModuleID))
+                                  .Select(t => t.Enum.Name).Distinct()
                                   .Select(t => $"#include <{declSet[t]}/{t.Underscore()}.hpp>"));
 
             return includes;
         }
-
     }
 }
