@@ -76,6 +76,9 @@ namespace DataCentric.Cli
 
         [Option('o', "output", Required = true, HelpText = "Path to save generated c++ classes.")]
         public string OutputFolder { get; set; }
+
+        [Option('s', "settings", HelpText = "File with settings for generator.")]
+        public string SettingsPath { get; set; }
     }
 
     [Verb("headers", HelpText = "Generate c++ header files c# assemblies.")]
@@ -92,6 +95,9 @@ namespace DataCentric.Cli
 
         [Option('o', "output", HelpText = "Output folder to save generated c++ headers.", Default = ".")]
         public string OutputFolder { get; set; }
+
+        [Option('s', "settings", HelpText = "File with settings for generator.")]
+        public string SettingsPath { get; set; }
     }
 
     [Verb("exit", HelpText = "Exits from interactive shell.")]

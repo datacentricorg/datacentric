@@ -124,7 +124,7 @@ namespace DataCentric.Cli
         private static List<CppFileInfo> ConvertEnum(EnumDeclData decl, Dictionary<string, string> includePath)
         {
             var result = new List<CppFileInfo>();
-            IGeneratorSettings settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
             string folderName = $"{settings.Namespace}.{decl.Category}".Underscore().Replace('.', '/');
 
             var enumHeader = new CppFileInfo

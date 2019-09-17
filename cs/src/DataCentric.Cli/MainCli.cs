@@ -314,6 +314,8 @@ namespace DataCentric.Cli
         {
             var declFiles = DeclConverter.ReadDeclUnits(generateOptions.InputFolder);
 
+            GeneratorSettingsProvider.PopulateFromFile(generateOptions.SettingsPath);
+
             // Check Category field. In case if type name != file name it will be empty
             Console.ForegroundColor = ConsoleColor.Yellow;
             foreach (var decl in declFiles)
@@ -379,6 +381,7 @@ namespace DataCentric.Cli
                                            .Select(type => DeclarationConvertor.ToDecl(type, docNavigator, projNavigator)));
             }
 
+            GeneratorSettingsProvider.PopulateFromFile(options.SettingsPath);
             var fileContentInfos = DeclConverter.ConvertSet(declarations);
             foreach (var hppFile in fileContentInfos)
             {
