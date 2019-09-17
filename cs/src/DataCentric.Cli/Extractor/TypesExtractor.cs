@@ -91,15 +91,15 @@ namespace DataCentric.Cli
             HashSet<Type> dataInterfaces = new HashSet<Type>();
             foreach (Type type in dataTypes)
             {
-                foreach (Type @interface in interfaces)
+                foreach (Type interfaceType in interfaces)
                 {
                     // Interface should be assignable from data type
-                    bool isAssignableFromData = @interface.IsAssignableFrom(type);
+                    bool isAssignableFromData = interfaceType.IsAssignableFrom(type);
                     // Skip RecordFor<> interfaces
-                    bool isAssignableFromRecord = @interface.IsAssignableFrom(typeof(Record<,>));
+                    bool isAssignableFromRecord = interfaceType.IsAssignableFrom(typeof(Record<,>));
                     if (isAssignableFromData && !isAssignableFromRecord)
                     {
-                        dataInterfaces.Add(@interface);
+                        dataInterfaces.Add(interfaceType);
                     }
                 }
             }
