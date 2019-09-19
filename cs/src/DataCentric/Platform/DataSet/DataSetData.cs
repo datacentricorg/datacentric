@@ -74,12 +74,6 @@ namespace DataCentric
         /// </summary>
         public List<ObjectId> Import { get; set; }
 
-        /// <summary>
-        /// Flag value indicating whether this DataSet is readonly.
-        /// Obsolete.
-        /// </summary>
-        [Obsolete]
-        public bool? Readonly { get; set; }
         //--- METHODS
 
         /// <summary>
