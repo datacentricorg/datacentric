@@ -1,26 +1,26 @@
 Verify.Text: Initial load
-Verify.Text: Record A;0 in dataset A found and has Type=Data.
-Verify.Text: Record A;0 in dataset B found and has Type=Data.
+Verify.Text: Record A;0 in dataset A found and has Type=MongoTestData.
+Verify.Text: Record A;0 in dataset B found and has Type=MongoTestData.
 Verify.Text: Record B;0 in dataset A not found.
-Verify.Text: Record B;0 in dataset B found and has Type=DerivedData.
+Verify.Text: Record B;0 in dataset B found and has Type=MongoTestDerivedData.
 Verify.Text: Query in dataset A
-Verify.Text: Record A;0 returned by query in dataset A and has Type=Data.
+Verify.Text: Record A;0 returned by query in dataset A and has Type=MongoTestData.
 Verify.Text: Query in dataset B
-Verify.Text: Record A;0 returned by query in dataset B and has Type=Data.
-Verify.Text: Record B;0 returned by query in dataset B and has Type=DerivedData.
+Verify.Text: Record A;0 returned by query in dataset B and has Type=MongoTestData.
+Verify.Text: Record B;0 returned by query in dataset B and has Type=MongoTestDerivedData.
 Verify.Text: Delete A0 record in B dataset
-Verify.Text: Record A;0 in dataset A found and has Type=Data.
+Verify.Text: Record A;0 in dataset A found and has Type=MongoTestData.
 Verify.Text: Record A;0 in dataset B not found.
 Verify.Text: Query in dataset A
-Verify.Text: Record A;0 returned by query in dataset A and has Type=Data.
+Verify.Text: Record A;0 returned by query in dataset A and has Type=MongoTestData.
 Verify.Text: Query in dataset B
-Verify.Text: Record B;0 returned by query in dataset B and has Type=DerivedData.
+Verify.Text: Record B;0 returned by query in dataset B and has Type=MongoTestDerivedData.
 Verify.Text: Delete A0 record in A dataset
 Verify.Text: Record A;0 in dataset A not found.
 Verify.Text: Record A;0 in dataset B not found.
 Verify.Text: Query in dataset A
 Verify.Text: Query in dataset B
-Verify.Text: Record B;0 returned by query in dataset B and has Type=DerivedData.
+Verify.Text: Record B;0 returned by query in dataset B and has Type=MongoTestDerivedData.
 Verify.Text: Delete B0 record in B dataset
 Verify.Text: Record B;0 in dataset A not found.
 Verify.Text: Record B;0 in dataset B not found.

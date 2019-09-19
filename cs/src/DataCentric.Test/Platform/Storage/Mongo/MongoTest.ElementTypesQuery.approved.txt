@@ -1,4 +1,4 @@
-Verify.Text: Key=B;0 Type=DerivedData
-Verify.Text: Key=B;1 Type=DerivedData
-Verify.Text: Key=B;2 Type=DerivedData
-Verify.Text: Key=B;3 Type=DerivedData
+Verify.Text: Key=B;0 Type=MongoTestDerivedData
+Verify.Text: Key=B;1 Type=MongoTestDerivedData
+Verify.Text: Key=B;2 Type=MongoTestDerivedData
+Verify.Text: Key=B;3 Type=MongoTestDerivedData

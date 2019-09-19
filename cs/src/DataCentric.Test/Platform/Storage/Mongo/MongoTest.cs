@@ -30,8 +30,6 @@ namespace DataCentric.Test
     /// <summary>Unit test for TemporalMongoDataSourceData.</summary>
     public class MongoTest
     {
-        private string Prefix { get => GetType().Name; }
-
         /// <summary>Smoke test.</summary>
         [Fact]
         public void Smoke()
@@ -313,7 +311,7 @@ namespace DataCentric.Test
 
                 foreach (var obj in testQuery.AsEnumerable())
                 {
-                    context.Verify.Text($"Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix, String.Empty)}");
+                    context.Verify.Text($"Key={obj.Key} Type={obj.GetType().Name}");
                 }
             }
         }
@@ -335,29 +333,29 @@ namespace DataCentric.Test
                 {
                     var key = new MongoTestKey {RecordId = "A", RecordIndex = 0};
                     var obj = context.LoadOrNull(key, dataSetD);
-                    context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix,String.Empty)}");
+                    context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
                     var key = new MongoTestKey { RecordId = "B", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSetD);
-                    context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix, String.Empty)}");
+                    context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
                     var key = new MongoTestKey { RecordId = "C", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSetD);
-                    context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix, String.Empty)}");
+                    context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
                     var key = new MongoTestKey { RecordId = "D", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSetD);
-                    context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix, String.Empty)}");
+                    context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
                     context.Verify.Text("Query by MongoTestData, unconstrained");
                     var query = context.GetQuery<MongoTestData>(dataSetD);
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix, String.Empty)}");
+                        context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                     }
                 }
                 {
@@ -365,7 +363,7 @@ namespace DataCentric.Test
                     var query = context.GetQuery<MongoTestDerivedData>(dataSetD);
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix, String.Empty)}");
+                        context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                     }
                 }
                 {
@@ -373,7 +371,7 @@ namespace DataCentric.Test
                     var query = context.GetQuery<MongoTestOtherDerivedData>(dataSetD);
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix, String.Empty)}");
+                        context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                     }
                 }
                 {
@@ -381,7 +379,7 @@ namespace DataCentric.Test
                     var query = context.GetQuery<MongoTestDerivedFromDerivedData>(dataSetD);
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix, String.Empty)}");
+                        context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                     }
                 }
             }
@@ -407,7 +405,7 @@ namespace DataCentric.Test
                 {
                     context.Verify.Text(
                         $"    RecordIndex={obj.RecordIndex} DoubleElement={obj.DoubleElement} " +
-                        $"Key={obj.Key} Type={obj.GetType().Name.Replace(Prefix, String.Empty)}");
+                        $"Key={obj.Key} Type={obj.GetType().Name}");
                 }
             }
         }
@@ -525,6 +523,8 @@ namespace DataCentric.Test
         {
             using (var context = new MongoTestContext(this))
             {
+                context.KeepTestData = true;
+
                 // Create datasets
                 var dataSetA = context.CreateDataSet("A", context.DataSet);
 
@@ -588,7 +588,7 @@ namespace DataCentric.Test
                     $"has wrong key record.Key={record.Key}");
                 context.CastTo<IVerifyable>().Verify.Text(
                     $"Record {key} in dataset {dataSetId} found and " +
-                    $"has Type={record.GetType().Name.Replace(Prefix, String.Empty)}.");
+                    $"has Type={record.GetType().Name}.");
             }
         }
 
@@ -605,7 +605,7 @@ namespace DataCentric.Test
             {
                 context.CastTo<IVerifyable>().Verify.Text(
                     $"Record {record.Key} returned by query in dataset {dataSetId} and " +
-                    $"has Type={record.GetType().Name.Replace(Prefix, String.Empty)}.");
+                    $"has Type={record.GetType().Name}.");
             }
         }
 
