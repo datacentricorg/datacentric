@@ -69,7 +69,7 @@ namespace DataCentric.Test
         /// <summary>Create DB instance.</summary>
         public IMongoDatabase GetDb(IContext context)
         {
-            var result = context.DataSource.CastTo<MongoDataSourceBaseData>().Db;
+            var result = context.DataSource.CastTo<MongoDataSourceData>().Db;
             return result;
         }
 

@@ -26,7 +26,7 @@ namespace DataCentric
     /// <summary>
     /// Temporal data source with datasets based on MongoDB.
     /// </summary>
-    public class MongoDataSourceData : MongoDataSourceBaseData
+    public class TemporalMongoDataSourceData : MongoDataSourceData
     {
         /// <summary>
         /// Load record by its ObjectId.

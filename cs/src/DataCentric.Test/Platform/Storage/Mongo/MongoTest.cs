@@ -27,7 +27,7 @@ using Xunit;
 
 namespace DataCentric.Test
 {
-    /// <summary>Unit test for MongoDataSourceData.</summary>
+    /// <summary>Unit test for TemporalMongoDataSourceData.</summary>
     public class MongoTest
     {
         private string Prefix { get => GetType().Name; }

@@ -41,7 +41,7 @@ namespace DataCentric
         /// be used by other classes directly.
         /// </summary>
         public MongoCollection(
-            MongoDataSourceBaseData dataSource,
+            MongoDataSourceData dataSource,
             IMongoCollection<RecordBase> baseCollection,
             IMongoCollection<TRecord> typedCollection)
         {
@@ -51,7 +51,7 @@ namespace DataCentric
         }
 
         /// <summary>Interface to the data source.</summary>
-        public MongoDataSourceBaseData DataSource { get; }
+        public MongoDataSourceData DataSource { get; }
 
         /// <summary>Collection for the base record type.</summary>
         public IMongoCollection<RecordBase> BaseCollection { get; }

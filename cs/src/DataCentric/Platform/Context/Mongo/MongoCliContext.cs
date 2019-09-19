@@ -29,7 +29,7 @@ namespace DataCentric
         /// </summary>
         public MongoCliContext(DbNameKey db, DataStoreData dataStore)
         {
-            var dataSource = new MongoDataSourceData
+            var dataSource = new TemporalMongoDataSourceData
             {
                 DataSourceId = dataStore.DataStoreId + db.Value,
                 DataStore = dataStore,

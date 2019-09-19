@@ -31,7 +31,7 @@ namespace DataCentric
     ///
     /// This class provides functionality shared by all MongoDB data source types.
     /// </summary>
-    public abstract class MongoDataSourceBaseData : DataSourceData
+    public abstract class MongoDataSourceData : DataSourceData
     {
         //--- FIELDS
 
@@ -70,7 +70,7 @@ namespace DataCentric
         /// This call is in static constructor because MongoDB driver
         /// complains if it is called more than once.
         /// </summary>
-        static MongoDataSourceBaseData()
+        static MongoDataSourceData()
         {
             // Set discriminator convention to scalar. For this convention,
             // BSON element _t is a single string value equal to GetType().Name,
@@ -289,7 +289,7 @@ namespace DataCentric
                 throw new Exception(
                     $"Scalar discriminator convention is not set for type {typeof(TRecord).Name}. " +
                     $"The convention should have been set set in the static constructor of " +
-                    $"MongoDataSourceBaseData");
+                    $"MongoDataSourceData");
 
             // Collection name is root class name of the record without prefix
             Type rootType = DataInfo.GetOrCreate(typeof(TRecord)).RootType;
