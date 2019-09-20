@@ -519,7 +519,7 @@ namespace DataCentric.Test
 
         /// <summary>Test for the query across deleted entities.</summary>
         [Fact]
-        public void TestDeletedEntitiesQuery()
+        public void QueryWithFilterOnDeletedRecord()
         {
             using (var context = new MongoTestContext(this))
             {
@@ -529,6 +529,7 @@ namespace DataCentric.Test
                 var dataSetA = context.CreateDataSet("A", context.DataSet);
 
                 // Create initial version of the records
+                context.Verify.Text("Write A;0 record to A dataset");
                 SaveMinimalRecord(context, "A", "A", 0, 1);
 
                 var keyA0 = new MongoTestKey
@@ -537,30 +538,55 @@ namespace DataCentric.Test
                     RecordIndex = 0
                 };
 
-                // Verify the result of loading records from datasets A and B
-                context.Verify.Text("Initial load");
-                VerifyLoad(context, keyA0, "A");
+                // Load from storage before deletion
+                if (true)
+                {
+                    var loadedRecord = context.LoadOrNull(keyA0, dataSetA);
+                    context.Verify.Assert(loadedRecord != null, "Record found before deletion.");
+                }
 
-                context.Verify.Text("Delete A0 record in A dataset");
+                // Query before deletion
+                if (true)
+                {
+                    var query = context.GetQuery<MongoTestData>(dataSetA)
+                        .Where(p => p.Version == 1)
+                        .AsEnumerable();
+                    int recordCount = 0;
+                    foreach (var obj in query)
+                    {
+                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetId;
+                        context.Verify.Text($"Query returned Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
+                        recordCount++;
+                    }
+
+                    context.Verify.Text($"Query record count before deletion {recordCount}");
+                }
+
+                context.Verify.Text("Delete A;0 record in A dataset");
                 context.Delete(keyA0, dataSetA);
 
-                // Load from cache
-                VerifyLoad(context, keyA0, "A");
-
-                // Load from storage
-                var loadedRecord = context.LoadOrNull(keyA0, context.DataSet);
-                var condition = loadedRecord == null;
-                context.Verify.Assert(condition, "Should be null");
-
-                // Query for all records
-                var query = context.GetQuery<MongoTestData>(dataSetA)
-                    .Where(p => p.Version == 1)
-                    .AsEnumerable();
-                foreach (var obj in query)
+                // Load from storage before deletion
+                if (true)
                 {
-                    var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetId;
-                    context.Verify.Text($"Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
-                    context.Verify.Assert(false, "Should be null");
+                    var loadedRecord = context.LoadOrNull(keyA0, dataSetA);
+                    context.Verify.Assert(loadedRecord == null, "Record not found after deletion.");
+                }
+
+                // Query after deletion
+                if (true)
+                {
+                    var query = context.GetQuery<MongoTestData>(dataSetA)
+                        .Where(p => p.Version == 1)
+                        .AsEnumerable();
+                    int recordCount = 0;
+                    foreach (var obj in query)
+                    {
+                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetId;
+                        context.Verify.Text($"Query returned Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
+                        recordCount++;
+                    }
+
+                    context.Verify.Text($"Query record count after deletion {recordCount}");
                 }
             }
         }
