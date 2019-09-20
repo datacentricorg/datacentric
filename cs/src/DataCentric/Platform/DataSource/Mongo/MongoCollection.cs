@@ -20,6 +20,8 @@ using MongoDB.Driver;
 namespace DataCentric
 {
     /// <summary>
+    /// Wrapper around native collection for temporal MongoDB data source.
+    /// 
     /// This object holds two collection references - one for the base
     /// type of all records and the other for the record type specified
     /// as generic parameter.
@@ -31,7 +33,7 @@ namespace DataCentric
     /// LINQ constraints and base collection is used to iterate over
     /// objects.
     /// </summary>
-    public class MongoCollection<TRecord>
+    public class TemporalMongoCollection<TRecord>
         where TRecord : RecordBase
     {
         /// <summary>
@@ -40,7 +42,7 @@ namespace DataCentric
         /// This object should be constructed inside a data source. It should not
         /// be used by other classes directly.
         /// </summary>
-        public MongoCollection(
+        public TemporalMongoCollection(
             MongoDataSourceData dataSource,
             IMongoCollection<RecordBase> baseCollection,
             IMongoCollection<TRecord> typedCollection)

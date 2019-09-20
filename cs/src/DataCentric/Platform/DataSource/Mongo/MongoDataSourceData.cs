@@ -285,14 +285,14 @@ namespace DataCentric
         ///
         /// for further performance optimization.
         /// </summary>
-        protected MongoCollection<TRecord> GetOrCreateCollection<TRecord>()
+        protected TemporalMongoCollection<TRecord> GetOrCreateCollection<TRecord>()
             where TRecord : RecordBase
         {
             // Check if collection object has already been cached
             // for this type and return cached result if found
             if (collectionDict_.TryGetValue(typeof(TRecord), out object collectionObj))
             {
-                var cachedResult = collectionObj.CastTo<MongoCollection<TRecord>>();
+                var cachedResult = collectionObj.CastTo<TemporalMongoCollection<TRecord>>();
                 return cachedResult;
             }
 
@@ -474,7 +474,7 @@ namespace DataCentric
             }
 
             // Create result that holds both base and typed collections
-            MongoCollection<TRecord> result = new MongoCollection<TRecord>(this, baseCollection, typedCollection);
+            TemporalMongoCollection<TRecord> result = new TemporalMongoCollection<TRecord>(this, baseCollection, typedCollection);
 
             // Add the result to the collection dictionary and return
             collectionDict_.Add(typeof(TRecord), result);

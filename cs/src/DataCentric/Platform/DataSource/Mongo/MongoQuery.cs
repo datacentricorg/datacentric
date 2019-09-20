@@ -26,16 +26,16 @@ using MongoDB.Driver.Linq;
 namespace DataCentric
 {
     /// <summary>
-    /// Implements IQuery for MongoDB.
+    /// Implements IQuery for temporal MongoDB data source.
     /// 
     /// This implementation combines methods of IQueryable(TRecord) with
     /// additional constraints and ordering to retrieve the correct version
     /// of the record across multiple datasets.
     /// </summary>
-    public class MongoQuery<TRecord> : IQuery<TRecord>
+    public class TemporalMongoQuery<TRecord> : IQuery<TRecord>
         where TRecord : RecordBase
     {
-        private readonly MongoCollection<TRecord> collection_;
+        private readonly TemporalMongoCollection<TRecord> collection_;
         private readonly ObjectId loadFrom_;
         private readonly IQueryable<TRecord> queryable_;
         private readonly IOrderedQueryable<TRecord> orderedQueryable_;
@@ -45,7 +45,7 @@ namespace DataCentric
         /// <summary>
         /// Create query from collection and dataset.
         /// </summary>
-        public MongoQuery(MongoCollection<TRecord> collection, ObjectId loadFrom)
+        public TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, ObjectId loadFrom)
         {
             collection_ = collection;
             loadFrom_ = loadFrom;
@@ -69,7 +69,7 @@ namespace DataCentric
         /// This constructor is private and is intended for use by the
         /// implementation of this class only.
         /// </summary>
-        private MongoQuery(MongoCollection<TRecord> collection, ObjectId loadFrom, IQueryable<TRecord> queryable)
+        private TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, ObjectId loadFrom, IQueryable<TRecord> queryable)
         {
             if (queryable == null)
                 throw new Exception(
@@ -87,7 +87,7 @@ namespace DataCentric
         /// This constructor is private and is intended for use by the
         /// implementation of this class only.
         /// </summary>
-        private MongoQuery(MongoCollection<TRecord> collection, ObjectId loadFrom, IOrderedQueryable<TRecord> orderedQueryable)
+        private TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, ObjectId loadFrom, IOrderedQueryable<TRecord> orderedQueryable)
         {
             if (orderedQueryable == null)
                 throw new Exception(
@@ -111,7 +111,7 @@ namespace DataCentric
         {
             if (queryable_ != null && orderedQueryable_ == null)
             {
-                return new MongoQuery<TRecord>(collection_, loadFrom_, queryable_.Where(predicate));
+                return new TemporalMongoQuery<TRecord>(collection_, loadFrom_, queryable_.Where(predicate));
             }
             else if (queryable_ == null && orderedQueryable_ != null)
             {
@@ -136,12 +136,12 @@ namespace DataCentric
                 var queryableWithDataSetConstraint = collection_.DataSource.ApplyFinalConstraints(queryable_, loadFrom_);
 
                 // First SortBy clause, use OrderBy of queryable_
-                return new MongoQuery<TRecord>(collection_, loadFrom_, queryableWithDataSetConstraint.OrderBy(keySelector));
+                return new TemporalMongoQuery<TRecord>(collection_, loadFrom_, queryableWithDataSetConstraint.OrderBy(keySelector));
             }
             else if (queryable_ == null && orderedQueryable_ != null)
             {
                 // Subsequent SortBy clauses, use ThenBy of the orderedQueryable_
-                return new MongoQuery<TRecord>(collection_, loadFrom_, orderedQueryable_.ThenBy(keySelector));
+                return new TemporalMongoQuery<TRecord>(collection_, loadFrom_, orderedQueryable_.ThenBy(keySelector));
             }
             else
             {
@@ -160,12 +160,12 @@ namespace DataCentric
                 var queryableWithDataSetConstraint = collection_.DataSource.ApplyFinalConstraints(queryable_, loadFrom_);
 
                 // First SortBy clause, use OrderBy of queryable_
-                return new MongoQuery<TRecord>(collection_, loadFrom_, queryableWithDataSetConstraint.OrderByDescending(keySelector));
+                return new TemporalMongoQuery<TRecord>(collection_, loadFrom_, queryableWithDataSetConstraint.OrderByDescending(keySelector));
             }
             else if (queryable_ == null && orderedQueryable_ != null)
             {
                 // Subsequent SortBy clauses, use ThenBy of the orderedQueryable_
-                return new MongoQuery<TRecord>(collection_, loadFrom_, orderedQueryable_.ThenByDescending(keySelector));
+                return new TemporalMongoQuery<TRecord>(collection_, loadFrom_, orderedQueryable_.ThenByDescending(keySelector));
             }
             else
             {
