@@ -43,35 +43,6 @@ namespace DataCentric
         /// <summary>Dictionary of collections indexed by type T.</summary>
         private Dictionary<Type, object> collectionDict_ = new Dictionary<Type, object>();
 
-        //--- CONSTRUCTORS
-
-        /// <summary>
-        /// Use static constructor to set discriminator convention.
-        ///
-        /// This call is in static constructor because MongoDB driver
-        /// complains if it is called more than once.
-        /// </summary>
-        static TemporalMongoDataSourceData()
-        {
-            if (useScalarDiscriminatorConvention_)
-            {
-                // Set discriminator convention to scalar. For this convention,
-                // BSON element _t is a single string value equal to GetType().Name,
-                // rather than the list of names for the entire inheritance chain.
-                BsonSerializer.RegisterDiscriminatorConvention(typeof(Data), new ScalarDiscriminatorConvention("_t"));
-            }
-            else
-            {
-                // Set discriminator convention to hierarchical. For this convention,
-                // BSON element _t is either an array of GetType().Name values for ell
-                // types in the inheritance chain, or a single string value for a chain
-                // of length 1.
-                //
-                // Choosing root type to be RecordBase ensures that _t is always an array.
-                BsonSerializer.RegisterDiscriminatorConvention(typeof(Data), new HierarchicalDiscriminatorConvention("_t"));
-            }
-        }
-
         //--- METHODS
 
         /// <summary>

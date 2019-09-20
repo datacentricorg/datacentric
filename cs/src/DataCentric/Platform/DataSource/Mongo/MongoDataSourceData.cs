@@ -33,6 +33,9 @@ namespace DataCentric
     /// </summary>
     public abstract class MongoDataSourceData : DataSourceData
     {
+        /// <summary>True for scalar and false for hierarchical discriminator convention for _t.</summary>
+        protected const bool useScalarDiscriminatorConvention_ = true;
+
         /// <summary>Prohibited characters in database name.</summary>
         static readonly char[] prohibitedDbNameSymbols_ = new char[] { '/', '\\', '.', ' ', '"', '$', '*', '<', '>', ':', '|', '?' };
 
@@ -58,6 +61,35 @@ namespace DataCentric
 
         /// <summary>Interface to Mongo database in MongoDB C# driver.</summary>
         public IMongoDatabase Db { get; private set; }
+
+        //--- CONSTRUCTORS
+
+        /// <summary>
+        /// Use static constructor to set discriminator convention.
+        ///
+        /// This call is in static constructor because MongoDB driver
+        /// complains if it is called more than once.
+        /// </summary>
+        static MongoDataSourceData()
+        {
+            if (useScalarDiscriminatorConvention_)
+            {
+                // Set discriminator convention to scalar. For this convention,
+                // BSON element _t is a single string value equal to GetType().Name,
+                // rather than the list of names for the entire inheritance chain.
+                BsonSerializer.RegisterDiscriminatorConvention(typeof(Data), new ScalarDiscriminatorConvention("_t"));
+            }
+            else
+            {
+                // Set discriminator convention to hierarchical. For this convention,
+                // BSON element _t is either an array of GetType().Name values for ell
+                // types in the inheritance chain, or a single string value for a chain
+                // of length 1.
+                //
+                // Choosing root type to be RecordBase ensures that _t is always an array.
+                BsonSerializer.RegisterDiscriminatorConvention(typeof(Data), new HierarchicalDiscriminatorConvention("_t"));
+            }
+        }
 
         //--- METHODS
 
