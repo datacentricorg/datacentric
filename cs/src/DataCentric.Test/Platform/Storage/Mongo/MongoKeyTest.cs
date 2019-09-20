@@ -53,10 +53,6 @@ namespace DataCentric.Test
                 var key = record.ToKey();
                 context.Verify.Text(key.Value);
 
-                // Load using record cached inside the key
-                var cachedRecord = key.LoadOrNull(context);
-                context.Verify.Text(cachedRecord.Key);
-
                 // Save
                 context.Save(record, context.DataSet);
 
@@ -89,10 +85,6 @@ namespace DataCentric.Test
                 // Verify key creation
                 var key = record.ToKey();
                 context.Verify.Text(key.Value);
-
-                // Load using record cached inside the key
-                var cachedRecord = key.LoadOrNull(context);
-                context.Verify.Text(cachedRecord.Key);
 
                 // Save
                 context.Save(record, context.DataSet);
