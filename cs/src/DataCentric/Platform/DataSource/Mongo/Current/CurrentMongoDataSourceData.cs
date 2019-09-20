@@ -27,15 +27,22 @@ using MongoDB.Driver.Linq;
 namespace DataCentric
 {
     /// <summary>
-    /// Temporal data source with datasets based on MongoDB.
+    /// Current data source with datasets based on MongoDB.
     ///
-    /// The term Temporal applied to a data source means that the data source
-    /// stores revision history of the data (i.e., a version or uni-temporal
-    /// data source). This type is a temporal data source; a current data source
-    /// that stores only the current snapshot of the data is provided by
-    /// CurrentMongoDataSource type.
+    /// The term Current applied to a data source means that the data source
+    /// stores only the current snapshot of the data, but not its history (i.e.,
+    /// a non-temporal data source). This type is a current data source;
+    /// a temporal data source is provided by TemporalMongoDataSource type.
+    ///
+    /// IMPORTANT - this data source imposes the restriction that a key
+    /// can be present in not more than one dataset in a dataset chain.
+    /// This restriction is enforced by the save method of this data source,
+    /// and is used in query optimization. Some error checking is performed
+    /// on read to ensure only one key is present in dataset chain, however
+    /// one should not rely on read checking for enforcing this condition;
+    /// it should be implemented on write.
     /// </summary>
-    public class TemporalMongoDataSourceData : MongoDataSourceData
+    public class CurrentMongoDataSourceData : MongoDataSourceData
     {
         /// <summary>True for scalar and false for hierarchical discriminator convention for _t.</summary>
         private const bool useScalarDiscriminatorConvention_ = true;
@@ -51,7 +58,7 @@ namespace DataCentric
         /// This call is in static constructor because MongoDB driver
         /// complains if it is called more than once.
         /// </summary>
-        static TemporalMongoDataSourceData()
+        static CurrentMongoDataSourceData()
         {
             if (useScalarDiscriminatorConvention_)
             {
@@ -223,7 +230,7 @@ namespace DataCentric
         {
             // Get or create collection, then create query from collection
             var collection = GetOrCreateCollection<TRecord>();
-            return new TemporalMongoQuery<TRecord>(collection, loadFrom);
+            return new CurrentMongoQuery<TRecord>(collection, loadFrom);
         }
 
         /// <summary>
@@ -328,14 +335,14 @@ namespace DataCentric
         ///
         /// for further performance optimization.
         /// </summary>
-        protected TemporalMongoCollection<TRecord> GetOrCreateCollection<TRecord>()
+        protected CurrentMongoCollection<TRecord> GetOrCreateCollection<TRecord>()
             where TRecord : RecordBase
         {
             // Check if collection object has already been cached
             // for this type and return cached result if found
             if (collectionDict_.TryGetValue(typeof(TRecord), out object collectionObj))
             {
-                var cachedResult = collectionObj.CastTo<TemporalMongoCollection<TRecord>>();
+                var cachedResult = collectionObj.CastTo<CurrentMongoCollection<TRecord>>();
                 return cachedResult;
             }
 
@@ -528,7 +535,7 @@ namespace DataCentric
             }
 
             // Create result that holds both base and typed collections
-            TemporalMongoCollection<TRecord> result = new TemporalMongoCollection<TRecord>(this, baseCollection, typedCollection);
+            CurrentMongoCollection<TRecord> result = new CurrentMongoCollection<TRecord>(this, baseCollection, typedCollection);
 
             // Add the result to the collection dictionary and return
             collectionDict_.Add(typeof(TRecord), result);
