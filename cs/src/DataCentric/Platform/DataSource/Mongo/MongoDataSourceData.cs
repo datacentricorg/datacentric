@@ -33,7 +33,8 @@ namespace DataCentric
     /// </summary>
     public abstract class MongoDataSourceData : DataSourceData
     {
-        //--- FIELDS
+        /// <summary>True for scalar and false for hierarchical discriminator convention for _t.</summary>
+        private const bool isScalarDiscriminatorConvention_ = false;
 
         /// <summary>Prohibited characters in database name.</summary>
         static readonly char[] prohibitedDbNameSymbols_ = new char[] { '/', '\\', '.', ' ', '"', '$', '*', '<', '>', ':', '|', '?' };
@@ -72,10 +73,23 @@ namespace DataCentric
         /// </summary>
         static MongoDataSourceData()
         {
-            // Set discriminator convention to scalar. For this convention,
-            // BSON element _t is a single string value equal to GetType().Name,
-            // rather than the list of names for the entire inheritance chain.
-            BsonSerializer.RegisterDiscriminatorConvention(typeof(Data), new ScalarDiscriminatorConvention("_t"));
+            if (isScalarDiscriminatorConvention_)
+            {
+                // Set discriminator convention to scalar. For this convention,
+                // BSON element _t is a single string value equal to GetType().Name,
+                // rather than the list of names for the entire inheritance chain.
+                BsonSerializer.RegisterDiscriminatorConvention(typeof(Data), new ScalarDiscriminatorConvention("_t"));
+            }
+            else
+            {
+                // Set discriminator convention to hierarchical. For this convention,
+                // BSON element _t is either an array of GetType().Name values for ell
+                // types in the inheritance chain, or a single string value for a chain
+                // of length 1.
+                //
+                // Choosing root type to be RecordBase ensures that _t is always an array.
+                BsonSerializer.RegisterDiscriminatorConvention(typeof(Data), new HierarchicalDiscriminatorConvention("_t"));
+            }
         }
 
         //--- METHODS
@@ -298,11 +312,22 @@ namespace DataCentric
 
             // Check that scalar discriminator convention is set for TRecord
             var discriminatorConvention = BsonSerializer.LookupDiscriminatorConvention(typeof(TRecord));
-            if (!discriminatorConvention.Is<ScalarDiscriminatorConvention>())
-                throw new Exception(
-                    $"Scalar discriminator convention is not set for type {typeof(TRecord).Name}. " +
-                    $"The convention should have been set set in the static constructor of " +
-                    $"MongoDataSourceData");
+            if (isScalarDiscriminatorConvention_)
+            {
+                if (!discriminatorConvention.Is<ScalarDiscriminatorConvention>())
+                    throw new Exception(
+                        $"Scalar discriminator convention is not set for type {typeof(TRecord).Name}. " +
+                        $"The convention should have been set set in the static constructor of " +
+                        $"MongoDataSourceData");
+            }
+            else
+            {
+                if (!discriminatorConvention.Is<HierarchicalDiscriminatorConvention>())
+                    throw new Exception(
+                        $"Hierarchical discriminator convention is not set for type {typeof(TRecord).Name}. " +
+                        $"The convention should have been set set in the static constructor of " +
+                        $"MongoDataSourceData");
+            }
 
             // Collection name is root class name of the record without prefix
             Type rootType = DataInfo.GetOrCreate(typeof(TRecord)).RootType;

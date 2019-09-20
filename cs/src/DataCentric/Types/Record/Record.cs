@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using NodaTime;
 
 namespace DataCentric
@@ -26,6 +27,7 @@ namespace DataCentric
     /// <summary>
     /// Base class of records stored in data source.
     /// </summary>
+    [BsonDiscriminator("Record")]
     public abstract class Record<TKey, TRecord> : RecordBase
         where TKey : Key<TKey, TRecord>, new()
         where TRecord : Record<TKey, TRecord>
