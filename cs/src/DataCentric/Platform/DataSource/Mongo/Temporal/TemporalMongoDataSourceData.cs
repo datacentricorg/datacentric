@@ -23,6 +23,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using NodaTime;
 
 namespace DataCentric
 {
@@ -43,7 +44,48 @@ namespace DataCentric
         /// <summary>Dictionary of collections indexed by type T.</summary>
         private Dictionary<Type, object> collectionDict_ = new Dictionary<Type, object>();
 
+        //--- FIELDS
+
+        /// <summary>
+        /// Records where timestamp of _id rounded down to one second
+        /// is greater than SavedByTime will be ignored by the data source.
+        ///
+        /// The value of this element must fall precisely on the second,
+        /// error message otherwise.
+        ///
+        /// SavedByTime and SavedById elements are alternates;
+        /// they cannot be specified at the same time.
+        ///
+        /// If either SavedByTime or SavedById is specified, the
+        /// data source is readonly and its IsReadOnly() method returns true.
+        /// </summary>
+        public LocalDateTime? SavedByTime { get; set; }
+
+        /// <summary>
+        /// Records where _id is greater than SavedById will be
+        /// ignored by the data source.
+        ///
+        /// SavedByTime and SavedById elements are alternates;
+        /// they cannot be specified at the same time.
+        ///
+        /// If either SavedByTime or SavedById is specified, the
+        /// data source is readonly and its IsReadOnly() method returns true.
+        /// </summary>
+        public ObjectId? SavedById { get; set; }
+
         //--- METHODS
+
+        /// <summary>
+        /// Returns true if the data source is readonly,
+        /// which may be for the following reasons:
+        ///
+        /// * ReadOnly flag is true; or
+        /// * One of SavedByTime or SavedById is set
+        /// </summary>
+        public override bool IsReadOnly()
+        {
+            return ReadOnly == true || SavedByTime != null || SavedById != null;
+        }
 
         /// <summary>
         /// Load record by its ObjectId.
@@ -276,6 +318,50 @@ namespace DataCentric
         }
 
         //--- PROTECTED
+
+        /// <summary>
+        /// Records where _id is greater than the returned value will be
+        /// ignored by the data source.
+        ///
+        /// This field is set based on either SavedByTime and SavedById
+        /// elements that are alternates; only one of them can be specified.
+        /// </summary>
+        protected override ObjectId? GetSavedBy()
+        {
+            // Set savedBy_ based on either SavedByTime or SavedById element
+            if (SavedByTime == null && SavedById == null)
+            {
+                // Clear the revision time constraint.
+                //
+                // This is only required when  running Init(...) again
+                // on an object that has been initialized before.
+                return null;
+            }
+            else if (SavedByTime != null && SavedById == null)
+            {
+                // We already know that SavedBy is not null,
+                // but we need to check separately that it is not empty
+                SavedByTime.CheckHasValue();
+
+                // Convert to the least value of ObjectId with the specified timestamp
+                return SavedByTime.ToObjectId();
+            }
+            else if (SavedByTime == null && SavedById != null)
+            {
+                // We already know that SavedById is not null,
+                // but we need to check separately that it is not empty
+                SavedById.Value.CheckHasValue();
+
+                // Set the revision time constraint
+                return SavedById;
+            }
+            else
+            {
+                throw new Exception(
+                    "Elements SavedByTime and SavedById are alternates; " +
+                    "they cannot be specified at the same time.");
+            }
+        }
 
         /// <summary>
         /// Returned object holds two collection references - one for the base

@@ -93,34 +93,15 @@ namespace DataCentric
         /// </summary>
         public bool ReadOnly { get; set; }
 
-        /// <summary>
-        /// Records where timestamp of _id rounded down to one second
-        /// is greater than SavedByTime will be ignored by the data source.
-        ///
-        /// The value of this element must fall precisely on the second,
-        /// error message otherwise.
-        ///
-        /// SavedByTime and SavedById elements are alternates;
-        /// they cannot be specified at the same time.
-        ///
-        /// If either SavedByTime or SavedById is specified, the
-        /// data source is readonly and its IsReadOnly() method returns true.
-        /// </summary>
-        public LocalDateTime? SavedByTime { get; set; }
-
-        /// <summary>
-        /// Records where _id is greater than SavedById will be
-        /// ignored by the data source.
-        ///
-        /// SavedByTime and SavedById elements are alternates;
-        /// they cannot be specified at the same time.
-        ///
-        /// If either SavedByTime or SavedById is specified, the
-        /// data source is readonly and its IsReadOnly() method returns true.
-        /// </summary>
-        public ObjectId? SavedById { get; set; }
-
         //--- ABSTRACT
+
+        /// <summary>
+        /// Returns true if the data source is readonly,
+        /// which may be because ReadOnly flag is true,
+        /// or due to other flags (e.g. SavedBy) defined
+        /// in derived types.
+        /// </summary>
+        public abstract bool IsReadOnly();
 
         /// <summary>
         /// The returned ObjectIds have the following order guarantees:
@@ -244,18 +225,6 @@ namespace DataCentric
         //--- METHODS
 
         /// <summary>
-        /// Returns true if the data source is readonly,
-        /// which may be for the following reasons:
-        ///
-        /// * ReadOnly flag is true; or
-        /// * One of SavedByTime or SavedById is set
-        /// </summary>
-        public bool IsReadOnly()
-        {
-            return ReadOnly == true || SavedByTime != null || SavedById != null;
-        }
-
-        /// <summary>
         /// Error message if the data source is readonly,
         /// which may be for the following reasons:
         ///
@@ -376,42 +345,7 @@ namespace DataCentric
         /// This field is set based on either SavedByTime and SavedById
         /// elements that are alternates; only one of them can be specified.
         /// </summary>
-        protected ObjectId? GetSavedBy()
-        {
-            // Set savedBy_ based on either SavedByTime or SavedById element
-            if (SavedByTime == null && SavedById == null)
-            {
-                // Clear the revision time constraint.
-                //
-                // This is only required when  running Init(...) again
-                // on an object that has been initialized before.
-                return null;
-            }
-            else if (SavedByTime != null && SavedById == null)
-            {
-                // We already know that SavedBy is not null,
-                // but we need to check separately that it is not empty
-                SavedByTime.CheckHasValue();
-
-                // Convert to the least value of ObjectId with the specified timestamp
-                return SavedByTime.ToObjectId();
-            }
-            else if (SavedByTime == null && SavedById != null)
-            {
-                // We already know that SavedById is not null,
-                // but we need to check separately that it is not empty
-                SavedById.Value.CheckHasValue();
-
-                // Set the revision time constraint
-                return SavedById;
-            }
-            else
-            {
-                throw new Exception(
-                    "Elements SavedByTime and SavedById are alternates; " +
-                    "they cannot be specified at the same time.");
-            }
-        }
+        protected abstract ObjectId? GetSavedBy();
 
         //--- PRIVATE
 

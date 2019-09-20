@@ -30,6 +30,18 @@ namespace DataCentric
     public class NullDataSourceData : DataSourceData
     {
         /// <summary>
+        /// Returns true if the data source is readonly,
+        /// which may be because ReadOnly flag is true,
+        /// or due to other flags (e.g. SavedBy) defined
+        /// in derived types.
+        /// </summary>
+        public override bool IsReadOnly()
+        {
+            ErrorMessage();
+            return false;
+        }
+
+        /// <summary>
         /// The returned ObjectIds have the following order guarantees:
         ///
         /// * For this data source instance, to arbitrary resolution; and
@@ -165,6 +177,20 @@ namespace DataCentric
         {
             ErrorMessage();
         }
+
+        //--- PROTECTED
+
+        /// <summary>
+        /// SavedBy flags are defined only for temporal data sources. Accordingly,
+        /// for this current data source the method should always return null.
+        /// </summary>
+        protected override ObjectId? GetSavedBy()
+        {
+            ErrorMessage();
+            return null;
+        }
+
+        //--- PRIVATE
 
         /// <summary>Provides an error message if any of the data source methods are invoked.</summary>
         private void ErrorMessage([CallerMemberName] string callerMemberName = null)

@@ -50,6 +50,21 @@ namespace DataCentric
         //--- METHODS
 
         /// <summary>
+        /// Returns true if the data source is readonly,
+        /// which for this data source is controlled only
+        /// by the ReadOnly flag.
+        ///
+        /// For other datasets, IsReadOnly() may depend
+        /// on other flags; for this reason, the flag ReadOnly
+        /// should never be used directly and only the method
+        /// IsReadOnly() should be used.
+        /// </summary>
+        public override bool IsReadOnly()
+        {
+            return ReadOnly == true;
+        }
+
+        /// <summary>
         /// Load record by its ObjectId.
         ///
         /// Return null if there is no record for the specified ObjectId;
@@ -280,6 +295,15 @@ namespace DataCentric
         }
 
         //--- PROTECTED
+
+        /// <summary>
+        /// SavedBy flags are defined only for temporal data sources. Accordingly,
+        /// for this current data source the method should always return null.
+        /// </summary>
+        protected override ObjectId? GetSavedBy()
+        {
+            return null;
+        }
 
         /// <summary>
         /// Returned object holds two collection references - one for the base
