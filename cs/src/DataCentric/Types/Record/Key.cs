@@ -36,27 +36,6 @@ namespace DataCentric
         where TRecord : Record<TKey, TRecord>
     {
         /// <summary>
-        /// Cached reference to a record inside the key.
-        ///
-        /// This reference is used in two cases:
-        ///
-        /// First, to avoid getting the record from storage multiple times.
-        /// The first value loaded from storage will be cached in Record
-        /// and returned on all subsequent calls for the same dataset
-        /// without storage lookup.
-        ///
-        /// Second, to avoid accessing storage when two objects are
-        /// created in memory, one having a property that is a key
-        /// to the other. Use SetCachedRecord(record) method to assign
-        /// an in-memory object to a key which will also set values
-        /// of the elements of the key to the corresponding values
-        /// of the record.
-        /// </summary>
-        private CachedRecord cachedRecord_;
-
-        //--- METHODS
-
-        /// <summary>
         /// Load record from context.DataSource. The lookup occurs in
         /// context.DataSet and its imports, expanded to arbitrary
         /// depth with repetitions and cyclic references removed.
@@ -159,62 +138,24 @@ namespace DataCentric
         /// </summary>
         public TRecord LoadOrNull(IContext context, ObjectId loadFrom)
         {
-            // First check if the record has been
-            // cached for the same dataset as the
-            // argument to this method. Note that
-            // the dataset of the record may not
-            // be the same as the dataset where
-            // the record is looked up.
-            if (cachedRecord_ != null && cachedRecord_.DataSet == loadFrom)
+            // This method will return null if the record is
+            // not found or the found record is a delete marker
+            TRecord result = context.ReloadOrNull(this, loadFrom);
+
+            // If not null, check that the key matches (even if delete marker)
+            if (result != null && Value != result.Key)
             {
-                // If cached for the argument dataset, return the cached
-                // value unless it is empty, in which case return null
-                if (cachedRecord_.Record == null) return null;
-                else return cachedRecord_.Record.CastTo<TRecord>();
-            }
-            else
-            {
-                // Before doing anything else, clear the cached record
-                // This will ensure that the previous cached copy is 
-                // no longer present even in case of an exception in the
-                // following code, or if it does not set the new cached
-                // record value.
-                ClearCachedRecord();
-
-                // This method will return null if the record is
-                // not found or the found record has Deleted flag set
-                TRecord result = context.ReloadOrNull(this, loadFrom);
-
-                if (result == null || result.Is<DeleteMarker>())
-                {
-                    // If not null, it is a delete marker;
-                    // check that has a matching key
-                    if (result != null && Value != result.Key)
-                        throw new Exception(
-                            $"Delete marker with Type={result.GetType().Name} stored " +
-                            $"for Key={Value} has a non-matching Key={result.Key}.");
-
-                    // Record not found or is a delete marker,
-                    // cache an empty record and return null
-                    cachedRecord_ = new CachedRecord(loadFrom);
-                    return null;
-                }
+                if (result.Is<DeleteMarker>())
+                    throw new Exception(
+                        $"Delete marker with Type={result.GetType().Name} stored " +
+                        $"for Key={Value} has a non-matching Key={result.Key}.");
                 else
-                {
-                    // Check that the found record has a matching key
-                    if (Value != result.Key)
-                        throw new Exception(
-                            $"Record with Type={result.GetType().Name} stored " +
-                            $"for Key={Value} has a non-matching Key={result.Key}.");
-
-                    // Cache the record; the ctor of CachedRecord
-                    // will cache null if the record is a delete marker
-                    cachedRecord_ = new CachedRecord(loadFrom, result);
-
-                    // Return the result after caching it inside the key
-                    return result;
-                }
+                    throw new Exception(
+                        $"Record with Type={result.GetType().Name} stored " +
+                        $"for Key={Value} has a non-matching Key={result.Key}.");
             }
+
+            return result;
         }
 
         /// <summary>
@@ -246,69 +187,8 @@ namespace DataCentric
             context.DataSource.Delete(this, deleteIn);
         }
 
-        /// <summary>
-        /// Return true if the key holds a cached record,
-        /// irrespective of whether or not that cached
-        /// record is null.
-        /// </summary>
-        public bool HasCachedRecord()
-        {
-            return cachedRecord_ != null;
-        }
-
-        /// <summary>
-        /// Use SetCachedRecord(record, dataSet) method to cache a
-        /// reference to the record inside the key.
-        ///
-        /// This reference is used in two cases:
-        ///
-        /// First, to avoid getting the record from storage multiple times.
-        /// The first value loaded from storage will be cached in Record
-        /// and returned on all subsequent calls for the same dataset
-        /// without storage lookup.
-        ///
-        /// Second, to avoid accessing storage when two objects are
-        /// created in memory, one having a property that is a key
-        /// to the other. Use SetCachedRecord(record) method to assign
-        /// an in-memory object to a key which will also set values
-        /// of the elements of the key to the corresponding values
-        /// of the record.
-        ///
-        /// The parameter dataSet is separate from record because
-        /// the record may be saved in a dataset that is different
-        /// from the dataset for which it is looked up, e.g. it could
-        /// be an imported dataset. The cached reference is stored with
-        /// the dataset where the object has been looked up, not the
-        /// one where it is stored.
-        /// </summary>
-        public void SetCachedRecord(Record<TKey, TRecord> record, ObjectId dataSet)
-        {
-            // Before doing anything else, clear the cached record
-            // This will ensure that the previous cached copy is 
-            // no longer present even in case of an exception in the
-            // following code, or if it does not set the new cached
-            // record value.
-            ClearCachedRecord();
-
-            // Assign key elements to match the record
-            AssignKeyElements(record);
-
-            // Cache self inside the key
-            cachedRecord_ = new CachedRecord(dataSet, record);
-        }
-
-        /// <summary>
-        /// Clear the previously cached record so that a
-        /// new value can be loaded from storage or set using
-        /// SetCachedRecord(record).
-        /// </summary>
-        public void ClearCachedRecord()
-        {
-            cachedRecord_ = null;
-        }
-
         /// <summary>Assign key elements from record to key.</summary>
-        public void AssignKeyElements(Record<TKey, TRecord> record)
+        public void AssignKeyElements(Record<TKey, TRecord> record) // TODO - convert to constructor
         {
             // Assign elements of the record to the matching elements
             // of the key. This will also make string representation

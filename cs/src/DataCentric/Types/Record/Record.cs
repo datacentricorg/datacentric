@@ -117,10 +117,8 @@ namespace DataCentric
         {
             TKey result = new TKey();
 
-            // The cached value will be used only for lookup in the dataset
-            // passed to this method, but not for lookup in another dataset
-            // for which the current dataset is an import
-            result.SetCachedRecord(this, DataSet);
+            // Assign key elements to match the record
+            result.AssignKeyElements(this);
 
             return result;
         }
@@ -214,16 +212,5 @@ namespace DataCentric
         {
             context.DataSource.Delete(ToKey(), deleteIn);
         }
-
-        //--- OPERATORS
-
-        /// <summary>
-        /// This conversion operator creates a new key from record and then caches itself
-        ///
-        /// The purpose of this operator is to bypass saving the object to the data store
-        /// and reading it back when record A has property that is a key for record B,
-        /// and both records are created in-memory without any need to save them to storage.
-        /// </summary>
-        public static implicit operator TKey(Record<TKey, TRecord> value) { return value.ToKey(); }
     }
 }

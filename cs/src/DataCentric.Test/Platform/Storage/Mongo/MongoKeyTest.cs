@@ -61,7 +61,6 @@ namespace DataCentric.Test
                 context.Save(record, context.DataSet);
 
                 // Load from storage
-                key.ClearCachedRecord();
                 var loadedRecord = context.LoadOrNull(key, context.DataSet);
                 context.Verify.Text(loadedRecord.Key);
             }
@@ -99,7 +98,6 @@ namespace DataCentric.Test
                 context.Save(record, context.DataSet);
 
                 // Load from storage
-                key.ClearCachedRecord();
                 var loadedRecord = context.LoadOrNull(key, context.DataSet);
                 context.Verify.Text(loadedRecord.Key);
             }

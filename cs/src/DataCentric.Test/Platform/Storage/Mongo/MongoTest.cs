@@ -548,7 +548,6 @@ namespace DataCentric.Test
                 VerifyLoad(context, keyA0, "A");
 
                 // Load from storage
-                keyA0.ClearCachedRecord();
                 var loadedRecord = context.LoadOrNull(keyA0, context.DataSet);
                 var condition = loadedRecord == null;
                 context.Verify.Assert(condition, "Should be null");
