@@ -34,7 +34,7 @@ namespace DataCentric
     public abstract class MongoDataSourceData : DataSourceData
     {
         /// <summary>True for scalar and false for hierarchical discriminator convention for _t.</summary>
-        private const bool isScalarDiscriminatorConvention_ = false;
+        private const bool isScalarDiscriminatorConvention_ = true;
 
         /// <summary>Prohibited characters in database name.</summary>
         static readonly char[] prohibitedDbNameSymbols_ = new char[] { '/', '\\', '.', ' ', '"', '$', '*', '<', '>', ':', '|', '?' };
