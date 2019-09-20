@@ -50,7 +50,7 @@ namespace DataCentric.Test
         [Fact]
         public void Load()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = new CurrentMongoTestContext(this))
             {
                 // Create queue record and save, then get its id
                 var queue = new JobQueueData();

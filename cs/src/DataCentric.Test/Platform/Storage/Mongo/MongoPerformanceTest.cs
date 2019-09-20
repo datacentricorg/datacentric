@@ -179,7 +179,7 @@ namespace DataCentric.Test
         [Fact]
         public void InsertA()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = new CurrentMongoTestContext(this))
             {
                 InsertRecordsA(context);
             }
@@ -189,7 +189,7 @@ namespace DataCentric.Test
         [Fact]
         public void InsertB()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = new CurrentMongoTestContext(this))
             {
                 InsertRecordsB(context);
             }
@@ -199,7 +199,7 @@ namespace DataCentric.Test
         [Fact]
         public void FindOneA()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = new CurrentMongoTestContext(this))
             {
                 InsertRecordsA(context);
 
@@ -225,7 +225,7 @@ namespace DataCentric.Test
         [Fact]
         public void FindOneB()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = new CurrentMongoTestContext(this))
             {
                 InsertRecordsB(context);
 
@@ -253,7 +253,7 @@ namespace DataCentric.Test
         [Fact]
         public void OneStepQueryA()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = new CurrentMongoTestContext(this))
             {
                 InsertRecordsA(context);
 
@@ -279,7 +279,7 @@ namespace DataCentric.Test
         [Fact]
         public void OneStepQueryB()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = new CurrentMongoTestContext(this))
             {
                 InsertRecordsB(context);
 
@@ -321,7 +321,7 @@ namespace DataCentric.Test
         [Fact]
         public void TwoStepQueryB()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = new CurrentMongoTestContext(this))
             {
                 InsertRecordsB(context);
 

@@ -36,7 +36,7 @@ namespace DataCentric
     ///
     /// For tests that do not require a data source, use UnitTestContext.
     /// </summary>
-    public class MongoTestContext : DataTestContext<CurrentMongoDataSourceData>
+    public class CurrentMongoTestContext : DataTestContext<CurrentMongoDataSourceData>
     {
         /// <summary>
         /// Create with class name, method name, and source file path.
@@ -45,7 +45,7 @@ namespace DataCentric
         /// constructor, the latter two arguments are provided by
         /// the compiler.
         /// </summary>
-        public MongoTestContext(
+        public CurrentMongoTestContext(
             object classInstance,
             [CallerMemberName] string methodName = null,
             [CallerFilePath] string sourceFilePath = null)
