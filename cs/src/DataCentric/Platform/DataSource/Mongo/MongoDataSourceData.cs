@@ -119,8 +119,21 @@ namespace DataCentric
                 throw new Exception(
                     $"MongoDB database name {dbName_} exceeds the maximum length of 64 characters.");
 
+            // Load data store object by key; if key is not specified, create with default settings
+            MongoDataStoreData dataStoreData = null;
+            if (DataStore != null)
+            {
+                // Load if data store key is set; the key may point to a local or remote server or cluster
+                dataStoreData = DataStore.Load(Context, ObjectId.Empty).CastTo<MongoDataStoreData>();
+            }
+            else
+            {
+                // Otherwise default to local Mongo server on default port
+                dataStoreData = new LocalMongoDataStoreData();
+            }
+
             // Get client interface using the server instance loaded from root dataset
-            string dbUri = DataStore.Load(Context, ObjectId.Empty).CastTo<MongoDataStoreData>().GetMongoServerUri();
+            string dbUri = dataStoreData.GetMongoServerUri();
             client_ = new MongoClient(dbUri);
 
             // Get database interface using the client and database name

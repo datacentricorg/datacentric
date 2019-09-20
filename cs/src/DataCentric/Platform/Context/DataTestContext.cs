@@ -63,7 +63,6 @@ namespace DataCentric
 
             // Create data source specified as generic argument
             var dataSource = new TDataSource();
-            dataSource.DataStore = new LocalMongoDataStoreData();
             dataSource.DbName = new DbNameKey()
             {
                 InstanceType = InstanceType.TEST,

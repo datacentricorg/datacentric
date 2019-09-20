@@ -32,7 +32,7 @@ namespace DataCentric
             var dataSource = new TemporalMongoDataSourceData
             {
                 DataSourceId = dataStore.DataStoreId + db.Value,
-                DataStore = dataStore,
+                // DataStore = dataStore, TODO - need to specify using key
                 DbName = db
             };
 
