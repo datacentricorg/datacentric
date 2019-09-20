@@ -34,7 +34,7 @@ namespace DataCentric
     public abstract class MongoDataSourceData : DataSourceData
     {
         /// <summary>True for scalar and false for hierarchical discriminator convention for _t.</summary>
-        private const bool isScalarDiscriminatorConvention_ = true;
+        private const bool useScalarDiscriminatorConvention_ = true;
 
         /// <summary>Prohibited characters in database name.</summary>
         static readonly char[] prohibitedDbNameSymbols_ = new char[] { '/', '\\', '.', ' ', '"', '$', '*', '<', '>', ':', '|', '?' };
@@ -73,7 +73,7 @@ namespace DataCentric
         /// </summary>
         static MongoDataSourceData()
         {
-            if (isScalarDiscriminatorConvention_)
+            if (useScalarDiscriminatorConvention_)
             {
                 // Set discriminator convention to scalar. For this convention,
                 // BSON element _t is a single string value equal to GetType().Name,
@@ -312,7 +312,7 @@ namespace DataCentric
 
             // Check that scalar discriminator convention is set for TRecord
             var discriminatorConvention = BsonSerializer.LookupDiscriminatorConvention(typeof(TRecord));
-            if (isScalarDiscriminatorConvention_)
+            if (useScalarDiscriminatorConvention_)
             {
                 if (!discriminatorConvention.Is<ScalarDiscriminatorConvention>())
                     throw new Exception(
