@@ -189,7 +189,7 @@ namespace DataCentric
                 // Because we are created the ordered queryable for
                 // the first time, begin from OrderBy, not ThenBy
                 orderedQueryable = queryableWithDataSetConstraint
-                    .OrderBy(p => p.Key)
+                    .OrderBy(p => p.Key) // _key
                     .ThenByDescending(p => p.DataSet) // _dataset
                     .ThenByDescending(p => p.Id); // _id
             }
@@ -203,7 +203,6 @@ namespace DataCentric
                     .ThenBy(p => p.Key) // _key
                     .ThenByDescending(p => p.DataSet) // _dataset
                     .ThenByDescending(p => p.Id); // _id
-
             }
             else
             {
@@ -257,7 +256,13 @@ namespace DataCentric
             string currentKey = null;
             while (cursor.MoveNext())
             {
-                // Iterate over documents in the current batch
+                // Create a list of query results for this cursor iteration
+                // and a list of keys for each object in the result list
+                List<TRecord> queryResultObjects_ = new List<TRecord>();
+                List<string> queryResultKeys_ = new List<string>();
+
+                // Iterate over documents in the current cursor batch and
+                // populate the list of keys that match the filter
                 foreach (var obj in cursor.Current)
                 {
                     string objKey = obj.Key;
@@ -298,9 +303,85 @@ namespace DataCentric
                         // to skip over records of type not derived from TRecord.
                         if (result == null) continue;
 
-                        // Otherwise yield return the cast result
-                        yield return result;
+                        // Add to the list of records and keys
+                        queryResultObjects_.Add(result);
+                        queryResultKeys_.Add(result.Key);
                     }
+                }
+
+                // The next step is to get objects for the list of keys without type restriction
+                //
+                // First, query base collection for records with key in the list
+                IQueryable<RecordBase> baseQueryable = collection_.BaseCollection.AsQueryable()
+                    .Where(p => queryResultKeys_.Contains(p.Key));
+
+                // Apply the same final constraints (list of datasets, savedBy, etc.)
+                baseQueryable = collection_.DataSource.ApplyFinalConstraints(baseQueryable, loadFrom_);
+
+                // Apply ordering to get last object in last dataset for the keys
+                IOrderedQueryable<RecordBase> baseOrderedQueryable = baseQueryable
+                    .OrderBy(p => p.Key) // _key
+                    .ThenByDescending(p => p.DataSet) // _dataset
+                    .ThenByDescending(p => p.Id); // _id
+
+                // Project to return only key and ObjectId. Note that some
+                // of the returned records may be delete markers.
+                var recordInfoQueryable = baseOrderedQueryable.Select(p => new RecordInfo
+                    {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
+
+                // Populate dictionary of (Key, RecordInfo) pairs from base query
+                // without a type restriction or equery, but limited only in the
+                // keys returned by the typed query
+                Dictionary<string, RecordInfo> recordInfoDict = new Dictionary<string, RecordInfo>();
+                string currentBaseKey = null;
+                foreach (var recordInfo in recordInfoQueryable)
+                {
+                    string objKey = recordInfo.Key;
+                    if (currentBaseKey == objKey)
+                    {
+                        // The key was encountered before. Because the data is sorted by
+                        // key and then by dataset and ID, this indicates that the object
+                        // is not the latest and can be skipped
+                        if (true)
+                        {
+                            // Enable this when debugging the query to report skipped records
+                            // that are not the latest version in the latest dataset
+
+                            // dataSource_.Context.Log.Warning(obj.Key);
+                        }
+
+                        // Continue to next record without returning
+                        // the next item in the enumerable result
+                        continue;
+                    }
+                    else
+                    {
+                        // The key was not encountered before, assign new value
+                        currentBaseKey = objKey;
+
+                        // Add to dictionary
+                        recordInfoDict.Add(recordInfo.Key, recordInfo);
+                    }
+                }
+
+                // Finally, iterate over the keys returned by the typed query and
+                // yield return only those keys for which Id returned with type
+                // restriction and query is the same as id returned without type
+                // restriction or query
+                foreach(var obj in queryResultObjects_)
+                {
+                    // Try to get record info for the key. It should always be
+                    // present in the dictionary because typed query returns
+                    // a subset of records in base query
+                    if (!recordInfoDict.TryGetValue(obj.Key, out RecordInfo recordInfo))
+                        throw new Exception(
+                            $"Record with key {obj.Key} is returned by typed query but not base query.");
+
+                    // Return only if Id matches; if Id does not match, the record
+                    // returned by typed query was superseded by a record that does
+                    // not match the query, or by a delete marker.
+                    if (recordInfo.Id == obj.Id) yield return obj;
+                    else continue;
                 }
             }
         }
