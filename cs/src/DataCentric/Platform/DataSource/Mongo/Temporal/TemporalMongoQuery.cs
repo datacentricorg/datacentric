@@ -330,7 +330,7 @@ namespace DataCentric
                     {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
 
                 // Populate dictionary of (Key, RecordInfo) pairs from base query
-                // without a type restriction or equery, but limited only in the
+                // without a type restriction in the query, but limited only in the
                 // keys returned by the typed query
                 Dictionary<string, RecordInfo> recordInfoDict = new Dictionary<string, RecordInfo>();
                 string currentBaseKey = null;

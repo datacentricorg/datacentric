@@ -101,7 +101,7 @@ namespace DataCentric
                     // requires error message, not returning null
                     throw new Exception(
                         $"Stored type {result.GetType().Name} for ObjectId={id} and " +
-                        $"Key={result.Key} is not derived from the queried type {typeof(TRecord).Name}.");
+                        $"Key={result.Key} is not an instance of the requested type {typeof(TRecord).Name}.");
                 }
 
                 // Initialize before returning
@@ -178,7 +178,7 @@ namespace DataCentric
                     // requires error message, not returning null
                     throw new Exception(
                         $"Stored type {result.GetType().Name} for Key={key.Value} in " +
-                        $"DataSet={loadFrom} is not derived from the queried type {typeof(TRecord).Name}.");
+                        $"DataSet={loadFrom} is not an instance of the requested type {typeof(TRecord).Name}.");
                 }
 
                 // Initialize before returning
