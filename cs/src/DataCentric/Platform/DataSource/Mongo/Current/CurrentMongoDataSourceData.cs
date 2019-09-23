@@ -88,8 +88,8 @@ namespace DataCentric
                 .AsQueryable()
                 .FirstOrDefault(p => p.Id == id);
 
-            // Check not only for null but also for the delete marker
-            if (baseResult != null && !baseResult.Is<DeleteMarker>())
+            // Check not only for null but also for the DeletedRecord
+            if (baseResult != null && !baseResult.Is<DeletedRecord>())
             {
                 // Record is found but we do not yet know if it has the right type.
                 // Attempt to cast Record to TRecord and check if the result is null.
@@ -110,7 +110,7 @@ namespace DataCentric
             }
             else
             {
-                // Record not found or is a delete marker, return null
+                // Record not found or is a DeletedRecord, return null
                 return null;
             }
         }
@@ -136,7 +136,7 @@ namespace DataCentric
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// The first record in this lookup order is returned, or null
-        /// if no records are found or if delete marker is the first
+        /// if no records are found or if DeletedRecord is the first
         /// record.
         ///
         /// Return null if there is no record for the specified ObjectId;
@@ -165,8 +165,8 @@ namespace DataCentric
             // Result will be null if the record is not found
             var baseResult = orderedQueryable.FirstOrDefault();
 
-            // Check not only for null but also for the delete marker
-            if (baseResult != null && !baseResult.Is<DeleteMarker>())
+            // Check not only for null but also for the DeletedRecord
+            if (baseResult != null && !baseResult.Is<DeletedRecord>())
             {
                 // Record is found but we do not yet know if it has the right type.
                 // Attempt to cast Record to TRecord and check if the result is null.
@@ -187,7 +187,7 @@ namespace DataCentric
             }
             else
             {
-                // Record not found or is a delete marker, return null
+                // Record not found or is a DeletedRecord, return null
                 return null;
             }
         }
@@ -261,7 +261,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Write a delete marker in deleteIn dataset for the specified key
+        /// Write a DeletedRecord in deleteIn dataset for the specified key
         /// instead of actually deleting the record. This ensures that
         /// a record in another dataset does not become visible during
         /// lookup in a sequence of datasets.
@@ -273,8 +273,8 @@ namespace DataCentric
         {
             CheckNotReadOnly();
 
-            // Create delete marker with the specified key
-            var record = new DeleteMarker {Key = key.Value};
+            // Create DeletedRecord with the specified key
+            var record = new DeletedRecord {Key = key.Value};
 
             // Get collection
             var collection = GetOrCreateCollection<TRecord>();

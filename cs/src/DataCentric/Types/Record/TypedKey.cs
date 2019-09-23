@@ -50,7 +50,7 @@ namespace DataCentric
         /// Create a new key or call ClearCachedRecord() method to force
         /// reloading new version of the record from storage.
         /// 
-        /// Error message if the record is not found or is a delete marker.
+        /// Error message if the record is not found or is a DeletedRecord.
         /// </summary>
         public TRecord Load(IContext context)
         {
@@ -77,12 +77,12 @@ namespace DataCentric
         /// Create a new key or call ClearCachedRecord() method to force
         /// reloading new version of the record from storage.
         /// 
-        /// Error message if the record is not found or is a delete marker.
+        /// Error message if the record is not found or is a DeletedRecord.
         /// </summary>
         public TRecord Load(IContext context, ObjectId loadFrom)
         {
             // This method will return null if the record is
-            // not found or the found record is a delete marker
+            // not found or the found record is a DeletedRecord
             var result = LoadOrNull(context, loadFrom);
 
             // Error message if null, otherwise return
@@ -107,7 +107,7 @@ namespace DataCentric
         /// Create a new key or call ClearCachedRecord() method to force
         /// reloading new version of the record from storage.
         /// 
-        /// Return null if the record is not found or is a delete marker.
+        /// Return null if the record is not found or is a DeletedRecord.
         /// </summary>
         public TRecord LoadOrNull(IContext context)
         {
@@ -134,18 +134,18 @@ namespace DataCentric
         /// Create a new key or call ClearCachedRecord() method to force
         /// reloading new version of the record from storage.
         /// 
-        /// Return null if the record is not found or is a delete marker.
+        /// Return null if the record is not found or is a DeletedRecord.
         /// </summary>
         public TRecord LoadOrNull(IContext context, ObjectId loadFrom)
         {
             // This method will return null if the record is
-            // not found or the found record is a delete marker
+            // not found or the found record is a DeletedRecord
             TRecord result = context.ReloadOrNull(this, loadFrom);
 
-            // If not null, check that the key matches (even if delete marker)
+            // If not null, check that the key matches (even if DeletedRecord)
             if (result != null && Value != result.Key)
             {
-                if (result.Is<DeleteMarker>())
+                if (result.Is<DeletedRecord>())
                     throw new Exception(
                         $"Delete marker with Type={result.GetType().Name} stored " +
                         $"for Key={Value} has a non-matching Key={result.Key}.");
@@ -159,7 +159,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Write a delete marker for the dataset of the context and the specified
+        /// Write a DeletedRecord for the dataset of the context and the specified
         /// key instead of actually deleting the record. This ensures that
         /// a record in another dataset does not become visible during
         /// lookup in a sequence of datasets.
@@ -174,7 +174,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Write a delete marker in deleteIn dataset for the specified key
+        /// Write a DeletedRecord in deleteIn dataset for the specified key
         /// instead of actually deleting the record. This ensures that
         /// a record in another dataset does not become visible during
         /// lookup in a sequence of datasets.

@@ -288,8 +288,8 @@ namespace DataCentric
                         // The key was not encountered before, assign new value
                         currentKey = objKey;
 
-                        // Skip if the result is a delete marker
-                        if (obj.Is<DeleteMarker>()) continue;
+                        // Skip if the result is a DeletedRecord
+                        if (obj.Is<DeletedRecord>()) continue;
 
                         // Attempt to cast to TRecord
                         var result = obj.As<TRecord>();
@@ -325,7 +325,7 @@ namespace DataCentric
                     .ThenByDescending(p => p.Id); // _id
 
                 // Project to return only key and ObjectId. Note that some
-                // of the returned records may be delete markers.
+                // of the returned records may be DeletedRecords.
                 var recordInfoQueryable = baseOrderedQueryable.Select(p => new RecordInfo
                     {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
 
@@ -379,7 +379,7 @@ namespace DataCentric
 
                     // Return only if Id matches; if Id does not match, the record
                     // returned by typed query was superseded by a record that does
-                    // not match the query, or by a delete marker.
+                    // not match the query, or by a DeletedRecord.
                     if (recordInfo.Id == obj.Id) yield return obj;
                     else continue;
                 }

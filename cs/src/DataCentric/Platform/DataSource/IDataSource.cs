@@ -89,7 +89,7 @@ namespace DataCentric
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// The first record in this lookup order is returned, or null
-        /// if no records are found or if delete marker is the first
+        /// if no records are found or if DeletedRecord is the first
         /// record.
         ///
         /// Return null if there is no record for the specified ObjectId;
@@ -139,7 +139,7 @@ namespace DataCentric
             where TRecord : Record;
 
         /// <summary>
-        /// Write a delete marker in deleteIn dataset for the specified key
+        /// Write a DeletedRecord in deleteIn dataset for the specified key
         /// instead of actually deleting the record. This ensures that
         /// a record in another dataset does not become visible during
         /// lookup in a sequence of datasets.
@@ -178,7 +178,7 @@ namespace DataCentric
         /// force reloading the dataset from storage.
         ///
         /// Error message if no matching dataSetId string is found
-        /// or a delete marker is found instead.
+        /// or a DeletedRecord is found instead.
         /// </summary>
         ObjectId GetDataSetOrEmpty(string dataSetId, ObjectId loadFrom);
 

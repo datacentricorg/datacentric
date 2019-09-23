@@ -136,7 +136,7 @@ namespace DataCentric.Test
             }
         }
 
-        /// <summary>Test delete marker.</summary>
+        /// <summary>Test DeletedRecord.</summary>
         [Fact]
         public void Delete()
         {

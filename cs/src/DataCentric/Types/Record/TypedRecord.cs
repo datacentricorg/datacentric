@@ -171,7 +171,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Write a delete marker for the dataset of the context and the key of
+        /// Write a DeletedRecord for the dataset of the context and the key of
         /// this record instead of actually deleting the record. This ensures
         /// that a record in another dataset does not become visible during
         /// lookup in a sequence of datasets.
@@ -194,7 +194,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Write a delete marker for the specified dataSet and the key of
+        /// Write a DeletedRecord for the specified dataSet and the key of
         /// this record instead of actually deleting the record. This ensures
         /// that a record in another dataset does not become visible during
         /// lookup in a sequence of datasets.

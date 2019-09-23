@@ -58,7 +58,7 @@ namespace DataCentric
         /// Create a new key or call earRecord() method to force
         /// reloading new version of the record from storage.
         ///
-        /// Error message if the record is not found or is a delete marker.
+        /// Error message if the record is not found or is a DeletedRecord.
         /// </summary>
         public static TRecord Load<TKey, TRecord>(this IDataSource obj, TypedKey<TKey, TRecord> key, ObjectId loadFrom)
             where TKey : TypedKey<TKey, TRecord>, new()
@@ -88,7 +88,7 @@ namespace DataCentric
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// The first record in this lookup order is returned, or null
-        /// if no records are found or if delete marker is the first
+        /// if no records are found or if DeletedRecord is the first
         /// record.
         ///
         /// Return null if there is no record for the specified ObjectId;
