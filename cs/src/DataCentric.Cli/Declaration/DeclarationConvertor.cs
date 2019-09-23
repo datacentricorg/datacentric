@@ -210,7 +210,7 @@ namespace DataCentric.Cli
         /// </summary>
         private static bool IsRoot(Type type)
         {
-            if (type == typeof(Data) || type == typeof(RecordBase))
+            if (type == typeof(Data) || type == typeof(Record))
                 return true;
 
             if (type.IsGenericType)
@@ -307,7 +307,7 @@ namespace DataCentric.Cli
             // Kind
             return type.IsAbstract                        ? TypeKind.Abstract :
                    type.IsSealed                          ? TypeKind.Final :
-                   !type.IsSubclassOf(typeof(RecordBase)) ? TypeKind.Element :
+                   !type.IsSubclassOf(typeof(Record)) ? TypeKind.Element :
                                                             (TypeKind?) null;
         }
 
@@ -494,7 +494,7 @@ namespace DataCentric.Cli
                     type == typeof(ObjectId?) ? AtomicType.NullableObjectId :
                                                 throw new ArgumentException($"Unknown value type: {type.FullName}");
             }
-            else if (type.IsSubclassOf(typeof(KeyBase)) && type.Name.EndsWith("Key"))
+            else if (type.IsSubclassOf(typeof(Key)) && type.Name.EndsWith("Key"))
             {
                 typeDecl.Key = CreateTypeDeclKey(type.Namespace, type.Name.TrimEnd("Key"));
             }

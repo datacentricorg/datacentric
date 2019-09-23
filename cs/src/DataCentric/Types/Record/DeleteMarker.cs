@@ -27,7 +27,7 @@ namespace DataCentric
     /// effect as if no record was found. It is used to indicate
     /// a deleted record when audit log must be preserved.
     /// </summary>
-    public sealed class DeleteMarker : RecordBase
+    public sealed class DeleteMarker : Record
     {
         /// <summary>
         /// String key consists of semicolon delimited primary key elements:

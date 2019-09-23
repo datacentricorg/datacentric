@@ -178,7 +178,7 @@ namespace DataCentric.Cli
             }
         }
 
-        private static void ConvertCsvToMongo<T>(IContext context, ObjectId dataset, string csvFile) where T : RecordBase
+        private static void ConvertCsvToMongo<T>(IContext context, ObjectId dataset, string csvFile) where T : Record
         {
             string fileContent = File.ReadAllText(csvFile);
             var records = CsvRecordsSerializer<T>.Deserialize(fileContent);

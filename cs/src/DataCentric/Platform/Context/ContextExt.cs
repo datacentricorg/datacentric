@@ -38,7 +38,7 @@ namespace DataCentric
         /// is not derived from TRecord.
         /// </summary>
         public static TRecord LoadOrNull<TRecord>(this IContext obj, ObjectId id)
-            where TRecord : RecordBase
+            where TRecord : Record
         {
             return obj.DataSource.LoadOrNull<TRecord>(id);
         }
@@ -131,7 +131,7 @@ namespace DataCentric
         /// it may also be a type derived from the root data type.
         /// </summary>
         public static IQuery<TRecord> GetQuery<TRecord>(this IContext obj)
-            where TRecord : RecordBase
+            where TRecord : Record
         {
             return obj.DataSource.GetQuery<TRecord>(obj.DataSet);
         }
@@ -154,7 +154,7 @@ namespace DataCentric
         /// it may also be a type derived from the root data type.
         /// </summary>
         public static IQuery<TRecord> GetQuery<TRecord>(this IContext obj, ObjectId loadFrom)
-            where TRecord : RecordBase
+            where TRecord : Record
         {
             return obj.DataSource.GetQuery<TRecord>(loadFrom);
         }
@@ -175,7 +175,7 @@ namespace DataCentric
         /// second.
         /// </summary>
         public static void Save<TRecord>(this IContext obj, TRecord record)
-            where TRecord : RecordBase
+            where TRecord : Record
         {
             // All Save methods ignore the value of record.DataSet before the
             // Save method is called. When dataset is not specified explicitly,
@@ -201,7 +201,7 @@ namespace DataCentric
         /// second.
         /// </summary>
         public static void Save<TRecord>(this IContext obj, TRecord record, ObjectId saveTo)
-            where TRecord : RecordBase
+            where TRecord : Record
         {
             obj.DataSource.Save(record, saveTo);
         }

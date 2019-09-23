@@ -33,7 +33,7 @@ namespace DataCentric
     /// become key tokens. Property Value and method ToString() of
     /// the key consists of key tokens with semicolon delimiter.
     /// </summary>
-    public abstract class KeyBase : Data
+    public abstract class Key : Data
     {
         /// <summary>
         /// String key consists of semicolon delimited primary key elements:
@@ -128,7 +128,7 @@ namespace DataCentric
                 case long longValue:
                 case ObjectId objectIdValue:
                 case Enum enumValue:
-                case KeyBase keyValue:
+                case Key keyValue:
                     // Use AsString() for all remaining types including the key
                     //
                     // A token representing another key can contain a semicolon delimiter

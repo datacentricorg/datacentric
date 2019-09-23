@@ -314,7 +314,7 @@ namespace DataCentric
                     string enumString = enumValue.AsString();
                     bsonWriter_.WriteString(enumString);
                     break;
-                case KeyBase keyElement:
+                case Key keyElement:
                     // Serialize key as semicolon delimited string
                     string semicolonDelimitedKeyString = keyElement.AsString();
                     bsonWriter_.WriteString(semicolonDelimitedKeyString);

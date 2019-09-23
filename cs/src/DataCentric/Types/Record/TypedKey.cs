@@ -31,7 +31,7 @@ namespace DataCentric
     /// become key tokens. Property Value and method ToString() of
     /// the key consists of key tokens with semicolon delimiter.
     /// </summary>
-    public abstract class TypedKey<TKey, TRecord> : KeyBase
+    public abstract class TypedKey<TKey, TRecord> : Key
         where TKey : TypedKey<TKey, TRecord>, new()
         where TRecord : TypedRecord<TKey, TRecord>
     {

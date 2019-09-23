@@ -28,7 +28,7 @@ namespace DataCentric
     /// Base class of records stored in data source.
     /// </summary>
     [BsonDiscriminator("TypedRecord")]
-    public abstract class TypedRecord<TKey, TRecord> : RecordBase
+    public abstract class TypedRecord<TKey, TRecord> : Record
         where TKey : TypedKey<TKey, TRecord>, new()
         where TRecord : TypedRecord<TKey, TRecord>
     {
@@ -88,7 +88,7 @@ namespace DataCentric
                     // but use delimited ISO format (yyyy-mm-dd,
                     // hh:mm:ss.fff, and hh:mm) when serialized using
                     // ToString()
-                    var token = KeyBase.GetKeyToken(this, dataElementInfo);
+                    var token = DataCentric.Key.GetKeyToken(this, dataElementInfo);
                     tokens.Add(token);
                 }
 

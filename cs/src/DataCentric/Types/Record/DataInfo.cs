@@ -152,7 +152,8 @@ namespace DataCentric
                     break;
                 }
                 else if (baseClassName == "TypedKey`2"
-                         || baseClassName == "RootKey`2")
+                         || baseClassName == "RootKey`2"
+                         || baseClassName == "Key")
                 {
                     RootKind = RootKind.Key;
                     RootType = currentType;
@@ -166,7 +167,7 @@ namespace DataCentric
                 }
                 else if (baseClassName == "TypedRecord`2"
                          || baseClassName == "RootRecord`2"
-                         || baseClassName == "RecordBase")
+                         || baseClassName == "Record")
                 {
                     RootKind = RootKind.Record;
                     RootType = currentType;
@@ -207,9 +208,10 @@ namespace DataCentric
                         if (declaringTypeName != "Data"
                             && declaringTypeName != "TypedKey`2"
                             && declaringTypeName != "RootKey`2"
+                            && declaringTypeName != "Key"
                             && declaringTypeName != "TypedRecord`2"
                             && declaringTypeName != "RootRecord`2"
-                            && declaringTypeName != "RecordBase")
+                            && declaringTypeName != "Record")
                         {
                             continue;
                         }

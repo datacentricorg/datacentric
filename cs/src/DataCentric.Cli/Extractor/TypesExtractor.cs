@@ -34,8 +34,8 @@ namespace DataCentric.Cli
         public static readonly List<Type> BasicTypes = new List<Type>
         {
             typeof(Data),
-            typeof(KeyBase),
-            typeof(RecordBase),
+            typeof(Key),
+            typeof(Record),
             typeof(TypedRecord<,>),
             typeof(TypedKey<,>),
             typeof(RootRecord<,>),

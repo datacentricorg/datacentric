@@ -25,7 +25,7 @@ using Newtonsoft.Json;
 
 namespace DataCentric.Cli
 {
-    public static class CsvRecordsSerializer<T> where T : RecordBase
+    public static class CsvRecordsSerializer<T> where T : Record
     {
         public static List<T> Deserialize(string input)
         {

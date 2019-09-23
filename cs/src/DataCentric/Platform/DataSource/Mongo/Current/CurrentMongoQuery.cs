@@ -33,7 +33,7 @@ namespace DataCentric
     /// of the record across multiple datasets.
     /// </summary>
     public class CurrentMongoQuery<TRecord> : IQuery<TRecord>
-        where TRecord : RecordBase
+        where TRecord : Record
     {
         private readonly CurrentMongoCollection<TRecord> collection_;
         private readonly ObjectId loadFrom_;
@@ -244,7 +244,7 @@ namespace DataCentric
             }
 
             // Create pipeline definition with removed match for _t
-            PipelineDefinition<RecordBase, RecordBase> pipeline = stages.Select(m => BsonSerializer.Deserialize<BsonDocument>(m)).ToList();
+            PipelineDefinition<Record, Record> pipeline = stages.Select(m => BsonSerializer.Deserialize<BsonDocument>(m)).ToList();
 
             // Run the aggregation pipeline on the base collection (not typed collection)
             //
@@ -312,14 +312,14 @@ namespace DataCentric
                 // The next step is to get objects for the list of keys without type restriction
                 //
                 // First, query base collection for records with key in the list
-                IQueryable<RecordBase> baseQueryable = collection_.BaseCollection.AsQueryable()
+                IQueryable<Record> baseQueryable = collection_.BaseCollection.AsQueryable()
                     .Where(p => queryResultKeys_.Contains(p.Key));
 
                 // Apply the same final constraints (list of datasets, savedBy, etc.)
                 baseQueryable = collection_.DataSource.ApplyFinalConstraints(baseQueryable, loadFrom_);
 
                 // Apply ordering to get last object in last dataset for the keys
-                IOrderedQueryable<RecordBase> baseOrderedQueryable = baseQueryable
+                IOrderedQueryable<Record> baseOrderedQueryable = baseQueryable
                     .OrderBy(p => p.Key) // _key
                     .ThenByDescending(p => p.DataSet) // _dataset
                     .ThenByDescending(p => p.Id); // _id

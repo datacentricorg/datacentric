@@ -24,11 +24,11 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>Extension methods for KeyBase.</summary>
-    public static class KeyBaseExt
+    public static class KeyExt
     {
         /// <summary>Deserialize record from XML using short
         /// class name without namespace for the root XML element.</summary>
-        public static void ParseXml(this KeyBase obj, string xmlString)
+        public static void ParseXml(this Key obj, string xmlString)
         {
             ITreeReader reader = new XmlTreeReader(xmlString);
 
@@ -42,7 +42,7 @@ namespace DataCentric
 
         /// <summary>Serialize record to XML using short
         /// class name without namespace for the root XML element.</summary>
-        public static string ToXml(this KeyBase obj)
+        public static string ToXml(this Key obj)
         {
             // Get root XML element name using mapped final type of the object
             string rootName = ClassInfo.GetOrCreate(obj).MappedClassName;

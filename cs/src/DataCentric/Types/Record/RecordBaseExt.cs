@@ -22,11 +22,11 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace DataCentric
 {
     /// <summary>Extension methods for RecordBase.</summary>
-    public static class RecordBaseExt
+    public static class RecordExt
     {
         /// <summary>Deserialize record from XML using short
         /// class name without namespace for the root XML element.</summary>
-        public static void ParseXml(this RecordBase obj, string xmlString)
+        public static void ParseXml(this Record obj, string xmlString)
         {
             ITreeReader reader = new XmlTreeReader(xmlString);
 
@@ -40,7 +40,7 @@ namespace DataCentric
 
         /// <summary>Serialize record to XML using short
         /// class name without namespace for the root XML element.</summary>
-        public static string ToXml(this RecordBase obj)
+        public static string ToXml(this Record obj)
         {
             // Get root XML element name using mapped final type of the object
             string rootName = ClassInfo.GetOrCreate(obj).MappedClassName;

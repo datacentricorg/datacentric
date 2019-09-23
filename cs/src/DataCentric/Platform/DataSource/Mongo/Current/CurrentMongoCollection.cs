@@ -34,7 +34,7 @@ namespace DataCentric
     /// objects.
     /// </summary>
     public class CurrentMongoCollection<TRecord>
-        where TRecord : RecordBase
+        where TRecord : Record
     {
         /// <summary>
         /// Create from data source, base collection, and typed collection objects.
@@ -44,7 +44,7 @@ namespace DataCentric
         /// </summary>
         public CurrentMongoCollection(
             MongoDataSourceData dataSource,
-            IMongoCollection<RecordBase> baseCollection,
+            IMongoCollection<Record> baseCollection,
             IMongoCollection<TRecord> typedCollection)
         {
             DataSource = dataSource;
@@ -56,7 +56,7 @@ namespace DataCentric
         public MongoDataSourceData DataSource { get; }
 
         /// <summary>Collection for the base record type.</summary>
-        public IMongoCollection<RecordBase> BaseCollection { get; }
+        public IMongoCollection<Record> BaseCollection { get; }
 
         /// <summary>Collection for the generic parameter type TRecord.</summary>
         public IMongoCollection<TRecord> TypedCollection { get; }

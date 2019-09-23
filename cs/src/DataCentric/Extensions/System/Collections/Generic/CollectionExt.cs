@@ -172,7 +172,7 @@ namespace DataCentric
                                     if (!string.IsNullOrEmpty(token))
                                     {
                                         // Parse semicolon delimited token to populate key item
-                                        ((KeyBase)dataItem).AssignString(token);
+                                        ((Key)dataItem).AssignString(token);
                                         obj.Add(item);
                                     }
                                     else obj.Add(null);

@@ -202,7 +202,7 @@ namespace DataCentric
         /// * The constraint on ID being strictly less than SavedBy (if not null)
         /// </summary>
         public IQueryable<TRecord> ApplyFinalConstraints<TRecord>(IQueryable<TRecord> queryable, ObjectId loadFrom)
-            where TRecord : RecordBase
+            where TRecord : Record
         {
             // Get lookup list by expanding the list of imports to arbitrary
             // depth with duplicates and cyclic references removed.

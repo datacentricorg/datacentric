@@ -124,7 +124,7 @@ namespace DataCentric
         /// is not derived from TRecord.
         /// </summary>
         public abstract TRecord LoadOrNull<TRecord>(ObjectId id)
-            where TRecord : RecordBase;
+            where TRecord : Record;
 
         /// <summary>
         /// This method does not use cached value inside the key
@@ -176,7 +176,7 @@ namespace DataCentric
         /// it may also be a type derived from the root data type.
         /// </summary>
         public abstract IQuery<TRecord> GetQuery<TRecord>(ObjectId loadFrom)
-            where TRecord : RecordBase;
+            where TRecord : Record;
 
         /// <summary>
         /// Save record to the specified dataset. After the method exits,
@@ -194,7 +194,7 @@ namespace DataCentric
         /// second.
         /// </summary>
         public abstract void Save<TRecord>(TRecord record, ObjectId saveTo)
-            where TRecord : RecordBase;
+            where TRecord : Record;
 
         /// <summary>
         /// Write a delete marker in deleteIn dataset for the specified key

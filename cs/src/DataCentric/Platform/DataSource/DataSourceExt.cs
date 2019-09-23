@@ -30,7 +30,7 @@ namespace DataCentric
         /// or if the record exists but is not derived from TRecord.
         /// </summary>
         public static TRecord Load<TRecord>(this IDataSource obj, ObjectId id)
-            where TRecord : RecordBase
+            where TRecord : Record
         {
             var result = obj.LoadOrNull<TRecord>(id);
             if (result == null) throw new Exception(

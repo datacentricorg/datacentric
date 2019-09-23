@@ -619,7 +619,7 @@ namespace DataCentric.Test
 
         /// <summary>Query over all records of the specified type in the specified dataset.</summary>
         private void VerifyQuery<TRecord>(IContext context, string dataSetId)
-            where TRecord : RecordBase
+            where TRecord : Record
         {
             // Get dataset and query
             var dataSet = context.GetDataSet(dataSetId, context.DataSet);

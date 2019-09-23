@@ -383,7 +383,7 @@ namespace DataCentric
         /// for further performance optimization.
         /// </summary>
         protected TemporalMongoCollection<TRecord> GetOrCreateCollection<TRecord>()
-            where TRecord : RecordBase
+            where TRecord : Record
         {
             // Check if collection object has already been cached
             // for this type and return cached result if found
@@ -417,7 +417,7 @@ namespace DataCentric
             string collectionName = ClassInfo.GetOrCreate(rootType).MappedClassName;
 
             // Get interfaces to base and typed collections for the same name
-            var baseCollection = Db.GetCollection<RecordBase>(collectionName);
+            var baseCollection = Db.GetCollection<Record>(collectionName);
             var typedCollection = Db.GetCollection<TRecord>(collectionName);
 
             // Each data type has an index for optimized loading by key.
