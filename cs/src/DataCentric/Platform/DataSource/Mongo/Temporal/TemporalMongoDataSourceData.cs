@@ -38,9 +38,6 @@ namespace DataCentric
     /// </summary>
     public class TemporalMongoDataSourceData : MongoDataSourceData
     {
-        /// <summary>True for scalar and false for hierarchical discriminator convention for _t.</summary>
-        private const bool useScalarDiscriminatorConvention_ = true;
-
         /// <summary>Dictionary of collections indexed by type T.</summary>
         private Dictionary<Type, object> collectionDict_ = new Dictionary<Type, object>();
 
