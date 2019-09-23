@@ -154,9 +154,9 @@ namespace DataCentric
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public abstract TRecord ReloadOrNull<TKey, TRecord>(Key<TKey, TRecord> key, ObjectId loadFrom)
-            where TKey : Key<TKey, TRecord>, new()
-            where TRecord : Record<TKey, TRecord>;
+        public abstract TRecord ReloadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, ObjectId loadFrom)
+            where TKey : TypedKey<TKey, TRecord>, new()
+            where TRecord : TypedRecord<TKey, TRecord>;
 
         /// <summary>
         /// Get query for the specified type.
@@ -205,9 +205,9 @@ namespace DataCentric
         /// To avoid an additional roundtrip to the data store, the delete
         /// marker is written even when the record does not exist.
         /// </summary>
-        public abstract void Delete<TKey, TRecord>(Key<TKey, TRecord> key, ObjectId deleteIn)
-            where TKey : Key<TKey, TRecord>, new()
-            where TRecord : Record<TKey, TRecord>;
+        public abstract void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, ObjectId deleteIn)
+            where TKey : TypedKey<TKey, TRecord>, new()
+            where TRecord : TypedRecord<TKey, TRecord>;
 
         /// <summary>
         /// Permanently deletes (drops) the database with all records

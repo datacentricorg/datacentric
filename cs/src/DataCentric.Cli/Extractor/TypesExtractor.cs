@@ -36,8 +36,8 @@ namespace DataCentric.Cli
             typeof(Data),
             typeof(KeyBase),
             typeof(RecordBase),
-            typeof(Record<,>),
-            typeof(Key<,>),
+            typeof(TypedRecord<,>),
+            typeof(TypedKey<,>),
             typeof(RootRecord<,>),
             typeof(RootKey<,>),
         };
@@ -50,7 +50,7 @@ namespace DataCentric.Cli
             Regex nameFilter = CreateTypeNameFilter(filters);
 
             bool IsKeyType(Type t) => t.BaseType.IsGenericType &&
-                                      (t.BaseType.GetGenericTypeDefinition() == typeof(Key<,>) ||
+                                      (t.BaseType.GetGenericTypeDefinition() == typeof(TypedKey<,>) ||
                                        t.BaseType.GetGenericTypeDefinition() == typeof(RootKey<,>));
 
             return ActivatorUtils.EnumerateTypes(assembly)
@@ -96,7 +96,7 @@ namespace DataCentric.Cli
                     // Interface should be assignable from data type
                     bool isAssignableFromData = interfaceType.IsAssignableFrom(type);
                     // Skip RecordFor<> interfaces
-                    bool isAssignableFromRecord = interfaceType.IsAssignableFrom(typeof(Record<,>));
+                    bool isAssignableFromRecord = interfaceType.IsAssignableFrom(typeof(TypedRecord<,>));
                     if (isAssignableFromData && !isAssignableFromRecord)
                     {
                         dataInterfaces.Add(interfaceType);

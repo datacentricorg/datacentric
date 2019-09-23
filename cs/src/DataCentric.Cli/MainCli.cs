@@ -190,9 +190,9 @@ namespace DataCentric.Cli
         /// Helper method to create and init instance of handler class.
         /// </summary>
         private static TRecord CreateHandler<TKey, TBaseRecord, TRecord>(IContext context, RunVerbOptions options)
-            where TKey : Key<TKey, TBaseRecord>, new()
+            where TKey : TypedKey<TKey, TBaseRecord>, new()
             where TRecord : TBaseRecord
-            where TBaseRecord : Record<TKey, TBaseRecord>
+            where TBaseRecord : TypedRecord<TKey, TBaseRecord>
         {
             TKey key = Activator.CreateInstance<TKey>();
             key.AssignString(options.Key);
@@ -213,7 +213,7 @@ namespace DataCentric.Cli
             while (type.BaseType != null)
             {
                 type = type.BaseType;
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Record<,>))
+                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(TypedRecord<,>))
                 {
                     return (type.GetGenericArgument(0), type.GetGenericArgument(1));
                 }

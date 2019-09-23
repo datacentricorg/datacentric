@@ -31,9 +31,9 @@ namespace DataCentric
     /// become key tokens. Property Value and method ToString() of
     /// the key consists of key tokens with semicolon delimiter.
     /// </summary>
-    public abstract class Key<TKey, TRecord> : KeyBase
-        where TKey : Key<TKey, TRecord>, new()
-        where TRecord : Record<TKey, TRecord>
+    public abstract class TypedKey<TKey, TRecord> : KeyBase
+        where TKey : TypedKey<TKey, TRecord>, new()
+        where TRecord : TypedRecord<TKey, TRecord>
     {
         /// <summary>
         /// Load record from context.DataSource. The lookup occurs in
@@ -188,7 +188,7 @@ namespace DataCentric
         }
 
         /// <summary>Assign key elements from record to key.</summary>
-        public void AssignKeyElements(Record<TKey, TRecord> record) // TODO - convert to constructor
+        public void AssignKeyElements(TypedRecord<TKey, TRecord> record) // TODO - convert to constructor
         {
             // Assign elements of the record to the matching elements
             // of the key. This will also make string representation

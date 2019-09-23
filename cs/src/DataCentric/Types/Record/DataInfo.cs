@@ -151,7 +151,7 @@ namespace DataCentric
                     RootType = currentType;
                     break;
                 }
-                else if (baseClassName == "Key`2"
+                else if (baseClassName == "TypedKey`2"
                          || baseClassName == "RootKey`2")
                 {
                     RootKind = RootKind.Key;
@@ -164,7 +164,7 @@ namespace DataCentric
 
                     break;
                 }
-                else if (baseClassName == "Record`2"
+                else if (baseClassName == "TypedRecord`2"
                          || baseClassName == "RootRecord`2"
                          || baseClassName == "RecordBase")
                 {
@@ -205,9 +205,9 @@ namespace DataCentric
                         // This is an override, skip unless defined in types below root
                         var declaringTypeName = propGetterBaseDefinition.DeclaringType.Name;
                         if (declaringTypeName != "Data"
-                            && declaringTypeName != "Key`2"
+                            && declaringTypeName != "TypedKey`2"
                             && declaringTypeName != "RootKey`2"
-                            && declaringTypeName != "Record`2"
+                            && declaringTypeName != "TypedRecord`2"
                             && declaringTypeName != "RootRecord`2"
                             && declaringTypeName != "RecordBase")
                         {

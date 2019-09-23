@@ -21,7 +21,7 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Key class that has all of the permitted non-nullable key elements included.</summary>
-    public class MongoKeyTestNonNullableSampleData : Record<MongoKeyTestNonNullableSampleKey, MongoKeyTestNonNullableSampleData>
+    public class MongoKeyTestNonNullableSampleData : TypedRecord<MongoKeyTestNonNullableSampleKey, MongoKeyTestNonNullableSampleData>
     {
         public string StringToken { get; set; }
         public bool BoolToken { get; set; }

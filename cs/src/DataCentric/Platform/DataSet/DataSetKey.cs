@@ -47,7 +47,7 @@ namespace DataCentric
     /// lookup sequence.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<DataSetKey>))]
-    public class DataSetKey : Key<DataSetKey, DataSetData>
+    public class DataSetKey : TypedKey<DataSetKey, DataSetData>
     {
         /// <summary>Dataset identifier.</summary>
         public string DataSetId { get; set; }

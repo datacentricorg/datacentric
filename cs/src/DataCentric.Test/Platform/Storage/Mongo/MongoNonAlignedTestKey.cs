@@ -31,7 +31,7 @@ namespace DataCentric.Test
     /// key fields are not in the same order in the record as in the key.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<MongoNonAlignedTestKey>))]
-    public class MongoNonAlignedTestKey : Key<MongoNonAlignedTestKey, MongoNonAlignedTestData>
+    public class MongoNonAlignedTestKey : TypedKey<MongoNonAlignedTestKey, MongoNonAlignedTestData>
     {
         public string KeyElement1 { get; set; }
         public string KeyElement2 { get; set; }

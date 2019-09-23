@@ -27,10 +27,10 @@ namespace DataCentric
     /// <summary>
     /// Base class of records stored in data source.
     /// </summary>
-    [BsonDiscriminator("Record")]
-    public abstract class Record<TKey, TRecord> : RecordBase
-        where TKey : Key<TKey, TRecord>, new()
-        where TRecord : Record<TKey, TRecord>
+    [BsonDiscriminator("TypedRecord")]
+    public abstract class TypedRecord<TKey, TRecord> : RecordBase
+        where TKey : TypedKey<TKey, TRecord>, new()
+        where TRecord : TypedRecord<TKey, TRecord>
     {
         /// <summary>
         /// String key consists of semicolon delimited primary key elements:

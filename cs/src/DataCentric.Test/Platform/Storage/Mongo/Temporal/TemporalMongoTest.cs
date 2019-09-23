@@ -592,9 +592,9 @@ namespace DataCentric.Test
         }
 
         /// <summary>Load the object and verify the outcome.</summary>
-        private void VerifyLoad<TKey, TRecord>(IContext context, Key<TKey, TRecord> key, string dataSetId)
-            where TKey : Key<TKey, TRecord>, new()
-            where TRecord : Record<TKey, TRecord>
+        private void VerifyLoad<TKey, TRecord>(IContext context, TypedKey<TKey, TRecord> key, string dataSetId)
+            where TKey : TypedKey<TKey, TRecord>, new()
+            where TRecord : TypedRecord<TKey, TRecord>
         {
             // Get dataset and try loading the record
             var dataSet = context.GetDataSet(dataSetId, context.DataSet);

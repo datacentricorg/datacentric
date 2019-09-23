@@ -23,7 +23,7 @@ namespace DataCentric
     /// <summary>
     /// Record derived from Key rather than Key is recorded without a dataset.
     /// </summary>
-    public abstract class RootKey<TKey, TRecord> : Key<TKey, TRecord>
+    public abstract class RootKey<TKey, TRecord> : TypedKey<TKey, TRecord>
         where TKey : RootKey<TKey, TRecord>, new()
         where TRecord : RootRecord<TKey, TRecord>
     {

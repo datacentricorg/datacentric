@@ -30,7 +30,7 @@ namespace DataCentric
     /// the log entry record to the job and sort the records in the
     /// order of their ObjectId.
     /// </summary>
-    public sealed class JobLogEntryData : Record<JobLogEntryKey, JobLogEntryData>
+    public sealed class JobLogEntryData : TypedRecord<JobLogEntryKey, JobLogEntryData>
     {
         /// <summary>
         /// Overriding element Id here includes the record's ObjectId

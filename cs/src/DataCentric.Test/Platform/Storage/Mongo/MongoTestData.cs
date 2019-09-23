@@ -27,7 +27,7 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>Base data class.</summary>
-    public class MongoTestData : Record<MongoTestKey, MongoTestData>
+    public class MongoTestData : TypedRecord<MongoTestKey, MongoTestData>
     {
         public string RecordId { get; set; }
         public int? RecordIndex { get; set; }

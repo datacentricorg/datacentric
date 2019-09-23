@@ -49,7 +49,7 @@ namespace DataCentric
     /// or its own DataSetData record. It is always last in the dataset
     /// lookup sequence.
     /// </summary>
-    public class DataSetData : Record<DataSetKey, DataSetData>
+    public class DataSetData : TypedRecord<DataSetKey, DataSetData>
     {
         /// <summary>
         /// Unique dataset identifier.

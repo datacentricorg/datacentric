@@ -60,9 +60,9 @@ namespace DataCentric
         ///
         /// Error message if the record is not found or is a delete marker.
         /// </summary>
-        public static TRecord Load<TKey, TRecord>(this IDataSource obj, Key<TKey, TRecord> key, ObjectId loadFrom)
-            where TKey : Key<TKey, TRecord>, new()
-            where TRecord : Record<TKey, TRecord>
+        public static TRecord Load<TKey, TRecord>(this IDataSource obj, TypedKey<TKey, TRecord> key, ObjectId loadFrom)
+            where TKey : TypedKey<TKey, TRecord>, new()
+            where TRecord : TypedRecord<TKey, TRecord>
         {
             return key.Load(obj.Context, loadFrom);
         }
@@ -95,9 +95,9 @@ namespace DataCentric
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public static TRecord LoadOrNull<TKey, TRecord>(this IDataSource obj, Key<TKey, TRecord> key, ObjectId loadFrom)
-            where TKey : Key<TKey, TRecord>, new()
-            where TRecord : Record<TKey, TRecord>
+        public static TRecord LoadOrNull<TKey, TRecord>(this IDataSource obj, TypedKey<TKey, TRecord> key, ObjectId loadFrom)
+            where TKey : TypedKey<TKey, TRecord>, new()
+            where TRecord : TypedRecord<TKey, TRecord>
         {
             // This method forwards to the implementation in Key(TKey, TRecord),
             // which in turn uses the non-caching variant of the same method,

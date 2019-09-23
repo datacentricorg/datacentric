@@ -216,8 +216,8 @@ namespace DataCentric.Cli
             if (type.IsGenericType)
             {
                 Type genericType = type.GetGenericTypeDefinition();
-                return genericType == typeof(Record<,>) ||
-                       genericType == typeof(Key<,>) ||
+                return genericType == typeof(TypedRecord<,>) ||
+                       genericType == typeof(TypedKey<,>) ||
                        genericType == typeof(RootRecord<,>) ||
                        genericType == typeof(RootKey<,>);
             }
@@ -289,7 +289,7 @@ namespace DataCentric.Cli
         private static List<PropertyInfo> GetKeyProperties(this Type type)
         {
             var baseType = type.BaseType;
-            if (baseType.IsGenericType && (baseType.GetGenericTypeDefinition() == typeof(Record<,>) ||
+            if (baseType.IsGenericType && (baseType.GetGenericTypeDefinition() == typeof(TypedRecord<,>) ||
                                            baseType.GetGenericTypeDefinition() == typeof(RootRecord<,>)))
             {
                 var keyType = baseType.GenericTypeArguments[0];
