@@ -15,7 +15,9 @@ limitations under the License.
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Linq.Expressions;
 using MongoDB.Bson;
@@ -178,31 +180,16 @@ namespace DataCentric
         /// <summary>Convert query to enumerable so iteration can be performed.</summary>
         public IEnumerable<TRecord> AsEnumerable()
         {
-            IOrderedQueryable<TRecord> orderedQueryable = null;
+            IQueryable<TRecord> typedQueryable = null;
             if (queryable_ != null && orderedQueryable_ == null)
             {
-                // Apply dataset constraint before ordering
-                var queryableWithDataSetConstraint = collection_.DataSource.ApplyFinalConstraints(queryable_, loadFrom_);
-
-                // Perform ordering by Key, DataSet, and ID.
-                //
-                // Because we are created the ordered queryable for
-                // the first time, begin from OrderBy, not ThenBy
-                orderedQueryable = queryableWithDataSetConstraint
-                    .OrderBy(p => p.Key) // _key
-                    .ThenByDescending(p => p.DataSet) // _dataset
-                    .ThenByDescending(p => p.Id); // _id
+                // Apply final constraints to queryable_ and assign to typedQueryable
+                typedQueryable = collection_.DataSource.ApplyFinalConstraints(queryable_, loadFrom_);
             }
             else if (queryable_ == null && orderedQueryable_ != null)
             {
-                // Perform ordering by Key, DataSet, and ID.
-                //
-                // Because we are using an existing ordered
-                // queryable, begin from ThenBy, not OrderBy
-                orderedQueryable = orderedQueryable_
-                    .ThenBy(p => p.Key) // _key
-                    .ThenByDescending(p => p.DataSet) // _dataset
-                    .ThenByDescending(p => p.Id); // _id
+                // Assign orderedQueryable_ to typedQueryable, final constraints already applied
+                typedQueryable = orderedQueryable_;
             }
             else
             {
@@ -211,101 +198,34 @@ namespace DataCentric
                     "have value, not both and not neither.");
             }
 
-            // Cast to obtain access to Mongo specific methods
-            IMongoQueryable mongoQueryable = (IMongoQueryable)orderedQueryable;
+            // Project to record info instead of returning the entire record
+            var projectedQueryable = typedQueryable.Select(p => new RecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
 
-            // Obtain execution model and its stages
-            AggregateQueryableExecutionModel<TRecord> queryableExecutionModel = (AggregateQueryableExecutionModel<TRecord>) mongoQueryable.GetExecutionModel();
-            List<string> stages = queryableExecutionModel.Stages.Select(stage => stage.ToString()).ToList();
-
-            // Check that first stage of the aggregation pipeline matches _t
-            string typeMatchStage = stages[0];
-            if (!typeMatchStage.Contains("{ \"$match\" : { \"_t\" :"))
-                throw new Exception($"First aggregation pipeline stage does not match for _t: {typeMatchStage}");
-
-            // Remove the first stage of the aggregation pipeline after checking it matches _t
-            // The removed string has has format "{ \"$match\" : { \"_t\" : \"MyType\" } }"
-            stages.RemoveAt(0);
-
-            // Check that no further constraints on _t are present.
-            // These constraints are not permitted because they will
-            // cause an older object of the matching type to be found
-            // even when there is a newer object of non-matching type
-            // with the same key.
-            foreach (string stage in stages)
+            // Iterate over the projected query collecting the greatest
+            // (i.e., latest) Id for each key in an ordered dictionary
+            var orderedDictionary = new OrderedDictionary();
+            foreach (var recordInfo in projectedQueryable)
             {
-                if (stage.Contains("{ \"$match\" : { \"_t\" :"))
-                    throw new Exception(
-                        "Constraint on _t is not permitted as a query stage; " + 
-                        "it should be applied only after the query is executed. " +
-                        "Otherwise, an older object of the matching type will be found " +
-                        "even when there is a newer object of non-matching type " +
-                        "with the same key.");
+                ObjectId currentId = (ObjectId) orderedDictionary[recordInfo.Key];
             }
 
-            // Create pipeline definition with removed match for _t
-            PipelineDefinition<Record, Record> pipeline = stages.Select(m => BsonSerializer.Deserialize<BsonDocument>(m)).ToList();
-
-            // Run the aggregation pipeline on the base collection (not typed collection)
-            //
-            // This ensures that the latest object is found
-            // even when it is not derived from TRecord
-            var cursor = collection_.BaseCollection.Aggregate(pipeline, new AggregateOptions {UseCursor=true});
-
-            // Iterate over batches of documents returned by the cursor
-            string currentKey = null;
-            while (cursor.MoveNext())
+            IDictionaryEnumerator orderedEnumerator = orderedDictionary.GetEnumerator();
+            int batchSize = 1000;
+            while (true)
             {
-                // Create a list of query results for this cursor iteration
-                // and a list of keys for each object in the result list
-                List<TRecord> queryResultObjects_ = new List<TRecord>();
-                List<string> queryResultKeys_ = new List<string>();
-
-                // Iterate over documents in the current cursor batch and
-                // populate the list of keys that match the filter
-                foreach (var obj in cursor.Current)
+                int batchIndex = 0;
+                var batchKeys = new List<string>();
+                var batchIds = new List<ObjectId>();
+                while(orderedEnumerator.MoveNext())
                 {
-                    string objKey = obj.Key;
-                    if (currentKey == objKey)
+                    // Populate lists of batch keys and batch ids for the current batch
+                    batchKeys.Add((string)orderedEnumerator.Key);
+                    batchIds.Add((ObjectId)orderedEnumerator.Key);
+
+                    // Exit the loop when batch size is reached
+                    if (++batchIndex == batchSize)
                     {
-                        // The key was encountered before. Because the data is sorted by
-                        // key and then by dataset and ID, this indicates that the object
-                        // is not the latest and can be skipped
-                        if (true)
-                        {
-                            // Enable this when debugging the query to report skipped records
-                            // that are not the latest version in the latest dataset
-
-                            // dataSource_.Context.Log.Warning(obj.Key);
-                        }
-
-                        // Continue to next record without returning
-                        // the next item in the enumerable result
-                        continue;
-                    }
-                    else
-                    {
-                        // The key was not encountered before, assign new value
-                        currentKey = objKey;
-
-                        // Skip if the result is a DeletedRecord
-                        if (obj.Is<DeletedRecord>()) continue;
-
-                        // Attempt to cast to TRecord
-                        var result = obj.As<TRecord>();
-
-                        // Skip, do not throw, if the cast fails.
-                        //
-                        // This behavior is different from loading by ObjectId or string key
-                        // using LoadOrNull method. In case of LoadOrNull, the API requires
-                        // an error when wrong type is requested. Here, we want to proceed
-                        // as though the record does not exist because the query is expected
-                        // to skip over records of type not derived from TRecord.
-                        if (result == null) continue;
-
-                        // Add to the list of records and keys
-                        queryResultObjects_.Add(result);
-                        queryResultKeys_.Add(result.Key);
+                        break;
                     }
                 }
 
@@ -313,7 +233,7 @@ namespace DataCentric
                 //
                 // First, query base collection for records with key in the list
                 IQueryable<Record> baseQueryable = collection_.BaseCollection.AsQueryable()
-                    .Where(p => queryResultKeys_.Contains(p.Key));
+                    .Where(p => batchKeys.Contains(p.Key));
 
                 // Apply the same final constraints (list of datasets, savedBy, etc.)
                 baseQueryable = collection_.DataSource.ApplyFinalConstraints(baseQueryable, loadFrom_);
@@ -324,19 +244,13 @@ namespace DataCentric
                     .ThenByDescending(p => p.DataSet) // _dataset
                     .ThenByDescending(p => p.Id); // _id
 
-                // Project to return only key and ObjectId. Note that some
-                // of the returned records may be DeletedRecords.
-                var recordInfoQueryable = baseOrderedQueryable.Select(p => new RecordInfo
-                    {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
-
-                // Populate dictionary of (Key, RecordInfo) pairs from base query
-                // without a type restriction in the query, but limited only in the
-                // keys returned by the typed query
-                Dictionary<string, RecordInfo> recordInfoDict = new Dictionary<string, RecordInfo>();
+                // Populate dictionary of (Key, Record) pairs, keeping
+                // only the latest record in the latest dataset
+                var objDict = new Dictionary<string, Record>();
                 string currentBaseKey = null;
-                foreach (var recordInfo in recordInfoQueryable)
+                foreach (var obj in baseOrderedQueryable)
                 {
-                    string objKey = recordInfo.Key;
+                    string objKey = obj.Key;
                     if (currentBaseKey == objKey)
                     {
                         // The key was encountered before. Because the data is sorted by
@@ -360,28 +274,37 @@ namespace DataCentric
                         currentBaseKey = objKey;
 
                         // Add to dictionary
-                        recordInfoDict.Add(recordInfo.Key, recordInfo);
+                        objDict.Add(objKey, obj);
                     }
                 }
 
-                // Finally, iterate over the keys returned by the typed query and
-                // yield return only those keys for which Id returned with type
-                // restriction and query is the same as id returned without type
-                // restriction or query
-                foreach(var obj in queryResultObjects_)
+                // Finally, iterate over the keys in the ordered array of 
+                // batch keys and yield return only those objects whose Id 
+                // matches the Ids returned by the query. If the Ids do not
+                // match, then the object returned by query is not the latest
+                // and should be skipped.
+                for(int resultIndex = 0; resultIndex < batchKeys.Count; ++resultIndex)
                 {
-                    // Try to get record info for the key. It should always be
-                    // present in the dictionary because typed query returns
-                    // a subset of records in base query
-                    if (!recordInfoDict.TryGetValue(obj.Key, out RecordInfo recordInfo))
-                        throw new Exception(
-                            $"Record with key {obj.Key} is returned by typed query but not base query.");
+                    // Get Key and Id from the result of the typed query
+                    string batchKey = batchKeys[resultIndex];
+                    ObjectId batchId = batchIds[resultIndex];
 
-                    // Return only if Id matches; if Id does not match, the record
-                    // returned by typed query was superseded by a record that does
-                    // not match the query, or by a DeletedRecord.
-                    if (recordInfo.Id == obj.Id) yield return obj;
-                    else continue;
+                    // Get object returned by base query for this key
+                    // This object should not be null
+                    var baseResult = objDict[batchKey];
+
+                    // Skip if the result is a DeletedRecord
+                    if (baseResult.Is<DeletedRecord>()) continue;
+
+                    // Skip if Id does not match; this indicates that
+                    // the object returned by the query is not the 
+                    // latest object in the latest dataset for this key.
+                    if (baseResult.Id != batchId) continue;
+
+                    // Cast to the requested type; this should 
+                    // succeed if the Id matches
+                    TRecord result = baseResult.CastTo<TRecord>();
+                    yield return result;
                 }
             }
         }
