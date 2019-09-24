@@ -39,8 +39,8 @@ namespace DataCentric.Test
                 SaveBasicData(context);
 
                 // Get dataset identifiers
-                var dataSetA = context.GetDataSet("A", context.DataSet);
-                var dataSetB = context.GetDataSet("B", context.DataSet);
+                var dataSet0 = context.GetDataSet("DataSet0", context.DataSet);
+                var dataSet1 = context.GetDataSet("DataSet1", context.DataSet);
 
                 // Create keys
                 var keyA0 = new MongoTestKey()
@@ -55,10 +55,10 @@ namespace DataCentric.Test
                 };
 
                 // Verify the result of loading records from datasets A and B
-                VerifyLoad(context, keyA0, "A");
-                VerifyLoad(context, keyA0, "B");
-                VerifyLoad(context, keyB0, "A");
-                VerifyLoad(context, keyB0, "B");
+                VerifyLoad(context, "DataSet0", keyA0);
+                VerifyLoad(context, "DataSet1", keyA0);
+                VerifyLoad(context, "DataSet0", keyB0);
+                VerifyLoad(context, "DataSet1", keyB0);
             }
         }
 
@@ -69,43 +69,43 @@ namespace DataCentric.Test
             using (var context = new CurrentMongoTestContext(this))
             {
                 // Create datasets
-                var dataSetA = context.CreateDataSet("A", context.DataSet);
-                var dataSetB = context.CreateDataSet("B", new ObjectId[] { dataSetA }, context.DataSet);
-                var dataSetC = context.CreateDataSet("C", new ObjectId[] { dataSetA }, context.DataSet);
-                var dataSetD = context.CreateDataSet("D", new ObjectId[] { dataSetA, dataSetB, dataSetC }, context.DataSet);
+                var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
+                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
+                var dataSet2 = context.CreateDataSet("DataSet2", new ObjectId[] { dataSet0 }, context.DataSet);
+                var dataSet3 = context.CreateDataSet("DataSet3", new ObjectId[] { dataSet0, dataSet1, dataSet2 }, context.DataSet);
 
                 // Create initial version of the records
-                SaveMinimalRecord(context, "A", "A", 0, 0);
-                SaveMinimalRecord(context, "A", "B", 1, 0);
-                SaveMinimalRecord(context, "A", "A", 2, 0);
-                SaveMinimalRecord(context, "A", "B", 3, 0);
-                SaveMinimalRecord(context, "B", "A", 4, 0);
-                SaveMinimalRecord(context, "B", "B", 5, 0);
-                SaveMinimalRecord(context, "B", "A", 6, 0);
-                SaveMinimalRecord(context, "B", "B", 7, 0);
-                SaveMinimalRecord(context, "C", "A", 8, 0);
-                SaveMinimalRecord(context, "C", "B", 9, 0);
-                SaveMinimalRecord(context, "D", "A", 10, 0);
-                SaveMinimalRecord(context, "D", "B", 11, 0);
+                SaveMinimalRecord(context, "DataSet0", "A", 0, 0);
+                SaveMinimalRecord(context, "DataSet0", "B", 1, 0);
+                SaveMinimalRecord(context, "DataSet0", "A", 2, 0);
+                SaveMinimalRecord(context, "DataSet0", "B", 3, 0);
+                SaveMinimalRecord(context, "DataSet1", "A", 4, 0);
+                SaveMinimalRecord(context, "DataSet1", "B", 5, 0);
+                SaveMinimalRecord(context, "DataSet1", "A", 6, 0);
+                SaveMinimalRecord(context, "DataSet1", "B", 7, 0);
+                SaveMinimalRecord(context, "DataSet2", "A", 8, 0);
+                SaveMinimalRecord(context, "DataSet2", "B", 9, 0);
+                SaveMinimalRecord(context, "DataSet3", "A", 10, 0);
+                SaveMinimalRecord(context, "DataSet3", "B", 11, 0);
 
                 // Create second version of some records
-                SaveMinimalRecord(context, "A", "A", 0, 1);
-                SaveMinimalRecord(context, "A", "B", 1, 1);
-                SaveMinimalRecord(context, "A", "A", 2, 1);
-                SaveMinimalRecord(context, "A", "B", 3, 1);
-                SaveMinimalRecord(context, "B", "A", 4, 1);
-                SaveMinimalRecord(context, "B", "B", 5, 1);
-                SaveMinimalRecord(context, "B", "A", 6, 1);
-                SaveMinimalRecord(context, "B", "B", 7, 1);
+                SaveMinimalRecord(context, "DataSet0", "A", 0, 1);
+                SaveMinimalRecord(context, "DataSet0", "B", 1, 1);
+                SaveMinimalRecord(context, "DataSet0", "A", 2, 1);
+                SaveMinimalRecord(context, "DataSet0", "B", 3, 1);
+                SaveMinimalRecord(context, "DataSet1", "A", 4, 1);
+                SaveMinimalRecord(context, "DataSet1", "B", 5, 1);
+                SaveMinimalRecord(context, "DataSet1", "A", 6, 1);
+                SaveMinimalRecord(context, "DataSet1", "B", 7, 1);
 
                 // Create third version of even fewer records
-                SaveMinimalRecord(context, "A", "A", 0, 2);
-                SaveMinimalRecord(context, "A", "B", 1, 2);
-                SaveMinimalRecord(context, "A", "A", 2, 2);
-                SaveMinimalRecord(context, "A", "B", 3, 2);
+                SaveMinimalRecord(context, "DataSet0", "A", 0, 2);
+                SaveMinimalRecord(context, "DataSet0", "B", 1, 2);
+                SaveMinimalRecord(context, "DataSet0", "A", 2, 2);
+                SaveMinimalRecord(context, "DataSet0", "B", 3, 2);
 
                 // Query for RecordId=B
-                var query = context.GetQuery<MongoTestData>(dataSetD)
+                var query = context.GetQuery<MongoTestData>(dataSet3)
                     .Where(p => p.RecordId == "B")
                     .SortBy(p => p.RecordId)
                     .SortBy(p => p.RecordIndex)
@@ -145,8 +145,8 @@ namespace DataCentric.Test
                 SaveBasicData(context);
 
                 // Get dataset identifiers
-                var dataSetA = context.GetDataSet("A", context.DataSet);
-                var dataSetB = context.GetDataSet("B", context.DataSet);
+                var dataSet0 = context.GetDataSet("DataSet0", context.DataSet);
+                var dataSet1 = context.GetDataSet("DataSet1", context.DataSet);
 
                 // Create keys
                 var keyA0 = new MongoTestKey()
@@ -162,45 +162,45 @@ namespace DataCentric.Test
 
                 // Verify the result of loading records from datasets A and B
                 context.Verify.Text("Initial load");
-                VerifyLoad(context, keyA0, "A");
-                VerifyLoad(context, keyA0, "B");
-                VerifyLoad(context, keyB0, "A");
-                VerifyLoad(context, keyB0, "B");
+                VerifyLoad(context, "DataSet0", keyA0);
+                VerifyLoad(context, "DataSet1", keyA0);
+                VerifyLoad(context, "DataSet0", keyB0);
+                VerifyLoad(context, "DataSet1", keyB0);
 
-                context.Verify.Text("Query in dataset A");
-                VerifyQuery<MongoTestData>(context, "A");
-                context.Verify.Text("Query in dataset B");
-                VerifyQuery<MongoTestData>(context, "B");
+                context.Verify.Text("Query in dataset DataSet0");
+                VerifyQuery<MongoTestData>(context, "DataSet0");
+                context.Verify.Text("Query in dataset DataSet1");
+                VerifyQuery<MongoTestData>(context, "DataSet1");
 
                 context.Verify.Text("Delete A0 record in B dataset");
-                context.Delete(keyA0, dataSetB);
-                VerifyLoad(context, keyA0, "A");
-                VerifyLoad(context, keyA0, "B");
+                context.Delete(keyA0, dataSet1);
+                VerifyLoad(context, "DataSet0", keyA0);
+                VerifyLoad(context, "DataSet1", keyA0);
 
-                context.Verify.Text("Query in dataset A");
-                VerifyQuery<MongoTestData>(context, "A");
-                context.Verify.Text("Query in dataset B");
-                VerifyQuery<MongoTestData>(context, "B");
+                context.Verify.Text("Query in dataset DataSet0");
+                VerifyQuery<MongoTestData>(context, "DataSet0");
+                context.Verify.Text("Query in dataset DataSet1");
+                VerifyQuery<MongoTestData>(context, "DataSet1");
 
                 context.Verify.Text("Delete A0 record in A dataset");
-                context.Delete(keyA0, dataSetA);
-                VerifyLoad(context, keyA0, "A");
-                VerifyLoad(context, keyA0, "B");
+                context.Delete(keyA0, dataSet0);
+                VerifyLoad(context, "DataSet0", keyA0);
+                VerifyLoad(context, "DataSet1", keyA0);
 
-                context.Verify.Text("Query in dataset A");
-                VerifyQuery<MongoTestData>(context, "A");
-                context.Verify.Text("Query in dataset B");
-                VerifyQuery<MongoTestData>(context, "B");
+                context.Verify.Text("Query in dataset DataSet0");
+                VerifyQuery<MongoTestData>(context, "DataSet0");
+                context.Verify.Text("Query in dataset DataSet1");
+                VerifyQuery<MongoTestData>(context, "DataSet1");
 
                 context.Verify.Text("Delete B0 record in B dataset");
-                context.Delete(keyB0, dataSetB);
-                VerifyLoad(context, keyB0, "A");
-                VerifyLoad(context, keyB0, "B");
+                context.Delete(keyB0, dataSet1);
+                VerifyLoad(context, "DataSet0", keyB0);
+                VerifyLoad(context, "DataSet1", keyB0);
 
-                context.Verify.Text("Query in dataset A");
-                VerifyQuery<MongoTestData>(context, "A");
-                context.Verify.Text("Query in dataset B");
-                VerifyQuery<MongoTestData>(context, "B");
+                context.Verify.Text("Query in dataset DataSet0");
+                VerifyQuery<MongoTestData>(context, "DataSet0");
+                context.Verify.Text("Query in dataset DataSet1");
+                VerifyQuery<MongoTestData>(context, "DataSet1");
             }
         }
 
@@ -219,12 +219,12 @@ namespace DataCentric.Test
             using (var context = new CurrentMongoTestContext(this))
             {
                 // Create datasets
-                var dataSetA = context.CreateDataSet("A", context.DataSet);
-                var dataSetB = context.CreateDataSet("B", new ObjectId[] { dataSetA }, context.DataSet);
+                var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
+                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
 
                 // Create records with minimal data
-                SaveDerivedRecord(context, "A", "A", 0);
-                SaveDerivedFromDerivedRecord(context, "B", "B", 0);
+                SaveDerivedRecord(context, "DataSet0", "A", 0);
+                SaveDerivedFromDerivedRecord(context, "DataSet1", "B", 0);
 
                 // Create keys
                 var keyA0 = new MongoTestKey()
@@ -240,45 +240,45 @@ namespace DataCentric.Test
 
                 // Verify the result of loading records from datasets A and B
                 context.Verify.Text("Initial load");
-                VerifyLoad(context, keyA0, "A");
-                VerifyLoad(context, keyA0, "B");
-                VerifyLoad(context, keyB0, "A");
-                VerifyLoad(context, keyB0, "B");
+                VerifyLoad(context, "DataSet0", keyA0);
+                VerifyLoad(context, "DataSet1", keyA0);
+                VerifyLoad(context, "DataSet0", keyB0);
+                VerifyLoad(context, "DataSet1", keyB0);
 
-                context.Verify.Text("Query in dataset A for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "A");
-                context.Verify.Text("Query in dataset B for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "B");
+                context.Verify.Text("Query in dataset DataSet0 for type MongoTestDerivedData");
+                VerifyQuery<MongoTestDerivedData>(context, "DataSet0");
+                context.Verify.Text("Query in dataset DataSet1 for type MongoTestDerivedData");
+                VerifyQuery<MongoTestDerivedData>(context, "DataSet1");
 
                 context.Verify.Text("Change A0 record type in B dataset to C");
-                SaveOtherDerivedRecord(context, "B", "A", 0);
-                VerifyLoad(context, keyA0, "A");
-                VerifyLoad(context, keyA0, "B");
+                SaveOtherDerivedRecord(context, "DataSet1", "A", 0);
+                VerifyLoad(context, "DataSet0", keyA0);
+                VerifyLoad(context, "DataSet1", keyA0);
 
-                context.Verify.Text("Query in dataset A for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "A");
-                context.Verify.Text("Query in dataset B for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "B");
+                context.Verify.Text("Query in dataset DataSet0 for type MongoTestDerivedData");
+                VerifyQuery<MongoTestDerivedData>(context, "DataSet0");
+                context.Verify.Text("Query in dataset DataSet1 for type MongoTestDerivedData");
+                VerifyQuery<MongoTestDerivedData>(context, "DataSet1");
 
                 context.Verify.Text("Change A0 record type in A dataset to C");
-                SaveOtherDerivedRecord(context, "A", "A", 0);
-                VerifyLoad(context, keyA0, "A");
-                VerifyLoad(context, keyA0, "B");
+                SaveOtherDerivedRecord(context, "DataSet0", "A", 0);
+                VerifyLoad(context, "DataSet0", keyA0);
+                VerifyLoad(context, "DataSet1", keyA0);
 
-                context.Verify.Text("Query in dataset A for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "A");
-                context.Verify.Text("Query in dataset B for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "B");
+                context.Verify.Text("Query in dataset DataSet0 for type MongoTestDerivedData");
+                VerifyQuery<MongoTestDerivedData>(context, "DataSet0");
+                context.Verify.Text("Query in dataset DataSet1 for type MongoTestDerivedData");
+                VerifyQuery<MongoTestDerivedData>(context, "DataSet1");
 
                 context.Verify.Text("Change B0 record type in B dataset to C");
-                SaveOtherDerivedRecord(context, "B", "B", 0);
-                VerifyLoad(context, keyB0, "A");
-                VerifyLoad(context, keyB0, "B");
+                SaveOtherDerivedRecord(context, "DataSet1", "B", 0);
+                VerifyLoad(context, "DataSet0", keyB0);
+                VerifyLoad(context, "DataSet1", keyB0);
 
-                context.Verify.Text("Query in dataset A for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "A");
-                context.Verify.Text("Query in dataset B for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "B");
+                context.Verify.Text("Query in dataset DataSet0 for type MongoTestDerivedData");
+                VerifyQuery<MongoTestDerivedData>(context, "DataSet0");
+                context.Verify.Text("Query in dataset DataSet1 for type MongoTestDerivedData");
+                VerifyQuery<MongoTestDerivedData>(context, "DataSet1");
             }
         }
 
@@ -292,8 +292,8 @@ namespace DataCentric.Test
                 SaveCompleteData(context);
 
                 // Look in B dataset
-                var dataSetB = context.GetDataSetOrEmpty("B", context.DataSet);
-                var testQuery = context.GetQuery<MongoTestDerivedData>(dataSetB)
+                var dataSet1 = context.GetDataSetOrEmpty("DataSet1", context.DataSet);
+                var testQuery = context.GetQuery<MongoTestDerivedData>(dataSet1)
                     .Where(p => p.DataElementList[0].DoubleElement3 == 1.0)
                     .Where(p => p.DataElementList[0].StringElement3 == "A0")
                     .Where(p => p.LocalDateElement < new LocalDate(2003, 5, 2))
@@ -326,33 +326,33 @@ namespace DataCentric.Test
                 SaveCompleteData(context);
 
                 // Look in B dataset
-                var dataSetD = context.GetDataSetOrEmpty("D", context.DataSet);
+                var dataSet3 = context.GetDataSetOrEmpty("DataSet3", context.DataSet);
 
                 // Load record of derived types by base
                 context.Verify.Text("Load all types by key to type A");
                 {
                     var key = new MongoTestKey {RecordId = "A", RecordIndex = 0};
-                    var obj = context.LoadOrNull(key, dataSetD);
+                    var obj = context.LoadOrNull(key, dataSet3);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
                     var key = new MongoTestKey { RecordId = "B", RecordIndex = 0 };
-                    var obj = context.LoadOrNull(key, dataSetD);
+                    var obj = context.LoadOrNull(key, dataSet3);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
                     var key = new MongoTestKey { RecordId = "C", RecordIndex = 0 };
-                    var obj = context.LoadOrNull(key, dataSetD);
+                    var obj = context.LoadOrNull(key, dataSet3);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
                     var key = new MongoTestKey { RecordId = "D", RecordIndex = 0 };
-                    var obj = context.LoadOrNull(key, dataSetD);
+                    var obj = context.LoadOrNull(key, dataSet3);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
                     context.Verify.Text("Query by MongoTestData, unconstrained");
-                    var query = context.GetQuery<MongoTestData>(dataSetD);
+                    var query = context.GetQuery<MongoTestData>(dataSet3);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -360,7 +360,7 @@ namespace DataCentric.Test
                 }
                 {
                     context.Verify.Text("Query by MongoTestDerivedData : MongoTestData which also picks up MongoTestDerivedFromDerivedData : MongoTestDerivedData, unconstrained");
-                    var query = context.GetQuery<MongoTestDerivedData>(dataSetD);
+                    var query = context.GetQuery<MongoTestDerivedData>(dataSet3);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -368,7 +368,7 @@ namespace DataCentric.Test
                 }
                 {
                     context.Verify.Text("Query by MongoTestOtherDerivedData : MongoTestData, unconstrained");
-                    var query = context.GetQuery<MongoTestOtherDerivedData>(dataSetD);
+                    var query = context.GetQuery<MongoTestOtherDerivedData>(dataSet3);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -376,7 +376,7 @@ namespace DataCentric.Test
                 }
                 {
                     context.Verify.Text("Query by MongoTestDerivedFromDerivedData : MongoTestDerivedData, where MongoTestDerivedData : MongoTestData, unconstrained");
-                    var query = context.GetQuery<MongoTestDerivedFromDerivedData>(dataSetD);
+                    var query = context.GetQuery<MongoTestDerivedFromDerivedData>(dataSet3);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -395,10 +395,10 @@ namespace DataCentric.Test
                 SaveCompleteData(context);
 
                 // Look in B dataset
-                var dataSetD = context.GetDataSetOrEmpty("D", context.DataSet);
+                var dataSet3 = context.GetDataSetOrEmpty("DataSet3", context.DataSet);
 
                 context.Verify.Text("Query by MongoTestData, sort by RecordIndex descending, then by DoubleElement ascending");
-                var baseQuery = context.GetQuery<MongoTestData>(dataSetD)
+                var baseQuery = context.GetQuery<MongoTestData>(dataSet3)
                     .SortByDescending(p => p.RecordIndex)
                     .SortBy(p => p.DoubleElement);
                 foreach (var obj in baseQuery.AsEnumerable())
@@ -419,11 +419,11 @@ namespace DataCentric.Test
                 context.KeepTestData = true;
 
                 // Create datasets
-                var dataSetA = context.CreateDataSet("A", context.DataSet);
+                var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
 
                 // Create initial version of the records
                 context.Verify.Text("Write A;0 record to A dataset");
-                SaveMinimalRecord(context, "A", "A", 0, 1);
+                SaveMinimalRecord(context, "DataSet0", "A", 0, 1);
 
                 var keyA0 = new MongoTestKey
                 {
@@ -434,14 +434,14 @@ namespace DataCentric.Test
                 // Load from storage before deletion
                 if (true)
                 {
-                    var loadedRecord = context.LoadOrNull(keyA0, dataSetA);
+                    var loadedRecord = context.LoadOrNull(keyA0, dataSet0);
                     context.Verify.Assert(loadedRecord != null, "Record found before deletion.");
                 }
 
                 // Query before deletion
                 if (true)
                 {
-                    var query = context.GetQuery<MongoTestData>(dataSetA)
+                    var query = context.GetQuery<MongoTestData>(dataSet0)
                         .Where(p => p.Version == 1)
                         .AsEnumerable();
                     int recordCount = 0;
@@ -456,19 +456,19 @@ namespace DataCentric.Test
                 }
 
                 context.Verify.Text("Delete A;0 record in A dataset");
-                context.Delete(keyA0, dataSetA);
+                context.Delete(keyA0, dataSet0);
 
                 // Load from storage before deletion
                 if (true)
                 {
-                    var loadedRecord = context.LoadOrNull(keyA0, dataSetA);
+                    var loadedRecord = context.LoadOrNull(keyA0, dataSet0);
                     context.Verify.Assert(loadedRecord == null, "Record not found after deletion.");
                 }
 
                 // Query after deletion
                 if (true)
                 {
-                    var query = context.GetQuery<MongoTestData>(dataSetA)
+                    var query = context.GetQuery<MongoTestData>(dataSet0)
                         .Where(p => p.Version == 1)
                         .AsEnumerable();
                     int recordCount = 0;
@@ -485,7 +485,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Load the object and verify the outcome.</summary>
-        private void VerifyLoad<TKey, TRecord>(IContext context, TypedKey<TKey, TRecord> key, string dataSetId)
+        private void VerifyLoad<TKey, TRecord>(IContext context, string dataSetId, TypedKey<TKey, TRecord> key)
             where TKey : TypedKey<TKey, TRecord>, new()
             where TRecord : TypedRecord<TKey, TRecord>
         {
@@ -531,60 +531,60 @@ namespace DataCentric.Test
         private void SaveBasicData(IContext context)
         {
             // Create datasets
-            var dataSetA = context.CreateDataSet("A", context.DataSet);
-            var dataSetB = context.CreateDataSet("B", new ObjectId[] {dataSetA}, context.DataSet);
+            var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
+            var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] {dataSet0}, context.DataSet);
 
             // Create records with minimal data
-            SaveBaseRecord(context, "A", "A", 0);
-            SaveDerivedRecord(context, "B", "B", 0);
+            SaveBaseRecord(context, "DataSet0", "A", 0);
+            SaveDerivedRecord(context, "DataSet1", "B", 0);
         }
 
         /// <summary>Two datasets and eight objects, split between base and derived.</summary>
         private void SaveCompleteData(IContext context)
         {
             // Create datasets
-            var dataSetA = context.CreateDataSet("A", context.DataSet);
-            var dataSetB = context.CreateDataSet("B", new ObjectId[] { dataSetA }, context.DataSet);
-            var dataSetC = context.CreateDataSet("C", new ObjectId[] { dataSetA }, context.DataSet);
-            var dataSetD = context.CreateDataSet("D", new ObjectId[] { dataSetA, dataSetB, dataSetC }, context.DataSet);
+            var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
+            var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
+            var dataSet2 = context.CreateDataSet("DataSet2", new ObjectId[] { dataSet0 }, context.DataSet);
+            var dataSet3 = context.CreateDataSet("DataSet3", new ObjectId[] { dataSet0, dataSet1, dataSet2 }, context.DataSet);
 
             // Create records with minimal data
-            SaveBaseRecord(context, "A", "A", 0);
-            SaveDerivedRecord(context, "B", "B", 0);
-            SaveOtherDerivedRecord(context, "C", "C", 0);
-            SaveDerivedFromDerivedRecord(context, "D", "D", 0);
-            SaveBaseRecord(context, "A", "A", 1);
-            SaveDerivedRecord(context, "B", "B", 1);
-            SaveOtherDerivedRecord(context, "C", "C", 1);
-            SaveDerivedFromDerivedRecord(context, "D", "D", 1);
-            SaveBaseRecord(context, "A", "A", 2);
-            SaveDerivedRecord(context, "B", "B", 2);
-            SaveOtherDerivedRecord(context, "C", "C", 2);
-            SaveDerivedFromDerivedRecord(context, "D", "D", 2);
-            SaveBaseRecord(context, "A", "A", 3);
-            SaveDerivedRecord(context, "B", "B", 3);
-            SaveOtherDerivedRecord(context, "C", "C", 3);
-            SaveDerivedFromDerivedRecord(context, "D", "D", 3);
+            SaveBaseRecord(context, "DataSet0", "A", 0);
+            SaveDerivedRecord(context, "DataSet1", "B", 0);
+            SaveOtherDerivedRecord(context, "DataSet2", "C", 0);
+            SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 0);
+            SaveBaseRecord(context, "DataSet0", "A", 1);
+            SaveDerivedRecord(context, "DataSet1", "B", 1);
+            SaveOtherDerivedRecord(context, "DataSet2", "C", 1);
+            SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 1);
+            SaveBaseRecord(context, "DataSet0", "A", 2);
+            SaveDerivedRecord(context, "DataSet1", "B", 2);
+            SaveOtherDerivedRecord(context, "DataSet2", "C", 2);
+            SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 2);
+            SaveBaseRecord(context, "DataSet0", "A", 3);
+            SaveDerivedRecord(context, "DataSet1", "B", 3);
+            SaveOtherDerivedRecord(context, "DataSet2", "C", 3);
+            SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 3);
         }
 
         /// <summary>Minimal data in multiple datasets with overlapping imports.</summary>
         private void SaveMultiDataSetData(IContext context)
         {
             // Create datasets
-            var dataSetA = context.CreateDataSet("A", context.DataSet);
-            var dataSetB = context.CreateDataSet("B", new ObjectId[] {dataSetA}, context.DataSet);
-            var dataSetC = context.CreateDataSet("C", new ObjectId[] {dataSetA}, context.DataSet);
-            var dataSetD = context.CreateDataSet("D", new ObjectId[] {dataSetA, dataSetB, dataSetC}, context.DataSet);
+            var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
+            var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] {dataSet0}, context.DataSet);
+            var dataSet2 = context.CreateDataSet("DataSet2", new ObjectId[] {dataSet0}, context.DataSet);
+            var dataSet3 = context.CreateDataSet("DataSet3", new ObjectId[] {dataSet0, dataSet1, dataSet2}, context.DataSet);
 
             // Create records
-            SaveMinimalRecord(context, "A", "A", 0);
-            SaveMinimalRecord(context, "A", "A", 1);
-            SaveMinimalRecord(context, "B", "B", 0);
-            SaveMinimalRecord(context, "B", "B", 1);
-            SaveMinimalRecord(context, "C", "C", 0);
-            SaveMinimalRecord(context, "C", "C", 1);
-            SaveMinimalRecord(context, "D", "D", 0);
-            SaveMinimalRecord(context, "D", "D", 1);
+            SaveMinimalRecord(context, "DataSet0", "A", 0);
+            SaveMinimalRecord(context, "DataSet0", "A", 1);
+            SaveMinimalRecord(context, "DataSet1", "B", 0);
+            SaveMinimalRecord(context, "DataSet1", "B", 1);
+            SaveMinimalRecord(context, "DataSet2", "C", 0);
+            SaveMinimalRecord(context, "DataSet2", "C", 1);
+            SaveMinimalRecord(context, "DataSet3", "D", 0);
+            SaveMinimalRecord(context, "DataSet3", "D", 1);
         }
 
         /// <summary>Save record with minimal data for testing how the records are found. </summary>
