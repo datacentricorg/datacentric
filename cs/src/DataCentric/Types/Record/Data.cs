@@ -16,8 +16,6 @@ limitations under the License.
 
 using System;
 using System.Collections;
-using MongoDB.Bson.Serialization.Attributes;
-using CsvHelper.Configuration.Attributes;
 using MongoDB.Bson;
 using NodaTime;
 

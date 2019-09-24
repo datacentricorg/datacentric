@@ -17,9 +17,6 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using MongoDB.Driver.Core.Authentication;
 using NodaTime;
 
 namespace DataCentric

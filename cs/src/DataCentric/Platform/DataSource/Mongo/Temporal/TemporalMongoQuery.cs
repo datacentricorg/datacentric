@@ -15,13 +15,10 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Linq.Expressions;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
@@ -216,7 +213,7 @@ namespace DataCentric
             // in the latest dataset.
             var queryKeys = new List<string>();
             var queryIds = new List<ObjectId>();
-            foreach (var projectedRecord in projectedQueryable) // TODO - it is not necesssary to run the entire query, it can be incremental
+            foreach (var projectedRecord in projectedQueryable) // TODO - it is not necessary to run the entire query, it can be incremental
             {
                 queryKeys.Add(projectedRecord.Key);
                 queryIds.Add(projectedRecord.Id);
