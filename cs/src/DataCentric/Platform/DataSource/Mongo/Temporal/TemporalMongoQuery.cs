@@ -201,35 +201,50 @@ namespace DataCentric
             // Project to record info instead of returning the entire record
             var projectedQueryable = typedQueryable.Select(p => new RecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
 
-            // Iterate over the projected query collecting the greatest
-            // (i.e., latest) Id for each key in an ordered dictionary
-            var orderedDictionary = new OrderedDictionary();
-            foreach (var recordInfo in projectedQueryable)
+            // Iterate over the typed query and populate lists of Keys and Ids.
+            // This will run the entire query but only cache RecordInfo in memory,
+            // not the entire object which may be much larger than RecordInfo; for
+            // most loads the memory consumption of running the entire query at
+            // once will remain within the acceptable limits.
+            //
+            // A given key may be encountered more than once in this list. Only
+            // one of these entries will have a matching Id. We will not attempt
+            // to determine which entry is the latest record in the latest dataset
+            // here, when dealing with the result set of the entire query. Instead,
+            // we will keep duplicate entries as they are and rely on subsequent
+            // Id match to eliminate all objects that are not the latest object
+            // in the latest dataset.
+            var queryKeys = new List<string>();
+            var queryIds = new List<ObjectId>();
+            foreach (var projectedRecord in projectedQueryable)
             {
-                ObjectId currentId = (ObjectId) orderedDictionary[recordInfo.Key];
+                queryKeys.Add(projectedRecord.Key);
+                queryIds.Add(projectedRecord.Id);
             }
 
-            IDictionaryEnumerator orderedEnumerator = orderedDictionary.GetEnumerator();
+            int queryCount = queryKeys.Count;
+            int queryIndex = 0;
             int batchSize = 1000;
-            while (true)
+            while (queryIndex < queryCount)
             {
                 int batchIndex = 0;
                 var batchKeys = new List<string>();
                 var batchIds = new List<ObjectId>();
-                while(orderedEnumerator.MoveNext())
+                while (queryIndex < queryCount && batchIndex < batchSize)
                 {
-                    // Populate lists of batch keys and batch ids for the current batch
-                    batchKeys.Add((string)orderedEnumerator.Key);
-                    batchIds.Add((ObjectId)orderedEnumerator.Key);
+                    // Populate lists of keys and batch ids for the current batch
+                    // Exit the loop when either the batch size is reached, or 
+                    // all records in the query are already included. In the latter
+                    // case the next iteration of outer while loop will also exit.
+                    batchKeys.Add(queryKeys[queryIndex]);
+                    batchIds.Add(queryIds[queryIndex]);
 
-                    // Exit the loop when batch size is reached
-                    if (++batchIndex == batchSize)
-                    {
-                        break;
-                    }
+                    queryIndex++;
+                    batchIndex++;
                 }
 
-                // The next step is to get objects for the list of keys without type restriction
+                // The next step is to get objects in the batch without type restriction
+                // and with the inclusion of DeletedRecord instances (if any)
                 //
                 // First, query base collection for records with key in the list
                 IQueryable<Record> baseQueryable = collection_.BaseCollection.AsQueryable()
@@ -245,7 +260,10 @@ namespace DataCentric
                     .ThenByDescending(p => p.Id); // _id
 
                 // Populate dictionary of (Key, Record) pairs, keeping
-                // only the latest record in the latest dataset
+                // only the latest record in the latest dataset. 
+                //
+                // This dictionary caches the entire record, but only for
+                // the limited number of records within the batch.
                 var objDict = new Dictionary<string, Record>();
                 string currentBaseKey = null;
                 foreach (var obj in baseOrderedQueryable)
