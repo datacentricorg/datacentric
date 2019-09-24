@@ -216,7 +216,7 @@ namespace DataCentric
             // in the latest dataset.
             var queryKeys = new List<string>();
             var queryIds = new List<ObjectId>();
-            foreach (var projectedRecord in projectedQueryable)
+            foreach (var projectedRecord in projectedQueryable) // TODO - it is not necesssary to run the entire query, it can be incremental
             {
                 queryKeys.Add(projectedRecord.Key);
                 queryIds.Add(projectedRecord.Id);
