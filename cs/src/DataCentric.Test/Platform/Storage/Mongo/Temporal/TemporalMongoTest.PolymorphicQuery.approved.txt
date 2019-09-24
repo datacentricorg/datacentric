@@ -1,4 +1,4 @@
-Verify.Text: Load all types by key to type A
+Verify.Text: Load all records by key as MongoTestData.
 Verify.Text:     Key=A;0 Type=MongoTestData
 Verify.Text:     Key=B;0 Type=MongoTestDerivedData
 Verify.Text:     Key=C;0 Type=MongoTestOtherDerivedData

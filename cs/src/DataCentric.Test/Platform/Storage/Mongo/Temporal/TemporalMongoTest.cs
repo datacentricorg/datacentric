@@ -329,7 +329,7 @@ namespace DataCentric.Test
                 var dataSetD = context.GetDataSetOrEmpty("D", context.DataSet);
 
                 // Load record of derived types by base
-                context.Verify.Text("Load all types by key to type A");
+                context.Verify.Text("Load all records by key as MongoTestData.");
                 {
                     var key = new MongoTestKey {RecordId = "A", RecordIndex = 0};
                     var obj = context.LoadOrNull(key, dataSetD);
@@ -352,7 +352,7 @@ namespace DataCentric.Test
                 }
                 {
                     context.Verify.Text("Query by MongoTestData, unconstrained");
-                    var query = context.GetQuery<MongoTestData>(dataSetD);
+                    var query = context.GetQuery<MongoTestData>(dataSetD).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -360,7 +360,7 @@ namespace DataCentric.Test
                 }
                 {
                     context.Verify.Text("Query by MongoTestDerivedData : MongoTestData which also picks up MongoTestDerivedFromDerivedData : MongoTestDerivedData, unconstrained");
-                    var query = context.GetQuery<MongoTestDerivedData>(dataSetD);
+                    var query = context.GetQuery<MongoTestDerivedData>(dataSetD).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -368,7 +368,7 @@ namespace DataCentric.Test
                 }
                 {
                     context.Verify.Text("Query by MongoTestOtherDerivedData : MongoTestData, unconstrained");
-                    var query = context.GetQuery<MongoTestOtherDerivedData>(dataSetD);
+                    var query = context.GetQuery<MongoTestOtherDerivedData>(dataSetD).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -376,7 +376,7 @@ namespace DataCentric.Test
                 }
                 {
                     context.Verify.Text("Query by MongoTestDerivedFromDerivedData : MongoTestDerivedData, where MongoTestDerivedData : MongoTestData, unconstrained");
-                    var query = context.GetQuery<MongoTestDerivedFromDerivedData>(dataSetD);
+                    var query = context.GetQuery<MongoTestDerivedFromDerivedData>(dataSetD).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
