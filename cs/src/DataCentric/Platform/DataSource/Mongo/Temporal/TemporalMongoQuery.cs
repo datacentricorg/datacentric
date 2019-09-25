@@ -288,6 +288,14 @@ namespace DataCentric
                     var projectedIdQueryable = idQueryable
                         .Select(p => new RecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
 
+                    // Get dataset lookup list in descending order if FreezeImports is specified
+                    List<ObjectId> descendingLookupList = null;
+                    if (collection_.DataSource.FreezeImports)
+                    {
+                        var dataSetLookupEnumerable = collection_.DataSource.GetDataSetLookupList(loadFrom_);
+                        descendingLookupList = dataSetLookupEnumerable.OrderByDescending(p => p).ToList();
+                    }
+
                     // Create a list of ObjectIds for the records obtained using
                     // dataset lookup rules for the keys in the batch
                     var recordIds = new List<ObjectId>();
@@ -314,17 +322,57 @@ namespace DataCentric
                         }
                         else
                         {
-                            // The key was not encountered before, assign new value
-                            currentKey = objKey;
-
-                            // Add to dictionary only if found in the list of batch Ids
-                            // Otherwise this is not the latest record in the latest
-                            // dataset (subject to freeze rule if any) and it should 
-                            // be skipped.
-                            ObjectId currentId = obj.Id;
-                            if (batchIdsHashSet.Contains(currentId))
+                            if (collection_.DataSource.FreezeImports)
                             {
-                                recordIds.Add(currentId);
+                                ObjectId recordId = obj.Id;
+                                ObjectId recordDataSet = obj.DataSet;
+                                foreach (ObjectId dataSetId in descendingLookupList)
+                                {
+                                    if (dataSetId == recordDataSet)
+                                    {
+                                        // Iterating over the dataset lookup list in descending order,
+                                        // we reached dataset of the record before finding a dataset
+                                        // that is earlier than the record. This is the latest record
+                                        // in the latest dataset for this key subject to the freeze rule.
+
+                                        // Take the first object for a new key, relying on sorting
+                                        // by dataset and then by record's ObjectId in descending 
+                                        // order.
+                                        currentKey = objKey;
+
+                                        // Add to dictionary only if found in the list of batch Ids
+                                        // Otherwise this is not the latest record in the latest
+                                        // dataset (subject to freeze rule) and it should be skipped.
+                                        if (batchIdsHashSet.Contains(recordId))
+                                        {
+                                            recordIds.Add(recordId);
+                                        }
+                                    }
+
+                                    // Iterating over the dataset lookup list in descending order,
+                                    // we reached a dataset which is earlier than the record before
+                                    // we reached the dataset where the record is stored. This record
+                                    // is therefore excluded by the freeze rule and we should not 
+                                    // yet set the new current key and skip the rest of the records
+                                    // for this key
+                                    if (dataSetId < recordId) break;
+                                }
+                            }
+                            else
+                            {
+                                // Take the first object for a new key, relying on sorting
+                                // by dataset and then by record's ObjectId in descending 
+                                // order.
+                                currentKey = objKey;
+
+                                // Add to dictionary only if found in the list of batch Ids
+                                // Otherwise this is not the latest record in the latest
+                                // dataset and it should be skipped.
+                                ObjectId recordId = obj.Id;
+                                if (batchIdsHashSet.Contains(recordId))
+                                {
+                                    recordIds.Add(recordId);
+                                }
                             }
                         }
                     }

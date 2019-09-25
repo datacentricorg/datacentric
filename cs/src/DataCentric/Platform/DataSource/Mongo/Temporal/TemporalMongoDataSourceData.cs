@@ -89,6 +89,26 @@ namespace DataCentric
         /// </summary>
         public ObjectId? SavedById { get; set; }
 
+        /// <summary>
+        /// When FreezeImports is false, a query retrieves all records with a given key.
+        /// The records are sorted by dataset's ObjectId in descending order first, then
+        /// by record's ObjectId also in descending order. The first record in sort order
+        /// is returned by the query, and all other records are ignored. This rule has
+        /// the effect of retrieving the latest record in the latest dataset.
+        ///
+        /// When FreezeImports is true, those records whose ObjectId is greater than
+        /// ObjectId of the next dataset in the lookup sequence (when the sequence is
+        /// ordered by dataset's ObjectId) are excluded, after which the rule described
+        /// in the previous paragraph is applied. This has the effect of freezing the
+        /// state of each imported datasets in the import lookup sequence as of the creation
+        /// time of the next dataset in the sequence.
+        ///
+        /// The purpose of the FreezeImports flag is to prevent modification of records
+        /// in imported datasets from affecting the calculations in a dataset to which they
+        /// have been imported.
+        /// </summary>
+        public bool FreezeImports { get; set; } = true; // TODO - review the default
+
         //--- METHODS
 
         /// <summary>
