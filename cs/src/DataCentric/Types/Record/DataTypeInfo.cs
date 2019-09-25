@@ -186,7 +186,7 @@ namespace DataCentric
             // Error message if the type is not derived from one of the permitted base classes 
             if (RootKind == RootKind.Empty)
                 throw new Exception(
-                    $"Data type {type.Name} is not derived from Data, Key<TKey, TRecord>, or Record<TKey, TRecord>.");
+                    $"Data type {type.Name} is not derived from Data, TypedKey<TKey, TRecord>, or TypedRecord<TKey, TRecord>.");
 
             // Add elements in the order from from base to derived
             var rootElementList = new List<PropertyInfo>();

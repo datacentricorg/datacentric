@@ -218,7 +218,7 @@ namespace DataCentric.Cli
                     return (type.GetGenericArgument(0), type.GetGenericArgument(1));
                 }
             }
-            throw new InvalidOperationException("Base Record<,> type was not found");
+            throw new InvalidOperationException("Base TypedRecord<,> type was not found");
         }
 
         /// <summary>

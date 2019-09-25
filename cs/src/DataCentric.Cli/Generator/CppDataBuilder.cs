@@ -80,12 +80,12 @@ namespace DataCentric.Cli
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
             var type = decl.Name.Underscore();
-            bool isRecordBase = decl.Keys.Any();
+            bool isRecord = decl.Keys.Any();
             bool isDerived = decl.Inherit != null;
 
             // Self-forward
             writer.AppendLine($"class {type}_data_impl; using {type}_data = dot::ptr<{type}_data_impl>;");
-            if (isRecordBase)
+            if (isRecord)
                 writer.AppendLine($"class {type}_key_impl; using {type}_key = dot::ptr<{type}_key_impl>;");
 
             // Get unique keys and data from elements
@@ -108,7 +108,7 @@ namespace DataCentric.Cli
 
             writer.AppendLines(CommentHelper.FormatComment(decl.Comment));
 
-            var baseType = isRecordBase ? $"record_impl<{type}_key_impl, {type}_data_impl>" :
+            var baseType = isRecord ? $"record_impl<{type}_key_impl, {type}_data_impl>" :
                            isDerived    ? $"{decl.Inherit.Name.Underscore()}_data_impl" :
                                           "data_impl";
 
@@ -158,7 +158,7 @@ namespace DataCentric.Cli
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
             var type = decl.Name.Underscore();
-            bool isRecordBase = decl.Keys.Any();
+            bool isRecord = decl.Keys.Any();
             bool isDerived = decl.Inherit != null;
 
             writer.AppendLine($"dot::type_t {type}_data_impl::type() {{ return typeof(); }}");
@@ -177,7 +177,7 @@ namespace DataCentric.Cli
                 writer.AppendLine($"->with_field(\"{name}\", &self::{name})");
             }
 
-            var baseType = isRecordBase ? $"record<{type}_key_impl, {type}_data_impl>" :
+            var baseType = isRecord ? $"record<{type}_key_impl, {type}_data_impl>" :
                            isDerived ? $"{decl.Inherit.Name.Underscore()}_data" :
                                           "data";
             writer.AppendLine($"->template with_base<{baseType}>()");

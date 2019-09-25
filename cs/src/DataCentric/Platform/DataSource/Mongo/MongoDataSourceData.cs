@@ -86,7 +86,7 @@ namespace DataCentric
                 // types in the inheritance chain, or a single string value for a chain
                 // of length 1.
                 //
-                // Choosing root type to be RecordBase ensures that _t is always an array.
+                // Choosing root type to be Record ensures that _t is always an array.
                 BsonSerializer.RegisterDiscriminatorConvention(typeof(Data), new HierarchicalDiscriminatorConvention("_t"));
             }
         }

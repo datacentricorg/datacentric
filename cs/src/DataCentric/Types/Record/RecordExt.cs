@@ -21,7 +21,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace DataCentric
 {
-    /// <summary>Extension methods for RecordBase.</summary>
+    /// <summary>Extension methods for Record.</summary>
     public static class RecordExt
     {
         /// <summary>Deserialize record from XML using short
