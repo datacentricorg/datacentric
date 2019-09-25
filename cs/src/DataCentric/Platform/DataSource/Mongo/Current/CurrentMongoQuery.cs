@@ -32,10 +32,10 @@ namespace DataCentric
     /// additional constraints and ordering to retrieve the correct version
     /// of the record across multiple datasets.
     /// </summary>
-    public class CurrentMongoQuery<TRecord> : IQuery<TRecord>
+    public class HierarchicalMongoQuery<TRecord> : IQuery<TRecord>
         where TRecord : Record
     {
-        private readonly CurrentMongoCollection<TRecord> collection_;
+        private readonly HierarchicalMongoCollection<TRecord> collection_;
         private readonly ObjectId loadFrom_;
         private readonly IQueryable<TRecord> queryable_;
         private readonly IOrderedQueryable<TRecord> orderedQueryable_;
@@ -45,7 +45,7 @@ namespace DataCentric
         /// <summary>
         /// Create query from collection and dataset.
         /// </summary>
-        public CurrentMongoQuery(CurrentMongoCollection<TRecord> collection, ObjectId loadFrom)
+        public HierarchicalMongoQuery(HierarchicalMongoCollection<TRecord> collection, ObjectId loadFrom)
         {
             collection_ = collection;
             loadFrom_ = loadFrom;
@@ -69,7 +69,7 @@ namespace DataCentric
         /// This constructor is private and is intended for use by the
         /// implementation of this class only.
         /// </summary>
-        private CurrentMongoQuery(CurrentMongoCollection<TRecord> collection, ObjectId loadFrom, IQueryable<TRecord> queryable)
+        private HierarchicalMongoQuery(HierarchicalMongoCollection<TRecord> collection, ObjectId loadFrom, IQueryable<TRecord> queryable)
         {
             if (queryable == null)
                 throw new Exception(
@@ -87,7 +87,7 @@ namespace DataCentric
         /// This constructor is private and is intended for use by the
         /// implementation of this class only.
         /// </summary>
-        private CurrentMongoQuery(CurrentMongoCollection<TRecord> collection, ObjectId loadFrom, IOrderedQueryable<TRecord> orderedQueryable)
+        private HierarchicalMongoQuery(HierarchicalMongoCollection<TRecord> collection, ObjectId loadFrom, IOrderedQueryable<TRecord> orderedQueryable)
         {
             if (orderedQueryable == null)
                 throw new Exception(
@@ -111,7 +111,7 @@ namespace DataCentric
         {
             if (queryable_ != null && orderedQueryable_ == null)
             {
-                return new CurrentMongoQuery<TRecord>(collection_, loadFrom_, queryable_.Where(predicate));
+                return new HierarchicalMongoQuery<TRecord>(collection_, loadFrom_, queryable_.Where(predicate));
             }
             else if (queryable_ == null && orderedQueryable_ != null)
             {
@@ -136,12 +136,12 @@ namespace DataCentric
                 var queryableWithDataSetConstraint = collection_.DataSource.ApplyFinalConstraints(queryable_, loadFrom_);
 
                 // First SortBy clause, use OrderBy of queryable_
-                return new CurrentMongoQuery<TRecord>(collection_, loadFrom_, queryableWithDataSetConstraint.OrderBy(keySelector));
+                return new HierarchicalMongoQuery<TRecord>(collection_, loadFrom_, queryableWithDataSetConstraint.OrderBy(keySelector));
             }
             else if (queryable_ == null && orderedQueryable_ != null)
             {
                 // Subsequent SortBy clauses, use ThenBy of the orderedQueryable_
-                return new CurrentMongoQuery<TRecord>(collection_, loadFrom_, orderedQueryable_.ThenBy(keySelector));
+                return new HierarchicalMongoQuery<TRecord>(collection_, loadFrom_, orderedQueryable_.ThenBy(keySelector));
             }
             else
             {
@@ -160,12 +160,12 @@ namespace DataCentric
                 var queryableWithDataSetConstraint = collection_.DataSource.ApplyFinalConstraints(queryable_, loadFrom_);
 
                 // First SortBy clause, use OrderBy of queryable_
-                return new CurrentMongoQuery<TRecord>(collection_, loadFrom_, queryableWithDataSetConstraint.OrderByDescending(keySelector));
+                return new HierarchicalMongoQuery<TRecord>(collection_, loadFrom_, queryableWithDataSetConstraint.OrderByDescending(keySelector));
             }
             else if (queryable_ == null && orderedQueryable_ != null)
             {
                 // Subsequent SortBy clauses, use ThenBy of the orderedQueryable_
-                return new CurrentMongoQuery<TRecord>(collection_, loadFrom_, orderedQueryable_.ThenByDescending(keySelector));
+                return new HierarchicalMongoQuery<TRecord>(collection_, loadFrom_, orderedQueryable_.ThenByDescending(keySelector));
             }
             else
             {

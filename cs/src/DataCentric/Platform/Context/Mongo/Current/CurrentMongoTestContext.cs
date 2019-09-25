@@ -20,7 +20,7 @@ using System.Runtime.CompilerServices;
 namespace DataCentric
 {
     /// <summary>
-    /// Specialization of DataTestContext for CurrentMongoDataSource.
+    /// Specialization of DataTestContext for HierarchicalMongoDataSource.
     /// 
     /// DataTestContext is the context for use in test fixtures that
     /// require a data source, parameterized by data source type.
@@ -36,7 +36,7 @@ namespace DataCentric
     ///
     /// For tests that do not require a data source, use UnitTestContext.
     /// </summary>
-    public class CurrentMongoTestContext : DataTestContext<CurrentMongoDataSourceData>
+    public class HierarchicalMongoTestContext : DataTestContext<HierarchicalMongoDataSourceData>
     {
         /// <summary>
         /// Create with class name, method name, and source file path.
@@ -45,7 +45,7 @@ namespace DataCentric
         /// constructor, the latter two arguments are provided by
         /// the compiler.
         /// </summary>
-        public CurrentMongoTestContext(
+        public HierarchicalMongoTestContext(
             object classInstance,
             [CallerMemberName] string methodName = null,
             [CallerFilePath] string sourceFilePath = null)

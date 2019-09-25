@@ -33,7 +33,7 @@ namespace DataCentric
     /// LINQ constraints and base collection is used to iterate over
     /// objects.
     /// </summary>
-    public class CurrentMongoCollection<TRecord>
+    public class HierarchicalMongoCollection<TRecord>
         where TRecord : Record
     {
         /// <summary>
@@ -42,7 +42,7 @@ namespace DataCentric
         /// This object should be constructed inside a data source. It should not
         /// be used by other classes directly.
         /// </summary>
-        public CurrentMongoCollection(
+        public HierarchicalMongoCollection(
             MongoDataSourceData dataSource,
             IMongoCollection<Record> baseCollection,
             IMongoCollection<TRecord> typedCollection)

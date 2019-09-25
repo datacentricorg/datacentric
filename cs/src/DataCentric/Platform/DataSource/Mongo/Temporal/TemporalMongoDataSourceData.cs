@@ -30,11 +30,29 @@ namespace DataCentric
     /// <summary>
     /// Temporal data source with datasets based on MongoDB.
     ///
-    /// The term Temporal applied to a data source means that the data source
-    /// stores revision history of the data (i.e., a version or uni-temporal
-    /// data source). This type is a temporal data source; a current data source
-    /// that stores only the current snapshot of the data is provided by
-    /// CurrentMongoDataSource type.
+    /// The term Temporal applied means the data source stores complete revision
+    /// history including copies of all previous versions of each record.
+    ///
+    /// In addition to being temporal, this data source is also hierarchical; the
+    /// records are looked up across a hierarchy of datasets, including the dataset
+    /// itself, its direct Imports, Imports of Imports, etc., ordered by dataset's
+    /// ObjectId.
+    ///
+    /// When FreezeImports flag of the data source is not set, the record with the
+    /// greatest (latest) ObjectId in the dataset with the greatest (latest)
+    /// ObjectId is returned from a query and all other records are ignored.
+    /// The sort order is by dataset's ObjectId first, then by record's ObjectId.
+    ///
+    /// When FreezeImports flag is set, the lookup rule is modified to ignore
+    /// those records whose ObjectId is greater than ObjectId of the next dataset
+    /// in the lookup sequence, when the lookup sequence is ordered by dataset's
+    /// ObjectId.
+    ///
+    /// This additional restriction has the effect of freezing the state of datasets
+    /// in the list of Imports of each dataset in the lookup sequence. If dataset
+    /// C is created for which datasets A and B are direct or indirect Imports,
+    /// changing records in A and B has no further effect on C if FreezeImports flag
+    /// is set.
     /// </summary>
     public class TemporalMongoDataSourceData : MongoDataSourceData
     {

@@ -28,13 +28,13 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>Unit test for TemporalMongoDataSourceData.</summary>
-    public class CurrentMongoTest
+    public class HierarchicalMongoTest
     {
         /// <summary>Smoke test.</summary>
         [Fact]
         public void Smoke()
         {
-            using (var context = new CurrentMongoTestContext(this))
+            using (var context = new HierarchicalMongoTestContext(this))
             {
                 SaveBasicData(context);
 
@@ -66,7 +66,7 @@ namespace DataCentric.Test
         [Fact]
         public void MultipleDataSetQuery()
         {
-            using (var context = new CurrentMongoTestContext(this))
+            using (var context = new HierarchicalMongoTestContext(this))
             {
                 // Create datasets
                 var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
@@ -123,7 +123,7 @@ namespace DataCentric.Test
         [Fact]
         public void CreateOrderedObjectId()
         {
-            using (var context = new CurrentMongoTestContext(this))
+            using (var context = new HierarchicalMongoTestContext(this))
             {
                 for (int i = 0; i < 10_000; ++i)
                 {
@@ -140,7 +140,7 @@ namespace DataCentric.Test
         [Fact]
         public void Delete()
         {
-            using (var context = new CurrentMongoTestContext(this))
+            using (var context = new HierarchicalMongoTestContext(this))
             {
                 SaveBasicData(context);
 
@@ -216,7 +216,7 @@ namespace DataCentric.Test
         [Fact]
         public void TypeChange()
         {
-            using (var context = new CurrentMongoTestContext(this))
+            using (var context = new HierarchicalMongoTestContext(this))
             {
                 // Create datasets
                 var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
@@ -286,7 +286,7 @@ namespace DataCentric.Test
         [Fact]
         public void ElementTypesQuery()
         {
-            using (var context = new CurrentMongoTestContext(this))
+            using (var context = new HierarchicalMongoTestContext(this))
             {
                 // Saves data in A and B datasets, A is an import of B
                 SaveCompleteData(context);
@@ -320,7 +320,7 @@ namespace DataCentric.Test
         [Fact]
         public void PolymorphicQuery()
         {
-            using (var context = new CurrentMongoTestContext(this))
+            using (var context = new HierarchicalMongoTestContext(this))
             {
                 // Saves data in A and B datasets, A is an import of B
                 SaveCompleteData(context);
@@ -389,7 +389,7 @@ namespace DataCentric.Test
         [Fact]
         public void Sort()
         {
-            using (var context = new CurrentMongoTestContext(this))
+            using (var context = new HierarchicalMongoTestContext(this))
             {
                 // Saves data in A and B datasets, A is an import of B
                 SaveCompleteData(context);
@@ -414,7 +414,7 @@ namespace DataCentric.Test
         [Fact]
         public void QueryWithFilterOnDeletedRecord()
         {
-            using (var context = new CurrentMongoTestContext(this))
+            using (var context = new HierarchicalMongoTestContext(this))
             {
                 context.KeepTestData = true;
 

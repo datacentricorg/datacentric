@@ -27,22 +27,19 @@ using MongoDB.Driver.Linq;
 namespace DataCentric
 {
     /// <summary>
-    /// Current data source with datasets based on MongoDB.
+    /// Data source with hierarchical datasets based on MongoDB.
     ///
-    /// The term Current applied to a data source means that the data source
-    /// stores only the current snapshot of the data, but not its history (i.e.,
-    /// a non-temporal data source). This type is a current data source;
-    /// a temporal data source is provided by TemporalMongoDataSource type.
+    /// The term Hierarchical means that records are looked up across a hierarchy
+    /// of datasets, including the dataset itself, its direct Imports, Imports of
+    /// Imports, etc., ordered by dataset's ObjectId.
     ///
-    /// IMPORTANT - this data source imposes the restriction that a key
-    /// can be present in not more than one dataset in a dataset chain.
-    /// This restriction is enforced by the save method of this data source,
-    /// and is used in query optimization. Some error checking is performed
-    /// on read to ensure only one key is present in dataset chain, however
-    /// one should not rely on read checking for enforcing this condition;
-    /// it should be implemented on write.
+    /// The record stored in the dataset with the greatest (latest)
+    /// ObjectId is returned from a query and all other records are ignored.
+    /// For this data source type, the value of the record's ObjectId has
+    /// no specific meaning and does not indicate the order of record creation,
+    /// except ObjectId of datasets.
     /// </summary>
-    public class CurrentMongoDataSourceData : MongoDataSourceData
+    public class HierarchicalMongoDataSourceData : MongoDataSourceData
     {
         /// <summary>Dictionary of collections indexed by type T.</summary>
         private Dictionary<Type, object> collectionDict_ = new Dictionary<Type, object>();
@@ -213,7 +210,7 @@ namespace DataCentric
         {
             // Get or create collection, then create query from collection
             var collection = GetOrCreateCollection<TRecord>();
-            return new CurrentMongoQuery<TRecord>(collection, loadFrom);
+            return new HierarchicalMongoQuery<TRecord>(collection, loadFrom);
         }
 
         /// <summary>
@@ -327,14 +324,14 @@ namespace DataCentric
         ///
         /// for further performance optimization.
         /// </summary>
-        protected CurrentMongoCollection<TRecord> GetOrCreateCollection<TRecord>()
+        protected HierarchicalMongoCollection<TRecord> GetOrCreateCollection<TRecord>()
             where TRecord : Record
         {
             // Check if collection object has already been cached
             // for this type and return cached result if found
             if (collectionDict_.TryGetValue(typeof(TRecord), out object collectionObj))
             {
-                var cachedResult = collectionObj.CastTo<CurrentMongoCollection<TRecord>>();
+                var cachedResult = collectionObj.CastTo<HierarchicalMongoCollection<TRecord>>();
                 return cachedResult;
             }
 
@@ -527,7 +524,7 @@ namespace DataCentric
             }
 
             // Create result that holds both base and typed collections
-            CurrentMongoCollection<TRecord> result = new CurrentMongoCollection<TRecord>(this, baseCollection, typedCollection);
+            HierarchicalMongoCollection<TRecord> result = new HierarchicalMongoCollection<TRecord>(this, baseCollection, typedCollection);
 
             // Add the result to the collection dictionary and return
             collectionDict_.Add(typeof(TRecord), result);
