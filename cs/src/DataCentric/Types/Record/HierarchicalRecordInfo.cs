@@ -22,26 +22,17 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace DataCentric
 {
     /// <summary>
-    /// This class is used to project the data identifying a temporal
-    /// record when running a database query. It contains only the
-    /// record's Id, DataSet, and Key.
+    /// This class is used to project the data identifying a non-temporal
+    /// record stored in a hierarchical data source when running a database
+    /// query. It contains the record's DataSet and Key, but not its Id.
     ///
-    /// For large records, projecting to TemporalRecordInfo instead of
+    /// For large records, projecting to HierarchicalRecordInfo instead of
     /// loading the entire record makes the query significantly faster
     /// because only a small part of the record is transferred over the
     /// network.
     /// </summary>
-    public sealed class TemporalRecordInfo
+    public sealed class HierarchicalRecordInfo
     {
-        /// <summary>
-        /// ObjectId of the record is specific to its version.
-        ///
-        /// For the record's history to be captured correctly, all
-        /// update operations must assign a new ObjectId with the
-        /// timestamp that matches update time.
-        /// </summary>
-        public ObjectId Id { get; set; }
-
         /// <summary>
         /// ObjectId of the dataset where the record is stored.
         ///

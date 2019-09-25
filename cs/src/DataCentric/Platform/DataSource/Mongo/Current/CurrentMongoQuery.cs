@@ -326,13 +326,13 @@ namespace DataCentric
 
                 // Project to return only key and ObjectId. Note that some
                 // of the returned records may be DeletedRecords.
-                var recordInfoQueryable = baseOrderedQueryable.Select(p => new RecordInfo
-                    {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
+                var recordInfoQueryable = baseOrderedQueryable.Select(
+                    p => new TemporalRecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
 
-                // Populate dictionary of (Key, RecordInfo) pairs from base query
+                // Populate dictionary of (Key, TemporalRecordInfo) pairs from base query
                 // without a type restriction in the query, but limited only in the
                 // keys returned by the typed query
-                Dictionary<string, RecordInfo> recordInfoDict = new Dictionary<string, RecordInfo>();
+                Dictionary<string, TemporalRecordInfo> recordInfoDict = new Dictionary<string, TemporalRecordInfo>();
                 string currentBaseKey = null;
                 foreach (var recordInfo in recordInfoQueryable)
                 {
@@ -373,7 +373,7 @@ namespace DataCentric
                     // Try to get record info for the key. It should always be
                     // present in the dictionary because typed query returns
                     // a subset of records in base query
-                    if (!recordInfoDict.TryGetValue(obj.Key, out RecordInfo recordInfo))
+                    if (!recordInfoDict.TryGetValue(obj.Key, out TemporalRecordInfo recordInfo))
                         throw new Exception(
                             $"Record with key {obj.Key} is returned by typed query but not base query.");
 

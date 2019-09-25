@@ -196,13 +196,11 @@ namespace DataCentric
             }
 
             // Project to record info instead of returning the entire record
-            var projectedQueryable = typedQueryable.Select(p => new RecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
+            var projectedQueryable = typedQueryable.Select(p => new TemporalRecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
 
             // Iterate over the typed query and populate lists of Keys and Ids.
-            // This will run the entire query but only cache RecordInfo in memory,
-            // not the entire object which may be much larger than RecordInfo; for
-            // most loads the memory consumption of running the entire query at
-            // once will remain within the acceptable limits.
+            // This will run the entire query but only retrieve TemporalRecordInfo,
+            // not the entire object which may be much larger.
             //
             // A given key may be encountered more than once in this list. Only
             // one of these entries will have a matching Id. We will not attempt
