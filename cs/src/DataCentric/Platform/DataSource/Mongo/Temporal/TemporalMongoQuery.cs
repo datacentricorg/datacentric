@@ -177,26 +177,35 @@ namespace DataCentric
         /// <summary>Convert query to enumerable so iteration can be performed.</summary>
         public IEnumerable<TRecord> AsEnumerable()
         {
-            IQueryable<TRecord> typedQueryable = null;
+            IQueryable<TRecord> batchQueryable = null;
             if (queryable_ != null && orderedQueryable_ == null)
             {
                 // Apply final constraints to queryable_ and assign to typedQueryable
-                typedQueryable = collection_.DataSource.ApplyFinalConstraints(queryable_, loadFrom_);
+                batchQueryable = collection_.DataSource.ApplyFinalConstraints(queryable_, loadFrom_);
             }
             else if (queryable_ == null && orderedQueryable_ != null)
             {
                 // Assign orderedQueryable_ to typedQueryable, final constraints already applied
-                typedQueryable = orderedQueryable_;
+                batchQueryable = orderedQueryable_;
             }
             else
-            {
                 throw new Exception(
-                    "Strictly one of queryable_ or orderedQueryable_ can " +
-                    "have value, not both and not neither.");
-            }
+                    "Either queryable_ or orderedQueryable_ must have value, but not both ");
 
-            // Project to record info instead of returning the entire record
-            var projectedQueryable = typedQueryable.Select(p => new TemporalRecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
+
+            // Temporal query consists of three parts.
+            //
+            // * First, a typed query with filter and sort options specified by the caller
+            //   is executed in batches, and its result is projected to a list of keys.
+            // * Second, untyped query for all keys retrieved during the batch is executed
+            //   and projected to (Id, DataSet, Key) elements only. Using Imports lookup
+            //   sequence and FreezeImports flag, a list of record Ids for the latest
+            //   object in the latest dataset is obtained. Records for which type does
+            //   not match are skipped.
+            // * Finally, typed query is executed for each of these Ids and the results
+            //   are yield returned to the caller.
+            //
+
 
             // Iterate over the typed query and populate lists of Keys and Ids.
             // This will run the entire query but only retrieve TemporalRecordInfo,
@@ -209,115 +218,146 @@ namespace DataCentric
             // we will keep duplicate entries as they are and rely on subsequent
             // Id match to eliminate all objects that are not the latest object
             // in the latest dataset.
-            var queryKeys = new List<string>();
-            var queryIds = new List<ObjectId>();
-            foreach (var projectedRecord in projectedQueryable) // TODO - it is not necessary to run the entire query, it can be incremental
+
+            // Project to key instead of returning the entire record
+            var projectedBatchQueryable = batchQueryable.Select(p => new TemporalRecordInfo {Id = p.Id, Key = p.Key});
+
+            // Get enumerator for the query so we can pause at the end of each batch
+            using (var stepOneEnumerator = projectedBatchQueryable.GetEnumerator())
             {
-                queryKeys.Add(projectedRecord.Key);
-                queryIds.Add(projectedRecord.Id);
-            }
-
-            int queryCount = queryKeys.Count;
-            int queryIndex = 0;
-            int batchSize = 1000;
-            while (queryIndex < queryCount)
-            {
-                int batchIndex = 0;
-                var batchKeys = new List<string>();
-                var batchIds = new List<ObjectId>();
-                while (queryIndex < queryCount && batchIndex < batchSize)
+                int batchSize = 1000;
+                bool continueQuery = true;
+                while (continueQuery)
                 {
-                    // Populate lists of keys and batch ids for the current batch
-                    // Exit the loop when either the batch size is reached, or 
-                    // all records in the query are already included. In the latter
-                    // case the next iteration of outer while loop will also exit.
-                    batchKeys.Add(queryKeys[queryIndex]);
-                    batchIds.Add(queryIds[queryIndex]);
-
-                    queryIndex++;
-                    batchIndex++;
-                }
-
-                // The next step is to get objects in the batch without type restriction
-                // and with the inclusion of DeletedRecord instances (if any)
-                //
-                // First, query base collection for records with key in the list
-                IQueryable<Record> baseQueryable = collection_.BaseCollection.AsQueryable()
-                    .Where(p => batchKeys.Contains(p.Key));
-
-                // Apply the same final constraints (list of datasets, savedBy, etc.)
-                baseQueryable = collection_.DataSource.ApplyFinalConstraints(baseQueryable, loadFrom_);
-
-                // Apply ordering to get last object in last dataset for the keys
-                IOrderedQueryable<Record> baseOrderedQueryable = baseQueryable
-                    .OrderBy(p => p.Key) // _key
-                    .ThenByDescending(p => p.DataSet) // _dataset
-                    .ThenByDescending(p => p.Id); // _id
-
-                // Populate dictionary of (Key, Record) pairs, keeping
-                // only the latest record in the latest dataset. 
-                //
-                // This dictionary caches the entire record, but only for
-                // the limited number of records within the batch.
-                var objDict = new Dictionary<string, Record>();
-                string currentBaseKey = null;
-                foreach (var obj in baseOrderedQueryable)
-                {
-                    string objKey = obj.Key;
-                    if (currentBaseKey == objKey)
+                    // First step is to get all keys in this batch returned
+                    // by the user specified query and sort order
+                    int batchIndex = 0;
+                    var batchKeysHashSet = new HashSet<string>();
+                    var batchIdsHashSet = new HashSet<ObjectId>();
+                    var batchIdsList = new List<ObjectId>();
+                    while (true)
                     {
-                        // The key was encountered before. Because the data is sorted by
-                        // key and then by dataset and ID, this indicates that the object
-                        // is not the latest and can be skipped
-                        if (true)
+                        // Advance cursor and check if there are more results left in the query
+                        continueQuery = stepOneEnumerator.MoveNext();
+
+                        if (continueQuery)
                         {
-                            // Enable this when debugging the query to report skipped records
-                            // that are not the latest version in the latest dataset
+                            // If yes, get key from the enumerator
+                            TemporalRecordInfo recordInfo = stepOneEnumerator.Current;
+                            string batchKey = recordInfo.Key;
+                            ObjectId batchId = recordInfo.Id;
 
-                            // dataSource_.Context.Log.Warning(obj.Key);
+                            // Add Key and Id to hashsets, increment
+                            // batch index only if this is a new key
+                            if (batchKeysHashSet.Add(batchKey)) batchIndex++;
+                            batchIdsHashSet.Add(batchId);
+                            batchIdsList.Add(batchId);
+
+                            // Break if batch size has been reached
+                            if (batchIndex == batchSize) break;
                         }
-
-                        // Continue to next record without returning
-                        // the next item in the enumerable result
-                        continue;
+                        else
+                        {
+                            // Otherwise exit from the while loop
+                            break;
+                        }
                     }
-                    else
+
+                    // We reach this point in the code if batch size is reached,
+                    // or there are no more records in the query. Break from while
+                    // loop if query is complete but there is nothing in the batch
+                    if (!continueQuery && batchIndex == 0) break;
+
+                    // The second step is to get (Id,DataSet,Key) for records with
+                    // the specified keys using a query without type restriction.
+                    //
+                    // First, query base collection for records with keys in the hashset
+                    IQueryable<Record> idQueryable = collection_.BaseCollection.AsQueryable()
+                        .Where(p => batchKeysHashSet.Contains(p.Key));
+
+                    // Apply the same final constraints (list of datasets, savedBy, etc.)
+                    idQueryable = collection_.DataSource.ApplyFinalConstraints(idQueryable, loadFrom_);
+
+                    // Apply ordering to get last object in last dataset for the keys
+                    idQueryable = idQueryable
+                        .OrderBy(p => p.Key) // _key
+                        .ThenByDescending(p => p.DataSet) // _dataset
+                        .ThenByDescending(p => p.Id); // _id
+
+                    // Finally, project to (Id,DataSet,Key)
+                    var projectedIdQueryable = idQueryable
+                        .Select(p => new TemporalRecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
+
+                    // Create a list of ObjectIds for the records obtained using
+                    // dataset lookup rules for the keys in the batch
+                    var recordIds = new List<ObjectId>();
+                    string currentKey = null;
+                    foreach (var obj in projectedIdQueryable)
                     {
-                        // The key was not encountered before, assign new value
-                        currentBaseKey = objKey;
+                        string objKey = obj.Key;
+                        if (currentKey == objKey)
+                        {
+                            // The key was encountered before. Because the data is sorted by
+                            // key and then by dataset and ID, this indicates that the object
+                            // is not the latest and can be skipped
+                            if (true)
+                            {
+                                // Enable this when debugging the query to report skipped records
+                                // that are not the latest version in the latest dataset
 
-                        // Add to dictionary
-                        objDict.Add(objKey, obj);
+                                // dataSource_.Context.Log.Warning(obj.Key);
+                            }
+
+                            // Continue to next record without returning
+                            // the next item in the enumerable result
+                            continue;
+                        }
+                        else
+                        {
+                            // The key was not encountered before, assign new value
+                            currentKey = objKey;
+
+                            // Add to dictionary only if found in the list of batch Ids
+                            // Otherwise this is not the latest record in the latest
+                            // dataset (subject to freeze rule if any) and it should 
+                            // be skipped.
+                            ObjectId currentId = obj.Id;
+                            if (batchIdsHashSet.Contains(currentId))
+                            {
+                                recordIds.Add(currentId);
+                            }
+                        }
                     }
-                }
 
-                // Finally, iterate over the keys in the ordered array of 
-                // batch keys and yield return only those objects whose Id 
-                // matches the Ids returned by the query. If the Ids do not
-                // match, then the object returned by query is not the latest
-                // and should be skipped.
-                for(int resultIndex = 0; resultIndex < batchKeys.Count; ++resultIndex)
-                {
-                    // Get Key and Id from the result of the typed query
-                    string batchKey = batchKeys[resultIndex];
-                    ObjectId batchId = batchIds[resultIndex];
+                    // If the list of record Ids is empty, continue
+                    if (recordIds.Count == 0) break;
 
-                    // Get object returned by base query for this key
-                    // This object should not be null
-                    var baseResult = objDict[batchKey];
+                    // Finally, retrieve the records only for the Ids in the list
+                    //
+                    // Create a typed queryable
+                    IQueryable<TRecord> recordQueryable = collection_.TypedCollection.AsQueryable()
+                        .Where(p => recordIds.Contains(p.Id));
 
-                    // Skip if the result is a DeletedRecord
-                    if (baseResult.Is<DeletedRecord>()) continue;
+                    // Populate a dictionary of records by Id
+                    var recordDict = new Dictionary<ObjectId, TRecord>();
+                    foreach (var record in recordQueryable)
+                    {
+                        recordDict.Add(record.Id, record);
+                    }
 
-                    // Skip if Id does not match; this indicates that
-                    // the object returned by the query is not the 
-                    // latest object in the latest dataset for this key.
-                    if (baseResult.Id != batchId) continue;
-
-                    // Cast to the requested type; this should 
-                    // succeed if the Id matches
-                    TRecord result = baseResult.CastTo<TRecord>();
-                    yield return result;
+                    // Using the list ensures that records are returned
+                    // in the same order as the original query
+                    foreach(var batchId in batchIdsList)
+                    {
+                        // If a record ObjectId is present in batchIds but not
+                        // in recordDict, this indicates that the record found
+                        // by the query is not the latest and it should be skipped
+                        if (recordDict.TryGetValue(batchId, out var result))
+                        {
+                            // Yield return the result
+                            yield return result;
+                        }
+                    }
                 }
             }
         }
