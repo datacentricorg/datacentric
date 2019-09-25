@@ -38,21 +38,22 @@ namespace DataCentric
     /// itself, its direct Imports, Imports of Imports, etc., ordered by dataset's
     /// ObjectId.
     ///
-    /// When FreezeImports flag of the data source is not set, the record with the
-    /// greatest (latest) ObjectId in the dataset with the greatest (latest)
-    /// ObjectId is returned from a query and all other records are ignored.
-    /// The sort order is by dataset's ObjectId first, then by record's ObjectId.
+    /// When FreezeImports is false, a query retrieves all records with a given key.
+    /// The records are sorted by dataset's ObjectId in descending order first, then
+    /// by record's ObjectId also in descending order. The first record in sort order
+    /// is returned by the query, and all other records are ignored. This rule has
+    /// the effect of retrieving the latest record in the latest dataset.
     ///
-    /// When FreezeImports flag is set, the lookup rule is modified to ignore
-    /// those records whose ObjectId is greater than ObjectId of the next dataset
-    /// in the lookup sequence, when the lookup sequence is ordered by dataset's
-    /// ObjectId.
+    /// When FreezeImports is true, those records whose ObjectId is greater than
+    /// ObjectId of the next dataset in the lookup sequence (when the sequence is
+    /// ordered by dataset's ObjectId) are excluded, after which the rule described
+    /// in the previous paragraph is applied. This has the effect of freezing the
+    /// state of each imported datasets in the import lookup sequence as of the creation
+    /// time of the next dataset in the sequence.
     ///
-    /// This additional restriction has the effect of freezing the state of datasets
-    /// in the list of Imports of each dataset in the lookup sequence. If dataset
-    /// C is created for which datasets A and B are direct or indirect Imports,
-    /// changing records in A and B has no further effect on C if FreezeImports flag
-    /// is set.
+    /// The purpose of the FreezeImports flag is to prevent modification of records
+    /// in imported datasets from affecting the calculations in a dataset to which they
+    /// have been imported.
     /// </summary>
     public class TemporalMongoDataSourceData : MongoDataSourceData
     {
