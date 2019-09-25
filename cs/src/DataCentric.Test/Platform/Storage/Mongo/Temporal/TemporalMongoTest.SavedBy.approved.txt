@@ -7,9 +7,8 @@ Verify.Text: Load records by string key without constraint
 Verify.Text:     Version found for key=A;0: 2
 Verify.Text:     Version found for key=C;0: 0
 Verify.Text: Query records without constraint
-Verify.Text:     Key=A;0 DataSet=DataSet0 Version=2
+Verify.Text:     Key=A;0 DataSet=DataSet0 Version=1
 Verify.Text:     Key=B;0 DataSet=DataSet1 Version=2
-Verify.Text:     Key=C;0 DataSet=DataSet0 Version=0
 Verify.Text:     Key=D;0 DataSet=DataSet1 Version=0
 Verify.Text: Load records by ObjectId with SavedById constraint
 Verify.Value:     Found by ObjectId=A0 = true

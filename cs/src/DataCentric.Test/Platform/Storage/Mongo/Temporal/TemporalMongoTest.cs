@@ -68,41 +68,51 @@ namespace DataCentric.Test
         {
             using (var context = new TemporalMongoTestContext(this))
             {
-                // Create datasets
+                // Begin from DataSet0
                 var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
-                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
-                var dataSet2 = context.CreateDataSet("DataSet2", new ObjectId[] { dataSet0 }, context.DataSet);
-                var dataSet3 = context.CreateDataSet("DataSet3", new ObjectId[] { dataSet0, dataSet1, dataSet2 }, context.DataSet);
 
                 // Create initial version of the records
                 SaveMinimalRecord(context, "DataSet0", "A", 0, 0);
                 SaveMinimalRecord(context, "DataSet0", "B", 1, 0);
                 SaveMinimalRecord(context, "DataSet0", "A", 2, 0);
                 SaveMinimalRecord(context, "DataSet0", "B", 3, 0);
-                SaveMinimalRecord(context, "DataSet1", "A", 4, 0);
-                SaveMinimalRecord(context, "DataSet1", "B", 5, 0);
-                SaveMinimalRecord(context, "DataSet1", "A", 6, 0);
-                SaveMinimalRecord(context, "DataSet1", "B", 7, 0);
-                SaveMinimalRecord(context, "DataSet2", "A", 8, 0);
-                SaveMinimalRecord(context, "DataSet2", "B", 9, 0);
-                SaveMinimalRecord(context, "DataSet3", "A", 10, 0);
-                SaveMinimalRecord(context, "DataSet3", "B", 11, 0);
 
                 // Create second version of some records
                 SaveMinimalRecord(context, "DataSet0", "A", 0, 1);
                 SaveMinimalRecord(context, "DataSet0", "B", 1, 1);
                 SaveMinimalRecord(context, "DataSet0", "A", 2, 1);
                 SaveMinimalRecord(context, "DataSet0", "B", 3, 1);
-                SaveMinimalRecord(context, "DataSet1", "A", 4, 1);
-                SaveMinimalRecord(context, "DataSet1", "B", 5, 1);
-                SaveMinimalRecord(context, "DataSet1", "A", 6, 1);
-                SaveMinimalRecord(context, "DataSet1", "B", 7, 1);
 
                 // Create third version of even fewer records
                 SaveMinimalRecord(context, "DataSet0", "A", 0, 2);
                 SaveMinimalRecord(context, "DataSet0", "B", 1, 2);
                 SaveMinimalRecord(context, "DataSet0", "A", 2, 2);
                 SaveMinimalRecord(context, "DataSet0", "B", 3, 2);
+
+                // Same in DataSet1
+                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
+
+                // Create initial version of the records
+                SaveMinimalRecord(context, "DataSet1", "A", 4, 0);
+                SaveMinimalRecord(context, "DataSet1", "B", 5, 0);
+                SaveMinimalRecord(context, "DataSet1", "A", 6, 0);
+                SaveMinimalRecord(context, "DataSet1", "B", 7, 0);
+
+                // Create second version of some records
+                SaveMinimalRecord(context, "DataSet1", "A", 4, 1);
+                SaveMinimalRecord(context, "DataSet1", "B", 5, 1);
+                SaveMinimalRecord(context, "DataSet1", "A", 6, 1);
+                SaveMinimalRecord(context, "DataSet1", "B", 7, 1);
+
+                // Next in DataSet2
+                var dataSet2 = context.CreateDataSet("DataSet2", new ObjectId[] { dataSet0 }, context.DataSet);
+                SaveMinimalRecord(context, "DataSet2", "A", 8, 0);
+                SaveMinimalRecord(context, "DataSet2", "B", 9, 0);
+
+                // Next in DataSet3
+                var dataSet3 = context.CreateDataSet("DataSet3", new ObjectId[] { dataSet0, dataSet1, dataSet2 }, context.DataSet);
+                SaveMinimalRecord(context, "DataSet3", "A", 10, 0);
+                SaveMinimalRecord(context, "DataSet3", "B", 11, 0);
 
                 // Query for RecordId=B
                 var query = context.GetQuery<MongoTestData>(dataSet3)
@@ -218,12 +228,12 @@ namespace DataCentric.Test
         {
             using (var context = new TemporalMongoTestContext(this))
             {
-                // Create datasets
-                var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
-                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
-
                 // Create records with minimal data
+
+                var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
                 SaveDerivedRecord(context, "DataSet0", "A", 0);
+
+                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
                 SaveDerivedFromDerivedRecord(context, "DataSet1", "B", 0);
 
                 // Create keys
@@ -417,16 +427,14 @@ namespace DataCentric.Test
         {
             using (var context = new TemporalMongoTestContext(this))
             {
-                // Create datasets
+                // Create two versions in DataSet0
                 var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
-                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
-
-                // Create initial version of the records
                 ObjectId objA0 = SaveMinimalRecord(context, "DataSet0", "A", 0, 0);
-                ObjectId objB0 = SaveMinimalRecord(context, "DataSet1", "B", 0, 0);
-
-                // Create second version of the records
                 ObjectId objA1 = SaveMinimalRecord(context, "DataSet0", "A", 0, 1);
+
+                // Create two versions in DataSet1
+                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
+                ObjectId objB0 = SaveMinimalRecord(context, "DataSet1", "B", 0, 0);
                 ObjectId objB1 = SaveMinimalRecord(context, "DataSet1", "B", 0, 1);
 
                 ObjectId cutoffObjectId = context.DataSource.CreateOrderedObjectId();
@@ -637,40 +645,42 @@ namespace DataCentric.Test
         /// <summary>Two datasets and two objects, one base and one derived.</summary>
         private void SaveBasicData(IContext context)
         {
-            // Create datasets
+            // Create first dataset and record
             var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
-            var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] {dataSet0}, context.DataSet);
-
-            // Create records with minimal data
             SaveBaseRecord(context, "DataSet0", "A", 0);
+
+            // Create second dataset and record, first record will be visible in both
+            var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] {dataSet0}, context.DataSet);
             SaveDerivedRecord(context, "DataSet1", "B", 0);
         }
 
         /// <summary>Two datasets and eight objects, split between base and derived.</summary>
         private void SaveCompleteData(IContext context)
         {
-            // Create datasets
-            var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
-            var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
-            var dataSet2 = context.CreateDataSet("DataSet2", new ObjectId[] { dataSet0 }, context.DataSet);
-            var dataSet3 = context.CreateDataSet("DataSet3", new ObjectId[] { dataSet0, dataSet1, dataSet2 }, context.DataSet);
-
             // Create records with minimal data
+
+            var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
             SaveBaseRecord(context, "DataSet0", "A", 0);
-            SaveDerivedRecord(context, "DataSet1", "B", 0);
-            SaveOtherDerivedRecord(context, "DataSet2", "C", 0);
-            SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 0);
             SaveBaseRecord(context, "DataSet0", "A", 1);
-            SaveDerivedRecord(context, "DataSet1", "B", 1);
-            SaveOtherDerivedRecord(context, "DataSet2", "C", 1);
-            SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 1);
             SaveBaseRecord(context, "DataSet0", "A", 2);
-            SaveDerivedRecord(context, "DataSet1", "B", 2);
-            SaveOtherDerivedRecord(context, "DataSet2", "C", 2);
-            SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 2);
             SaveBaseRecord(context, "DataSet0", "A", 3);
+
+            var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
+            SaveDerivedRecord(context, "DataSet1", "B", 0);
+            SaveDerivedRecord(context, "DataSet1", "B", 1);
+            SaveDerivedRecord(context, "DataSet1", "B", 2);
             SaveDerivedRecord(context, "DataSet1", "B", 3);
+
+            var dataSet2 = context.CreateDataSet("DataSet2", new ObjectId[] { dataSet0 }, context.DataSet);
+            SaveOtherDerivedRecord(context, "DataSet2", "C", 0);
+            SaveOtherDerivedRecord(context, "DataSet2", "C", 1);
+            SaveOtherDerivedRecord(context, "DataSet2", "C", 2);
             SaveOtherDerivedRecord(context, "DataSet2", "C", 3);
+
+            var dataSet3 = context.CreateDataSet("DataSet3", new ObjectId[] { dataSet0, dataSet1, dataSet2 }, context.DataSet);
+            SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 0);
+            SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 1);
+            SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 2);
             SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 3);
         }
 
