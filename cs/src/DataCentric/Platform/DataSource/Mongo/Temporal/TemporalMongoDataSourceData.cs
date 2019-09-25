@@ -415,11 +415,8 @@ namespace DataCentric
         /// two default indices are always created:  one for optimizing
         /// loading by key and the other by query.
         ///
-        /// Additional indices may be created using property attribute
-        ///
-        /// [Indexed]
-        ///
-        /// for further performance optimization.
+        /// Additional indices may be created using class attribute
+        /// [Index] for further performance optimization.
         /// </summary>
         protected TemporalMongoCollection<TRecord> GetOrCreateCollection<TRecord>()
             where TRecord : Record
@@ -459,146 +456,59 @@ namespace DataCentric
             var baseCollection = Db.GetCollection<Record>(collectionName);
             var typedCollection = Db.GetCollection<TRecord>(collectionName);
 
-            // Each data type has an index for optimized loading by key.
-            // This index consists of Key in ascending sort order,
-            // followed by DataSet and ID in descending sort order.
             if (true)
             {
-                // This code is wrapper into the if (...) block to make it easier
-                // turn it on or off to test the impact of indexing on performance
-
+                // Each data type has an index for optimized loading by key.
+                // This index consists of Key in ascending order, followed by
+                // DataSet and ID in descending order.
                 var indexKeys = Builders<TRecord>.IndexKeys
                     .Ascending(new StringFieldDefinition<TRecord>("_key")) // .Key
                     .Descending(new StringFieldDefinition<TRecord>("_dataset")) // .DataSet
                     .Descending(new StringFieldDefinition<TRecord>("_id")); // .Id
 
-                var indexName = typeof(TRecord).Name + ".Key";
+                // Use index definition convention to specify the index name
+                var indexName = "_key_";
                 var indexModel = new CreateIndexModel<TRecord>(indexKeys, new CreateIndexOptions { Name = indexName });
                 typedCollection.Indexes.CreateOne(indexModel);
             }
 
-            // Additional indices are provided for optimized loading by query. They
-            // are constructed from elements that specify the [Indexed] attribute.
-            //
-            // When attribute Name is not specified, all elements marked by [Indexed]
-            // are included in the same index in the order of declaration within
-            // the class, from base to parent.
-            //
-            // The elements are indexed in ascending (alphabetical or increasing)
-            // sort order, followed by DataSet and ID in descending (latest first)
-            // sort order.
+            // Additional indices are provided using IndexAttribute for the class.
             if (true)
             {
-                // This code is wrapper into the if (...) block to make it easier
-                // turn it on or off to test the impact of indexing on performance
+                // Get a sorted dictionary of (definition, name) pairs
+                // for the inheritance chain of the specified type.
+                var indexDict = IndexAttribute.GetIndexDict<TRecord>();
 
-                // Dictionary(IndexName, SortedDictionary(ElementOrder, ElementName))
-                Dictionary<string, SortedDictionary<int, string>> indexDict =
-                    new Dictionary<string, SortedDictionary<int, string>>();
-
-                // Holds index names with default and with user defined order
-                // for the purposes of checking that order is specified for
-                // all elements of a given index if it is specified for at
-                // least one element
-                HashSet<string> indicesWithDefaultOrder = new HashSet<string>();
-                HashSet<string> indicesWithUserDefinedOrder = new HashSet<string>();
-
-                // Iterate over the data elements to populate the index dictionary
-                var dataElements = DataTypeInfo.GetOrCreate(typeof(TRecord)).DataElements;
-                int defaultElementOrder = -1;
-                foreach (var dataElement in dataElements)
-                {
-                    string elementName = dataElement.Name;
-                    defaultElementOrder++;
-
-                    // Holds index names specified by [Indexed] attributes
-                    // for this element for the purposes of checking that
-                    // they are unique
-                    HashSet<string> indexNames = new HashSet<string>();
-
-                    // There can be more than one [Indexed] attribute for an element
-                    var attributes = dataElement.GetCustomAttributes<IndexedAttribute>();
-                    foreach (var attribute in attributes)
-                    {
-                        string indexName = attribute.Index;
-                        int elementOrder = attribute.Order;
-
-                        if (indexName == "Key") throw new Exception(
-                            $"Index name 'Key' is reserved for the index used for lookup by key. " +
-                            $"It cannot be the value of Index parameter of the [Indexed] attribute.");
-                        if (indexName == "Default") throw new Exception(
-                            $"Index name 'Default' is reserved for the index for which no name is specified. " +
-                            $"It cannot be the value of Index parameter of the [Indexed] attribute.");
-
-                        if (elementOrder == IntUtils.Empty)
-                        {
-                            // Default order, add to one hashset and check that it is not part of the other
-                            indicesWithDefaultOrder.Add(indexName);
-                            if (indicesWithUserDefinedOrder.Contains(indexName))
-                                throw new Exception(
-                                    $"Index {indexName} combines elements with default and user defined index order.");
-
-                            // Set order to be the element index
-                            elementOrder = defaultElementOrder;
-                        }
-                        else
-                        {
-                            // User defined order, add to one hashset and check that it is not part of the other
-                            indicesWithUserDefinedOrder.Add(indexName);
-                            if (indicesWithDefaultOrder.Contains(indexName))
-                                throw new Exception(
-                                    $"Index {indexName} combines elements with default and user defined index order.");
-                        }
-
-                        // Check that index name is not repeated for a
-                        // single element in multiple [Indexed] attributes
-                        if (!indexNames.Add(indexName))
-                            throw new Exception(
-                                $"Index name {indexName} is encountered more than once for " +
-                                $"element {dataElement.Name} in type {dataElement.DeclaringType.Name}");
-
-                        // Initialize dictionary for the index if not yet initialized
-                        if (!indexDict.TryGetValue(indexName, out SortedDictionary<int, string> sortedDictByOrder))
-                        {
-                            sortedDictByOrder = new SortedDictionary<int, string>();
-                            indexDict.Add(indexName, sortedDictByOrder);
-                        }
-
-                        // Check that the dictionary does not yet have an entry for this order
-                        if (sortedDictByOrder.ContainsKey(elementOrder))
-                            throw new Exception(
-                                $"Index {indexName} has two elements with the same " +
-                                $"user defined index order {elementOrder}.");
-
-                        sortedDictByOrder.Add(elementOrder, elementName);
-                    }
-                }
-
-                // Define each index
+                // Iterate over the dictionary to define the index
                 foreach (var indexInfo in indexDict)
                 {
-                    var indexName = indexInfo.Key;
-                    var indexElements = indexInfo.Value;
+                    string indexDefinition = indexInfo.Key;
+                    string indexName = indexInfo.Value;
+
+                    // Parse index definition to get a list of (ElementName,SortOrder) tuples
+                    List<(string, int)> indexTokens = IndexAttribute.ParseIndexDefinition<TRecord>(indexDefinition);
 
                     var indexKeysBuilder = Builders<TRecord>.IndexKeys;
                     IndexKeysDefinition<TRecord> indexKeys = null;
 
-                    // Index elements in default or user specified order
-                    var indexElementNames = indexElements.Values;
-
-                    foreach (var indexElementName in indexElementNames)
+                    // Iterate over (ElementName,SortOrder) tuples
+                    foreach (var indexToken in indexTokens)
                     {
+                        (string elementName, int sortOrder) = indexToken;
+
                         if (indexKeys == null)
                         {
                             // Create from builder for the first element
-                            indexKeys = indexKeysBuilder
-                                .Ascending(new StringFieldDefinition<TRecord>(indexElementName));
+                            if (sortOrder == 1) indexKeys = indexKeysBuilder.Ascending(new StringFieldDefinition<TRecord>(elementName));
+                            else if (sortOrder == -1) indexKeys = indexKeysBuilder.Descending(new StringFieldDefinition<TRecord>(elementName));
+                            else throw new Exception("Sort order must be 1 or -1.");
                         }
                         else
                         {
                             // Chain to the previous list of index keys for the remaining elements
-                            indexKeys = indexKeys
-                                .Ascending(new StringFieldDefinition<TRecord>(indexElementName));
+                            if (sortOrder == 1) indexKeys = indexKeys.Ascending(new StringFieldDefinition<TRecord>(elementName));
+                            else if (sortOrder == -1) indexKeys = indexKeys.Descending(new StringFieldDefinition<TRecord>(elementName));
+                            else throw new Exception("Sort order must be 1 or -1.");
                         }
                     }
 
@@ -608,14 +518,10 @@ namespace DataCentric
                         .Descending(new StringFieldDefinition<TRecord>("_dataset")) // DataSet
                         .Descending(new StringFieldDefinition<TRecord>("_id")); // ID
 
-                    // By convention, use the name 'Default' for the index whose name is not specified
                     if (indexName == null) throw new Exception("Index name cannot be null.");
-                    if (indexName == String.Empty) indexName = "Default";
-
-                    // Combine the name with type because sometimes index is generated for both base and derived
-                    indexName = String.Join(".", typeof(TRecord).Name, indexName);
-
                     var indexModel = new CreateIndexModel<TRecord>(indexKeys, new CreateIndexOptions { Name = indexName });
+
+                    // Add to indexes for the collection
                     typedCollection.Indexes.CreateOne(indexModel);
                 }
             }

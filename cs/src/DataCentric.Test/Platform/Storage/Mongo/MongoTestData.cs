@@ -27,20 +27,22 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>Base data class.</summary>
+    [Index("DoubleElement+LocalDateElement+EnumValue")]
+    [Index("LocalDateElement")]
+    [Index("RecordId-Version", "CustomIndexName")]
+    [Index("-RecordIndex")]
     public class MongoTestData : TypedRecord<MongoTestKey, MongoTestData>
     {
         public string RecordId { get; set; }
         public int? RecordIndex { get; set; }
-        [Indexed] public double? DoubleElement { get; set; }
+        public double? DoubleElement { get; set; }
 
-        [Indexed]
-        [Indexed(Index = "SecondIndex", Order = 2)]
         public LocalDate? LocalDateElement { get; set; }
 
         public LocalTime? LocalTimeElement { get; set; }
         public LocalMinute? LocalMinuteElement { get; set; }
         public LocalDateTime? LocalDateTimeElement { get; set; }
-        [Indexed] public MongoTestEnum EnumValue { get; set; }
+        public MongoTestEnum EnumValue { get; set; }
         public int? Version { get; set; }
     }
 }

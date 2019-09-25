@@ -415,9 +415,10 @@ namespace DataCentric.Cli
             element.Optional = property.GetCustomAttribute<RequiredAttribute>() == null ? YesNo.Y : (YesNo?) null;
             element.BsonIgnore = property.GetCustomAttribute<BsonIgnoreAttribute>() != null ? YesNo.Y : (YesNo?) null;
             element.Hidden = property.IsHidden();
-            element.Indices = Attribute.IsDefined(property, typeof(IndexedAttribute))
-                                ? property.GetCustomAttributes<IndexedAttribute>().Select(ToIndex).ToList()
-                                : null;
+            // TODO -update, IndexedAttribute has been replaced by IndexAttribute
+            // element.Indices = Attribute.IsDefined(property, typeof(IndexedAttribute))
+            //                    ? property.GetCustomAttributes<IndexedAttribute>().Select(ToIndex).ToList()
+            //                    : null;
 
             return element;
         }
@@ -425,14 +426,15 @@ namespace DataCentric.Cli
         /// <summary>
         /// Handles index attribute conversion.
         /// </summary>
-        private static TypeElementIndexData ToIndex(IndexedAttribute attribute){
-            TypeElementIndexData indexData = new TypeElementIndexData
-            {
-                Name = attribute.Index != string.Empty ? attribute.Index : null,
-                Order = attribute.Order != IntUtils.Empty ? attribute.Order : (int?) null
-            };
-            return indexData;
-        }
+        // TODO -update, IndexedAttribute has been replaced by IndexAttribute
+        // private static TypeElementIndexData ToIndex(IndexedAttribute attribute){
+        //     TypeElementIndexData indexData = new TypeElementIndexData
+        //     {
+        //         Name = attribute.Index != string.Empty ? attribute.Index : null,
+        //         Order = attribute.Order != IntUtils.Empty ? attribute.Order : (int?) null
+        //     };
+        //     return indexData;
+        // }
 
         /// <summary>
         /// Converts to enum item declaration.

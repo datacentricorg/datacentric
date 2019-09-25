@@ -318,11 +318,8 @@ namespace DataCentric
         /// two default indices are always created:  one for optimizing
         /// loading by key and the other by query.
         ///
-        /// Additional indices may be created using property attribute
-        ///
-        /// [Indexed]
-        ///
-        /// for further performance optimization.
+        /// Additional indices may be created using class attribute
+        /// [Index] for further performance optimization.
         /// </summary>
         protected HierarchicalMongoCollection<TRecord> GetOrCreateCollection<TRecord>()
             where TRecord : Record
