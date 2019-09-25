@@ -42,32 +42,23 @@ namespace DataCentric
         /// <summary>
         /// The meaning of instance name depends on the instance type.
         ///
-        /// \begin{itemize}
-        /// \item
-        /// For PROD, UAT, and DEV instance types, instance name
-        /// identifies the endpoint.
+        /// * For PROD, UAT, and DEV instance types, instance name
+        ///   identifies the endpoint.
         ///
-        /// \item
-        /// For USER instance type, instance name is user alias.
+        /// * For USER instance type, instance name is user alias.
         ///
-        /// \item
-        /// For TEST instance type, instance name is the name of
-        /// the unit test class (test fixture).
-        /// \end{itemize}
+        /// * For TEST instance type, instance name is the name of
+        ///   the unit test class (test fixture).
         /// </summary>
         public string InstanceName { get; set; }
 
         /// <summary>
         /// The meaning of environment name depends on the instance type.
         ///
-        /// \begin{itemize}
-        /// \item
-        /// For PROD, UAT, DEV, and USER instance types, it is the
-        /// name of the user environment selected in the client.
+        /// * For PROD, UAT, DEV, and USER instance types, it is the
+        ///   name of the user environment selected in the client.
         ///
-        /// \item
-        /// For TEST instance type, it is the test method name.
-        /// \end{itemize}
+        /// * For TEST instance type, it is the test method name.
         /// </summary>
         public string EnvName { get; set; }
     }
