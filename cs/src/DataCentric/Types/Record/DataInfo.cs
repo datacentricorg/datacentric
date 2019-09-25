@@ -22,10 +22,16 @@ using System.Net.Http.Headers;
 
 namespace DataCentric
 {
-    /// <summary>Information about a data type obtained through reflection.</summary>
-    public class DataInfo
+    /// <summary>
+    /// Information about a data type obtained through reflection.
+    ///
+    /// This class can be used to obtain type information for classes
+    /// derived from Data class, including through Key or Record classes.
+    /// Using it with any other type will result in an error.
+    /// </summary>
+    public class DataTypeInfo
     {
-        [ThreadStatic] private static Dictionary<Type, DataInfo> dict_; // Do not initialize ThreadStatic here, initializer will run in first thread only
+        [ThreadStatic] private static Dictionary<Type, DataTypeInfo> dict_; // Do not initialize ThreadStatic here, initializer will run in first thread only
 
         //--- PROPERTIES
 
@@ -86,7 +92,7 @@ namespace DataCentric
         /// including the list of its elements (public properties
         /// that have one of the supported data types).
         /// </summary>
-        public static DataInfo GetOrCreate(object value)
+        public static DataTypeInfo GetOrCreate(object value)
         {
             return GetOrCreate(value.GetType());
         }
@@ -99,17 +105,17 @@ namespace DataCentric
         /// including the list of its elements (public properties
         /// that have one of the supported data types).
         /// </summary>
-        public static DataInfo GetOrCreate(Type type)
+        public static DataTypeInfo GetOrCreate(Type type)
         {
             // Check if thread static dictionary is already initialized
             if (dict_ == null)
             {
                 // If not, initialize
-                dict_ = new Dictionary<Type, DataInfo>();
+                dict_ = new Dictionary<Type, DataTypeInfo>();
             }
 
             // Check if a cached instance exists in dictionary
-            if (dict_.TryGetValue(type, out DataInfo result))
+            if (dict_.TryGetValue(type, out DataTypeInfo result))
             {
                 // Return if found
                 return result;
@@ -117,7 +123,7 @@ namespace DataCentric
             else
             {
                 // Otherwise create and add to dictionary
-                result = new DataInfo(type);
+                result = new DataTypeInfo(type);
                 dict_.Add(type, result);
                 return result;
             }
@@ -132,7 +138,7 @@ namespace DataCentric
         /// cached value if any, and creates the instance only if
         /// it is not yet cached for the thread.
         /// </summary>
-        private DataInfo(Type type)
+        private DataTypeInfo(Type type)
         {
             // Populate the inheritance chain from parent to base,
             // stop when one of the base classes is reached or

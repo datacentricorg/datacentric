@@ -358,7 +358,7 @@ namespace DataCentric
             }
 
             // Collection name is root class name of the record without prefix
-            Type rootType = DataInfo.GetOrCreate(typeof(TRecord)).RootType;
+            Type rootType = DataTypeInfo.GetOrCreate(typeof(TRecord)).RootType;
             string collectionName = ClassInfo.GetOrCreate(rootType).MappedClassName;
 
             // Get interfaces to base and typed collections for the same name
@@ -410,7 +410,7 @@ namespace DataCentric
                 HashSet<string> indicesWithUserDefinedOrder = new HashSet<string>();
 
                 // Iterate over the data elements to populate the index dictionary
-                var dataElements = DataInfo.GetOrCreate(typeof(TRecord)).DataElements;
+                var dataElements = DataTypeInfo.GetOrCreate(typeof(TRecord)).DataElements;
                 int defaultElementOrder = -1;
                 foreach (var dataElement in dataElements)
                 {

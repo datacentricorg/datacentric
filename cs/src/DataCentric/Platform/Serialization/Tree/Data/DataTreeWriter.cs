@@ -71,7 +71,7 @@ namespace DataCentric
 
             rootElementName_ = rootElementName;
             currentElementName_ = rootElementName;
-            var currentDictInfoList = DataInfo.GetOrCreate(currentDict_).DataElements;
+            var currentDictInfoList = DataTypeInfo.GetOrCreate(currentDict_).DataElements;
             currentDictElements_ = new Dictionary<string, PropertyInfo>();
             foreach (var elementInfo in currentDictInfoList) currentDictElements_.Add( elementInfo.Name, elementInfo);
             currentArray_ = null;
@@ -173,7 +173,7 @@ namespace DataCentric
             else throw new Exception($"Value can only be added to a dictionary or array.");
 
             currentDict_ = (Data) createdDict;
-            var currentDictInfoList = DataInfo.GetOrCreate(createdDictType).DataElements;
+            var currentDictInfoList = DataTypeInfo.GetOrCreate(createdDictType).DataElements;
             currentDictElements_ = new Dictionary<string, PropertyInfo>();
             foreach (var elementInfo in currentDictInfoList) currentDictElements_.Add( elementInfo.Name, elementInfo);
             currentArray_ = null;

@@ -48,7 +48,7 @@ namespace DataCentric
             get
             {
                 var tokens = new List<string>();
-                var elementInfoArray = DataInfo.GetOrCreate(GetType()).RootElements;
+                var elementInfoArray = DataTypeInfo.GetOrCreate(GetType()).RootElements;
                 foreach (var elementInfo in elementInfoArray)
                 {
                     // Convert key element to string key token.
@@ -172,7 +172,7 @@ namespace DataCentric
             var tokens = value.Split(';');
 
             // Check that the number of tokens matches the number of key elements
-            var elementInfoArray = DataInfo.GetOrCreate(this).RootElements;
+            var elementInfoArray = DataTypeInfo.GetOrCreate(this).RootElements;
             if (tokens.Length != elementInfoArray.Length)
             {
                 throw new Exception(
