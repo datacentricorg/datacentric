@@ -188,10 +188,10 @@ namespace DataCentric
             if (importDataSets != null)
             {
                 // Add imports if second argument is not null
-                result.Import = new List<ObjectId>();
+                result.Imports = new List<ObjectId>();
                 foreach (var importDataSet in importDataSets)
                 {
-                    result.Import.Add(importDataSet);
+                    result.Imports.Add(importDataSet);
                 }
             }
 

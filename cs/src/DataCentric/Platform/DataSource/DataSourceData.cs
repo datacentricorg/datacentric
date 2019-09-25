@@ -446,9 +446,9 @@ namespace DataCentric
             result.Add(dataSetData.Id);
 
             // Add imports to the result
-            if (dataSetData.Import != null)
+            if (dataSetData.Imports != null)
             {
-                foreach (var dataSetId in dataSetData.Import)
+                foreach (var dataSetId in dataSetData.Imports)
                 {
                     // Dataset cannot include itself as its import
                     if (dataSetData.Id == dataSetId)

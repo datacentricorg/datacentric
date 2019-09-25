@@ -23,31 +23,32 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace DataCentric
 {
     /// <summary>
-    /// Dataset is a concept similar to a folder, applied to
-    /// data in any storage type including relational or
-    /// document database, OData endpoint, etc.
+    /// Dataset is a concept similar to a folder, applied to data in any
+    /// data source including relational or document databases, OData
+    /// endpoints, etc.
     ///
-    /// Dataset is identified by ObjectId value of the
-    /// record's DataSet element. This record contains
-    /// dataset identifier (folder path) and other information
-    /// about the dataset, including readonly flag etc.
+    /// Dataset is identified by ObjectId value of the record's DataSet
+    /// element. This record contains dataset identifier (folder path) and
+    /// other information about the dataset, including readonly flag etc.
     ///
-    /// Datasets can be stored in other datasets, similar to
-    /// folders. The dataset where dataset record is called
-    /// parent dataset.
+    /// Datasets can be stored in other datasets. The dataset where dataset
+    /// record is called parent dataset.
     ///
-    /// Dataset also has Import array which provides the list
-    /// of ObjectIds where data is looked up if it is not found
-    /// in the current dataset. Record lookup occurs first in
-    /// descending order of dataset ObjectIds, and then in the descending
-    /// order of record ObjectIds within the first dataset that
-    /// has at least one record. Both dataset and record ObjectIds
-    /// are ordered chronologically to one second resolution,
-    /// and are unique within the database server or cluster.
+    /// Dataset has an Imports array which provides the list of ObjectIds of
+    /// datasets where records are looked up if they are not found in the
+    /// current dataset. The specific lookup rules are specific to the data
+    /// source type and described in detail in the data source documentation.
+    ///
+    /// The parent dataset is not included in the list of Imports by
+    /// default and must be included in the list of Imports explicitly.
+    ///
+    /// Some data source types do not support Imports. If such data
+    /// source is used with a dataset where Imports array is not empty,
+    /// an error will be raised.
     ///
     /// The root dataset uses ObjectId.Empty and does not have versions
     /// or its own DataSetData record. It is always last in the dataset
-    /// lookup sequence.
+    /// lookup sequence. The root dataset cannot have Imports.
     /// </summary>
     public class DataSetData : TypedRecord<DataSetKey, DataSetData>
     {
@@ -63,16 +64,16 @@ namespace DataCentric
         public string DataSetId { get; set; }
 
         /// <summary>
-        /// List of imported datasets.
+        /// List of datasets where records are looked up if they are
+        /// not found in the current dataset.
         ///
-        /// Record lookup occurs first in descending order of
-        /// imported dataset ObjectIds, and then in the descending
-        /// order of record ObjectIds within the first dataset that
-        /// has at least one record. Both dataset and record ObjectIds
-        /// are ordered chronologically to one second resolution,
-        /// and are unique within the database server or cluster.
+        /// The specific lookup rules are specific to the data source
+        /// type and described in detail in the data source documentation.
+        /// 
+        /// The parent dataset is not included in the list of Imports by
+        /// default and must be included in the list of Imports explicitly.
         /// </summary>
-        public List<ObjectId> Import { get; set; }
+        public List<ObjectId> Imports { get; set; }
 
         //--- METHODS
 
@@ -96,9 +97,9 @@ namespace DataCentric
                     $"Other datasets may be stored inside any dataset including " +
                     $"the root dataset, Common dataset, or another dataset.");
 
-            if (Import != null && Import.Count > 0)
+            if (Imports != null && Imports.Count > 0)
             {
-                foreach (var importDataSet in Import)
+                foreach (var importDataSet in Imports)
                 {
                     if (Id <= importDataSet)
                     {
