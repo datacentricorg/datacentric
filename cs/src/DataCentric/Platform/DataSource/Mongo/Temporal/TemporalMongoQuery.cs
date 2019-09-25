@@ -208,7 +208,7 @@ namespace DataCentric
 
 
             // Iterate over the typed query and populate lists of Keys and Ids.
-            // This will run the entire query but only retrieve TemporalRecordInfo,
+            // This will run the entire query but only retrieve RecordInfo,
             // not the entire object which may be much larger.
             //
             // A given key may be encountered more than once in this list. Only
@@ -220,7 +220,7 @@ namespace DataCentric
             // in the latest dataset.
 
             // Project to key instead of returning the entire record
-            var projectedBatchQueryable = batchQueryable.Select(p => new TemporalRecordInfo {Id = p.Id, Key = p.Key});
+            var projectedBatchQueryable = batchQueryable.Select(p => new RecordInfo {Id = p.Id, Key = p.Key});
 
             // Get enumerator for the query so we can pause at the end of each batch
             using (var stepOneEnumerator = projectedBatchQueryable.GetEnumerator())
@@ -243,7 +243,7 @@ namespace DataCentric
                         if (continueQuery)
                         {
                             // If yes, get key from the enumerator
-                            TemporalRecordInfo recordInfo = stepOneEnumerator.Current;
+                            RecordInfo recordInfo = stepOneEnumerator.Current;
                             string batchKey = recordInfo.Key;
                             ObjectId batchId = recordInfo.Id;
 
@@ -286,7 +286,7 @@ namespace DataCentric
 
                     // Finally, project to (Id,DataSet,Key)
                     var projectedIdQueryable = idQueryable
-                        .Select(p => new TemporalRecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
+                        .Select(p => new RecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
 
                     // Create a list of ObjectIds for the records obtained using
                     // dataset lookup rules for the keys in the batch

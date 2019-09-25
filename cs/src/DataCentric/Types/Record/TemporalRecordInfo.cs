@@ -22,16 +22,18 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace DataCentric
 {
     /// <summary>
-    /// This class is used to project the data identifying a temporal
-    /// record when running a database query. It contains only the
+    /// This class is used to project the data identifying a record
+    /// when running a database query. This data includes only the
     /// record's Id, DataSet, and Key.
     ///
-    /// For large records, projecting to TemporalRecordInfo instead of
-    /// loading the entire record makes the query significantly faster
-    /// because only a small part of the record is transferred over the
-    /// network.
+    /// In some cases, the projected query may not populate one or more
+    /// of the RecordInfo fields.
+    ///
+    /// For large records, projecting to RecordInfo instead of loading
+    /// the entire record makes the query significantly faster because
+    /// only a small part of the record is transferred over the network.
     /// </summary>
-    public sealed class TemporalRecordInfo
+    public sealed class RecordInfo
     {
         /// <summary>
         /// ObjectId of the record is specific to its version.
