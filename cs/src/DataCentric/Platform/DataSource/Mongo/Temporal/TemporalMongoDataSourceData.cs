@@ -467,7 +467,7 @@ namespace DataCentric
                     .Descending(new StringFieldDefinition<TRecord>("_id")); // .Id
 
                 // Use index definition convention to specify the index name
-                var indexName = "_key_";
+                var indexName = "Key-DataSet-Id";
                 var indexModel = new CreateIndexModel<TRecord>(indexKeys, new CreateIndexOptions { Name = indexName });
                 typedCollection.Indexes.CreateOne(indexModel);
             }
@@ -511,12 +511,6 @@ namespace DataCentric
                             else throw new Exception("Sort order must be 1 or -1.");
                         }
                     }
-
-                    // Add Key in ascending order, then DataSet and ID in descending order
-                    indexKeys = indexKeys
-                        .Ascending(new StringFieldDefinition<TRecord>("_key")) // Key
-                        .Descending(new StringFieldDefinition<TRecord>("_dataset")) // DataSet
-                        .Descending(new StringFieldDefinition<TRecord>("_id")); // ID
 
                     if (indexName == null) throw new Exception("Index name cannot be null.");
                     var indexModel = new CreateIndexModel<TRecord>(indexKeys, new CreateIndexOptions { Name = indexName });
