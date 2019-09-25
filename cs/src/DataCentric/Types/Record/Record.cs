@@ -40,7 +40,7 @@ namespace DataCentric
         [Ignore]
         public IContext Context { get; private set; }
 
-        //--- FIELDS
+        //--- ELEMENTS
 
         /// <summary>
         /// ObjectId of the record is specific to its version.
@@ -57,7 +57,7 @@ namespace DataCentric
         /// ObjectId of the dataset where the record is stored.
         ///
         /// For records stored in root dataset, the value of
-        /// DataSet field should be ObjectId.Empty.
+        /// DataSet element should be ObjectId.Empty.
         /// </summary>
         [BsonElement("_dataset")]
         public ObjectId DataSet { get; set; }
@@ -91,7 +91,7 @@ namespace DataCentric
             // Initialize the base class
             // base.Init(context);
 
-            // Check that argument is not null and assign to the Context field
+            // Check that argument is not null and assign to the Context property
             if (context == null) throw new Exception(
                 $"Null context is passed to the Init(...) method for {GetType().Name}.");
             Context = context;

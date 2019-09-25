@@ -27,8 +27,8 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>
-    /// Data type where key fields are not the first in the record, and
-    /// key fields are not in the same order in the record as in the key.
+    /// Data type where key elements are not the first in the record, and/or
+    /// not in the same order in the record as in the key.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<MongoNonAlignedTestKey>))]
     public class MongoNonAlignedTestKey : TypedKey<MongoNonAlignedTestKey, MongoNonAlignedTestData>

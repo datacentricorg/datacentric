@@ -185,7 +185,7 @@ namespace DataCentric
         /// <summary>
         /// Save new version of the dataset.
         ///
-        /// This method sets ID field of the argument to be the
+        /// This method sets Id element of the argument to be the
         /// new ObjectId assigned to the record when it is saved.
         /// The timestamp of the new ObjectId is the current time.
         /// 

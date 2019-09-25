@@ -273,7 +273,7 @@ namespace DataCentric
         /// <summary>
         /// Save new version of the dataset.
         ///
-        /// This method sets Id field of the argument to be the
+        /// This method sets Id element of the argument to be the
         /// new ObjectId assigned to the record when it is saved.
         /// The timestamp of the new ObjectId is the current time.
         ///
@@ -342,7 +342,7 @@ namespace DataCentric
         /// Records where _id is greater than the returned value will be
         /// ignored by the data source.
         ///
-        /// This field is set based on either SavedByTime and SavedById
+        /// This element is set based on either SavedByTime and SavedById
         /// elements that are alternates; only one of them can be specified.
         /// </summary>
         protected abstract ObjectId? GetSavedBy();

@@ -184,7 +184,7 @@ namespace DataCentric
             int tokenIndex = 0;
             foreach (var elementInfo in elementInfoArray)
             {
-                // Get field type
+                // Get element type
                 object element = elementInfo.GetValue(this);
                 Type elementType = elementInfo.PropertyType;
 
@@ -192,7 +192,7 @@ namespace DataCentric
                 string token = tokens[tokenIndex++];
                 if (string.IsNullOrEmpty(token)) throw new Exception($"Key {value} of key type {GetType().Name} contains an empty token.");
 
-                // Convert string token to value depending on fieldType
+                // Convert string token to value depending on elementType
                 object tokenValue = null;
                 if (elementType == typeof(string))
                 {

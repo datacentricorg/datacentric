@@ -60,7 +60,7 @@ namespace DataCentric
         /// <summary>Dictionary of collections indexed by type T.</summary>
         private Dictionary<Type, object> collectionDict_ = new Dictionary<Type, object>();
 
-        //--- FIELDS
+        //--- ELEMENTS
 
         /// <summary>
         /// Records where timestamp of _id rounded down to one second
@@ -339,7 +339,7 @@ namespace DataCentric
         /// Records where _id is greater than the returned value will be
         /// ignored by the data source.
         ///
-        /// This field is set based on either SavedByTime and SavedById
+        /// This element is set based on either SavedByTime and SavedById
         /// elements that are alternates; only one of them can be specified.
         /// </summary>
         protected override ObjectId? GetSavedBy()

@@ -366,7 +366,7 @@ namespace DataCentric
         ///
         /// The Common dataset is always stored in root dataset.
         ///
-        /// This method sets Id field of the argument to be the
+        /// This method sets Id element of the argument to be the
         /// new ObjectId assigned to the record when it is saved.
         /// The timestamp of the new ObjectId is the current time.
         ///
@@ -444,7 +444,7 @@ namespace DataCentric
         /// specify the saveTo parameter explicitly and instead
         /// uses context.DataSet for its value.
         ///
-        /// This method sets Id field of the argument to be the
+        /// This method sets Id element of the argument to be the
         /// new ObjectId assigned to the record when it is saved.
         /// The timestamp of the new ObjectId is the current time.
         ///
@@ -461,7 +461,7 @@ namespace DataCentric
         /// This overload of the SaveDataSet method specifies
         /// the saveTo parameter explicitly.
         ///
-        /// This method sets Id field of the argument to be the
+        /// This method sets Id element of the argument to be the
         /// new ObjectId assigned to the record when it is saved.
         /// The timestamp of the new ObjectId is the current time.
         ///

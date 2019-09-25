@@ -19,10 +19,10 @@ using System;
 namespace DataCentric
 {
     /// <summary>
-    /// Attrite for custom fields formating.
+    /// Attrite for custom elements formating.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class FormatAttribute : Attribute
+    public class FormatAttribute : Attribute // TODO - review use
     {
         public FormatAttribute(string format)
         {

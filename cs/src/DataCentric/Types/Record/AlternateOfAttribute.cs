@@ -19,10 +19,10 @@ using System;
 namespace DataCentric
 {
     /// <summary>
-    /// Attribute for specifying alternative fields.
+    /// Attribute for specifying alternative elements.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class AlternateOfAttribute : Attribute
+    public class AlternateOfAttribute : Attribute // TODO - review use
     {
         public AlternateOfAttribute(string field)
         {

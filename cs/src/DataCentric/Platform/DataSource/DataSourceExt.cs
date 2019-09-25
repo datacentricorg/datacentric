@@ -147,7 +147,7 @@ namespace DataCentric
         ///
         /// The Common dataset is always stored in root dataset.
         ///
-        /// This method sets _id field of the argument to be the
+        /// This method sets _id element of the argument to be the
         /// new ObjectId assigned to the record when it is saved.
         /// The timestamp of the new ObjectId is the current time.
         ///

@@ -40,7 +40,7 @@ namespace DataCentric
             base.Init(context);
 
             // For this base type of records stored in root dataset,
-            // DataSet field has the value designated for the
+            // DataSet element has the value designated for the
             // root dataset: ObjectId.Empty.
             DataSet = ObjectId.Empty;
         }

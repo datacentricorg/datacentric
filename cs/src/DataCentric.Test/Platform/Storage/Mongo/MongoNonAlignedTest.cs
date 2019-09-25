@@ -26,8 +26,8 @@ using MongoDB.Bson;
 namespace DataCentric.Test
 {
     /// <summary>
-    /// Test for the data type where key fields are not the first in the record,
-    /// and key fields are not in the same order in the record as in the key.
+    /// Data type where key elements are not the first in the record, and/or
+    /// not in the same order in the record as in the key.
     /// </summary>
     public class MongoNonAlignedTest
     {

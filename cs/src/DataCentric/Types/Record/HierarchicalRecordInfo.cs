@@ -37,7 +37,7 @@ namespace DataCentric
         /// ObjectId of the dataset where the record is stored.
         ///
         /// For records stored in root dataset, the value of
-        /// DataSet field should be ObjectId.Empty.
+        /// DataSet element should be ObjectId.Empty.
         /// </summary>
         public ObjectId DataSet { get; set; }
 
