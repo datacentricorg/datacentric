@@ -27,11 +27,10 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>Derived data class.</summary>
+    [Index("DoubleElement2-DoubleElement")]
     public class MongoTestDerivedData : MongoTestData
     {
-        [Indexed(Index = "SecondIndex", Order = 1)]
         public double? DoubleElement2 { get; set; }
-
         public string StringElement2 { get; set; }
         public string[] ArrayOfString { get; set; }
         public List<string> ListOfString { get; set; }

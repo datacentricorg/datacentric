@@ -531,8 +531,6 @@ namespace DataCentric.Test
         {
             using (var context = new TemporalMongoTestContext(this))
             {
-                context.KeepTestData = true;
-
                 // Create datasets
                 var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
 
