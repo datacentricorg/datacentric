@@ -50,7 +50,7 @@ namespace DataCentric.Test
         [Fact]
         public void Load()
         {
-            using (var context = new HierarchicalMongoTestContext(this))
+            using (var context = new TemporalMongoTestContext(this))
             {
                 // Create queue record and save, then get its id
                 var queue = new JobQueueData();
