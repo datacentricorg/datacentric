@@ -27,10 +27,10 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>Base data class.</summary>
-    [Index("DoubleElement+LocalDateElement+EnumValue")]
-    [Index("LocalDateElement")]
-    [Index("RecordId-Version", "CustomIndexName")]
-    [Index("-RecordIndex")]
+    [IndexElements("DoubleElement+LocalDateElement+EnumValue")]
+    [IndexElements("LocalDateElement")]
+    [IndexElements("RecordId-Version", "CustomIndexName")]
+    [IndexElements("-RecordIndex")]
     public class MongoTestData : TypedRecord<MongoTestKey, MongoTestData>
     {
         public string RecordId { get; set; }

@@ -50,7 +50,7 @@ namespace DataCentric
     /// is given.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public sealed class IndexAttribute : Attribute
+    public sealed class IndexElementsAttribute : Attribute
     {
         /// <summary>
         /// Create from the index definition string, which is a
@@ -70,7 +70,7 @@ namespace DataCentric
         /// * A+B-C is index on elements A and B in ascending
         ///   order and then element C in descending order.
         /// </summary>
-        public IndexAttribute(string definition)
+        public IndexElementsAttribute(string definition)
         {
             Definition = definition;
         }
@@ -100,7 +100,7 @@ namespace DataCentric
         /// * A+B-C is index on elements A and B in ascending
         ///   order and then element C in descending order.
         /// </summary>
-        public IndexAttribute(string definition, string name)
+        public IndexElementsAttribute(string definition, string name)
         {
             Definition = definition;
             Name = name;
@@ -160,7 +160,7 @@ namespace DataCentric
                         $"because it is not derived from type Record.");
 
                 // Get class attributes without inheritance
-                var classAttributes = classType.GetCustomAttributes<IndexAttribute>(false);
+                var classAttributes = classType.GetCustomAttributes<IndexElementsAttribute>(false);
                 foreach (var classAttribute in classAttributes)
                 {
                     string definition = classAttribute.Definition;
