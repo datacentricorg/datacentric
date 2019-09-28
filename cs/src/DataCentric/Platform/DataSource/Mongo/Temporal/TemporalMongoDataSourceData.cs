@@ -477,7 +477,7 @@ namespace DataCentric
             {
                 // Get a sorted dictionary of (definition, name) pairs
                 // for the inheritance chain of the specified type.
-                var indexDict = IndexElementsAttribute.GetIndexDict<TRecord>();
+                var indexDict = IndexElementsAttribute.GetAttributesDict<TRecord>();
 
                 // Iterate over the dictionary to define the index
                 foreach (var indexInfo in indexDict)
@@ -486,7 +486,7 @@ namespace DataCentric
                     string indexName = indexInfo.Value;
 
                     // Parse index definition to get a list of (ElementName,SortOrder) tuples
-                    List<(string, int)> indexTokens = IndexElementsAttribute.ParseIndexDefinition<TRecord>(indexDefinition);
+                    List<(string, int)> indexTokens = IndexElementsAttribute.ParseDefinition<TRecord>(indexDefinition);
 
                     var indexKeysBuilder = Builders<TRecord>.IndexKeys;
                     IndexKeysDefinition<TRecord> indexKeys = null;

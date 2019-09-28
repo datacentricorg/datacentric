@@ -27,7 +27,7 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>Derived data class.</summary>
-    [IndexElements("DoubleElement2-DoubleElement")]
+    [IndexElements("DoubleElement2, -DoubleElement")]
     public class MongoTestDerivedData : MongoTestData
     {
         public double? DoubleElement2 { get; set; }
