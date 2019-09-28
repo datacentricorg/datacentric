@@ -32,7 +32,7 @@ namespace DataCentric
         /// <summary>Return false if null or equal to the default constructed value.</summary>
         public static bool HasValue(this LocalDateTime? value)
         {
-            return value.HasValue && value.HasValue();
+            return value.HasValue && value.Value.HasValue();
         }
 
         /// <summary>Error message if equal to the default constructed value.</summary>
