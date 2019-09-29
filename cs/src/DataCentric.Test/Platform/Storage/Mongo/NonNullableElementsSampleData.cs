@@ -48,6 +48,6 @@ namespace DataCentric.Test
         public LocalDateTime LocalDateTimeToken { get; set; }
 
         /// <summary>Sample element.</summary>
-        public MongoTestEnum EnumToken { get; set; }
+        public SampleEnum EnumToken { get; set; }
     }
 }

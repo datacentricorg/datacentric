@@ -55,7 +55,7 @@ namespace DataCentric.Test
         public LocalDateTime? LocalDateTimeElement { get; set; }
 
         /// <summary>Sample element.</summary>
-        public MongoTestEnum EnumValue { get; set; }
+        public SampleEnum EnumValue { get; set; }
 
         /// <summary>Sample element.</summary>
         public int? Version { get; set; }

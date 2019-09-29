@@ -758,7 +758,7 @@ namespace DataCentric.Test
             rec.LocalTimeElement = new LocalTime(10, 15, 30); // 10:15:30
             rec.LocalMinuteElement = new LocalMinute(10, 15); // 10:15
             rec.LocalDateTimeElement = new LocalDateTime(2003, 5, 1, 10, 15); // 2003-05-01T10:15:00
-            rec.EnumValue = MongoTestEnum.EnumValue2;
+            rec.EnumValue = SampleEnum.EnumValue2;
 
             var dataSet = context.GetDataSet(dataSetId, context.DataSet);
             context.Save(rec, dataSet);
