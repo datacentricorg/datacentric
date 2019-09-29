@@ -195,10 +195,15 @@ namespace DataCentric
                 Type inheritanceChainEntry = inheritanceChain[i];
 
                 // Find all properties of this type that are public, not static,
-                // declared in this type only, and have both getter and setter
+                // declared in this type only, and have both getter and setter.
+                //
+                // The query also expressly excludes Context and Key properties which
+                // are not part of data and should not be serialized.
                 var propInfoArray = inheritanceChainEntry.GetProperties(
                         BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                    .Where(p => (p.CanRead && p.CanWrite));
+                    .Where(p => (p.CanRead && p.CanWrite))
+                    .Where(p => p.Name != "Context")
+                    .Where(p => p.Name != "Key");
 
                 foreach (var propInfo in propInfoArray)
                 {
