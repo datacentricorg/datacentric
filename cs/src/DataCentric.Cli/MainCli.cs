@@ -195,7 +195,7 @@ namespace DataCentric.Cli
             where TBaseRecord : TypedRecord<TKey, TBaseRecord>
         {
             TKey key = Activator.CreateInstance<TKey>();
-            key.Init(options.Key);
+            key.PopulateFrom(options.Key);
 
             ObjectId dataSet = context.GetDataSet(options.Dataset, context.DataSet);
             TRecord record = (TRecord) context.LoadOrNull(key, dataSet);
@@ -258,7 +258,7 @@ namespace DataCentric.Cli
             List<string> hosts = url.Servers.Select(t => t.ToString()).ToList();
 
             DbNameKey dbName = Activator.CreateInstance<DbNameKey>();
-            dbName.Init(dbNameString);
+            dbName.PopulateFrom(dbNameString);
             LocalMongoDataStoreData dbServer = new LocalMongoDataStoreData
             {
                 DataStoreId = "LOCAL_TEST",

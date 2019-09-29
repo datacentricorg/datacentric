@@ -192,7 +192,7 @@ namespace DataCentric
                                 ITreeReader keyNodeValue = reader.ReadElement(elementName);
                                 string token = keyNodeValue.ReadValue();
                                 // Parse semicolon delimited string to populate key elements
-                                ((Key)dataElement).Init(token);
+                                ((Key)dataElement).PopulateFrom(token);
                             }
                             else
                             {

@@ -120,7 +120,7 @@ namespace DataCentric
             TKey result = new TKey();
 
             // Assign key elements to match the record
-            result.AssignKeyElements(this);
+            result.PopulateFrom(this);
 
             return result;
         }

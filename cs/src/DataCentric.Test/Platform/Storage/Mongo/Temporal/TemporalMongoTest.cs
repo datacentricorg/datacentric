@@ -86,7 +86,7 @@ namespace DataCentric.Test
 
                 // Verify key deserialization
                 var key = new MongoTestCompositeKey();
-                key.Init(keyValue);
+                key.PopulateFrom(keyValue);
                 context.Verify.Text($"Deserialized key: {key}");
 
                 // Verify the result of loading records from datasets A and B

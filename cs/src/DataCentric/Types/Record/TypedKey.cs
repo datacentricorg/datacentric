@@ -187,8 +187,11 @@ namespace DataCentric
             context.DataSource.Delete(this, deleteIn);
         }
 
-        /// <summary>Assign key elements from record to key.</summary>
-        public void AssignKeyElements(TypedRecord<TKey, TRecord> record) // TODO - convert to constructor
+        /// <summary>
+        /// Populate key elements by taking them from the matching
+        /// elements of the argument record.
+        /// </summary>
+        public void PopulateFrom(TypedRecord<TKey, TRecord> record)
         {
             // Assign elements of the record to the matching elements
             // of the key. This will also make string representation

@@ -37,49 +37,6 @@ namespace DataCentric
     public abstract class Key : Data
     {
         /// <summary>
-        /// Initialize key by taking tokens from the start of
-        /// semicolon delimited string; returns a string that
-        /// contains the remaining (unused) tokens, or null if
-        /// none are left.
-        ///
-        /// If key AKey has two elements, B and C, where
-        ///
-        /// * B has type BKey which has two string elements, and
-        /// * C has type string,
-        ///
-        /// the semicolon delimited key has the following format:
-        ///
-        /// BToken1;BToken2;CToken
-        ///
-        /// To avoid serialization format uncertainty, key elements
-        /// can have any atomic type except Double.
-        /// </summary>
-        public void Init(string value)
-        {
-            // Split key into tokens
-            var tokens = value.Split(';');
-
-            // Check that none of the tokens are empty
-            foreach (string token in tokens)
-            {
-                if (string.IsNullOrEmpty(token))
-                    throw new Exception($"Key {value} of key type {GetType().Name} contains an empty token.");
-            }
-
-            // Call the private method that uses array of tokens.
-            // This method returns the number of tokens actually
-            // used to parse the key.
-            int tokenIndex = InitFromTokens(tokens, 0);
-
-            // Verify that all tokens have been used, error message otherwise
-            if (tokens.Length != tokenIndex)
-            {
-                throw new Exception($"Key with type {GetType().Name} requires {tokenIndex} tokens including " +
-                                    $"any composite key elements, while key value {value} contains {tokens.Length} tokens.");
-            }
-        }
-
-        /// <summary>
         /// String key consists of semicolon delimited primary key elements:
         ///
         /// KeyElement1;KeyElement2
@@ -202,13 +159,10 @@ namespace DataCentric
         /// </summary>
         public override string ToString() { return Value; }
 
-        //--- PRIVATE
-
         /// <summary>
-        /// Initialize key by taking tokens from the specified
-        /// tokenIndex in the array. Returns the index of the
-        /// first unused token. The returned value is the same
-        /// as array length if all tokens are used.
+        /// Populate key elements from semicolon delimited string.
+        /// Elements that are themselves keys may use more than
+        /// one token.
         ///
         /// If key AKey has two elements, B and C, where
         ///
@@ -222,7 +176,55 @@ namespace DataCentric
         /// To avoid serialization format uncertainty, key elements
         /// can have any atomic type except Double.
         /// </summary>
-        private int InitFromTokens(string[] tokens, int tokenIndex)
+        public void PopulateFrom(string value)
+        {
+            // Split key into tokens
+            var tokens = value.Split(';');
+
+            // Check that none of the tokens are empty
+            foreach (string token in tokens)
+            {
+                if (string.IsNullOrEmpty(token))
+                    throw new Exception($"Key {value} of key type {GetType().Name} contains an empty token.");
+            }
+
+            // Call the private method that uses array of tokens.
+            // This method returns the number of tokens actually
+            // used to parse the key.
+            int tokenIndex = PopulateFrom(tokens, 0);
+
+            // Verify that all tokens have been used, error message otherwise
+            if (tokens.Length != tokenIndex)
+            {
+                throw new Exception($"Key with type {GetType().Name} requires {tokenIndex} tokens including " +
+                                    $"any composite key elements, while key value {value} contains {tokens.Length} tokens.");
+            }
+        }
+
+        //--- PRIVATE
+
+        /// <summary>
+        /// Populate key elements from an array of tokens starting
+        /// at the specified token index. Elements that are themselves
+        /// keys may use more than one token.
+        ///
+        /// This method returns the index of the first unused token.
+        /// The returned value is the same as the length of the tokens
+        /// array if all tokens are used.
+        ///
+        /// If key AKey has two elements, B and C, where
+        ///
+        /// * B has type BKey which has two string elements, and
+        /// * C has type string,
+        ///
+        /// the semicolon delimited key has the following format:
+        ///
+        /// BToken1;BToken2;CToken
+        ///
+        /// To avoid serialization format uncertainty, key elements
+        /// can have any atomic type except Double.
+        /// </summary>
+        private int PopulateFrom(string[] tokens, int tokenIndex)
         {
             // Get key elements using reflection
             var elementInfoArray = DataTypeInfo.GetOrCreate(this).DataElements;
@@ -364,7 +366,7 @@ namespace DataCentric
                 else if (typeof(Key).IsAssignableFrom(elementType))
                 {
                     Key keyElement = (Key)Activator.CreateInstance(elementType);
-                    tokenIndex = keyElement.InitFromTokens(tokens, tokenIndex);
+                    tokenIndex = keyElement.PopulateFrom(tokens, tokenIndex);
                     elementInfo.SetValue(this, keyElement);
                 }
                 else
