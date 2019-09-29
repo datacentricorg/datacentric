@@ -36,7 +36,6 @@ namespace DataCentric.Test
 
                 string xmlString = obj.ToXml();
                 string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;
-                string testName = "basic";
                 context.Verify.File("Original.xml", xmlString);
 
                 var copy = new BaseTypeSampleData();

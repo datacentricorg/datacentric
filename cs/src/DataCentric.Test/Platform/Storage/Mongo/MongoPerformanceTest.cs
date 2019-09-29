@@ -74,7 +74,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Insert N non-versioned instances.</summary>
-        public void InsertRecordsA(IContext context)
+        private void InsertRecordsA(IContext context)
         {
             var db = GetDb(context);
 
@@ -109,7 +109,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Insert M copies of each of N versioned instances B.</summary>
-        public void InsertRecordsB(IContext context)
+        private void InsertRecordsB(IContext context)
         {
             var db = GetDb(context);
             var collection = db.GetCollection<B>("B");

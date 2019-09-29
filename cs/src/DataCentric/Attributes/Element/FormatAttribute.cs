@@ -19,16 +19,28 @@ using System;
 namespace DataCentric
 {
     /// <summary>
-    /// Attrite for custom elements formating.
+    /// Specifies custom formatting of the element in the UI that
+    /// supersedes the default formatting for the type.
+    ///
+    /// The format is specified using .NET conventions.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     public class FormatAttribute : Attribute // TODO - review use
     {
+        /// <summary>
+        /// Create from .NET format string.
+        /// </summary>
         public FormatAttribute(string format)
         {
             Format = format;
         }
 
+        /// <summary>
+        /// Custom format string for the element in the UI that
+        /// supersedes the default formatting for the type.
+        ///
+        /// The format is specified using .NET conventions.
+        /// </summary>
         public string Format { get; private set; }
     }
 }
