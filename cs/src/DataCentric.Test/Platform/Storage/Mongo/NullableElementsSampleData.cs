@@ -24,6 +24,9 @@ namespace DataCentric.Test
     public class NullableElementsSampleData : TypedRecord<NullableElementsSampleKey, NullableElementsSampleData>
     {
         /// <summary>Sample element.</summary>
+        public string StringToken { get; set; }
+
+        /// <summary>Sample element.</summary>
         public bool? BoolToken { get; set; }
 
         /// <summary>Sample element.</summary>
@@ -46,5 +49,8 @@ namespace DataCentric.Test
 
         /// <summary>Sample element.</summary>
         public SampleEnum? EnumToken { get; set; }
+
+        /// <summary>Sample element.</summary>
+        public int? RecordIndex { get; set; }
     }
 }

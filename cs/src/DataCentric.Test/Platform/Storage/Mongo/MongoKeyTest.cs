@@ -70,6 +70,7 @@ namespace DataCentric.Test
             {
                 var record = new NullableElementsSampleData();
                 record.DataSet = context.DataSet;
+                record.StringToken = "A";
                 record.BoolToken = true;
                 record.IntToken = 123;
                 record.LongToken = 12345678912345;

@@ -49,5 +49,8 @@ namespace DataCentric.Test
 
         /// <summary>Sample element.</summary>
         public SampleEnum EnumToken { get; set; }
+
+        /// <summary>Sample element.</summary>
+        public int? RecordIndex { get; set; }
     }
 }

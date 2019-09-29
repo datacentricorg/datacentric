@@ -26,6 +26,9 @@ namespace DataCentric.Test
     public sealed class NullableElementsSampleKey : TypedKey<NullableElementsSampleKey, NullableElementsSampleData>
     {
         /// <summary>Sample element.</summary>
+        public string StringToken { get; set; }
+
+        /// <summary>Sample element.</summary>
         public bool? BoolToken { get; set; }
 
         /// <summary>Sample element.</summary>

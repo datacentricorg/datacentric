@@ -36,8 +36,7 @@ namespace DataCentric.Test
                     int recordIndexMod2 = recordIndex % 2;
                     int recordIndexMod4 = recordIndex % 4;
 
-                    var record = new QueryTestNullableData();
-                    record.RecordId = recordIndexMod4.ToString();
+                    var record = new NullableElementsSampleData();
                     record.RecordIndex = recordIndex;
                     record.DataSet = context.DataSet;
                     record.StringToken = "A" + recordIndexMod4.ToString();
@@ -48,7 +47,7 @@ namespace DataCentric.Test
                     record.LocalTimeToken = new LocalTime(10, 15, 30).PlusMinutes(recordIndexMod4);
                     record.LocalMinuteToken = new LocalMinute(10, recordIndexMod4);
                     record.LocalDateTimeToken = new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(recordIndexMod4);
-                    record.EnumToken = (QueryTestEnum)(recordIndexMod2 + 1);
+                    record.EnumToken = (SampleEnum)(recordIndexMod2 + 1);
 
                     context.Save(record, context.DataSet);
                 }
@@ -58,7 +57,7 @@ namespace DataCentric.Test
                     // Query for all records without restrictions,
                     // should return 4 out of 8 records because
                     // each record has two versions
-                    var query = context.DataSource.GetQuery<QueryTestNullableData>(context.DataSet);
+                    var query = context.DataSource.GetQuery<NullableElementsSampleData>(context.DataSet);
 
                     context.Verify.Text("Unconstrained query");
                     foreach (var obj in query.AsEnumerable())
@@ -73,7 +72,7 @@ namespace DataCentric.Test
                     // should return 4 out of 8 records because
                     // each record has two versions
 
-                    var query = context.DataSource.GetQuery<QueryTestNullableData>(context.DataSet)
+                    var query = context.DataSource.GetQuery<NullableElementsSampleData>(context.DataSet)
                         .Where(p => p.StringToken == "A1")
                         .Where(p => p.BoolToken == false)
                         .Where(p => p.IntToken == 1)
@@ -82,7 +81,7 @@ namespace DataCentric.Test
                         .Where(p => p.LocalTimeToken == new LocalTime(10, 15, 30).PlusMinutes(1))
                         .Where(p => p.LocalMinuteToken == new LocalMinute(10, 1))
                         .Where(p => p.LocalDateTimeToken == new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(1))
-                        .Where(p => p.EnumToken == (QueryTestEnum)2);
+                        .Where(p => p.EnumToken == (SampleEnum)2);
 
                     context.Verify.Text("Constrained query");
                     foreach (var obj in query.AsEnumerable())
@@ -104,8 +103,7 @@ namespace DataCentric.Test
                     int recordIndexMod2 = recordIndex % 2;
                     int recordIndexMod4 = recordIndex % 4;
 
-                    var record = new QueryTestNonNullableData();
-                    record.RecordId = recordIndexMod4.ToString();
+                    var record = new NonNullableElementsSampleData();
                     record.RecordIndex = recordIndex;
                     record.DataSet = context.DataSet;
                     record.StringToken = "A" + recordIndexMod4.ToString();
@@ -116,7 +114,7 @@ namespace DataCentric.Test
                     record.LocalTimeToken = new LocalTime(10, 15, 30).PlusMinutes(recordIndexMod4);
                     record.LocalMinuteToken = new LocalMinute(10, recordIndexMod4);
                     record.LocalDateTimeToken = new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(recordIndexMod4);
-                    record.EnumToken = (QueryTestEnum) (recordIndexMod2 + 1);
+                    record.EnumToken = (SampleEnum) (recordIndexMod2 + 1);
 
                     context.Save(record, context.DataSet);
                 }
@@ -126,7 +124,7 @@ namespace DataCentric.Test
                     // Query for all records without restrictions,
                     // should return 4 out of 8 records because
                     // each record has two versions
-                    var query = context.DataSource.GetQuery<QueryTestNonNullableData>(context.DataSet);
+                    var query = context.DataSource.GetQuery<NonNullableElementsSampleData>(context.DataSet);
 
                     context.Verify.Text("Unconstrained query");
                     foreach (var obj in query.AsEnumerable())
@@ -141,7 +139,7 @@ namespace DataCentric.Test
                     // should return 4 out of 8 records because
                     // each record has two versions
 
-                    var query = context.DataSource.GetQuery<QueryTestNonNullableData>(context.DataSet)
+                    var query = context.DataSource.GetQuery<NonNullableElementsSampleData>(context.DataSet)
                         .Where(p => p.StringToken == "A1")
                         .Where(p => p.BoolToken == false)
                         .Where(p => p.IntToken == 1)
@@ -150,7 +148,7 @@ namespace DataCentric.Test
                         .Where(p => p.LocalTimeToken == new LocalTime(10, 15, 30).PlusMinutes(1))
                         .Where(p => p.LocalMinuteToken == new LocalMinute(10, 1))
                         .Where(p => p.LocalDateTimeToken == new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(1))
-                        .Where(p => p.EnumToken == (QueryTestEnum)2);
+                        .Where(p => p.EnumToken == (SampleEnum)2);
 
                     context.Verify.Text("Constrained query");
                     foreach (var obj in query.AsEnumerable())
