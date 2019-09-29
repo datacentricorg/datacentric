@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using MongoDB.Bson;
 using NodaTime;
 
@@ -36,9 +37,19 @@ namespace DataCentric
     public abstract class Key : Data
     {
         /// <summary>
-        /// Initialize key from semicolon delimited string:
+        /// Initialize key by taking tokens from the start of
+        /// semicolon delimited string; returns a string that
+        /// contains the remaining (unused) tokens, or null if
+        /// none are left.
         ///
-        /// KeyElement1;KeyElement2
+        /// If key AKey has two elements, B and C, where
+        ///
+        /// * B has type BKey which has two string elements, and
+        /// * C has type string,
+        ///
+        /// the semicolon delimited key has the following format:
+        ///
+        /// BToken1;BToken2;CToken
         ///
         /// To avoid serialization format uncertainty, key elements
         /// can have any atomic type except Double.
@@ -48,129 +59,16 @@ namespace DataCentric
             // Split key into tokens
             var tokens = value.Split(';');
 
-            // Check that the number of tokens matches the number of key elements
-            var elementInfoArray = DataTypeInfo.GetOrCreate(this).DataElements;
-            if (tokens.Length != elementInfoArray.Length)
+            // Call the private method that uses array of tokens.
+            // This method returns the number of tokens actually
+            // used to parse the key.
+            int tokenIndex = InitFromTokens(tokens, 0);
+
+            // Verify that all tokens have been used, error message otherwise
+            if (tokens.Length != tokenIndex)
             {
-                throw new Exception(
-                    $"Key {value} consists of {tokens.Length} tokens while key of type {GetType().Name} " +
-                    $"should have {elementInfoArray.Length} elements: " +
-                    $"{String.Join(";", elementInfoArray.Select(p => p.Name).ToArray())}.");
-            }
-
-            int tokenIndex = 0;
-            foreach (var elementInfo in elementInfoArray)
-            {
-                // Get element type
-                object element = elementInfo.GetValue(this);
-                Type elementType = elementInfo.PropertyType;
-
-                // Get token and check that it is not empty
-                string token = tokens[tokenIndex++];
-                if (string.IsNullOrEmpty(token)) throw new Exception($"Key {value} of key type {GetType().Name} contains an empty token.");
-
-                // Convert string token to value depending on elementType
-                object tokenValue = null;
-                if (elementType == typeof(string))
-                {
-                    tokenValue = token;
-                }
-                else if (elementType == typeof(double) || elementType == typeof(double?))
-                {
-                    throw new Exception(
-                        $"Key element {elementInfo.Name} has type Double. Elements of this type " +
-                        $"cannot be part of key due to serialization format uncertainty.");
-                }
-                else if (elementType == typeof(bool) || elementType == typeof(bool?))
-                {
-                    tokenValue = bool.Parse(token);
-                }
-                else if (elementType == typeof(int) || elementType == typeof(int?))
-                {
-                    tokenValue = int.Parse(token);
-                }
-                else if (elementType == typeof(long) || elementType == typeof(long?))
-                {
-                    tokenValue = long.Parse(token);
-                }
-                else if (elementType == typeof(LocalDate) || elementType == typeof(LocalDate?))
-                {
-                    // Inside the key, LocalDate is represented as readable int in
-                    // non-delimited yyyymmdd format, not as delimited ISO string.
-                    //
-                    // First parse the string to int, then convert int to LocalDate.
-                    if (!Int32.TryParse(token, out int isoInt))
-                    {
-                        throw new Exception(
-                            $"Element {elementInfo.Name} of key type {GetType().Name} has type LocalDate and value {token} " +
-                            $"that cannot be converted to readable int in non-delimited yyyymmdd format.");
-                    }
-
-                    tokenValue = LocalDateUtils.ParseIsoInt(isoInt);
-                }
-                else if (elementType == typeof(LocalTime) || elementType == typeof(LocalTime?))
-                {
-                    // Inside the key, LocalTime is represented as readable int in
-                    // non-delimited hhmmssfff format, not as delimited ISO string.
-                    //
-                    // First parse the string to int, then convert int to LocalTime.
-                    if (!Int32.TryParse(token, out int isoInt))
-                    {
-                        throw new Exception(
-                            $"Element {elementInfo.Name} of key type {GetType().Name} has type LocalTime and value {token} " +
-                            $"that cannot be converted to readable int in non-delimited hhmmssfff format.");
-                    }
-
-                    tokenValue = LocalTimeUtils.ParseIsoInt(isoInt);
-                }
-                else if (elementType == typeof(LocalMinute) || elementType == typeof(LocalMinute?))
-                {
-                    // Inside the key, LocalMinute is represented as readable int in
-                    // non-delimited hhmm format, not as delimited ISO string.
-                    //
-                    // First parse the string to int, then convert int to LocalTime.
-                    if (!Int32.TryParse(token, out int isoInt))
-                    {
-                        throw new Exception(
-                            $"Element {elementInfo.Name} of key type {GetType().Name} has type LocalMinute and value {token} " +
-                            $"that cannot be converted to readable int in non-delimited hhmm format.");
-                    }
-
-                    tokenValue = LocalMinuteUtils.ParseIsoInt(isoInt);
-                }
-                else if (elementType == typeof(LocalDateTime) || elementType == typeof(LocalDateTime?))
-                {
-                    // Inside the key, LocalDateTime is represented as readable long in
-                    // non-delimited yyyymmddhhmmssfff format, not as delimited ISO string.
-                    //
-                    // First parse the string to long, then convert int to LocalDateTime.
-                    if (!Int64.TryParse(token, out long isoLong))
-                    {
-                        throw new Exception(
-                            $"Element {elementInfo.Name} of key type {GetType().Name} has type LocalDateTime and value {token} " +
-                            $"that cannot be converted to readable long in non-delimited yyyymmddhhmmssfff format.");
-                    }
-
-                    tokenValue = LocalDateTimeUtils.ParseIsoLong(isoLong);
-                }
-                else if (elementType == typeof(ObjectId) || elementType == typeof(ObjectId?))
-                {
-                    tokenValue = ObjectId.Parse(token);
-                }
-                else if (elementType.BaseType == typeof(Enum)) // TODO Support nullable Enum in key
-                {
-                    tokenValue = Enum.Parse(elementType, token);
-                }
-                else
-                {
-                    // Field type is unsupported for a key, error message
-                    throw new Exception(
-                        $"Element {elementInfo.Name} of key type {GetType().Name} has type {element.GetType()} that " +
-                        $"is not one of the supported key element types. Available key element types are " +
-                        $"string, bool, int, long, LocalDate, LocalTime, LocalMinute, LocalDateTime, or Enum.");
-                }
-
-                elementInfo.SetValue(this, tokenValue);
+                throw new Exception($"Key with type {GetType().Name} requires {tokenIndex} tokens including " +
+                                    $"any composite key elements, while key value {value} contains {tokens.Length} tokens.");
             }
         }
 
@@ -296,5 +194,196 @@ namespace DataCentric
         /// can have any atomic type except Double.
         /// </summary>
         public override string ToString() { return Value; }
+
+        //--- PRIVATE
+
+        /// <summary>
+        /// Initialize key by taking tokens from the specified
+        /// tokenIndex in the array. Returns the index of the
+        /// first unused token. The returned value is the same
+        /// as array length if all tokens are used.
+        ///
+        /// If key AKey has two elements, B and C, where
+        ///
+        /// * B has type BKey which has two string elements, and
+        /// * C has type string,
+        ///
+        /// the semicolon delimited key has the following format:
+        ///
+        /// BToken1;BToken2;CToken
+        ///
+        /// To avoid serialization format uncertainty, key elements
+        /// can have any atomic type except Double.
+        /// </summary>
+        private int InitFromTokens(string[] tokens, int tokenIndex)
+        {
+            // Get key elements using reflection
+            var elementInfoArray = DataTypeInfo.GetOrCreate(this).DataElements;
+
+            // Check that there are enough remaining tokens in the key for each key element
+            if (tokens.Length - tokenIndex < elementInfoArray.Length)
+            {
+                StringBuilder value = new StringBuilder();
+                for (int i = tokenIndex; i < tokens.Length; i++)
+                {
+                    value.Append(tokens[i]);
+                    if (i > tokenIndex) value.Append(";");
+                }
+                throw new Exception(
+                    $"Key of type {GetType().Name} requires at least {elementInfoArray.Length} elements " +
+                    $"{String.Join(";", elementInfoArray.Select(p => p.Name).ToArray())} while there are " +
+                    $"only {tokens.Length - tokenIndex} remaining key tokens: {value}.");
+            }
+
+            // Iterate over element info elements, advancing tokenIndex by the required
+            // number of tokens for each element. In case of embedded keys, the value of
+            // tokenIndex is advanced by the recursive call to InitFromTokens method
+            // of the embedded key.
+            foreach (var elementInfo in elementInfoArray)
+            {
+                // Get element type
+                Type elementType = elementInfo.PropertyType;
+
+                // Get token and check that it is not empty
+                string token = tokens[tokenIndex];
+                if (string.IsNullOrEmpty(token))
+                {
+                    StringBuilder value = new StringBuilder();
+                    for (int i = tokenIndex; i < tokens.Length; i++)
+                    {
+                        value.Append(tokens[i]);
+                        if (i > tokenIndex) value.Append(";");
+                    }
+                    throw new Exception($"Key {value} of key type {GetType().Name} contains an empty token.");
+                }
+
+                // Convert string token to value depending on elementType
+                if (elementType == typeof(string))
+                {
+                    elementInfo.SetValue(this, token);
+                    tokenIndex++;
+                }
+                else if (elementType == typeof(double) || elementType == typeof(double?))
+                {
+                    throw new Exception(
+                        $"Key element {elementInfo.Name} has type Double. Elements of this type " +
+                        $"cannot be part of key due to serialization format uncertainty.");
+                }
+                else if (elementType == typeof(bool) || elementType == typeof(bool?))
+                {
+                    bool tokenValue = bool.Parse(token);
+                    elementInfo.SetValue(this, tokenValue);
+                    tokenIndex++;
+                }
+                else if (elementType == typeof(int) || elementType == typeof(int?))
+                {
+                    int tokenValue = int.Parse(token);
+                    elementInfo.SetValue(this, tokenValue);
+                    tokenIndex++;
+                }
+                else if (elementType == typeof(long) || elementType == typeof(long?))
+                {
+                    long tokenValue = long.Parse(token);
+                    elementInfo.SetValue(this, tokenValue);
+                    tokenIndex++;
+                }
+                else if (elementType == typeof(LocalDate) || elementType == typeof(LocalDate?))
+                {
+                    // Inside the key, LocalDate is represented as readable int in
+                    // non-delimited yyyymmdd format, not as delimited ISO string.
+                    //
+                    // First parse the string to int, then convert int to LocalDate.
+                    if (!Int32.TryParse(token, out int isoInt))
+                    {
+                        throw new Exception(
+                            $"Element {elementInfo.Name} of key type {GetType().Name} has type LocalDate and value {token} " +
+                            $"that cannot be converted to readable int in non-delimited yyyymmdd format.");
+                    }
+
+                    LocalDate tokenValue = LocalDateUtils.ParseIsoInt(isoInt);
+                    elementInfo.SetValue(this, tokenValue);
+                    tokenIndex++;
+                }
+                else if (elementType == typeof(LocalTime) || elementType == typeof(LocalTime?))
+                {
+                    // Inside the key, LocalTime is represented as readable int in
+                    // non-delimited hhmmssfff format, not as delimited ISO string.
+                    //
+                    // First parse the string to int, then convert int to LocalTime.
+                    if (!Int32.TryParse(token, out int isoInt))
+                    {
+                        throw new Exception(
+                            $"Element {elementInfo.Name} of key type {GetType().Name} has type LocalTime and value {token} " +
+                            $"that cannot be converted to readable int in non-delimited hhmmssfff format.");
+                    }
+
+                    LocalTime tokenValue = LocalTimeUtils.ParseIsoInt(isoInt);
+                    elementInfo.SetValue(this, tokenValue);
+                    tokenIndex++;
+                }
+                else if (elementType == typeof(LocalMinute) || elementType == typeof(LocalMinute?))
+                {
+                    // Inside the key, LocalMinute is represented as readable int in
+                    // non-delimited hhmm format, not as delimited ISO string.
+                    //
+                    // First parse the string to int, then convert int to LocalTime.
+                    if (!Int32.TryParse(token, out int isoInt))
+                    {
+                        throw new Exception(
+                            $"Element {elementInfo.Name} of key type {GetType().Name} has type LocalMinute and value {token} " +
+                            $"that cannot be converted to readable int in non-delimited hhmm format.");
+                    }
+
+                    LocalMinute tokenValue = LocalMinuteUtils.ParseIsoInt(isoInt);
+                    elementInfo.SetValue(this, tokenValue);
+                    tokenIndex++;
+                }
+                else if (elementType == typeof(LocalDateTime) || elementType == typeof(LocalDateTime?))
+                {
+                    // Inside the key, LocalDateTime is represented as readable long in
+                    // non-delimited yyyymmddhhmmssfff format, not as delimited ISO string.
+                    //
+                    // First parse the string to long, then convert int to LocalDateTime.
+                    if (!Int64.TryParse(token, out long isoLong))
+                    {
+                        throw new Exception(
+                            $"Element {elementInfo.Name} of key type {GetType().Name} has type LocalDateTime and value {token} " +
+                            $"that cannot be converted to readable long in non-delimited yyyymmddhhmmssfff format.");
+                    }
+
+                    LocalDateTime tokenValue = LocalDateTimeUtils.ParseIsoLong(isoLong);
+                    elementInfo.SetValue(this, tokenValue);
+                    tokenIndex++;
+                }
+                else if (elementType == typeof(ObjectId) || elementType == typeof(ObjectId?))
+                {
+                    ObjectId tokenValue = ObjectId.Parse(token);
+                    elementInfo.SetValue(this, tokenValue);
+                    tokenIndex++;
+                }
+                else if (elementType.BaseType == typeof(Enum)) // TODO Support nullable Enum in key
+                {
+                    object tokenValue = Enum.Parse(elementType, token);
+                    elementInfo.SetValue(this, tokenValue);
+                    tokenIndex++;
+                }
+                else if (elementType.IsInstanceOfType(typeof(Key)))
+                {
+                    Key keyElement = (Key)elementInfo.GetValue(this);
+                    tokenIndex = keyElement.InitFromTokens(tokens, tokenIndex);
+                }
+                else
+                {
+                    // Field type is unsupported for a key, error message
+                    object element = elementInfo.GetValue(this);
+                    throw new Exception(
+                        $"Element {elementInfo.Name} of key type {GetType().Name} has type {element.GetType()} that " +
+                        $"is not one of the supported key element types. Available key element types are " +
+                        $"string, bool, int, long, LocalDate, LocalTime, LocalMinute, LocalDateTime, Enum, or Key.");
+                }
+            }
+
+            return tokenIndex;
+        }
     }
 }
