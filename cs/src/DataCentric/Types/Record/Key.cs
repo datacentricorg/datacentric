@@ -181,13 +181,6 @@ namespace DataCentric
             // Split key into tokens
             var tokens = value.Split(';');
 
-            // Check that none of the tokens are empty
-            foreach (string token in tokens)
-            {
-                if (string.IsNullOrEmpty(token))
-                    throw new Exception($"Key {value} of key type {GetType().Name} contains an empty token.");
-            }
-
             // Call the private method that uses array of tokens.
             // This method returns the number of tokens actually
             // used to parse the key.
@@ -229,19 +222,26 @@ namespace DataCentric
             // Get key elements using reflection
             var elementInfoArray = DataTypeInfo.GetOrCreate(this).DataElements;
 
+            // If singleton is detected process it separately, then exit
+            if (elementInfoArray.Length == 0)
+            {
+                // Check that string key is empty
+                if (tokens.Length != 1 || tokens[0] != String.Empty)
+                    throw new Exception($"Type {GetType()} has key {string.Join(";", tokens)} while " +
+                                        $"for a singleton the key must be an empty string (String.Empty). " +
+                                        $"Singleton key is a key that has no key elements.");
+
+                // Return the length of empty key which consists of one (empty) token
+                return 1;
+            }
+
             // Check that there are enough remaining tokens in the key for each key element
             if (tokens.Length - tokenIndex < elementInfoArray.Length)
             {
-                StringBuilder value = new StringBuilder();
-                for (int i = tokenIndex; i < tokens.Length; i++)
-                {
-                    value.Append(tokens[i]);
-                    if (i > tokenIndex) value.Append(";");
-                }
                 throw new Exception(
                     $"Key of type {GetType().Name} requires at least {elementInfoArray.Length} elements " +
                     $"{String.Join(";", elementInfoArray.Select(p => p.Name).ToArray())} while there are " +
-                    $"only {tokens.Length - tokenIndex} remaining key tokens: {value}.");
+                    $"only {tokens.Length - tokenIndex} remaining key tokens: {string.Join(";", tokens)}.");
             }
 
             // Iterate over element info elements, advancing tokenIndex by the required
@@ -256,6 +256,8 @@ namespace DataCentric
                 // Convert string token to value depending on elementType
                 if (elementType == typeof(string))
                 {
+                    CheckTokenNotEmpty(tokens, tokenIndex);
+
                     string token = tokens[tokenIndex++];
                     elementInfo.SetValue(this, token);
                 }
@@ -267,24 +269,32 @@ namespace DataCentric
                 }
                 else if (elementType == typeof(bool) || elementType == typeof(bool?))
                 {
+                    CheckTokenNotEmpty(tokens, tokenIndex);
+
                     string token = tokens[tokenIndex++];
                     bool tokenValue = bool.Parse(token);
                     elementInfo.SetValue(this, tokenValue);
                 }
                 else if (elementType == typeof(int) || elementType == typeof(int?))
                 {
+                    CheckTokenNotEmpty(tokens, tokenIndex);
+
                     string token = tokens[tokenIndex++];
                     int tokenValue = int.Parse(token);
                     elementInfo.SetValue(this, tokenValue);
                 }
                 else if (elementType == typeof(long) || elementType == typeof(long?))
                 {
+                    CheckTokenNotEmpty(tokens, tokenIndex);
+
                     string token = tokens[tokenIndex++];
                     long tokenValue = long.Parse(token);
                     elementInfo.SetValue(this, tokenValue);
                 }
                 else if (elementType == typeof(LocalDate) || elementType == typeof(LocalDate?))
                 {
+                    CheckTokenNotEmpty(tokens, tokenIndex);
+
                     // Inside the key, LocalDate is represented as readable int in
                     // non-delimited yyyymmdd format, not as delimited ISO string.
                     //
@@ -302,6 +312,8 @@ namespace DataCentric
                 }
                 else if (elementType == typeof(LocalTime) || elementType == typeof(LocalTime?))
                 {
+                    CheckTokenNotEmpty(tokens, tokenIndex);
+
                     // Inside the key, LocalTime is represented as readable int in
                     // non-delimited hhmmssfff format, not as delimited ISO string.
                     //
@@ -319,6 +331,8 @@ namespace DataCentric
                 }
                 else if (elementType == typeof(LocalMinute) || elementType == typeof(LocalMinute?))
                 {
+                    CheckTokenNotEmpty(tokens, tokenIndex);
+
                     // Inside the key, LocalMinute is represented as readable int in
                     // non-delimited hhmm format, not as delimited ISO string.
                     //
@@ -336,6 +350,8 @@ namespace DataCentric
                 }
                 else if (elementType == typeof(LocalDateTime) || elementType == typeof(LocalDateTime?))
                 {
+                    CheckTokenNotEmpty(tokens, tokenIndex);
+
                     // Inside the key, LocalDateTime is represented as readable long in
                     // non-delimited yyyymmddhhmmssfff format, not as delimited ISO string.
                     //
@@ -353,12 +369,16 @@ namespace DataCentric
                 }
                 else if (elementType == typeof(ObjectId) || elementType == typeof(ObjectId?))
                 {
+                    CheckTokenNotEmpty(tokens, tokenIndex);
+
                     string token = tokens[tokenIndex++];
                     ObjectId tokenValue = ObjectId.Parse(token);
                     elementInfo.SetValue(this, tokenValue);
                 }
                 else if (elementType.BaseType == typeof(Enum)) // TODO Support nullable Enum in key
                 {
+                    CheckTokenNotEmpty(tokens, tokenIndex);
+
                     string token = tokens[tokenIndex++];
                     object tokenValue = Enum.Parse(elementType, token);
                     elementInfo.SetValue(this, tokenValue);
@@ -380,6 +400,16 @@ namespace DataCentric
             }
 
             return tokenIndex;
+        }
+
+        /// <summary>
+        /// Check that token at the specified position is not empty.
+        /// </summary>
+        private void CheckTokenNotEmpty(string[] tokens, int tokenIndex)
+        {
+            string token = tokens[tokenIndex];
+            if (string.IsNullOrEmpty(token))
+                throw new Exception($"Key {string.Join(";", tokens)} for key type {GetType().Name} contains an empty token.");
         }
     }
 }
