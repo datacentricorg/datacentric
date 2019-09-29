@@ -48,7 +48,7 @@ namespace DataCentric
     /// lookup sequence. The root dataset cannot have Imports.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<DataSetKey>))]
-    public class DataSetKey : TypedKey<DataSetKey, DataSetData>
+    public sealed class DataSetKey : TypedKey<DataSetKey, DataSetData>
     {
         /// <summary>Dataset identifier.</summary>
         public string DataSetId { get; set; }

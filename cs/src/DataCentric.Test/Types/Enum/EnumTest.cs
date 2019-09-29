@@ -37,7 +37,7 @@ namespace DataCentric.Test
 
     /// <summary>Key class that has all of the permitted non-nullable key elements included.</summary>
     [BsonSerializer(typeof(BsonKeySerializer<EnumTestNonNullableSampleKey>))]
-    public class EnumTestNonNullableSampleKey : TypedKey<EnumTestNonNullableSampleKey, EnumTestNonNullableSampleData>
+    public sealed class EnumTestNonNullableSampleKey : TypedKey<EnumTestNonNullableSampleKey, EnumTestNonNullableSampleData>
     {
         public EnumTestSampleType EnumId { get; set; }
     }
@@ -52,7 +52,7 @@ namespace DataCentric.Test
 
     /// <summary>Key class that has all of the permitted nullable key elements included.</summary>
     [BsonSerializer(typeof(BsonKeySerializer<EnumTestNullableSampleKey>))]
-    public class EnumTestNullableSampleKey : TypedKey<EnumTestNullableSampleKey, EnumTestNullableSampleData>
+    public sealed class EnumTestNullableSampleKey : TypedKey<EnumTestNullableSampleKey, EnumTestNullableSampleData>
     {
         public EnumTestSampleType? EnumId { get; set; }
     }

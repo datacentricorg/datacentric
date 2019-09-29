@@ -42,7 +42,7 @@ namespace DataCentric
     /// country and the other the city, for example America/New_York.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<TimeZoneKey>))]
-    public class TimeZoneKey : TypedKey<TimeZoneKey, TimeZoneData>
+    public sealed class TimeZoneKey : TypedKey<TimeZoneKey, TimeZoneData>
     {
         /// <summary>
         /// Unique timezone identifier.

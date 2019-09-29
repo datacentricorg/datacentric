@@ -23,7 +23,7 @@ namespace DataCentric.Test
 {
     /// <summary>Key class that has all of the permitted nullable key elements included.</summary>
     [BsonSerializer(typeof(BsonKeySerializer<QueryTestNullableKey>))]
-    public class QueryTestNullableKey : TypedKey<QueryTestNullableKey, QueryTestNullableData>
+    public sealed class QueryTestNullableKey : TypedKey<QueryTestNullableKey, QueryTestNullableData>
     {
         public string RecordId { get; set; }
     }
