@@ -72,7 +72,7 @@ namespace DataCentric
         /// Root data type is the type that inherits directly
         /// from Key(TKey, TRecord).
         /// </summary>
-        public Dictionary<string, PropertyInfo> RootElementDict { get; }
+        public Dictionary<string, PropertyInfo> DataElementDict { get; }
 
         /// <summary>
         /// Get cached instance for the specified object, or create
@@ -135,39 +135,44 @@ namespace DataCentric
             // there is no base class
             List<Type> inheritanceChain = new List<Type>();
             Type currentType = type;
-            while (currentType.BaseType != null)
+            while (currentType != null)
             {
                 // Add type to the inheritance chain
                 inheritanceChain.Add(currentType);
 
-                string baseClassName = currentType.BaseType.Name;
-                if (baseClassName == "Data")
+                string className = currentType.Name;
+                if (className == "Data")
                 {
-                    RootKind = RootKind.Element;
-                    RootType = currentType;
-                    break;
+                    if (RootType == null)
+                    {
+                        RootKind = RootKind.Element;
+                        RootType = currentType;
+                    }
                 }
-                else if (baseClassName == "TypedKey`2"
-                         || baseClassName == "RootKey`2"
-                         || baseClassName == "Key")
+                else if (className == "TypedKey`2"
+                         || className == "RootKey`2"
+                         || className == "Key")
                 {
-                    RootKind = RootKind.Key;
-                    RootType = currentType;
+                    if (RootType == null)
+                    {
+                        RootKind = RootKind.Key;
+                        RootType = currentType;
+                    }
 
                     if (inheritanceChain.Count > 1)
                         throw new Exception(
-                            $"Key type {type.Name} is not derived directly from Key(TRecord). " +
-                            $"Key classes cannot have an inheritance hierarchy, only data classes can.");
-
-                    break;
+                            $"Key type {type.Name} must be derived directly from TypedKey<TKey, TRecord> and sealed " +
+                            $"because key classes cannot have an inheritance hierarchy, only data classes can.");
                 }
-                else if (baseClassName == "TypedRecord`2"
-                         || baseClassName == "RootRecord`2"
-                         || baseClassName == "Record")
+                else if (className == "TypedRecord`2"
+                         || className == "RootRecord`2"
+                         || className == "Record")
                 {
-                    RootKind = RootKind.Record;
-                    RootType = currentType;
-                    break;
+                    if (RootType == null)
+                    {
+                        RootKind = RootKind.Record;
+                        RootType = currentType;
+                    }
                 }
 
                 currentType = currentType.BaseType;
@@ -179,7 +184,6 @@ namespace DataCentric
                     $"Data type {type.Name} is not derived from Data, TypedKey<TKey, TRecord>, or TypedRecord<TKey, TRecord>.");
 
             // Add elements in the order from from base to derived
-            var rootElementList = new List<PropertyInfo>();
             var dataElementList = new List<PropertyInfo>();
             for (int i = inheritanceChain.Count - 1; i >= 0; --i)
             {
@@ -199,30 +203,15 @@ namespace DataCentric
                     var propGetterBaseDefinition = propGetter.GetBaseDefinition();
                     if (!propGetter.Equals(propGetterBaseDefinition))
                     {
-                        // This is an override, skip unless defined in types below root
-                        var declaringTypeName = propGetterBaseDefinition.DeclaringType.Name;
-                        if (declaringTypeName != "Data"
-                            && declaringTypeName != "TypedKey`2"
-                            && declaringTypeName != "RootKey`2"
-                            && declaringTypeName != "Key"
-                            && declaringTypeName != "TypedRecord`2"
-                            && declaringTypeName != "RootRecord`2"
-                            && declaringTypeName != "Record")
-                        {
-                            continue;
-                        }
+                        // This is an override, skip at this level in the inheritance
+                        // chain. The property will be added when its base definition
+                        // is reached.
+                        continue;
                     }
 
                     // DataElements has properties from all classes in the inheritance
                     // chain in the order of declaration, from base to derived
                     dataElementList.Add(propInfo);
-
-                    // RootElements has properties only from the class that inherits
-                    // directly from Key(TKey, TRecord)
-                    if (i == inheritanceChain.Count - 1)
-                    {
-                        rootElementList.Add(propInfo);
-                    }
                 }
             }
 
@@ -230,14 +219,14 @@ namespace DataCentric
             // names of types in the inheritance chain
             InheritanceChain = inheritanceChain.Select(p => p.Name).ToArray();
 
-            // Populate data elements and root elements
+            // Populate data element list
             DataElements = dataElementList.ToArray();
 
-            // Populate root element dictionary
-            RootElementDict = new Dictionary<string, PropertyInfo>();
-            foreach (var propertyInfo in rootElementList)
+            // Populate data element dictionary
+            DataElementDict = new Dictionary<string, PropertyInfo>();
+            foreach (var propertyInfo in dataElementList)
             {
-                RootElementDict.Add(propertyInfo.Name, propertyInfo);
+                DataElementDict.Add(propertyInfo.Name, propertyInfo);
             }
         }
     }
