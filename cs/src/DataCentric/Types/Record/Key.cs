@@ -59,6 +59,13 @@ namespace DataCentric
             // Split key into tokens
             var tokens = value.Split(';');
 
+            // Check that none of the tokens are empty
+            foreach (string token in tokens)
+            {
+                if (string.IsNullOrEmpty(token))
+                    throw new Exception($"Key {value} of key type {GetType().Name} contains an empty token.");
+            }
+
             // Call the private method that uses array of tokens.
             // This method returns the number of tokens actually
             // used to parse the key.
@@ -244,24 +251,11 @@ namespace DataCentric
                 // Get element type
                 Type elementType = elementInfo.PropertyType;
 
-                // Get token and check that it is not empty
-                string token = tokens[tokenIndex];
-                if (string.IsNullOrEmpty(token))
-                {
-                    StringBuilder value = new StringBuilder();
-                    for (int i = tokenIndex; i < tokens.Length; i++)
-                    {
-                        value.Append(tokens[i]);
-                        if (i > tokenIndex) value.Append(";");
-                    }
-                    throw new Exception($"Key {value} of key type {GetType().Name} contains an empty token.");
-                }
-
                 // Convert string token to value depending on elementType
                 if (elementType == typeof(string))
                 {
+                    string token = tokens[tokenIndex++];
                     elementInfo.SetValue(this, token);
-                    tokenIndex++;
                 }
                 else if (elementType == typeof(double) || elementType == typeof(double?))
                 {
@@ -271,21 +265,21 @@ namespace DataCentric
                 }
                 else if (elementType == typeof(bool) || elementType == typeof(bool?))
                 {
+                    string token = tokens[tokenIndex++];
                     bool tokenValue = bool.Parse(token);
                     elementInfo.SetValue(this, tokenValue);
-                    tokenIndex++;
                 }
                 else if (elementType == typeof(int) || elementType == typeof(int?))
                 {
+                    string token = tokens[tokenIndex++];
                     int tokenValue = int.Parse(token);
                     elementInfo.SetValue(this, tokenValue);
-                    tokenIndex++;
                 }
                 else if (elementType == typeof(long) || elementType == typeof(long?))
                 {
+                    string token = tokens[tokenIndex++];
                     long tokenValue = long.Parse(token);
                     elementInfo.SetValue(this, tokenValue);
-                    tokenIndex++;
                 }
                 else if (elementType == typeof(LocalDate) || elementType == typeof(LocalDate?))
                 {
@@ -293,6 +287,7 @@ namespace DataCentric
                     // non-delimited yyyymmdd format, not as delimited ISO string.
                     //
                     // First parse the string to int, then convert int to LocalDate.
+                    string token = tokens[tokenIndex++];
                     if (!Int32.TryParse(token, out int isoInt))
                     {
                         throw new Exception(
@@ -302,7 +297,6 @@ namespace DataCentric
 
                     LocalDate tokenValue = LocalDateUtils.ParseIsoInt(isoInt);
                     elementInfo.SetValue(this, tokenValue);
-                    tokenIndex++;
                 }
                 else if (elementType == typeof(LocalTime) || elementType == typeof(LocalTime?))
                 {
@@ -310,6 +304,7 @@ namespace DataCentric
                     // non-delimited hhmmssfff format, not as delimited ISO string.
                     //
                     // First parse the string to int, then convert int to LocalTime.
+                    string token = tokens[tokenIndex++];
                     if (!Int32.TryParse(token, out int isoInt))
                     {
                         throw new Exception(
@@ -319,7 +314,6 @@ namespace DataCentric
 
                     LocalTime tokenValue = LocalTimeUtils.ParseIsoInt(isoInt);
                     elementInfo.SetValue(this, tokenValue);
-                    tokenIndex++;
                 }
                 else if (elementType == typeof(LocalMinute) || elementType == typeof(LocalMinute?))
                 {
@@ -327,6 +321,7 @@ namespace DataCentric
                     // non-delimited hhmm format, not as delimited ISO string.
                     //
                     // First parse the string to int, then convert int to LocalTime.
+                    string token = tokens[tokenIndex++];
                     if (!Int32.TryParse(token, out int isoInt))
                     {
                         throw new Exception(
@@ -336,7 +331,6 @@ namespace DataCentric
 
                     LocalMinute tokenValue = LocalMinuteUtils.ParseIsoInt(isoInt);
                     elementInfo.SetValue(this, tokenValue);
-                    tokenIndex++;
                 }
                 else if (elementType == typeof(LocalDateTime) || elementType == typeof(LocalDateTime?))
                 {
@@ -344,6 +338,7 @@ namespace DataCentric
                     // non-delimited yyyymmddhhmmssfff format, not as delimited ISO string.
                     //
                     // First parse the string to long, then convert int to LocalDateTime.
+                    string token = tokens[tokenIndex++];
                     if (!Int64.TryParse(token, out long isoLong))
                     {
                         throw new Exception(
@@ -353,31 +348,30 @@ namespace DataCentric
 
                     LocalDateTime tokenValue = LocalDateTimeUtils.ParseIsoLong(isoLong);
                     elementInfo.SetValue(this, tokenValue);
-                    tokenIndex++;
                 }
                 else if (elementType == typeof(ObjectId) || elementType == typeof(ObjectId?))
                 {
+                    string token = tokens[tokenIndex++];
                     ObjectId tokenValue = ObjectId.Parse(token);
                     elementInfo.SetValue(this, tokenValue);
-                    tokenIndex++;
                 }
                 else if (elementType.BaseType == typeof(Enum)) // TODO Support nullable Enum in key
                 {
+                    string token = tokens[tokenIndex++];
                     object tokenValue = Enum.Parse(elementType, token);
                     elementInfo.SetValue(this, tokenValue);
-                    tokenIndex++;
                 }
-                else if (elementType.IsInstanceOfType(typeof(Key)))
+                else if (typeof(Key).IsAssignableFrom(elementType))
                 {
-                    Key keyElement = (Key)elementInfo.GetValue(this);
+                    Key keyElement = (Key)Activator.CreateInstance(elementType);
                     tokenIndex = keyElement.InitFromTokens(tokens, tokenIndex);
+                    elementInfo.SetValue(this, keyElement);
                 }
                 else
                 {
                     // Field type is unsupported for a key, error message
-                    object element = elementInfo.GetValue(this);
                     throw new Exception(
-                        $"Element {elementInfo.Name} of key type {GetType().Name} has type {element.GetType()} that " +
+                        $"Element {elementInfo.Name} of key type {GetType().Name} has type {elementType} that " +
                         $"is not one of the supported key element types. Available key element types are " +
                         $"string, bool, int, long, LocalDate, LocalTime, LocalMinute, LocalDateTime, Enum, or Key.");
                 }

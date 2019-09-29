@@ -1,0 +1,3 @@
+Verify.Text: Serialized key: abc;def;123;xyz
+Verify.Text: Deserialized key: abc;def;123;xyz
+Verify.Text: Record abc;def;123;xyz in dataset DataSet0 found and has Type=MongoTestCompositeData.
