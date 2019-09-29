@@ -34,7 +34,7 @@ namespace DataCentric
         /// All derived classes overriding this method must call base.Init(context)
         /// before executing the the rest of the code in the method override.
         /// </summary>
-        public virtual void Init(IContext context)
+        public override void Init(IContext context)
         {
             // Initialize the base class
             base.Init(context);
