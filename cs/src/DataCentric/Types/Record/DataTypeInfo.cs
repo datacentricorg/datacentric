@@ -140,8 +140,8 @@ namespace DataCentric
                 // Add type to the inheritance chain
                 inheritanceChain.Add(currentType);
 
-                string baseClassName = currentType.BaseType.Name;
-                if (baseClassName == "Data")
+                Type baseType = currentType.BaseType;
+                if (baseType == typeof(Data))
                 {
                     if (RootType == null)
                     {
@@ -149,8 +149,7 @@ namespace DataCentric
                         RootType = currentType;
                     }
                 }
-                else if (baseClassName == "TypedKey`2"
-                         || baseClassName == "Key")
+                else if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(TypedKey<,>))
                 {
                     if (RootType == null)
                     {
@@ -163,9 +162,7 @@ namespace DataCentric
                                 $"because key classes cannot have an inheritance hierarchy, only data classes can.");
                     }
                 }
-                else if (baseClassName == "TypedRecord`2"
-                         || baseClassName == "RootRecord`2"
-                         || baseClassName == "Record")
+                else if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(TypedRecord<,>))
                 {
                     if (RootType == null)
                     {
