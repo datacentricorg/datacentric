@@ -95,5 +95,31 @@ namespace DataCentric.Test
                 context.Verify.Text(loadedRecord.Key);
             }
         }
+
+        /// <summary>Test record with composite key.</summary>
+        [Fact]
+        public void CompositeKey()
+        {
+            using (var context = new TemporalMongoTestContext(this))
+            {
+                context.KeepTestData = true;
+
+                var rec = new CompositeKeySampleData();
+                rec.KeyElement1 = "abc";
+                rec.KeyElement2 = new BaseSampleKey();
+                rec.KeyElement2.RecordId = "def";
+                rec.KeyElement2.RecordIndex = 123;
+                rec.KeyElement3 = "xyz";
+
+                // Verify key serialization
+                string keyValue = rec.ToKey().ToString();
+                context.Verify.Text($"Serialized key: {keyValue}");
+
+                // Verify key deserialization
+                var key = new CompositeKeySampleKey();
+                key.PopulateFrom(keyValue);
+                context.Verify.Text($"Deserialized key: {key}");
+            }
+        }
     }
 }
