@@ -96,7 +96,9 @@ namespace DataCentric.Test
             }
         }
 
-        /// <summary>Test record with composite key.</summary>
+        /// <summary>
+        /// Test composite key that has an embedded key with more than one token.
+        /// </summary>
         [Fact]
         public void CompositeKey()
         {
@@ -117,6 +119,55 @@ namespace DataCentric.Test
 
                 // Verify key deserialization
                 var key = new CompositeKeySampleKey();
+                key.PopulateFrom(keyValue);
+                context.Verify.Text($"Deserialized key: {key}");
+            }
+        }
+
+        /// <summary>
+        /// Test empty key for a singleton.
+        /// </summary>
+        [Fact]
+        public void SingletonKey()
+        {
+            using (var context = new TemporalMongoTestContext(this))
+            {
+                context.KeepTestData = true;
+
+                var rec = new SingletonSampleData();
+                rec.StringElement = "abc";
+
+                // Verify key serialization
+                string keyValue = rec.ToKey().ToString();
+                context.Verify.Text($"Serialized key: {keyValue}");
+
+                // Verify key deserialization
+                var key = new SingletonSampleKey();
+                key.PopulateFrom(keyValue);
+                context.Verify.Text($"Deserialized key: {key}");
+            }
+        }
+
+        /// <summary>
+        /// Test key based on the record's Id.
+        /// </summary>
+        [Fact]
+        public void IdBasedKey()
+        {
+            using (var context = new TemporalMongoTestContext(this))
+            {
+                context.KeepTestData = true;
+
+                var rec = new IdBasedKeySampleData();
+                rec.Id = ObjectId.GenerateNewId(123456789);
+                rec.StringElement = "abc";
+
+                // Verify key serialization
+                string keyValue = rec.ToKey().ToString();
+                context.Verify.Text($"Serialized key: {keyValue}");
+
+                // Verify key deserialization
+                var key = new IdBasedKeySampleKey();
                 key.PopulateFrom(keyValue);
                 context.Verify.Text($"Deserialized key: {key}");
             }
