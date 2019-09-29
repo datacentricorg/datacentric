@@ -42,21 +42,6 @@ namespace DataCentric
     /// </summary>
     public abstract class ViewerOutputData : TypedRecord<JobKey, JobData>
     {
-        /// <summary>
-        /// ObjectId of the record is specific to its version.
-        ///
-        /// For the record's history to be captured correctly, all
-        /// update operations must assign a new ObjectId with the
-        /// timestamp that matches update time.
-        ///
-        /// This definition includes the record's _id in its key.
-        /// </summary>
-        public override ObjectId Id
-        {
-            get => base.Id;
-            set => base.Id = value;
-        }
-
         /// <summary>Job which produced the output.</summary>
         [BsonRequired]
         public JobKey Job { get; set; }

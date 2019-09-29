@@ -44,21 +44,5 @@ namespace DataCentric
     /// </summary>
     public class JobQueueData : TypedRecord<JobQueueKey, JobQueueData>
     {
-        /// <summary>
-        /// Overriding element Id here includes the record's ObjectId
-        /// in its key. Because ObjectId of the record is specific
-        /// to its version, this is equivalent to using an auto-
-        /// incrementing column as part of the record's primary key
-        /// in a relational database.
-        ///
-        /// For the record's history to be captured correctly, all
-        /// update operations must assign a new ObjectId with the
-        /// timestamp that matches update time.
-        /// </summary>
-        public override ObjectId Id
-        {
-            get => base.Id;
-            set => base.Id = value;
-        }
     }
 }
