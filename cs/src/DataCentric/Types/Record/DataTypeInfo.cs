@@ -65,16 +65,6 @@ namespace DataCentric
         public PropertyInfo[] DataElements { get; }
 
         /// <summary>
-        /// Array of property info for the elements of the root
-        /// data type in the order of declaration, including key
-        /// elements and optionally also non-key elements.
-        ///
-        /// Root data type is the type that inherits directly
-        /// from Key(TKey, TRecord).
-        /// </summary>
-        public PropertyInfo[] RootElements { get; }
-
-        /// <summary>
         /// Dictionary of property info for the elements of the
         /// root data type indexed by element name, including key
         /// elements and optionally also non-key elements.
@@ -240,13 +230,12 @@ namespace DataCentric
             // names of types in the inheritance chain
             InheritanceChain = inheritanceChain.Select(p => p.Name).ToArray();
 
-            // Populate root elements and data elements
-            RootElements = rootElementList.ToArray();
+            // Populate data elements and root elements
             DataElements = dataElementList.ToArray();
 
             // Populate root element dictionary
             RootElementDict = new Dictionary<string, PropertyInfo>();
-            foreach (var propertyInfo in RootElements)
+            foreach (var propertyInfo in rootElementList)
             {
                 RootElementDict.Add(propertyInfo.Name, propertyInfo);
             }

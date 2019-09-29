@@ -197,7 +197,7 @@ namespace DataCentric
             // Get PropertyInfo arrays for TKey and TRecord
             var rootTypeName = DataTypeInfo.GetOrCreate(GetType()).RootType.Name;
             var dataElementInfoDict = DataTypeInfo.GetOrCreate(typeof(TRecord)).RootElementDict;
-            var keyElementInfoArray = DataTypeInfo.GetOrCreate(typeof(TKey)).RootElements;
+            var keyElementInfoArray = DataTypeInfo.GetOrCreate(typeof(TKey)).DataElements;
 
             // Check that TRecord has the same or greater number of elements
             // as TKey (all elements of TKey must also be present in TRecord)
