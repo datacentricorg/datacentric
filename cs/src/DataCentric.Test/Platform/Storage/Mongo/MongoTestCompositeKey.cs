@@ -26,12 +26,17 @@ using Xunit;
 
 namespace DataCentric.Test
 {
-    /// <summary>Key class.</summary>
-    [BsonSerializer(typeof(BsonKeySerializer<MongoTestCompositeKey>))]
-    public sealed class MongoTestCompositeKey : TypedKey<MongoTestCompositeKey, MongoTestCompositeData>
+    /// <summary>Data type sample with composite key.</summary>
+    [BsonSerializer(typeof(BsonKeySerializer<CompositeKeySampleKey>))]
+    public sealed class CompositeKeySampleKey : TypedKey<CompositeKeySampleKey, CompositeKeySampleData>
     {
+        /// <summary>Sample element.</summary>
         public string KeyElement1 { get; set; }
-        public MongoTestKey KeyElement2 { get; set; }
+
+        /// <summary>Sample element.</summary>
+        public BaseSampleKey KeyElement2 { get; set; }
+
+        /// <summary>Sample element.</summary>
         public string KeyElement3 { get; set; }
     }
 }

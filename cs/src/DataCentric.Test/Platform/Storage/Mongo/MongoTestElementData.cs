@@ -27,9 +27,12 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>Element data class.</summary>
-    public class MongoTestElementData : Data
+    public class ElementSampleData : Data
     {
+        /// <summary>Sample element.</summary>
         public double? DoubleElement3 { get; set; }
+
+        /// <summary>Sample element.</summary>
         public string StringElement3 { get; set; }
     }
 }

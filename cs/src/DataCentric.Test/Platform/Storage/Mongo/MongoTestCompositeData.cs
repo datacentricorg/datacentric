@@ -26,11 +26,16 @@ using Xunit;
 
 namespace DataCentric.Test
 {
-    /// <summary>Type with composite key.</summary>
-    public class MongoTestCompositeData : TypedRecord<MongoTestCompositeKey, MongoTestCompositeData>
+    /// <summary>Data type sample with composite key.</summary>
+    public class CompositeKeySampleData : TypedRecord<CompositeKeySampleKey, CompositeKeySampleData>
     {
+        /// <summary>Sample element.</summary>
         public string KeyElement1 { get; set; }
-        public MongoTestKey KeyElement2 { get; set; }
+
+        /// <summary>Sample element.</summary>
+        public BaseSampleKey KeyElement2 { get; set; }
+
+        /// <summary>Sample element.</summary>
         public string KeyElement3 { get; set; }
     }
 }

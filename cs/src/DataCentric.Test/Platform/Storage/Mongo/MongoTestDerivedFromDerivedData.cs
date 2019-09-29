@@ -27,9 +27,12 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>Next level in the inheritance chain.</summary>
-    public class MongoTestDerivedFromDerivedData : MongoTestDerivedData
+    public class DerivedFromDerivedSampleData : DerivedSampleData
     {
+        /// <summary>Sample element.</summary>
         public double? OtherDoubleElement3 { get; set; }
+
+        /// <summary>Sample element.</summary>
         public string OtherStringElement3 { get; set; }
     }
 }

@@ -34,7 +34,7 @@ namespace DataCentric.Test
         {
             using (var context = new TemporalMongoTestContext(this))
             {
-                var record = new MongoKeyTestNonNullableSampleData();
+                var record = new NonNullableElementsSampleData();
                 record.DataSet = context.DataSet;
                 record.StringToken = "A";
                 record.BoolToken = true;
@@ -68,7 +68,7 @@ namespace DataCentric.Test
         {
             using (var context = new TemporalMongoTestContext(this))
             {
-                var record = new MongoKeyTestNullableSampleData();
+                var record = new NullableElementsSampleData();
                 record.DataSet = context.DataSet;
                 record.BoolToken = true;
                 record.IntToken = 123;

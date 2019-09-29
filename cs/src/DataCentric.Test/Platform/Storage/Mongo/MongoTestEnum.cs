@@ -26,11 +26,16 @@ using Xunit;
 
 namespace DataCentric.Test
 {
-    /// <summary>Enum type.</summary>
-    public enum MongoTestEnum
+    /// <summary>Sample enum.</summary>
+    public enum SampleEnum
     {
+        /// <summary>Empty</summary>
         Empty,
+
+        /// <summary>Sample enum item.</summary>
         EnumValue1,
+
+        /// <summary>Sample enum item.</summary>
         EnumValue2
     }
 }

@@ -26,21 +26,44 @@ using Xunit;
 
 namespace DataCentric.Test
 {
-    /// <summary>Derived data class.</summary>
+    /// <summary>Sample derived data class.</summary>
     [IndexElements("DoubleElement2, -DoubleElement")]
-    public class MongoTestDerivedData : MongoTestData
+    public class DerivedSampleData : BaseSampleData
     {
+        /// <summary>Sample element.</summary>
         public double? DoubleElement2 { get; set; }
+
+        /// <summary>Sample element.</summary>
         public string StringElement2 { get; set; }
+
+        /// <summary>Sample element.</summary>
         public string[] ArrayOfString { get; set; }
+
+        /// <summary>Sample element.</summary>
         public List<string> ListOfString { get; set; }
+
+        /// <summary>Sample element.</summary>
         public double[] ArrayOfDouble { get; set; }
+
+        /// <summary>Sample element.</summary>
         public double?[] ArrayOfNullableDouble { get; set; }
+
+        /// <summary>Sample element.</summary>
         public List<double> ListOfDouble { get; set; }
+
+        /// <summary>Sample element.</summary>
         public List<double?> ListOfNullableDouble { get; set; }
-        public MongoTestElementData DataElement { get; set; }
-        public List<MongoTestElementData> DataElementList { get; set; }
-        public MongoTestKey KeyElement { get; set; }
-        public List<MongoTestKey> KeyElementList { get; set; }
+
+        /// <summary>Sample element.</summary>
+        public ElementSampleData DataElement { get; set; }
+
+        /// <summary>Sample element.</summary>
+        public List<ElementSampleData> DataElementList { get; set; }
+
+        /// <summary>Sample element.</summary>
+        public BaseSampleKey KeyElement { get; set; }
+
+        /// <summary>Sample element.</summary>
+        public List<BaseSampleKey> KeyElementList { get; set; }
     }
 }

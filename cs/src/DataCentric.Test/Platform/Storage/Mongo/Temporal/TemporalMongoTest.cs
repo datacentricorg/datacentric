@@ -43,12 +43,12 @@ namespace DataCentric.Test
                 var dataSet1 = context.GetDataSet("DataSet1", context.DataSet);
 
                 // Create keys
-                var keyA0 = new MongoTestKey()
+                var keyA0 = new BaseSampleKey()
                 {
                     RecordId = "A",
                     RecordIndex = 0
                 };
-                var keyB0 = new MongoTestKey()
+                var keyB0 = new BaseSampleKey()
                 {
                     RecordId = "B",
                     RecordIndex = 0
@@ -70,9 +70,9 @@ namespace DataCentric.Test
             {
                 context.KeepTestData = true;
 
-                var rec = new MongoTestCompositeData();
+                var rec = new CompositeKeySampleData();
                 rec.KeyElement1 = "abc";
-                rec.KeyElement2 = new MongoTestKey();
+                rec.KeyElement2 = new BaseSampleKey();
                 rec.KeyElement2.RecordId = "def";
                 rec.KeyElement2.RecordIndex = 123;
                 rec.KeyElement3 = "xyz";
@@ -85,7 +85,7 @@ namespace DataCentric.Test
                 context.Verify.Text($"Serialized key: {keyValue}");
 
                 // Verify key deserialization
-                var key = new MongoTestCompositeKey();
+                var key = new CompositeKeySampleKey();
                 key.PopulateFrom(keyValue);
                 context.Verify.Text($"Deserialized key: {key}");
 
@@ -147,7 +147,7 @@ namespace DataCentric.Test
                 SaveMinimalRecord(context, "DataSet3", "B", 11, 0);
 
                 // Query for RecordId=B
-                var query = context.GetQuery<MongoTestData>(dataSet3)
+                var query = context.GetQuery<BaseSampleData>(dataSet3)
                     .Where(p => p.RecordId == "B")
                     .SortBy(p => p.RecordId)
                     .SortBy(p => p.RecordIndex)
@@ -191,12 +191,12 @@ namespace DataCentric.Test
                 var dataSet1 = context.GetDataSet("DataSet1", context.DataSet);
 
                 // Create keys
-                var keyA0 = new MongoTestKey()
+                var keyA0 = new BaseSampleKey()
                 {
                     RecordId = "A",
                     RecordIndex = 0
                 };
-                var keyB0 = new MongoTestKey()
+                var keyB0 = new BaseSampleKey()
                 {
                     RecordId = "B",
                     RecordIndex = 0
@@ -210,9 +210,9 @@ namespace DataCentric.Test
                 VerifyLoad(context, "DataSet1", keyB0);
 
                 context.Verify.Text("Query in dataset DataSet0");
-                VerifyQuery<MongoTestData>(context, "DataSet0");
+                VerifyQuery<BaseSampleData>(context, "DataSet0");
                 context.Verify.Text("Query in dataset DataSet1");
-                VerifyQuery<MongoTestData>(context, "DataSet1");
+                VerifyQuery<BaseSampleData>(context, "DataSet1");
 
                 context.Verify.Text("Delete A0 record in B dataset");
                 context.Delete(keyA0, dataSet1);
@@ -220,9 +220,9 @@ namespace DataCentric.Test
                 VerifyLoad(context, "DataSet1", keyA0);
 
                 context.Verify.Text("Query in dataset DataSet0");
-                VerifyQuery<MongoTestData>(context, "DataSet0");
+                VerifyQuery<BaseSampleData>(context, "DataSet0");
                 context.Verify.Text("Query in dataset DataSet1");
-                VerifyQuery<MongoTestData>(context, "DataSet1");
+                VerifyQuery<BaseSampleData>(context, "DataSet1");
 
                 context.Verify.Text("Delete A0 record in A dataset");
                 context.Delete(keyA0, dataSet0);
@@ -230,9 +230,9 @@ namespace DataCentric.Test
                 VerifyLoad(context, "DataSet1", keyA0);
 
                 context.Verify.Text("Query in dataset DataSet0");
-                VerifyQuery<MongoTestData>(context, "DataSet0");
+                VerifyQuery<BaseSampleData>(context, "DataSet0");
                 context.Verify.Text("Query in dataset DataSet1");
-                VerifyQuery<MongoTestData>(context, "DataSet1");
+                VerifyQuery<BaseSampleData>(context, "DataSet1");
 
                 context.Verify.Text("Delete B0 record in B dataset");
                 context.Delete(keyB0, dataSet1);
@@ -240,9 +240,9 @@ namespace DataCentric.Test
                 VerifyLoad(context, "DataSet1", keyB0);
 
                 context.Verify.Text("Query in dataset DataSet0");
-                VerifyQuery<MongoTestData>(context, "DataSet0");
+                VerifyQuery<BaseSampleData>(context, "DataSet0");
                 context.Verify.Text("Query in dataset DataSet1");
-                VerifyQuery<MongoTestData>(context, "DataSet1");
+                VerifyQuery<BaseSampleData>(context, "DataSet1");
             }
         }
 
@@ -269,12 +269,12 @@ namespace DataCentric.Test
                 SaveDerivedFromDerivedRecord(context, "DataSet1", "B", 0);
 
                 // Create keys
-                var keyA0 = new MongoTestKey()
+                var keyA0 = new BaseSampleKey()
                 {
                     RecordId = "A",
                     RecordIndex = 0
                 };
-                var keyB0 = new MongoTestKey()
+                var keyB0 = new BaseSampleKey()
                 {
                     RecordId = "B",
                     RecordIndex = 0
@@ -288,9 +288,9 @@ namespace DataCentric.Test
                 VerifyLoad(context, "DataSet1", keyB0);
 
                 context.Verify.Text("Query in dataset DataSet0 for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "DataSet0");
+                VerifyQuery<DerivedSampleData>(context, "DataSet0");
                 context.Verify.Text("Query in dataset DataSet1 for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "DataSet1");
+                VerifyQuery<DerivedSampleData>(context, "DataSet1");
 
                 context.Verify.Text("Change A0 record type in B dataset to C");
                 SaveOtherDerivedRecord(context, "DataSet1", "A", 0);
@@ -298,9 +298,9 @@ namespace DataCentric.Test
                 VerifyLoad(context, "DataSet1", keyA0);
 
                 context.Verify.Text("Query in dataset DataSet0 for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "DataSet0");
+                VerifyQuery<DerivedSampleData>(context, "DataSet0");
                 context.Verify.Text("Query in dataset DataSet1 for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "DataSet1");
+                VerifyQuery<DerivedSampleData>(context, "DataSet1");
 
                 context.Verify.Text("Change A0 record type in A dataset to C");
                 SaveOtherDerivedRecord(context, "DataSet0", "A", 0);
@@ -308,9 +308,9 @@ namespace DataCentric.Test
                 VerifyLoad(context, "DataSet1", keyA0);
 
                 context.Verify.Text("Query in dataset DataSet0 for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "DataSet0");
+                VerifyQuery<DerivedSampleData>(context, "DataSet0");
                 context.Verify.Text("Query in dataset DataSet1 for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "DataSet1");
+                VerifyQuery<DerivedSampleData>(context, "DataSet1");
 
                 context.Verify.Text("Change B0 record type in B dataset to C");
                 SaveOtherDerivedRecord(context, "DataSet1", "B", 0);
@@ -318,9 +318,9 @@ namespace DataCentric.Test
                 VerifyLoad(context, "DataSet1", keyB0);
 
                 context.Verify.Text("Query in dataset DataSet0 for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "DataSet0");
+                VerifyQuery<DerivedSampleData>(context, "DataSet0");
                 context.Verify.Text("Query in dataset DataSet1 for type MongoTestDerivedData");
-                VerifyQuery<MongoTestDerivedData>(context, "DataSet1");
+                VerifyQuery<DerivedSampleData>(context, "DataSet1");
             }
         }
 
@@ -335,7 +335,7 @@ namespace DataCentric.Test
 
                 // Look in B dataset
                 var dataSet1 = context.GetDataSetOrEmpty("DataSet1", context.DataSet);
-                var testQuery = context.GetQuery<MongoTestDerivedData>(dataSet1)
+                var testQuery = context.GetQuery<DerivedSampleData>(dataSet1)
                     .Where(p => p.DataElementList[0].DoubleElement3 == 1.0)
                     .Where(p => p.DataElementList[0].StringElement3 == "A0")
                     .Where(p => p.LocalDateElement < new LocalDate(2003, 5, 2))
@@ -348,7 +348,7 @@ namespace DataCentric.Test
                     .Where(p => p.LocalDateTimeElement > new LocalDateTime(2003, 5, 1, 10, 14, 59))
                     .Where(p => p.LocalDateTimeElement == new LocalDateTime(2003, 5, 1, 10, 15))
                     .Where(p => p.StringElement2 == String.Empty)
-                    .Where(p => p.KeyElement == new MongoTestKey() {RecordId = "BB", RecordIndex = 2})
+                    .Where(p => p.KeyElement == new BaseSampleKey() {RecordId = "BB", RecordIndex = 2})
                     .SortBy(p => p.RecordId);
 
                 foreach (var obj in testQuery.AsEnumerable())
@@ -373,28 +373,28 @@ namespace DataCentric.Test
                 // Load record of derived types by base
                 context.Verify.Text("Load all records by key as MongoTestData.");
                 {
-                    var key = new MongoTestKey {RecordId = "A", RecordIndex = 0};
+                    var key = new BaseSampleKey {RecordId = "A", RecordIndex = 0};
                     var obj = context.LoadOrNull(key, dataSet3);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
-                    var key = new MongoTestKey { RecordId = "B", RecordIndex = 0 };
+                    var key = new BaseSampleKey { RecordId = "B", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSet3);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
-                    var key = new MongoTestKey { RecordId = "C", RecordIndex = 0 };
+                    var key = new BaseSampleKey { RecordId = "C", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSet3);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
-                    var key = new MongoTestKey { RecordId = "D", RecordIndex = 0 };
+                    var key = new BaseSampleKey { RecordId = "D", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSet3);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
                     context.Verify.Text("Query by MongoTestData, unconstrained");
-                    var query = context.GetQuery<MongoTestData>(dataSet3).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
+                    var query = context.GetQuery<BaseSampleData>(dataSet3).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -402,7 +402,7 @@ namespace DataCentric.Test
                 }
                 {
                     context.Verify.Text("Query by MongoTestDerivedData : MongoTestData which also picks up MongoTestDerivedFromDerivedData : MongoTestDerivedData, unconstrained");
-                    var query = context.GetQuery<MongoTestDerivedData>(dataSet3).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
+                    var query = context.GetQuery<DerivedSampleData>(dataSet3).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -410,7 +410,7 @@ namespace DataCentric.Test
                 }
                 {
                     context.Verify.Text("Query by MongoTestOtherDerivedData : MongoTestData, unconstrained");
-                    var query = context.GetQuery<MongoTestOtherDerivedData>(dataSet3).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
+                    var query = context.GetQuery<OtherDerivedSampleData>(dataSet3).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -418,7 +418,7 @@ namespace DataCentric.Test
                 }
                 {
                     context.Verify.Text("Query by MongoTestDerivedFromDerivedData : MongoTestDerivedData, where MongoTestDerivedData : MongoTestData, unconstrained");
-                    var query = context.GetQuery<MongoTestDerivedFromDerivedData>(dataSet3).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
+                    var query = context.GetQuery<DerivedFromDerivedSampleData>(dataSet3).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -440,7 +440,7 @@ namespace DataCentric.Test
                 var dataSet3 = context.GetDataSetOrEmpty("DataSet3", context.DataSet);
 
                 context.Verify.Text("Query by MongoTestData, sort by RecordIndex descending, then by DoubleElement ascending");
-                var baseQuery = context.GetQuery<MongoTestData>(dataSet3)
+                var baseQuery = context.GetQuery<BaseSampleData>(dataSet3)
                     .SortByDescending(p => p.RecordIndex)
                     .SortBy(p => p.DoubleElement);
                 foreach (var obj in baseQuery.AsEnumerable())
@@ -480,16 +480,16 @@ namespace DataCentric.Test
 
                 // Load each record by ObjectId
                 context.Verify.Text("Load records by ObjectId without constraint");
-                context.Verify.Value(context.LoadOrNull<MongoTestData>(objA0) != null, "    Found by ObjectId=A0");
-                context.Verify.Value(context.LoadOrNull<MongoTestData>(objA1) != null, "    Found by ObjectId=A1");
-                context.Verify.Value(context.LoadOrNull<MongoTestData>(objA2) != null, "    Found by ObjectId=A2");
-                context.Verify.Value(context.LoadOrNull<MongoTestData>(objC0) != null, "    Found by ObjectId=C0");
+                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objA0) != null, "    Found by ObjectId=A0");
+                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objA1) != null, "    Found by ObjectId=A1");
+                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objA2) != null, "    Found by ObjectId=A2");
+                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objC0) != null, "    Found by ObjectId=C0");
 
                 // Load each record by string key
                 if (true)
                 {
-                    var loadedA0 = new MongoTestKey() {RecordId = "A", RecordIndex = 0}.LoadOrNull(context, dataSet1);
-                    var loadedC0 = new MongoTestKey() {RecordId = "C", RecordIndex = 0}.LoadOrNull(context, dataSet1);
+                    var loadedA0 = new BaseSampleKey() {RecordId = "A", RecordIndex = 0}.LoadOrNull(context, dataSet1);
+                    var loadedC0 = new BaseSampleKey() {RecordId = "C", RecordIndex = 0}.LoadOrNull(context, dataSet1);
 
                     context.Verify.Text("Load records by string key without constraint");
                     if (loadedA0 != null) context.Verify.Text($"    Version found for key=A;0: {loadedA0.Version}");
@@ -499,7 +499,7 @@ namespace DataCentric.Test
                 // Query for all records
                 if (true)
                 {
-                    var query = context.GetQuery<MongoTestData>(dataSet1)
+                    var query = context.GetQuery<BaseSampleData>(dataSet1)
                         .SortBy(p => p.RecordId)
                         .SortBy(p => p.RecordIndex)
                         .AsEnumerable();
@@ -517,16 +517,16 @@ namespace DataCentric.Test
 
                 // Get each record by ObjectId
                 context.Verify.Text("Load records by ObjectId with SavedById constraint");
-                context.Verify.Value(context.LoadOrNull<MongoTestData>(objA0) != null, "    Found by ObjectId=A0");
-                context.Verify.Value(context.LoadOrNull<MongoTestData>(objA1) != null, "    Found by ObjectId=A1");
-                context.Verify.Value(context.LoadOrNull<MongoTestData>(objA2) != null, "    Found by ObjectId=A2");
-                context.Verify.Value(context.LoadOrNull<MongoTestData>(objC0) != null, "    Found by ObjectId=C0");
+                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objA0) != null, "    Found by ObjectId=A0");
+                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objA1) != null, "    Found by ObjectId=A1");
+                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objA2) != null, "    Found by ObjectId=A2");
+                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objC0) != null, "    Found by ObjectId=C0");
 
                 // Load each record by string key
                 if (true)
                 {
-                    var loadedA0 = new MongoTestKey() { RecordId = "A", RecordIndex = 0 }.LoadOrNull(context, dataSet1);
-                    var loadedC0 = new MongoTestKey() { RecordId = "C", RecordIndex = 0 }.LoadOrNull(context, dataSet1);
+                    var loadedA0 = new BaseSampleKey() { RecordId = "A", RecordIndex = 0 }.LoadOrNull(context, dataSet1);
+                    var loadedC0 = new BaseSampleKey() { RecordId = "C", RecordIndex = 0 }.LoadOrNull(context, dataSet1);
 
                     context.Verify.Text("Load records by string key with SavedById constraint");
                     if (loadedA0 != null) context.Verify.Text($"    Version found for key=A;0: {loadedA0.Version}");
@@ -536,7 +536,7 @@ namespace DataCentric.Test
                 // Query for revised before the cutoff time
                 if (true)
                 {
-                    var query = context.GetQuery<MongoTestData>(dataSet1)
+                    var query = context.GetQuery<BaseSampleData>(dataSet1)
                         .SortBy(p => p.RecordId)
                         .SortBy(p => p.RecordIndex)
                         .AsEnumerable();
@@ -569,7 +569,7 @@ namespace DataCentric.Test
                 context.Verify.Text("Write A;0 record to A dataset");
                 SaveMinimalRecord(context, "DataSet0", "A", 0, 1);
 
-                var keyA0 = new MongoTestKey
+                var keyA0 = new BaseSampleKey
                 {
                     RecordId = "A",
                     RecordIndex = 0
@@ -585,7 +585,7 @@ namespace DataCentric.Test
                 // Query before deletion
                 if (true)
                 {
-                    var query = context.GetQuery<MongoTestData>(dataSet0)
+                    var query = context.GetQuery<BaseSampleData>(dataSet0)
                         .Where(p => p.Version == 1)
                         .AsEnumerable();
                     int recordCount = 0;
@@ -612,7 +612,7 @@ namespace DataCentric.Test
                 // Query after deletion
                 if (true)
                 {
-                    var query = context.GetQuery<MongoTestData>(dataSet0)
+                    var query = context.GetQuery<BaseSampleData>(dataSet0)
                         .Where(p => p.Version == 1)
                         .AsEnumerable();
                     int recordCount = 0;
@@ -736,7 +736,7 @@ namespace DataCentric.Test
         /// <summary>Save record with minimal data for testing how the records are found. </summary>
         private ObjectId SaveMinimalRecord(IContext context, string dataSetId, string recordId, int recordIndex, int? version = null)
         {
-            var rec = new MongoTestData();
+            var rec = new BaseSampleData();
             rec.RecordId = recordId;
             rec.RecordIndex = recordIndex;
             rec.Version = version;
@@ -750,7 +750,7 @@ namespace DataCentric.Test
         /// <summary>Save base record</summary>
         private ObjectId SaveBaseRecord(IContext context, string dataSetId, string recordId, int recordIndex)
         {
-            var rec = new MongoTestData();
+            var rec = new BaseSampleData();
             rec.RecordId = recordId;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 100.0;
@@ -768,7 +768,7 @@ namespace DataCentric.Test
         /// <summary>Save derived record</summary>
         private ObjectId SaveDerivedRecord(IContext context, string dataSetId, string recordId, int recordIndex)
         {
-            var rec = new MongoTestDerivedData();
+            var rec = new DerivedSampleData();
             rec.RecordId = recordId;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;
@@ -792,33 +792,33 @@ namespace DataCentric.Test
             rec.ListOfNullableDouble.Add(30.0);
 
             // Data element
-            rec.DataElement = new MongoTestElementData();
+            rec.DataElement = new ElementSampleData();
             rec.DataElement.DoubleElement3 = 1.0;
             rec.DataElement.StringElement3 = "AA";
 
             // Data element list
-            rec.DataElementList = new List<MongoTestElementData>();
-            var elementList0 = new MongoTestElementData();
+            rec.DataElementList = new List<ElementSampleData>();
+            var elementList0 = new ElementSampleData();
             elementList0.DoubleElement3 = 1.0;
             elementList0.StringElement3 = "A0";
             rec.DataElementList.Add(elementList0);
-            var elementList1 = new MongoTestElementData();
+            var elementList1 = new ElementSampleData();
             elementList1.DoubleElement3 = 2.0;
             elementList1.StringElement3 = "A1";
             rec.DataElementList.Add(elementList1);
 
             // Key element
-            rec.KeyElement = new MongoTestKey();
+            rec.KeyElement = new BaseSampleKey();
             rec.KeyElement.RecordId = "BB";
             rec.KeyElement.RecordIndex = 2;
 
             // Key element list
-            rec.KeyElementList = new List<MongoTestKey>();
-            var keyList0 = new MongoTestKey();
+            rec.KeyElementList = new List<BaseSampleKey>();
+            var keyList0 = new BaseSampleKey();
             keyList0.RecordId = "B0";
             keyList0.RecordIndex = 3;
             rec.KeyElementList.Add(keyList0);
-            var keyList1 = new MongoTestKey();
+            var keyList1 = new BaseSampleKey();
             keyList1.RecordId = "B1";
             keyList1.RecordIndex = 4;
             rec.KeyElementList.Add(keyList1);
@@ -831,7 +831,7 @@ namespace DataCentric.Test
         /// <summary>Save other derived record.</summary>
         private ObjectId SaveOtherDerivedRecord(IContext context, string dataSetId, string recordId, int recordIndex)
         {
-            var rec = new MongoTestOtherDerivedData();
+            var rec = new OtherDerivedSampleData();
             rec.RecordId = recordId;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;
@@ -850,7 +850,7 @@ namespace DataCentric.Test
         /// <summary>Save record that is derived from derived.</summary>
         private ObjectId SaveDerivedFromDerivedRecord(IContext context, string dataSetId, string recordId, int recordIndex)
         {
-            var rec = new MongoTestDerivedFromDerivedData();
+            var rec = new DerivedFromDerivedSampleData();
             rec.RecordId = recordId;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;

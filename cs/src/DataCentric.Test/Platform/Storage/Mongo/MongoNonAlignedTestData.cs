@@ -30,11 +30,18 @@ namespace DataCentric.Test
     /// Data type where key elements are not the first in the record, and/or
     /// not in the same order in the record as in the key.
     /// </summary>
-    public class MongoNonAlignedTestData : TypedRecord<MongoNonAlignedTestKey, MongoNonAlignedTestData>
+    public class OutOfOrderKeyElementsSampleData : TypedRecord<OutOfOrderKeyElementsSampleKey, OutOfOrderKeyElementsSampleData>
     {
+        /// <summary>Sample element.</summary>
         public int InitialElement1 { get; set; }
+
+        /// <summary>Sample element.</summary>
         public int InitialElement2 { get; set; }
+
+        /// <summary>Out of order key element.</summary>
         public string KeyElement2 { get; set; }
+
+        /// <summary>Out of order key element.</summary>
         public string KeyElement1 { get; set; }
     }
 }

@@ -21,16 +21,33 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Key class that has all of the permitted non-nullable key elements included.</summary>
-    public class MongoKeyTestNonNullableSampleData : TypedRecord<MongoKeyTestNonNullableSampleKey, MongoKeyTestNonNullableSampleData>
+    public class NonNullableElementsSampleData : TypedRecord<NonNullableElementsSampleKey, NonNullableElementsSampleData>
     {
+        /// <summary>Sample element.</summary>
         public string StringToken { get; set; }
+
+        /// <summary>Sample element.</summary>
         public bool BoolToken { get; set; }
+
+        /// <summary>Sample element.</summary>
         public int IntToken { get; set; }
+
+        /// <summary>Sample element.</summary>
         public long LongToken { get; set; }
+
+        /// <summary>Sample element.</summary>
         public LocalDate LocalDateToken { get; set; }
+
+        /// <summary>Sample element.</summary>
         public LocalTime LocalTimeToken { get; set; }
+
+        /// <summary>Sample element.</summary>
         public LocalMinute LocalMinuteToken { get; set; }
+
+        /// <summary>Sample element.</summary>
         public LocalDateTime LocalDateTimeToken { get; set; }
+
+        /// <summary>Sample element.</summary>
         public MongoTestEnum EnumToken { get; set; }
     }
 }

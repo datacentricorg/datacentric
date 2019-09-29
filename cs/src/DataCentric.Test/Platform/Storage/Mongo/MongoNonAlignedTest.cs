@@ -37,7 +37,7 @@ namespace DataCentric.Test
         {
             using (var context = new TemporalMongoTestContext(this))
             {
-                var record = new MongoNonAlignedTestData();
+                var record = new OutOfOrderKeyElementsSampleData();
                 record.DataSet = context.DataSet;
                 record.KeyElement1 = "A";
                 record.KeyElement2 = "B";

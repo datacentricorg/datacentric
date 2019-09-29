@@ -26,11 +26,14 @@ using Xunit;
 
 namespace DataCentric.Test
 {
-    /// <summary>Key class.</summary>
-    [BsonSerializer(typeof(BsonKeySerializer<MongoTestKey>))]
-    public sealed class MongoTestKey : TypedKey<MongoTestKey, MongoTestData>
+    /// <summary>Base class of sample data for data source testing.</summary>
+    [BsonSerializer(typeof(BsonKeySerializer<BaseSampleKey>))]
+    public sealed class BaseSampleKey : TypedKey<BaseSampleKey, BaseSampleData>
     {
+        /// <summary>Sample element.</summary>
         public string RecordId { get; set; }
+
+        /// <summary>Sample element.</summary>
         public int? RecordIndex { get; set; }
     }
 }

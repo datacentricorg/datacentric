@@ -30,10 +30,13 @@ namespace DataCentric.Test
     /// Data type where key elements are not the first in the record, and/or
     /// not in the same order in the record as in the key.
     /// </summary>
-    [BsonSerializer(typeof(BsonKeySerializer<MongoNonAlignedTestKey>))]
-    public sealed class MongoNonAlignedTestKey : TypedKey<MongoNonAlignedTestKey, MongoNonAlignedTestData>
+    [BsonSerializer(typeof(BsonKeySerializer<OutOfOrderKeyElementsSampleKey>))]
+    public sealed class OutOfOrderKeyElementsSampleKey : TypedKey<OutOfOrderKeyElementsSampleKey, OutOfOrderKeyElementsSampleData>
     {
+        /// <summary>Key element that is out of order in data class.</summary>
         public string KeyElement1 { get; set; }
+
+        /// <summary>Key element that is out of order in data class.</summary>
         public string KeyElement2 { get; set; }
     }
 }

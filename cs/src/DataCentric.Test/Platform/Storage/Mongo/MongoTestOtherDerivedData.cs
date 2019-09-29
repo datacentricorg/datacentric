@@ -28,9 +28,12 @@ namespace DataCentric.Test
 {
     /// <summary>Other derived data class.</summary>
     [IndexElements("OtherDoubleElement2, OtherStringElement2, -RecordIndex")]
-    public class MongoTestOtherDerivedData : MongoTestData
+    public class OtherDerivedSampleData : BaseSampleData
     {
+        /// <summary>Sample element.</summary>
         public double? OtherDoubleElement2 { get; set; }
+
+        /// <summary>Sample element.</summary>
         public string OtherStringElement2 { get; set; }
     }
 }
