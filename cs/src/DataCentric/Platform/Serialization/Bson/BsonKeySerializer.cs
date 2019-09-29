@@ -31,7 +31,7 @@ namespace DataCentric
 
             // Deserialize key from semicolon delimited string
             var key = new TKey();
-            key.AssignString(str);
+            key.Init(str);
             return key;
         }
 

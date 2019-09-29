@@ -471,7 +471,7 @@ namespace DataCentric
 
                     // Populate by parsing semicolon delimited string
                     string stringValue = value.AsString();
-                    key.AssignString(stringValue);
+                    key.Init(stringValue);
 
                     // Add to array or dictionary, depending on what we are inside of
                     if (currentArray_ != null) currentArray_[currentArray_.Count-1] = key;
