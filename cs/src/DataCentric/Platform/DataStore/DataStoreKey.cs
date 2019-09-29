@@ -31,7 +31,7 @@ namespace DataCentric
     /// (basic or temporal).
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<DataStoreKey>))]
-    public class DataStoreKey : RootKey<DataStoreKey, DataStoreData>
+    public class DataStoreKey : TypedKey<DataStoreKey, DataStoreData>
     {
         /// <summary>Unique data store identifier.</summary>
         public string DataStoreId { get; set; }

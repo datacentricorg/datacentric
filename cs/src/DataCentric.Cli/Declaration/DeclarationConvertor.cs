@@ -216,10 +216,9 @@ namespace DataCentric.Cli
             if (type.IsGenericType)
             {
                 Type genericType = type.GetGenericTypeDefinition();
-                return genericType == typeof(TypedRecord<,>) ||
-                       genericType == typeof(TypedKey<,>) ||
-                       genericType == typeof(RootRecord<,>) ||
-                       genericType == typeof(RootKey<,>);
+                return genericType == typeof(RootRecord<,>) ||
+                       genericType == typeof(TypedRecord<,>) ||
+                       genericType == typeof(TypedKey<,>);
             }
 
             return false;

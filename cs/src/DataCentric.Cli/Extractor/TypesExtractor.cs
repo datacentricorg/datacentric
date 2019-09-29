@@ -36,10 +36,9 @@ namespace DataCentric.Cli
             typeof(Data),
             typeof(Key),
             typeof(Record),
-            typeof(TypedRecord<,>),
-            typeof(TypedKey<,>),
             typeof(RootRecord<,>),
-            typeof(RootKey<,>),
+            typeof(TypedRecord<,>),
+            typeof(TypedKey<,>)
         };
 
         /// <summary>
@@ -50,8 +49,7 @@ namespace DataCentric.Cli
             Regex nameFilter = CreateTypeNameFilter(filters);
 
             bool IsKeyType(Type t) => t.BaseType.IsGenericType &&
-                                      (t.BaseType.GetGenericTypeDefinition() == typeof(TypedKey<,>) ||
-                                       t.BaseType.GetGenericTypeDefinition() == typeof(RootKey<,>));
+                                      (t.BaseType.GetGenericTypeDefinition() == typeof(TypedKey<,>));
 
             return ActivatorUtils.EnumerateTypes(assembly)
                                // Get all Data successors

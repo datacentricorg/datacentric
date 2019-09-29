@@ -135,13 +135,13 @@ namespace DataCentric
             // there is no base class
             List<Type> inheritanceChain = new List<Type>();
             Type currentType = type;
-            while (currentType != null)
+            while (currentType.BaseType != null)
             {
                 // Add type to the inheritance chain
                 inheritanceChain.Add(currentType);
 
-                string className = currentType.Name;
-                if (className == "Data")
+                string baseClassName = currentType.BaseType.Name;
+                if (baseClassName == "Data")
                 {
                     if (RootType == null)
                     {
@@ -149,24 +149,23 @@ namespace DataCentric
                         RootType = currentType;
                     }
                 }
-                else if (className == "TypedKey`2"
-                         || className == "RootKey`2"
-                         || className == "Key")
+                else if (baseClassName == "TypedKey`2"
+                         || baseClassName == "Key")
                 {
                     if (RootType == null)
                     {
                         RootKind = RootKind.Key;
                         RootType = currentType;
-                    }
 
-                    if (inheritanceChain.Count > 1)
-                        throw new Exception(
-                            $"Key type {type.Name} must be derived directly from TypedKey<TKey, TRecord> and sealed " +
-                            $"because key classes cannot have an inheritance hierarchy, only data classes can.");
+                        if (inheritanceChain.Count > 1)
+                            throw new Exception(
+                                $"Key type {type.Name} must be derived directly from TypedKey<TKey, TRecord> and sealed " +
+                                $"because key classes cannot have an inheritance hierarchy, only data classes can.");
+                    }
                 }
-                else if (className == "TypedRecord`2"
-                         || className == "RootRecord`2"
-                         || className == "Record")
+                else if (baseClassName == "TypedRecord`2"
+                         || baseClassName == "RootRecord`2"
+                         || baseClassName == "Record")
                 {
                     if (RootType == null)
                     {
@@ -176,6 +175,12 @@ namespace DataCentric
                 }
 
                 currentType = currentType.BaseType;
+            }
+
+            // Add the root class to the inheritance chain
+            if (currentType != null)
+            {
+                inheritanceChain.Add(currentType);
             }
 
             // Error message if the type is not derived from one of the permitted base classes 
