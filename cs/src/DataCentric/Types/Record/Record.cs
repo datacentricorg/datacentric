@@ -51,7 +51,7 @@ namespace DataCentric
         /// </summary>
         [BsonId]
         [BsonRequired]
-        public virtual ObjectId Id { get; set; } // TODO - make non-virtual
+        public ObjectId Id { get; set; }
 
         /// <summary>
         /// ObjectId of the dataset where the record is stored.
