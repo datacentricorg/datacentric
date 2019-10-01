@@ -407,37 +407,6 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create new version of the dataset with the specified dataSetId
-        /// and imported dataset ObjectIds passed as an array, and return
-        /// the new ObjectId assigned to the saved dataset.
-        ///
-        /// This overload of the CreateDataSet method does not
-        /// specify the saveTo parameter explicitly and instead
-        /// uses context.DataSet for its value.
-        ///
-        /// This method updates in-memory cache to the saved dataset.
-        /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, IEnumerable<ObjectId> importDataSets)
-        {
-            return obj.DataSource.CreateDataSet(dataSetId, importDataSets, obj.DataSet);
-        }
-
-        /// <summary>
-        /// Create new version of the dataset with the specified dataSetId
-        /// and imported dataset ObjectIds passed as an array, and return
-        /// the new ObjectId assigned to the saved dataset.
-        ///
-        /// This overload of the CreateDataSet method specifies
-        /// the saveTo parameter explicitly.
-        ///
-        /// This method updates in-memory cache to the saved dataset.
-        /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, IEnumerable<ObjectId> importDataSets, ObjectId saveTo)
-        {
-            return obj.DataSource.CreateDataSet(dataSetId, importDataSets, saveTo);
-        }
-
-        /// <summary>
         /// Save new version of the dataset.
         ///
         /// This overload of the SaveDataSet method does not

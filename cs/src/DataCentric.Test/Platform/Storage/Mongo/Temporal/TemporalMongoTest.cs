@@ -90,7 +90,7 @@ namespace DataCentric.Test
                 SaveMinimalRecord(context, "DataSet0", "B", 3, 2);
 
                 // Same in DataSet1
-                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
+                var dataSet1 = context.CreateDataSet("DataSet1", dataSet0);
 
                 // Create initial version of the records
                 SaveMinimalRecord(context, "DataSet1", "A", 4, 0);
@@ -105,12 +105,12 @@ namespace DataCentric.Test
                 SaveMinimalRecord(context, "DataSet1", "B", 7, 1);
 
                 // Next in DataSet2
-                var dataSet2 = context.CreateDataSet("DataSet2", new ObjectId[] { dataSet0 }, context.DataSet);
+                var dataSet2 = context.CreateDataSet("DataSet2", dataSet1);
                 SaveMinimalRecord(context, "DataSet2", "A", 8, 0);
                 SaveMinimalRecord(context, "DataSet2", "B", 9, 0);
 
                 // Next in DataSet3
-                var dataSet3 = context.CreateDataSet("DataSet3", new ObjectId[] { dataSet0, dataSet1, dataSet2 }, context.DataSet);
+                var dataSet3 = context.CreateDataSet("DataSet3", dataSet2);
                 SaveMinimalRecord(context, "DataSet3", "A", 10, 0);
                 SaveMinimalRecord(context, "DataSet3", "B", 11, 0);
 
@@ -233,7 +233,7 @@ namespace DataCentric.Test
                 var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
                 SaveDerivedRecord(context, "DataSet0", "A", 0);
 
-                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
+                var dataSet1 = context.CreateDataSet("DataSet1", dataSet0);
                 SaveDerivedFromDerivedRecord(context, "DataSet1", "B", 0);
 
                 // Create keys
@@ -432,7 +432,7 @@ namespace DataCentric.Test
                 ObjectId objA1 = SaveMinimalRecord(context, "DataSet0", "A", 0, 1);
 
                 // Create two versions in DataSet1
-                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
+                var dataSet1 = context.CreateDataSet("DataSet1", dataSet0);
                 ObjectId objB0 = SaveMinimalRecord(context, "DataSet1", "B", 0, 0);
                 ObjectId objB1 = SaveMinimalRecord(context, "DataSet1", "B", 0, 1);
 
@@ -647,7 +647,7 @@ namespace DataCentric.Test
             SaveBaseRecord(context, "DataSet0", "A", 0);
 
             // Create second dataset and record, first record will be visible in both
-            var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] {dataSet0}, context.DataSet);
+            var dataSet1 = context.CreateDataSet("DataSet1", dataSet0);
             SaveDerivedRecord(context, "DataSet1", "B", 0);
         }
 
@@ -662,19 +662,19 @@ namespace DataCentric.Test
             SaveBaseRecord(context, "DataSet0", "A", 2);
             SaveBaseRecord(context, "DataSet0", "A", 3);
 
-            var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
+            var dataSet1 = context.CreateDataSet("DataSet1", dataSet0);
             SaveDerivedRecord(context, "DataSet1", "B", 0);
             SaveDerivedRecord(context, "DataSet1", "B", 1);
             SaveDerivedRecord(context, "DataSet1", "B", 2);
             SaveDerivedRecord(context, "DataSet1", "B", 3);
 
-            var dataSet2 = context.CreateDataSet("DataSet2", new ObjectId[] { dataSet0 }, context.DataSet);
+            var dataSet2 = context.CreateDataSet("DataSet2", dataSet1);
             SaveOtherDerivedRecord(context, "DataSet2", "C", 0);
             SaveOtherDerivedRecord(context, "DataSet2", "C", 1);
             SaveOtherDerivedRecord(context, "DataSet2", "C", 2);
             SaveOtherDerivedRecord(context, "DataSet2", "C", 3);
 
-            var dataSet3 = context.CreateDataSet("DataSet3", new ObjectId[] { dataSet0, dataSet1, dataSet2 }, context.DataSet);
+            var dataSet3 = context.CreateDataSet("DataSet3", dataSet2);
             SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 0);
             SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 1);
             SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 2);
@@ -686,9 +686,9 @@ namespace DataCentric.Test
         {
             // Create datasets
             var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
-            var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] {dataSet0}, context.DataSet);
-            var dataSet2 = context.CreateDataSet("DataSet2", new ObjectId[] {dataSet0}, context.DataSet);
-            var dataSet3 = context.CreateDataSet("DataSet3", new ObjectId[] {dataSet0, dataSet1, dataSet2}, context.DataSet);
+            var dataSet1 = context.CreateDataSet("DataSet1", dataSet0);
+            var dataSet2 = context.CreateDataSet("DataSet2", dataSet1);
+            var dataSet3 = context.CreateDataSet("DataSet3", dataSet2);
 
             // Create records
             SaveMinimalRecord(context, "DataSet0", "A", 0);

@@ -63,18 +63,6 @@ namespace DataCentric
         [BsonElement("DataSetID")] // TODO - review for a possible rename
         public string DataSetId { get; set; }
 
-        /// <summary>
-        /// List of datasets where records are looked up if they are
-        /// not found in the current dataset.
-        ///
-        /// The specific lookup rules are specific to the data source
-        /// type and described in detail in the data source documentation.
-        /// 
-        /// The parent dataset is not included in the list of Imports by
-        /// default and must be included in the list of Imports explicitly.
-        /// </summary>
-        public List<ObjectId> Imports { get; set; }
-
         //--- METHODS
 
         /// <summary>
@@ -91,33 +79,18 @@ namespace DataCentric
                 throw new Exception(
                     $"DataSetId must be set before Init(context) " +
                     $"method of the dataset is called.");
-            if (DataSetId == DataSetKey.Common.DataSetId && DataSet != ObjectId.Empty)
-                throw new Exception(
-                    $"By convention, Common dataset must be stored in root dataset. " +
-                    $"Other datasets may be stored inside any dataset including " +
-                    $"the root dataset, Common dataset, or another dataset.");
 
-            if (Imports != null && Imports.Count > 0)
+            if (Id == DataSet)
             {
-                foreach (var importDataSet in Imports)
-                {
-                    if (Id <= importDataSet)
-                    {
-                        if (Id == importDataSet)
-                        {
-                            throw new Exception(
-                                $"Dataset {DataSetId} has an import with the same ObjectId={importDataSet} " +
-                                $"as its own ObjectId. Each ObjectId must be unique.");
-                        }
-                        else
-                        {
-                            throw new Exception(
-                                $"Dataset {DataSetId} has an import whose ObjectId={importDataSet} is greater " +
-                                $"than its own ObjectId={Id}. The ObjectId of each import must be strictly " +
-                                $"less than the ObjectId of the dataset itself.");
-                        }
-                    }
-                }
+                // Error if the dataset specifies self as its own parent
+                throw new Exception(
+                    $"DataSet {Id} specifies self as its own parent.");
+            }
+            else if (Id < DataSet)
+            {
+                // Error if dataset Id is earlier than its parent
+                throw new Exception(
+                    $"DataSet {Id} is created earlier than its parent {DataSet}.");
             }
         }
     }

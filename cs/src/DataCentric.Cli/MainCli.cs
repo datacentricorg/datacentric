@@ -156,7 +156,7 @@ namespace DataCentric.Cli
 
             // Do not create dataset for Common
             var currentDataset = dirName != "Common"
-                                     ? context.CreateDataSet(dirName, new[] {parentDataset}, context.DataSet)
+                                     ? context.CreateDataSet(dirName, context.DataSet)
                                      : parentDataset;
 
             foreach (var csvFile in Directory.GetFiles(path, "*.csv"))
