@@ -63,6 +63,28 @@ namespace DataCentric
         [BsonElement("DataSetID")] // TODO - review for a possible rename
         public string DataSetId { get; set; }
 
+        /// <summary>
+        /// Flag indicating if the dataset is temporal.
+        ///
+        /// For temporal datasets, the database keeps permanent history
+        /// of changes to the record with a given key, and provides
+        /// the ability to access the record as of the specified time
+        /// or ObjectId (if the access is by time, it is resolved to
+        /// one second precision). When accessing records in a temporal
+        /// parent dataset via its temporal or non-temporal child dataset,
+        /// the version of the record in the temporal parent that existed
+        /// when child dataset was created will be returned.
+        ///
+        /// For non-temporal datasets, the database keeps only the latest
+        /// version of the record per dataset and key combination. Child
+        /// datasets of non-temporal datasets must themselves be non-temporal.
+        /// When accessing records in a non-temporal parent dataset via its
+        /// child dataset, the latest version of the record in the non-temporal
+        /// parent will be returned.
+        /// </summary>
+        [BsonRequired]
+        public bool? Temporal { get; set; }
+
         //--- METHODS
 
         /// <summary>
