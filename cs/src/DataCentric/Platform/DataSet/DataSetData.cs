@@ -64,26 +64,25 @@ namespace DataCentric
         public string DataSetId { get; set; }
 
         /// <summary>
-        /// Flag indicating if the dataset is temporal.
+        /// Flag indicating that the dataset is non-temporal even if the
+        /// data source supports temporal data.
         ///
-        /// For temporal datasets, the database keeps permanent history
-        /// of changes to the record with a given key, and provides
-        /// the ability to access the record as of the specified time
-        /// or ObjectId (if the access is by time, it is resolved to
-        /// one second precision). When accessing records in a temporal
-        /// parent dataset via its temporal or non-temporal child dataset,
-        /// the version of the record in the temporal parent that existed
-        /// when child dataset was created will be returned.
+        /// For the data stored in datasets where NonTemporal == false, a
+        /// temporal data source keeps permanent history of changes to each
+        /// record within the dataset, and provides the ability to access
+        /// the record as of the specified ObjectId, where ObjectId serves
+        /// as a timeline (records created later have greater ObjectId than
+        /// records created earlier).
         ///
-        /// For non-temporal datasets, the database keeps only the latest
-        /// version of the record per dataset and key combination. Child
-        /// datasets of non-temporal datasets must themselves be non-temporal.
-        /// When accessing records in a non-temporal parent dataset via its
-        /// child dataset, the latest version of the record in the non-temporal
-        /// parent will be returned.
+        /// For the data stored in datasets where NonTemporal == true, the
+        /// data source keeps only the latest version of the record. All
+        /// child datasets of a non-temporal dataset must also be non-temporal.
+        ///
+        /// In a non-temporal data source, this flag is ignored as all
+        /// datasets in such data source are non-temporal.
         /// </summary>
         [BsonRequired]
-        public bool? Temporal { get; set; }
+        public bool? NonTemporal { get; set; }
 
         //--- METHODS
 
