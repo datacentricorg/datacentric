@@ -141,39 +141,79 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create new version of the Common dataset. By convention,
-        /// the Common dataset contains reference and configuration
-        /// data and is included as import in all other datasets.
+        /// Create Common dataset with default flags.
+        ///
+        /// By convention, the Common dataset contains reference and
+        /// configuration data and is included as import in all other
+        /// datasets.
         ///
         /// The Common dataset is always stored in root dataset.
         ///
-        /// This method sets _id element of the argument to be the
-        /// new ObjectId assigned to the record when it is saved.
-        /// The timestamp of the new ObjectId is the current time.
-        ///
-        /// This method updates in-memory cache to the saved dataset.
+        /// This method updates in-memory dataset cache to include
+        /// the created dataset.
         /// </summary>
         public static ObjectId CreateCommon(this IDataSource obj)
         {
-            var result = new DataSetData() { DataSetId = DataSetKey.Common.DataSetId };
-
-            // Save in root dataset
-            obj.SaveDataSet(result, ObjectId.Empty); ;
-            return result.Id;
+            // Create with default flag values
+            return obj.CreateCommon(new DataSetFlags());
         }
 
         /// <summary>
-        /// Create new dataset (or new version of a dataset) with saveTo dataset as parent.
+        /// Create Common dataset with the specified flags.
         ///
-        /// This method updates in-memory cache to the saved dataset.
+        /// By convention, the Common dataset contains reference and
+        /// configuration data and is included as import in all other
+        /// datasets.
+        ///
+        /// The Common dataset is always stored in root dataset.
+        ///
+        /// This method updates in-memory dataset cache to include
+        /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, ObjectId saveTo)
+        public static ObjectId CreateCommon(this IDataSource obj, DataSetFlags flags)
+        {
+            // Create with dataSetId Common in root dataset
+            return obj.CreateDataSet("Common", flags, ObjectId.Empty);
+        }
+
+        /// <summary>
+        /// Create dataset with the specified dataSetId and default flags
+        /// in dataset with parentDataSetId.
+        ///
+        /// This method updates in-memory dataset cache to include
+        /// the created dataset.
+        /// </summary>
+        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, ObjectId parentDataSetId)
+        {
+            // Create with default flag values
+            return obj.CreateDataSet(dataSetId, new DataSetFlags(), parentDataSetId);
+        }
+
+        /// <summary>
+        /// Create dataset with the specified dataSetId and the specified flags
+        /// in dataset with parentDataSetId.
+        ///
+        /// This method updates in-memory dataset cache to include
+        /// the created dataset.
+        /// </summary>
+        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, DataSetFlags flags, ObjectId parentDataSetId)
         {
             // Create dataset record
             var result = new DataSetData() { DataSetId = dataSetId };
 
+            if ((flags & DataSetFlags.NonTemporal) == DataSetFlags.NonTemporal)
+            {
+                // Make non-temporal
+                result.NonTemporal = true;
+            }
+            else
+            {
+                // Make temporal
+                result.NonTemporal = false;
+            }
+
             // Save the record (this also updates the dictionaries)
-            obj.SaveDataSet(result, saveTo);
+            obj.SaveDataSet(result, parentDataSetId);
 
             // Return ObjectId that was assigned to the
             // record inside the SaveDataSet method

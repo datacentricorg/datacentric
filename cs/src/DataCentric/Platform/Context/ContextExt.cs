@@ -358,19 +358,16 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create new version of the Common dataset.
+        /// Create Common dataset with default flags.
         ///
-        /// Create new version of the Common dataset. By convention,
-        /// the Common dataset contains reference and configuration
-        /// data and is included as import in all other datasets.
+        /// By convention, the Common dataset contains reference and
+        /// configuration data and is included as import in all other
+        /// datasets.
         ///
         /// The Common dataset is always stored in root dataset.
         ///
-        /// This method sets Id element of the argument to be the
-        /// new ObjectId assigned to the record when it is saved.
-        /// The timestamp of the new ObjectId is the current time.
-        ///
-        /// This method updates in-memory cache to the saved dataset.
+        /// This method updates in-memory dataset cache to include
+        /// the created dataset.
         /// </summary>
         public static ObjectId CreateCommon(this IContext obj)
         {
@@ -378,14 +375,28 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create new version of the dataset with the specified dataSetId
-        /// and no import datasets.
+        /// Create Common dataset with the specified flags.
         ///
-        /// This overload of the CreateDataSet method does not
-        /// specify the saveTo parameter explicitly and instead
-        /// uses context.DataSet for its value.
+        /// By convention, the Common dataset contains reference and
+        /// configuration data and is included as import in all other
+        /// datasets.
         ///
-        /// This method updates in-memory cache to the saved dataset.
+        /// The Common dataset is always stored in root dataset.
+        ///
+        /// This method updates in-memory dataset cache to include
+        /// the created dataset.
+        /// </summary>
+        public static ObjectId CreateCommon(this IContext obj, DataSetFlags flags)
+        {
+            return obj.DataSource.CreateCommon(flags);
+        }
+
+        /// <summary>
+        /// Create dataset with the specified dataSetId and default flags
+        /// in context.DataSet.
+        ///
+        /// This method updates in-memory dataset cache to include
+        /// the created dataset.
         /// </summary>
         public static ObjectId CreateDataSet(this IContext obj, string dataSetId)
         {
@@ -393,31 +404,52 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create new version of the dataset with the specified dataSetId
-        /// and no import datasets.
+        /// Create dataset with the specified dataSetId and the specified flags
+        /// in context.DataSet.
         ///
-        /// This overload of the CreateDataSet method specifies
-        /// the saveTo parameter explicitly.
-        ///
-        /// This method updates in-memory cache to the saved dataset.
+        /// This method updates in-memory dataset cache to include
+        /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, ObjectId saveTo)
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, DataSetFlags flags)
         {
-            return obj.DataSource.CreateDataSet(dataSetId, saveTo);
+            return obj.DataSource.CreateDataSet(dataSetId, flags, obj.DataSet);
+        }
+
+        /// <summary>
+        /// Create dataset with the specified dataSetId and default flags
+        /// in dataset with parentDataSetId.
+        ///
+        /// This method updates in-memory dataset cache to include
+        /// the created dataset.
+        /// </summary>
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, ObjectId parentDataSetId)
+        {
+            return obj.DataSource.CreateDataSet(dataSetId, parentDataSetId);
+        }
+
+        /// <summary>
+        /// Create dataset with the specified dataSetId and the specified flags
+        /// in dataset with parentDataSetId.
+        ///
+        /// This method updates in-memory dataset cache to include
+        /// the created dataset.
+        /// </summary>
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, DataSetFlags flags, ObjectId parentDataSetId)
+        {
+            return obj.DataSource.CreateDataSet(dataSetId, flags, parentDataSetId);
         }
 
         /// <summary>
         /// Save new version of the dataset.
         ///
-        /// This overload of the SaveDataSet method does not
-        /// specify the saveTo parameter explicitly and instead
-        /// uses context.DataSet for its value.
+        /// This overload uses context.DataSet as parent.
         ///
         /// This method sets Id element of the argument to be the
         /// new ObjectId assigned to the record when it is saved.
         /// The timestamp of the new ObjectId is the current time.
         ///
-        /// This method updates in-memory cache to the saved dataset.
+        /// This method updates in-memory dataset cache to include
+        /// the saved dataset.
         /// </summary>
         public static void SaveDataSet(this IContext obj, DataSetData dataSetData)
         {
@@ -427,18 +459,12 @@ namespace DataCentric
         /// <summary>
         /// Save new version of the dataset.
         ///
-        /// This overload of the SaveDataSet method specifies
-        /// the saveTo parameter explicitly.
-        ///
-        /// This method sets Id element of the argument to be the
-        /// new ObjectId assigned to the record when it is saved.
-        /// The timestamp of the new ObjectId is the current time.
-        ///
-        /// This method updates in-memory cache to the saved dataset.
+        /// This method updates in-memory dataset cache to include
+        /// the saved dataset.
         /// </summary>
-        public static void SaveDataSet(this IContext obj, DataSetData dataSetData, ObjectId saveTo)
+        public static void SaveDataSet(this IContext obj, DataSetData dataSetData, ObjectId parentDataSetId)
         {
-            obj.DataSource.SaveDataSet(dataSetData, saveTo);
+            obj.DataSource.SaveDataSet(dataSetData, parentDataSetId);
         }
     }
 }
