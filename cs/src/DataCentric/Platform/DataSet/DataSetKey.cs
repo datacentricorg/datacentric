@@ -25,15 +25,12 @@ namespace DataCentric
     /// endpoints, etc.
     ///
     /// Datasets can be stored in other datasets. The dataset where dataset
-    /// record is called parent dataset.
+    /// record is stored is called parent dataset.
     ///
     /// Dataset has an Imports array which provides the list of ObjectIds of
     /// datasets where records are looked up if they are not found in the
     /// current dataset. The specific lookup rules are specific to the data
     /// source type and described in detail in the data source documentation.
-    ///
-    /// The parent dataset is not included in the list of Imports by
-    /// default and must be included in the list of Imports explicitly.
     ///
     /// Some data source types do not support Imports. If such data
     /// source is used with a dataset where Imports array is not empty,
@@ -48,10 +45,6 @@ namespace DataCentric
     {
         /// <summary>
         /// Unique dataset name.
-        ///
-        /// By convention, Common dataset must be stored in root dataset.
-        /// Other datasets may be stored inside any dataset including
-        /// the root dataset, Common dataset, or another dataset.
         /// </summary>
         public string DataSetName { get; set; }
 
@@ -60,6 +53,8 @@ namespace DataCentric
 
         /// <summary>
         /// By convention, Common is the default dataset in each data source.
+        /// 
+        /// Common dataset is stored in root dataset.
         /// 
         /// It should have no imports, and is usually (but not always)
         /// included in the list of imports for other datasets. It should
