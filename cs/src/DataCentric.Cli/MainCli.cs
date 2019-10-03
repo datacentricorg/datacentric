@@ -139,7 +139,7 @@ namespace DataCentric.Cli
             };
             LocalMongoDataStoreData dbServer = new LocalMongoDataStoreData
             {
-                DataStoreId = "From Csv",
+                DataStoreName = "From Csv",
             };
             IContext context = new MongoCliContext(dbName, dbServer);
 
@@ -261,7 +261,7 @@ namespace DataCentric.Cli
             dbName.PopulateFrom(dbNameString);
             LocalMongoDataStoreData dbServer = new LocalMongoDataStoreData
             {
-                DataStoreId = "LOCAL_TEST",
+                DataStoreName = "LOCAL_TEST",
             };
 
             IContext context = new MongoCliContext(dbName, dbServer);
@@ -331,7 +331,7 @@ namespace DataCentric.Cli
                                             ? DeclarationConvertor.TypeToDecl(type, docNavigator, projNavigator).ToLegacy()
                                             : DeclarationConvertor.TypeToDecl(type, docNavigator, projNavigator);
 
-                    string outputFolder = Path.Combine(options.OutputFolder, decl.Module.ModuleId.Replace('.','\\'));
+                    string outputFolder = Path.Combine(options.OutputFolder, decl.Module.ModuleName.Replace('.','\\'));
                     Directory.CreateDirectory(outputFolder);
 
                     string extension = type.IsSubclassOf(typeof(Enum)) ? "clenum" : "cltype";
@@ -349,7 +349,7 @@ namespace DataCentric.Cli
                 {
                     EnumDeclData decl = DeclarationConvertor.EnumToDecl(type, docNavigator, projNavigator);
 
-                    string outputFolder = Path.Combine(options.OutputFolder, decl.Module.ModuleId.Replace('.','\\'));
+                    string outputFolder = Path.Combine(options.OutputFolder, decl.Module.ModuleName.Replace('.','\\'));
                     Directory.CreateDirectory(outputFolder);
 
                     string extension = type.IsSubclassOf(typeof(Enum)) ? "clenum" : "cltype";

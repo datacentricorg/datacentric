@@ -40,8 +40,8 @@ namespace DataCentric
         /// Use to access other interfaces of the same context.</summary>
         IContext Context { get; }
 
-        /// <summary>Unique data source identifier.</summary>
-        string DataSourceId { get; }
+        /// <summary>Unique data source name.</summary>
+        string DataSourceName { get; }
 
         //--- METHODS
 

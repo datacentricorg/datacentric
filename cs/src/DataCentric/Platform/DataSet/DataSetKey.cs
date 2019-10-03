@@ -24,10 +24,6 @@ namespace DataCentric
     /// data source including relational or document databases, OData
     /// endpoints, etc.
     ///
-    /// Dataset is identified by ObjectId value of the record's DataSet
-    /// element. This record contains dataset identifier (folder path) and
-    /// other information about the dataset, including readonly flag etc.
-    ///
     /// Datasets can be stored in other datasets. The dataset where dataset
     /// record is called parent dataset.
     ///
@@ -50,11 +46,17 @@ namespace DataCentric
     [BsonSerializer(typeof(BsonKeySerializer<DataSetKey>))]
     public sealed class DataSetKey : TypedKey<DataSetKey, DataSetData>
     {
-        /// <summary>Dataset identifier.</summary>
-        public string DataSetId { get; set; }
+        /// <summary>
+        /// Unique dataset name.
+        ///
+        /// By convention, Common dataset must be stored in root dataset.
+        /// Other datasets may be stored inside any dataset including
+        /// the root dataset, Common dataset, or another dataset.
+        /// </summary>
+        public string DataSetName { get; set; }
 
         /// <summary>Keys in which string id is the only element support implicit conversion from value.</summary>
-        public static implicit operator DataSetKey(string value) { return new DataSetKey { DataSetId = value }; }
+        public static implicit operator DataSetKey(string value) { return new DataSetKey { DataSetName = value }; }
 
         /// <summary>
         /// By convention, Common is the default dataset in each data source.
@@ -70,6 +72,6 @@ namespace DataCentric
         /// and a few other record types, should set DataSet property to
         /// ObjectId.Empty (root dataset).
         /// </summary>
-        public static DataSetKey Common { get; } = new DataSetKey() {DataSetId = "Common"};
+        public static DataSetKey Common { get; } = new DataSetKey() {DataSetName = "Common"};
     }
 }

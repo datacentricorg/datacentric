@@ -33,12 +33,12 @@ namespace DataCentric
     [BsonSerializer(typeof(BsonKeySerializer<DataStoreKey>))]
     public class DataStoreKey : TypedKey<DataStoreKey, DataStoreData>
     {
-        /// <summary>Unique data store identifier.</summary>
-        public string DataStoreId { get; set; }
+        /// <summary>Unique data store name.</summary>
+        public string DataStoreName { get; set; }
 
         //--- OPERATORS
 
         /// <summary>Keys in which string id is the only element support implicit conversion from value.</summary>
-        public static implicit operator DataStoreKey(string value) { return new DataStoreKey { DataStoreId = value }; }
+        public static implicit operator DataStoreKey(string value) { return new DataStoreKey { DataStoreName = value }; }
     }
 }

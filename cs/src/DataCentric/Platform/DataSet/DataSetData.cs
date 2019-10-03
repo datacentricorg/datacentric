@@ -27,10 +27,6 @@ namespace DataCentric
     /// data source including relational or document databases, OData
     /// endpoints, etc.
     ///
-    /// Dataset is identified by ObjectId value of the record's DataSet
-    /// element. This record contains dataset identifier (folder path) and
-    /// other information about the dataset, including readonly flag etc.
-    ///
     /// Datasets can be stored in other datasets. The dataset where dataset
     /// record is called parent dataset.
     ///
@@ -53,7 +49,7 @@ namespace DataCentric
     public class DataSetData : TypedRecord<DataSetKey, DataSetData>
     {
         /// <summary>
-        /// Unique dataset identifier.
+        /// Unique dataset name.
         ///
         /// By convention, Common dataset must be stored in root dataset.
         /// Other datasets may be stored inside any dataset including
@@ -61,7 +57,7 @@ namespace DataCentric
         /// </summary>
         [BsonRequired]
         [BsonElement("DataSetID")] // TODO - review for a possible rename
-        public string DataSetId { get; set; }
+        public string DataSetName { get; set; }
 
         /// <summary>
         /// Flag indicating that the dataset is non-temporal even if the
@@ -96,9 +92,9 @@ namespace DataCentric
         {
             base.Init(context);
 
-            if (!DataSetId.HasValue())
+            if (!DataSetName.HasValue())
                 throw new Exception(
-                    $"DataSetId must be set before Init(context) " +
+                    $"DataSetName must be set before Init(context) " +
                     $"method of the dataset is called.");
 
             if (Id == DataSet)

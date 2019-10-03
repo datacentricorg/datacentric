@@ -45,12 +45,12 @@ namespace DataCentric.Test
                 // Create keys
                 var keyA0 = new BaseSampleKey()
                 {
-                    RecordId = "A",
+                    RecordName = "A",
                     RecordIndex = 0
                 };
                 var keyB0 = new BaseSampleKey()
                 {
-                    RecordId = "B",
+                    RecordName = "B",
                     RecordIndex = 0
                 };
 
@@ -114,16 +114,16 @@ namespace DataCentric.Test
                 SaveMinimalRecord(context, "DataSet3", "A", 10, 0);
                 SaveMinimalRecord(context, "DataSet3", "B", 11, 0);
 
-                // Query for RecordId=B
+                // Query for RecordName=B
                 var query = context.GetQuery<BaseSampleData>(dataSet3)
-                    .Where(p => p.RecordId == "B")
-                    .SortBy(p => p.RecordId)
+                    .Where(p => p.RecordName == "B")
+                    .SortBy(p => p.RecordName)
                     .SortBy(p => p.RecordIndex)
                     .AsEnumerable();
 
                 foreach (var obj in query)
                 {
-                    var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetId;
+                    var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
                     context.Verify.Text($"Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
                 }
             }
@@ -161,12 +161,12 @@ namespace DataCentric.Test
                 // Create keys
                 var keyA0 = new BaseSampleKey()
                 {
-                    RecordId = "A",
+                    RecordName = "A",
                     RecordIndex = 0
                 };
                 var keyB0 = new BaseSampleKey()
                 {
-                    RecordId = "B",
+                    RecordName = "B",
                     RecordIndex = 0
                 };
 
@@ -239,12 +239,12 @@ namespace DataCentric.Test
                 // Create keys
                 var keyA0 = new BaseSampleKey()
                 {
-                    RecordId = "A",
+                    RecordName = "A",
                     RecordIndex = 0
                 };
                 var keyB0 = new BaseSampleKey()
                 {
-                    RecordId = "B",
+                    RecordName = "B",
                     RecordIndex = 0
                 };
 
@@ -316,8 +316,8 @@ namespace DataCentric.Test
                     .Where(p => p.LocalDateTimeElement > new LocalDateTime(2003, 5, 1, 10, 14, 59))
                     .Where(p => p.LocalDateTimeElement == new LocalDateTime(2003, 5, 1, 10, 15))
                     .Where(p => p.StringElement2 == String.Empty)
-                    .Where(p => p.KeyElement == new BaseSampleKey() {RecordId = "BB", RecordIndex = 2})
-                    .SortBy(p => p.RecordId);
+                    .Where(p => p.KeyElement == new BaseSampleKey() {RecordName = "BB", RecordIndex = 2})
+                    .SortBy(p => p.RecordName);
 
                 foreach (var obj in testQuery.AsEnumerable())
                 {
@@ -341,28 +341,28 @@ namespace DataCentric.Test
                 // Load record of derived types by base
                 context.Verify.Text("Load all records by key as MongoTestData.");
                 {
-                    var key = new BaseSampleKey {RecordId = "A", RecordIndex = 0};
+                    var key = new BaseSampleKey {RecordName = "A", RecordIndex = 0};
                     var obj = context.LoadOrNull(key, dataSet3);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
-                    var key = new BaseSampleKey { RecordId = "B", RecordIndex = 0 };
+                    var key = new BaseSampleKey { RecordName = "B", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSet3);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
-                    var key = new BaseSampleKey { RecordId = "C", RecordIndex = 0 };
+                    var key = new BaseSampleKey { RecordName = "C", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSet3);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
-                    var key = new BaseSampleKey { RecordId = "D", RecordIndex = 0 };
+                    var key = new BaseSampleKey { RecordName = "D", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSet3);
                     context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
                     context.Verify.Text("Query by MongoTestData, unconstrained");
-                    var query = context.GetQuery<BaseSampleData>(dataSet3).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
+                    var query = context.GetQuery<BaseSampleData>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -370,7 +370,7 @@ namespace DataCentric.Test
                 }
                 {
                     context.Verify.Text("Query by MongoTestDerivedData : MongoTestData which also picks up MongoTestDerivedFromDerivedData : MongoTestDerivedData, unconstrained");
-                    var query = context.GetQuery<DerivedSampleData>(dataSet3).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
+                    var query = context.GetQuery<DerivedSampleData>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -378,7 +378,7 @@ namespace DataCentric.Test
                 }
                 {
                     context.Verify.Text("Query by MongoTestOtherDerivedData : MongoTestData, unconstrained");
-                    var query = context.GetQuery<OtherDerivedSampleData>(dataSet3).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
+                    var query = context.GetQuery<OtherDerivedSampleData>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -386,7 +386,7 @@ namespace DataCentric.Test
                 }
                 {
                     context.Verify.Text("Query by MongoTestDerivedFromDerivedData : MongoTestDerivedData, where MongoTestDerivedData : MongoTestData, unconstrained");
-                    var query = context.GetQuery<DerivedFromDerivedSampleData>(dataSet3).SortBy(p => p.RecordId).SortBy(p => p.RecordIndex);
+                    var query = context.GetQuery<DerivedFromDerivedSampleData>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -456,8 +456,8 @@ namespace DataCentric.Test
                 // Load each record by string key
                 if (true)
                 {
-                    var loadedA0 = new BaseSampleKey() {RecordId = "A", RecordIndex = 0}.LoadOrNull(context, dataSet1);
-                    var loadedC0 = new BaseSampleKey() {RecordId = "C", RecordIndex = 0}.LoadOrNull(context, dataSet1);
+                    var loadedA0 = new BaseSampleKey() {RecordName = "A", RecordIndex = 0}.LoadOrNull(context, dataSet1);
+                    var loadedC0 = new BaseSampleKey() {RecordName = "C", RecordIndex = 0}.LoadOrNull(context, dataSet1);
 
                     context.Verify.Text("Load records by string key without constraint");
                     if (loadedA0 != null) context.Verify.Text($"    Version found for key=A;0: {loadedA0.Version}");
@@ -468,14 +468,14 @@ namespace DataCentric.Test
                 if (true)
                 {
                     var query = context.GetQuery<BaseSampleData>(dataSet1)
-                        .SortBy(p => p.RecordId)
+                        .SortBy(p => p.RecordName)
                         .SortBy(p => p.RecordIndex)
                         .AsEnumerable();
 
                     context.Verify.Text("Query records without constraint");
                     foreach (var obj in query)
                     {
-                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetId;
+                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
                         context.Verify.Text($"    Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
                     }
                 }
@@ -493,8 +493,8 @@ namespace DataCentric.Test
                 // Load each record by string key
                 if (true)
                 {
-                    var loadedA0 = new BaseSampleKey() { RecordId = "A", RecordIndex = 0 }.LoadOrNull(context, dataSet1);
-                    var loadedC0 = new BaseSampleKey() { RecordId = "C", RecordIndex = 0 }.LoadOrNull(context, dataSet1);
+                    var loadedA0 = new BaseSampleKey() { RecordName = "A", RecordIndex = 0 }.LoadOrNull(context, dataSet1);
+                    var loadedC0 = new BaseSampleKey() { RecordName = "C", RecordIndex = 0 }.LoadOrNull(context, dataSet1);
 
                     context.Verify.Text("Load records by string key with SavedById constraint");
                     if (loadedA0 != null) context.Verify.Text($"    Version found for key=A;0: {loadedA0.Version}");
@@ -505,14 +505,14 @@ namespace DataCentric.Test
                 if (true)
                 {
                     var query = context.GetQuery<BaseSampleData>(dataSet1)
-                        .SortBy(p => p.RecordId)
+                        .SortBy(p => p.RecordName)
                         .SortBy(p => p.RecordIndex)
                         .AsEnumerable();
 
                     context.Verify.Text("Query records with SavedById constraint");
                     foreach (var obj in query)
                     {
-                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetId;
+                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
                         context.Verify.Text($"    Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
                     }
                 }
@@ -539,7 +539,7 @@ namespace DataCentric.Test
 
                 var keyA0 = new BaseSampleKey
                 {
-                    RecordId = "A",
+                    RecordName = "A",
                     RecordIndex = 0
                 };
 
@@ -559,7 +559,7 @@ namespace DataCentric.Test
                     int recordCount = 0;
                     foreach (var obj in query)
                     {
-                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetId;
+                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
                         context.Verify.Text($"Query returned Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
                         recordCount++;
                     }
@@ -586,7 +586,7 @@ namespace DataCentric.Test
                     int recordCount = 0;
                     foreach (var obj in query)
                     {
-                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetId;
+                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
                         context.Verify.Text($"Query returned Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
                         recordCount++;
                     }
@@ -705,7 +705,7 @@ namespace DataCentric.Test
         private ObjectId SaveMinimalRecord(IContext context, string dataSetId, string recordId, int recordIndex, int? version = null)
         {
             var rec = new BaseSampleData();
-            rec.RecordId = recordId;
+            rec.RecordName = recordId;
             rec.RecordIndex = recordIndex;
             rec.Version = version;
 
@@ -719,7 +719,7 @@ namespace DataCentric.Test
         private ObjectId SaveBaseRecord(IContext context, string dataSetId, string recordId, int recordIndex)
         {
             var rec = new BaseSampleData();
-            rec.RecordId = recordId;
+            rec.RecordName = recordId;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 100.0;
             rec.LocalDateElement = new LocalDate(2003, 5, 1);
@@ -737,7 +737,7 @@ namespace DataCentric.Test
         private ObjectId SaveDerivedRecord(IContext context, string dataSetId, string recordId, int recordIndex)
         {
             var rec = new DerivedSampleData();
-            rec.RecordId = recordId;
+            rec.RecordName = recordId;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;
             rec.LocalDateElement = new LocalDate(2003, 5, 1);
@@ -777,17 +777,17 @@ namespace DataCentric.Test
 
             // Key element
             rec.KeyElement = new BaseSampleKey();
-            rec.KeyElement.RecordId = "BB";
+            rec.KeyElement.RecordName = "BB";
             rec.KeyElement.RecordIndex = 2;
 
             // Key element list
             rec.KeyElementList = new List<BaseSampleKey>();
             var keyList0 = new BaseSampleKey();
-            keyList0.RecordId = "B0";
+            keyList0.RecordName = "B0";
             keyList0.RecordIndex = 3;
             rec.KeyElementList.Add(keyList0);
             var keyList1 = new BaseSampleKey();
-            keyList1.RecordId = "B1";
+            keyList1.RecordName = "B1";
             keyList1.RecordIndex = 4;
             rec.KeyElementList.Add(keyList1);
 
@@ -800,7 +800,7 @@ namespace DataCentric.Test
         private ObjectId SaveOtherDerivedRecord(IContext context, string dataSetId, string recordId, int recordIndex)
         {
             var rec = new OtherDerivedSampleData();
-            rec.RecordId = recordId;
+            rec.RecordName = recordId;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;
             rec.LocalDateElement = new LocalDate(2003, 5, 1);
@@ -819,7 +819,7 @@ namespace DataCentric.Test
         private ObjectId SaveDerivedFromDerivedRecord(IContext context, string dataSetId, string recordId, int recordIndex)
         {
             var rec = new DerivedFromDerivedSampleData();
-            rec.RecordId = recordId;
+            rec.RecordName = recordId;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;
             rec.LocalDateElement = new LocalDate(2003, 5, 1);

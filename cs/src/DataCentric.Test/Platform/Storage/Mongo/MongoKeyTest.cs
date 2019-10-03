@@ -109,7 +109,7 @@ namespace DataCentric.Test
                 var rec = new CompositeKeySampleData();
                 rec.KeyElement1 = "abc";
                 rec.KeyElement2 = new BaseSampleKey();
-                rec.KeyElement2.RecordId = "def";
+                rec.KeyElement2.RecordName = "def";
                 rec.KeyElement2.RecordIndex = 123;
                 rec.KeyElement3 = "xyz";
 

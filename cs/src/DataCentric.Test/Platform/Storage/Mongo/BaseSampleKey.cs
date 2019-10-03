@@ -31,7 +31,7 @@ namespace DataCentric.Test
     public sealed class BaseSampleKey : TypedKey<BaseSampleKey, BaseSampleData>
     {
         /// <summary>Sample element.</summary>
-        public string RecordId { get; set; }
+        public string RecordName { get; set; }
 
         /// <summary>Sample element.</summary>
         public int? RecordIndex { get; set; }

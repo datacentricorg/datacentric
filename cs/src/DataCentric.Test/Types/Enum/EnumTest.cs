@@ -39,13 +39,13 @@ namespace DataCentric.Test
     [BsonSerializer(typeof(BsonKeySerializer<EnumTestNonNullableSampleKey>))]
     public sealed class EnumTestNonNullableSampleKey : TypedKey<EnumTestNonNullableSampleKey, EnumTestNonNullableSampleData>
     {
-        public EnumTestSampleType EnumId { get; set; }
+        public EnumTestSampleType EnumAsKey { get; set; }
     }
 
     /// <summary>Key class that has all of the permitted non-nullable key elements included.</summary>
     public class EnumTestNonNullableSampleData : TypedRecord<EnumTestNonNullableSampleKey, EnumTestNonNullableSampleData>
     {
-        public EnumTestSampleType EnumId { get; set; }
+        public EnumTestSampleType EnumAsKey { get; set; }
         public EnumTestSampleType EnumValue { get; set; }
         public IsoDayOfWeek DayOfWeek { get; set; }
     }
@@ -54,13 +54,13 @@ namespace DataCentric.Test
     [BsonSerializer(typeof(BsonKeySerializer<EnumTestNullableSampleKey>))]
     public sealed class EnumTestNullableSampleKey : TypedKey<EnumTestNullableSampleKey, EnumTestNullableSampleData>
     {
-        public EnumTestSampleType? EnumId { get; set; }
+        public EnumTestSampleType? EnumAsKey { get; set; }
     }
 
     /// <summary>Key class that has all of the permitted nullable key elements included.</summary>
     public class EnumTestNullableSampleData : TypedRecord<EnumTestNullableSampleKey, EnumTestNullableSampleData>
     {
-        public EnumTestSampleType? EnumId { get; set; }
+        public EnumTestSampleType? EnumAsKey { get; set; }
         public EnumTestSampleType? EnumValue { get; set; }
         public IsoDayOfWeek? DayOfWeek { get; set; }
     }
@@ -79,7 +79,7 @@ namespace DataCentric.Test
                     int recordIndexMod8 = recordIndex % 8;
 
                     var record = new EnumTestNonNullableSampleData();
-                    record.EnumId = (EnumTestSampleType)(recordIndexMod8);
+                    record.EnumAsKey = (EnumTestSampleType)(recordIndexMod8);
                     record.EnumValue = (EnumTestSampleType)(recordIndexMod8);
                     record.DayOfWeek = (IsoDayOfWeek)recordIndexMod8;
 
@@ -105,7 +105,7 @@ namespace DataCentric.Test
                     // should return 1 out of 8 records
 
                     var query = context.DataSource.GetQuery<EnumTestNonNullableSampleData>(context.DataSet)
-                        .Where(p => p.EnumId == (EnumTestSampleType) 1)
+                        .Where(p => p.EnumAsKey == (EnumTestSampleType) 1)
                         .Where(p => p.EnumValue == (EnumTestSampleType) 1)
                         .Where(p => p.DayOfWeek == (IsoDayOfWeek) 1);
 
@@ -129,7 +129,7 @@ namespace DataCentric.Test
                     int recordIndexMod8 = recordIndex % 8;
 
                     var record = new EnumTestNullableSampleData();
-                    record.EnumId = (EnumTestSampleType)(recordIndexMod8);
+                    record.EnumAsKey = (EnumTestSampleType)(recordIndexMod8);
                     record.EnumValue = (EnumTestSampleType)(recordIndexMod8);
                     record.DayOfWeek = (IsoDayOfWeek)recordIndexMod8;
 
@@ -155,7 +155,7 @@ namespace DataCentric.Test
                     // should return 1 out of 8 records
 
                     var query = context.DataSource.GetQuery<EnumTestNullableSampleData>(context.DataSet)
-                        .Where(p => p.EnumId == (EnumTestSampleType)1)
+                        .Where(p => p.EnumAsKey == (EnumTestSampleType)1)
                         .Where(p => p.EnumValue == (EnumTestSampleType)1)
                         .Where(p => p.DayOfWeek == (IsoDayOfWeek)1);
 

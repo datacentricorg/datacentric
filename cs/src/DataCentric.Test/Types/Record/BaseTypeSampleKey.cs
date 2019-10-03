@@ -24,10 +24,10 @@ namespace DataCentric.Test
     [BsonSerializer(typeof(BsonKeySerializer<BaseTypeSampleKey>))]
     public sealed class BaseTypeSampleKey : TypedKey<BaseTypeSampleKey, BaseTypeSampleData>
     {
-        /// <summary>Unique identifier.</summary>
-        public string SampleId { get; set; }
+        /// <summary>Unique name.</summary>
+        public string SampleName { get; set; }
 
         /// <summary>Keys in which string id is the only element support implicit conversion from value.</summary>
-        public static implicit operator BaseTypeSampleKey(string value) { return new BaseTypeSampleKey { SampleId = value }; }
+        public static implicit operator BaseTypeSampleKey(string value) { return new BaseTypeSampleKey { SampleName = value }; }
     }
 }

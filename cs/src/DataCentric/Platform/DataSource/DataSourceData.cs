@@ -53,9 +53,9 @@ namespace DataCentric
 
         //--- ELEMENTS
 
-        /// <summary>Unique data source identifier.</summary>
+        /// <summary>Unique data source name.</summary>
         [BsonRequired]
-        public string DataSourceId { get; set; }
+        public string DataSourceName { get; set; }
 
         /// <summary>
         /// This class enforces strict naming conventions
@@ -235,7 +235,7 @@ namespace DataCentric
         {
             if (IsReadOnly())
                 throw new Exception(
-                    $"Attempting write operation for readonly data source {DataSourceId}. " +
+                    $"Attempting write operation for readonly data source {DataSourceName}. " +
                     $"A data source is readonly if either (a) its ReadOnly flag is set, or (b) " +
                     $"one of SavedByTime or SavedById is set.");
         }
@@ -307,8 +307,7 @@ namespace DataCentric
             // Root dataset has no imports (there is not even a record
             // where these imports can be specified).
             //
-            // Return list containing only the root dataset identifier
-            // ObjectId.Empty and exit.
+            // Return list containing only the root dataset (ObjectId.Empty) and exit
             if (loadFrom == ObjectId.Empty)
             {
                 return new ObjectId[] {ObjectId.Empty};
@@ -367,7 +366,7 @@ namespace DataCentric
         private ObjectId LoadDataSetOrEmpty(string dataSetId, ObjectId loadFrom)
         {
             // Always load even if present in cache
-            DataSetKey dataSetKey = new DataSetKey() { DataSetId = dataSetId };
+            DataSetKey dataSetKey = new DataSetKey() { DataSetName = dataSetId };
             DataSetData dataSetData = this.LoadOrNull(dataSetKey, loadFrom);
 
             // If not found, return ObjectId.Empty

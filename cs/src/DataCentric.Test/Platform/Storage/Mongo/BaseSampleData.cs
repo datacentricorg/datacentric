@@ -29,12 +29,12 @@ namespace DataCentric.Test
     /// <summary>Base class of sample data for data source testing.</summary>
     [IndexElements("DoubleElement, LocalDateElement, EnumValue")]
     [IndexElements("LocalDateElement")]
-    [IndexElements("RecordId, -Version", "CustomIndexName")]
+    [IndexElements("RecordName, -Version", "CustomIndexName")]
     [IndexElements("-RecordIndex")]
     public class BaseSampleData : TypedRecord<BaseSampleKey, BaseSampleData>
     {
         /// <summary>Sample element.</summary>
-        public string RecordId { get; set; }
+        public string RecordName { get; set; }
 
         /// <summary>Sample element.</summary>
         public int? RecordIndex { get; set; }

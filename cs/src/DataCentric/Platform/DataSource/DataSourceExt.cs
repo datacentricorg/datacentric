@@ -34,7 +34,7 @@ namespace DataCentric
         {
             var result = obj.LoadOrNull<TRecord>(id);
             if (result == null) throw new Exception(
-                $"Record with ObjectId={id} is not found in data store {obj.DataSourceId}.");
+                $"Record with ObjectId={id} is not found in data store {obj.DataSourceName}.");
             return result;
         }
 
@@ -116,7 +116,7 @@ namespace DataCentric
         /// </summary>
         public static ObjectId GetCommon(this IDataSource obj)
         {
-            return obj.GetDataSet(DataSetKey.Common.DataSetId, ObjectId.Empty);
+            return obj.GetDataSet(DataSetKey.Common.DataSetName, ObjectId.Empty);
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace DataCentric
         {
             var result = obj.GetDataSetOrEmpty(dataSetId, loadFrom);
             if (result == ObjectId.Empty) throw new Exception(
-                $"Dataset {dataSetId} is not found in data store {obj.DataSourceId}.");
+                $"Dataset {dataSetId} is not found in data store {obj.DataSourceName}.");
             return result;
         }
 
@@ -199,7 +199,7 @@ namespace DataCentric
         public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, DataSetFlags flags, ObjectId parentDataSetId)
         {
             // Create dataset record
-            var result = new DataSetData() { DataSetId = dataSetId };
+            var result = new DataSetData() { DataSetName = dataSetId };
 
             if ((flags & DataSetFlags.NonTemporal) == DataSetFlags.NonTemporal)
             {

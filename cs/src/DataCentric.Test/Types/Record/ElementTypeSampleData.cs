@@ -22,8 +22,8 @@ namespace DataCentric.Test
     /// <summary>Base type sample for unit testing.</summary>
     public class ElementTypeSampleData : Data
     {
-        /// <summary>Unique identifier.</summary>
-        public string SampleId { get; set; }
+        /// <summary>Unique name.</summary>
+        public string SampleName { get; set; }
 
         /// <summary>Double element of base type.</summary>
         public double? DoubleElement { get; set; }

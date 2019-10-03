@@ -93,7 +93,7 @@ namespace DataCentric.Cli
             decl.Name = type.Name;
             decl.Comment = type.GetCommentFromAttribute() ?? navigator?.GetXmlComment(type);
             decl.Category = projNavigator.GetTypeLocation(type);
-            decl.Module = new ModuleKey { ModuleId = type.Namespace };
+            decl.Module = new ModuleKey { ModuleName = type.Namespace };
             decl.Label = type.GetLabelFromAttribute() ?? type.Name;
 
             List<FieldInfo> items = type.GetFields(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Static).ToList();
@@ -111,7 +111,7 @@ namespace DataCentric.Cli
                 throw new ArgumentException($"Cannot create type declaration from type: {type.FullName}.");
 
             TypeDeclData decl = new TypeDeclData();
-            decl.Module = new ModuleKey { ModuleId = type.Namespace };
+            decl.Module = new ModuleKey { ModuleName = type.Namespace };
             decl.Category = projNavigator?.GetTypeLocation(type);
             decl.Name = type.Name.TrimEnd("Data");
             decl.Label = type.GetLabelFromAttribute() ?? type.Name.TrimEnd("Data");
@@ -363,7 +363,7 @@ namespace DataCentric.Cli
             return new HandlerImplementDeclData
             {
                 Name = method.Name,
-                Language = new LanguageKey {LanguageId = "cs"}
+                Language = new LanguageKey {LanguageName = "cs"}
             };
         }
 
@@ -514,7 +514,7 @@ namespace DataCentric.Cli
         /// </summary>
         private static TypeDeclKey CreateTypeDeclKey(string ns, string name)
         {
-            return new TypeDeclKey { Name = name, Module = new ModuleKey { ModuleId = ns } };
+            return new TypeDeclKey { Name = name, Module = new ModuleKey { ModuleName = ns } };
         }
 
         /// <summary>

@@ -24,7 +24,7 @@ namespace DataCentric.Cli
     {
         public static IEnumerable<string> ForDataHeader(TypeDeclData decl, Dictionary<string, string> declSet)
         {
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
             var includes = new List<string>
             {
                 $"#include <{settings.Namespace}/declare.hpp>",
@@ -61,7 +61,7 @@ namespace DataCentric.Cli
             var knownModules = GeneratorSettingsProvider.KnownModules();
             includes.AddRange(decl.Elements.Where(t => t.Enum != null)
                                    // Skip external enum
-                                  .Where(t => knownModules.Contains(t.Enum.Module.ModuleId))
+                                  .Where(t => knownModules.Contains(t.Enum.Module.ModuleName))
                                   .Select(t => t.Enum.Name).Distinct()
                                   .Select(t => $"#include <{declSet[t]}/{t.Underscore()}.hpp>"));
 
@@ -70,7 +70,7 @@ namespace DataCentric.Cli
 
         public static IEnumerable<string> ForKeyHeader(TypeDeclData decl, Dictionary<string, string> declSet)
         {
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
             var includes = new List<string>
             {
                 $"#include <{settings.Namespace}/declare.hpp>",
@@ -90,7 +90,7 @@ namespace DataCentric.Cli
             var knownModules = GeneratorSettingsProvider.KnownModules();
             includes.AddRange(decl.Elements.Where(t => t.Enum != null)
                                    // Skip external enum
-                                  .Where(t => knownModules.Contains(t.Enum.Module.ModuleId))
+                                  .Where(t => knownModules.Contains(t.Enum.Module.ModuleName))
                                   .Select(t => t.Enum.Name).Distinct()
                                   .Select(t => $"#include <{declSet[t]}/{t.Underscore()}.hpp>"));
 

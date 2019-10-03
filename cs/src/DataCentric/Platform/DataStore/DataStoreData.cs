@@ -35,8 +35,8 @@ namespace DataCentric
     /// </summary>
     public abstract class DataStoreData : RootRecord<DataStoreKey, DataStoreData>
     {
-        /// <summary>Unique data store identifier.</summary>
+        /// <summary>Unique data store name.</summary>
         [BsonRequired]
-        public string DataStoreId { get; set; }
+        public string DataStoreName { get; set; }
     }
 }

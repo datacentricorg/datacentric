@@ -69,7 +69,7 @@ namespace DataCentric.Cli
 
         private static string GetIncludePath(IDeclData decl)
         {
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
 
             // Avoid adding trailing path separator
             return !string.IsNullOrEmpty(decl.Category) && !decl.Category.Equals(".")
@@ -124,7 +124,7 @@ namespace DataCentric.Cli
         private static List<CppFileInfo> ConvertEnum(EnumDeclData decl, Dictionary<string, string> includePath)
         {
             var result = new List<CppFileInfo>();
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleId);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
             string folderName = $"{settings.Namespace}.{decl.Category}".Underscore().Replace('.', '/');
 
             var enumHeader = new CppFileInfo

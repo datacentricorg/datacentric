@@ -38,7 +38,7 @@ namespace DataCentric
     /// between winter and summer time automatically for those
     /// regions where winter time is defined.
     ///
-    /// Because TimeZoneId is used to look up timezone conventions,
+    /// Because TimeZoneName is used to look up timezone conventions,
     /// it must match either the string UTC or the code in IANA
     /// timezone database precisely. The IANA city timezone code
     /// has two slash-delimited tokens, the first referencing the
@@ -47,7 +47,7 @@ namespace DataCentric
     public class TimeZoneData : TypedRecord<TimeZoneKey, TimeZoneData>
     {
         /// <summary>
-        /// Unique timezone identifier.
+        /// Unique timezone name.
         ///
         /// Only the following timezones can be defined:
         ///
@@ -59,21 +59,21 @@ namespace DataCentric
         /// between winter and summer time automatically for those
         /// regions where winter time is defined.
         ///
-        /// Because TimeZoneId is used to look up timezone conventions,
+        /// Because TimeZoneName is used to look up timezone conventions,
         /// it must match either the string UTC or the code in IANA
         /// timezone database precisely. The IANA city timezone code
         /// has two slash-delimited tokens, the first referencing the
         /// country and the other the city, for example America/New_York.
         /// </summary>
         [BsonRequired]
-        public string TimeZoneId { get; set; }
+        public string TimeZoneName { get; set; }
 
         /// <summary>
         /// NodaTime timezone object used for conversion between
         /// UTC and local date, time, minute, and datetime.
         ///
-        /// This property is set in Init(...) method based on TimeZoneId.
-        /// Because TimeZoneId is used to look up timezone conventions,
+        /// This property is set in Init(...) method based on TimeZoneName.
+        /// Because TimeZoneName is used to look up timezone conventions,
         /// it must match the code in IANA timezone database precisely.
         ///
         /// The IANA city timezone code has two slash-delimited tokens,
@@ -93,26 +93,26 @@ namespace DataCentric
         {
             base.Init(context);
 
-            // Check that TimeZoneId is set
-            if (!TimeZoneId.HasValue()) throw new Exception("TimeZoneId is not set.");
+            // Check that TimeZoneName is set
+            if (!TimeZoneName.HasValue()) throw new Exception("TimeZoneName is not set.");
 
-            if (TimeZoneId != "UTC" && !TimeZoneId.Contains("/"))
+            if (TimeZoneName != "UTC" && !TimeZoneName.Contains("/"))
                 throw new Exception(
-                    $"TimeZoneId={TimeZoneId} is not UTC and is not a forward slash  " +
+                    $"TimeZoneName={TimeZoneName} is not UTC and is not a forward slash  " +
                     $"delimited city timezone. Only (a) UTC timezone and (b) IANA TZDB " + 
                     $"city timezones such as America/New_York are permitted " +
-                    $"as TimeZoneId values, but not three-symbol timezones without " +
+                    $"as TimeZoneName values, but not three-symbol timezones without " +
                     $"delimiter such as EST or EDT that do not handle the switch " +
                     $"between winter and summer time automatically when winter time " +
                     $"is defined.");
 
             // Initialize TimeZone property
-            TimeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(TimeZoneId);
+            TimeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(TimeZoneName);
 
-            // If still null after initialization, TimeZoneId
+            // If still null after initialization, TimeZoneName
             // was not found in the IANA database of city codes
             if (TimeZone == null)
-                throw new Exception($"TimeZoneId={TimeZoneId} not found in IANA TZDB timezone database.");
+                throw new Exception($"TimeZoneName={TimeZoneName} not found in IANA TZDB timezone database.");
         }
     }
 }

@@ -83,12 +83,12 @@ namespace DataCentric.Cli
             XDocument document = XDocument.Parse(content);
 
             List<XElement> moduleNodes = document.Descendants()
-                                                 .Where(x => x.Name == "ModuleId" && x.Parent?.Name == "Module").ToList();
+                                                 .Where(x => x.Name == "ModuleName" && x.Parent?.Name == "Module").ToList();
             foreach (var element in moduleNodes)
                 element.Name = "ModuleID";
 
             List<XElement> languageNodes = document.Descendants()
-                                                   .Where(x => x.Name == "LanguageId" && x.Parent?.Name == "Language").ToList();
+                                                   .Where(x => x.Name == "LanguageName" && x.Parent?.Name == "Language").ToList();
             foreach (var element in languageNodes)
                 element.Name = "LanguageID";
 
