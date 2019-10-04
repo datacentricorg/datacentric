@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MongoDB.Bson;
 
 namespace DataCentric
@@ -237,7 +238,7 @@ namespace DataCentric
         public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, IEnumerable<ObjectId> imports, DataSetFlags flags, ObjectId parentDataSet)
         {
             // Create dataset record with the specified name and import
-            var result = new DataSetData() {DataSetName = dataSetId, Imports = imports};
+            var result = new DataSetData() {DataSetName = dataSetId, Imports = imports.ToList() };
 
             if ((flags & DataSetFlags.NonTemporal) == DataSetFlags.NonTemporal)
             {

@@ -444,17 +444,25 @@ namespace DataCentric
             // Add self to the result
             result.Add(dataSetData.Id);
 
-            // Add parent to the result unless parent is root dataset
-            if (dataSetData.DataSet != ObjectId.Empty)
+            // Add imports to the result
+            if (dataSetData.Imports != null)
             {
-                // The Add method returns true if the argument is not yet present in the hashset
-                if (result.Add(dataSetData.DataSet))
+                foreach (var dataSetId in dataSetData.Imports)
                 {
-                    // Add recursively if not already present in the hashset
-                    var cachedImportList = GetDataSetLookupList(dataSetData.DataSet);
-                    foreach (var importId in cachedImportList)
+                    // Dataset cannot include itself as its import
+                    if (dataSetData.Id == dataSetId)
+                        throw new Exception(
+                            $"Dataset {dataSetData.Key} with ObjectId={dataSetData.Id} includes itself in the list of its imports.");
+
+                    // The Add method returns true if the argument is not yet present in the hashset
+                    if (result.Add(dataSetId))
                     {
-                        result.Add(importId);
+                        // Add recursively if not already present in the hashset
+                        var cachedImportList = GetDataSetLookupList(dataSetId);
+                        foreach (var importId in cachedImportList)
+                        {
+                            result.Add(importId);
+                        }
                     }
                 }
             }
