@@ -24,13 +24,13 @@ namespace DataCentric
         /// <summary>Return false if null or equal to the default constructed value.</summary>
         public static bool HasValue(this string value)
         {
-            return !String.IsNullOrEmpty(value);
+            return !string.IsNullOrEmpty(value);
         }
 
         /// <summary>Error message if null or equal to the default constructed value.</summary>
         public static void CheckHasValue(this string value)
         {
-            if (String.IsNullOrEmpty(value)) throw new Exception("Required string value is not set.");
+            if (string.IsNullOrEmpty(value)) throw new Exception("Required string value is not set.");
         }
     }
 }

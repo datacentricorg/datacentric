@@ -116,8 +116,8 @@ namespace DataCentric
             // Perform key validation
             if (DbName == null) throw new Exception("DB key is null or empty.");
             if (DbName.InstanceType == InstanceType.Empty) throw new Exception("DB instance type is not specified.");
-            if (String.IsNullOrEmpty(DbName.InstanceName)) throw new Exception("DB instance name is not specified.");
-            if (String.IsNullOrEmpty(DbName.EnvName)) throw new Exception("DB environment name is not specified.");
+            if (string.IsNullOrEmpty(DbName.InstanceName)) throw new Exception("DB instance name is not specified.");
+            if (string.IsNullOrEmpty(DbName.EnvName)) throw new Exception("DB environment name is not specified.");
 
             // The name is the database key in the standard semicolon delimited format.
             dbName_ = DbName.ToString();

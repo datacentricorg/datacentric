@@ -53,7 +53,7 @@ namespace DataCentric
         /// </summary>
         public override string GetMongoServerUri()
         {
-            if (!String.IsNullOrEmpty(Port))
+            if (!string.IsNullOrEmpty(Port))
             {
                 string result = "mongodb://localhost:" + Port + "/";
                 return result;
