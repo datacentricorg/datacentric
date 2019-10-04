@@ -282,9 +282,9 @@ namespace DataCentric
         /// if not found in cache. Use LoadDataSet method to
         /// force reloading the dataset from storage.
         /// </summary>
-        public static ObjectId GetDataSet(this IContext obj, string dataSetId)
+        public static ObjectId GetDataSet(this IContext obj, string dataSetName)
         {
-            return obj.DataSource.GetDataSet(dataSetId, obj.DataSet);
+            return obj.DataSource.GetDataSet(dataSetName, obj.DataSet);
         }
 
         /// <summary>
@@ -303,9 +303,9 @@ namespace DataCentric
         /// if not found in cache. Use LoadDataSet method to
         /// force reloading the dataset from storage.
         /// </summary>
-        public static ObjectId GetDataSet(this IContext obj, string dataSetId, ObjectId loadFrom)
+        public static ObjectId GetDataSet(this IContext obj, string dataSetName, ObjectId loadFrom)
         {
-            return obj.DataSource.GetDataSet(dataSetId, loadFrom);
+            return obj.DataSource.GetDataSet(dataSetName, loadFrom);
         }
 
         /// <summary>
@@ -328,9 +328,9 @@ namespace DataCentric
         /// Error message if no matching dataSetId string is found
         /// or a DeletedRecord is found instead.
         /// </summary>
-        public static ObjectId GetDataSetOrEmpty(this IContext obj, string dataSetId)
+        public static ObjectId GetDataSetOrEmpty(this IContext obj, string dataSetName)
         {
-            return obj.DataSource.GetDataSetOrEmpty(dataSetId, obj.DataSet);
+            return obj.DataSource.GetDataSetOrEmpty(dataSetName, obj.DataSet);
         }
 
         /// <summary>
@@ -352,9 +352,9 @@ namespace DataCentric
         /// Error message if no matching dataSetId string is found
         /// or a DeletedRecord is found instead.
         /// </summary>
-        public static ObjectId GetDataSetOrEmpty(this IContext obj, string dataSetId, ObjectId loadFrom)
+        public static ObjectId GetDataSetOrEmpty(this IContext obj, string dataSetName, ObjectId loadFrom)
         {
-            return obj.DataSource.GetDataSetOrEmpty(dataSetId, loadFrom);
+            return obj.DataSource.GetDataSetOrEmpty(dataSetName, loadFrom);
         }
 
         /// <summary>
@@ -404,9 +404,9 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetId)
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetName)
         {
-            return obj.DataSource.CreateDataSet(dataSetId, obj.DataSet);
+            return obj.DataSource.CreateDataSet(dataSetName, obj.DataSet);
         }
 
         /// <summary>
@@ -416,9 +416,9 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, ObjectId parentDataSet)
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, ObjectId parentDataSet)
         {
-            return obj.DataSource.CreateDataSet(dataSetId, parentDataSet);
+            return obj.DataSource.CreateDataSet(dataSetName, parentDataSet);
         }
 
         /// <summary>
@@ -428,9 +428,9 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, IEnumerable<ObjectId> imports)
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, IEnumerable<ObjectId> imports)
         {
-            return obj.DataSource.CreateDataSet(dataSetId, imports, obj.DataSet);
+            return obj.DataSource.CreateDataSet(dataSetName, imports, obj.DataSet);
         }
 
         /// <summary>
@@ -440,9 +440,9 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, IEnumerable<ObjectId> imports, ObjectId parentDataSet)
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, IEnumerable<ObjectId> imports, ObjectId parentDataSet)
         {
-            return obj.DataSource.CreateDataSet(dataSetId, imports, parentDataSet);
+            return obj.DataSource.CreateDataSet(dataSetName, imports, parentDataSet);
         }
 
         /// <summary>
@@ -458,9 +458,9 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, DataSetFlags flags)
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, DataSetFlags flags)
         {
-            return obj.DataSource.CreateDataSet(dataSetId, flags, obj.DataSet);
+            return obj.DataSource.CreateDataSet(dataSetName, flags, obj.DataSet);
         }
 
         /// <summary>
@@ -476,9 +476,9 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, DataSetFlags flags, ObjectId parentDataSet)
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, DataSetFlags flags, ObjectId parentDataSet)
         {
-            return obj.DataSource.CreateDataSet(dataSetId, flags, parentDataSet);
+            return obj.DataSource.CreateDataSet(dataSetName, flags, parentDataSet);
         }
 
         /// <summary>
@@ -494,9 +494,9 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, IEnumerable<ObjectId> imports, DataSetFlags flags)
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, IEnumerable<ObjectId> imports, DataSetFlags flags)
         {
-            return obj.DataSource.CreateDataSet(dataSetId, imports, flags, obj.DataSet);
+            return obj.DataSource.CreateDataSet(dataSetName, imports, flags, obj.DataSet);
         }
 
         /// <summary>
@@ -512,9 +512,9 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetId, IEnumerable<ObjectId> imports, DataSetFlags flags, ObjectId parentDataSet)
+        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, IEnumerable<ObjectId> imports, DataSetFlags flags, ObjectId parentDataSet)
         {
-            return obj.DataSource.CreateDataSet(dataSetId, imports, flags, parentDataSet);
+            return obj.DataSource.CreateDataSet(dataSetName, imports, flags, parentDataSet);
         }
 
         /// <summary>

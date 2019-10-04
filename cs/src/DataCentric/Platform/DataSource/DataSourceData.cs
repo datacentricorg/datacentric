@@ -40,7 +40,7 @@ namespace DataCentric
         //--- FIELDS
 
         /// <summary>
-        /// Dictionary of dataset ObjectIds stored under string dataSetId.
+        /// Dictionary of dataset ObjectIds stored under string dataSetName.
         /// </summary>
         private Dictionary<string, ObjectId> dataSetDict_ { get; } = new Dictionary<string, ObjectId>();
 
@@ -256,9 +256,9 @@ namespace DataCentric
         /// Error message if no matching dataSetId string is found
         /// or a DeletedRecord is found instead.
         /// </summary>
-        public ObjectId GetDataSetOrEmpty(string dataSetId, ObjectId loadFrom)
+        public ObjectId GetDataSetOrEmpty(string dataSetName, ObjectId loadFrom)
         {
-            if (dataSetDict_.TryGetValue(dataSetId, out ObjectId result))
+            if (dataSetDict_.TryGetValue(dataSetName, out ObjectId result))
             {
                 // Check if already cached, return if found
                 return result;
@@ -266,7 +266,7 @@ namespace DataCentric
             else
             {
                 // Otherwise load from storage (this also updates the dictionaries)
-                return LoadDataSetOrEmpty(dataSetId, loadFrom);
+                return LoadDataSetOrEmpty(dataSetName, loadFrom);
             }
         }
 
@@ -363,17 +363,17 @@ namespace DataCentric
         /// because it will return the value from in-memory
         /// cache when present.
         /// </summary>
-        private ObjectId LoadDataSetOrEmpty(string dataSetId, ObjectId loadFrom)
+        private ObjectId LoadDataSetOrEmpty(string dataSetName, ObjectId loadFrom)
         {
             // Always load even if present in cache
-            DataSetKey dataSetKey = new DataSetKey() { DataSetName = dataSetId };
+            DataSetKey dataSetKey = new DataSetKey() { DataSetName = dataSetName };
             DataSetData dataSetData = this.LoadOrNull(dataSetKey, loadFrom);
 
             // If not found, return ObjectId.Empty
             if (dataSetData == null) return ObjectId.Empty;
 
             // If found, cache result in ObjectId dictionary
-            dataSetDict_[dataSetId] = dataSetData.Id;
+            dataSetDict_[dataSetName] = dataSetData.Id;
 
             // Build and cache dataset lookup list if not found
             if (!importDict_.TryGetValue(dataSetData.Id, out HashSet<ObjectId> importSet))

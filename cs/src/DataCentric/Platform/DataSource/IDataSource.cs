@@ -180,7 +180,7 @@ namespace DataCentric
         /// Error message if no matching dataSetId string is found
         /// or a DeletedRecord is found instead.
         /// </summary>
-        ObjectId GetDataSetOrEmpty(string dataSetId, ObjectId loadFrom);
+        ObjectId GetDataSetOrEmpty(string dataSetName, ObjectId loadFrom);
 
         /// <summary>
         /// Save new version of the dataset.

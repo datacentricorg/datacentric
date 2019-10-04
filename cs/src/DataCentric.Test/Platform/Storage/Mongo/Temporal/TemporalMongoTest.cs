@@ -597,44 +597,44 @@ namespace DataCentric.Test
         }
 
         /// <summary>Load the object and verify the outcome.</summary>
-        private void VerifyLoad<TKey, TRecord>(IContext context, string dataSetId, TypedKey<TKey, TRecord> key)
+        private void VerifyLoad<TKey, TRecord>(IContext context, string dataSetName, TypedKey<TKey, TRecord> key)
             where TKey : TypedKey<TKey, TRecord>, new()
             where TRecord : TypedRecord<TKey, TRecord>
         {
             // Get dataset and try loading the record
-            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetName, context.DataSet);
             TRecord record = key.LoadOrNull(context, dataSet);
 
             if (record == null)
             {
                 // Not found
-                context.CastTo<IVerifyable>().Verify.Text($"Record {key} in dataset {dataSetId} not found.");
+                context.CastTo<IVerifyable>().Verify.Text($"Record {key} in dataset {dataSetName} not found.");
             }
             else
             {
                 // Found, also checks that the key matches
                 Assert.True(record.Key == key.ToString(),
-                    $"Record found for key={key} in dataset {dataSetId} " +
+                    $"Record found for key={key} in dataset {dataSetName} " +
                     $"has wrong key record.Key={record.Key}");
                 context.CastTo<IVerifyable>().Verify.Text(
-                    $"Record {key} in dataset {dataSetId} found and " +
+                    $"Record {key} in dataset {dataSetName} found and " +
                     $"has Type={record.GetType().Name}.");
             }
         }
 
         /// <summary>Query over all records of the specified type in the specified dataset.</summary>
-        private void VerifyQuery<TRecord>(IContext context, string dataSetId)
+        private void VerifyQuery<TRecord>(IContext context, string dataSetName)
             where TRecord : Record
         {
             // Get dataset and query
-            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetName, context.DataSet);
             var query = context.GetQuery<TRecord>(dataSet);
 
             // Iterate over records
             foreach (var record in query.AsEnumerable())
             {
                 context.CastTo<IVerifyable>().Verify.Text(
-                    $"Record {record.Key} returned by query in dataset {dataSetId} and " +
+                    $"Record {record.Key} returned by query in dataset {dataSetName} and " +
                     $"has Type={record.GetType().Name}.");
             }
         }
@@ -702,24 +702,24 @@ namespace DataCentric.Test
         }
 
         /// <summary>Save record with minimal data for testing how the records are found. </summary>
-        private ObjectId SaveMinimalRecord(IContext context, string dataSetId, string recordId, int recordIndex, int? version = null)
+        private ObjectId SaveMinimalRecord(IContext context, string dataSetName, string recordName, int recordIndex, int? version = null)
         {
             var rec = new BaseSampleData();
-            rec.RecordName = recordId;
+            rec.RecordName = recordName;
             rec.RecordIndex = recordIndex;
             rec.Version = version;
 
-            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetName, context.DataSet);
             context.Save(rec, dataSet);
 
             return rec.Id;
         }
 
         /// <summary>Save base record</summary>
-        private ObjectId SaveBaseRecord(IContext context, string dataSetId, string recordId, int recordIndex)
+        private ObjectId SaveBaseRecord(IContext context, string dataSetName, string recordName, int recordIndex)
         {
             var rec = new BaseSampleData();
-            rec.RecordName = recordId;
+            rec.RecordName = recordName;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 100.0;
             rec.LocalDateElement = new LocalDate(2003, 5, 1);
@@ -728,16 +728,16 @@ namespace DataCentric.Test
             rec.LocalDateTimeElement = new LocalDateTime(2003, 5, 1, 10, 15); // 2003-05-01T10:15:00
             rec.EnumValue = SampleEnum.EnumValue2;
 
-            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetName, context.DataSet);
             context.Save(rec, dataSet);
             return rec.Id;
         }
 
         /// <summary>Save derived record</summary>
-        private ObjectId SaveDerivedRecord(IContext context, string dataSetId, string recordId, int recordIndex)
+        private ObjectId SaveDerivedRecord(IContext context, string dataSetName, string recordName, int recordIndex)
         {
             var rec = new DerivedSampleData();
-            rec.RecordName = recordId;
+            rec.RecordName = recordName;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;
             rec.LocalDateElement = new LocalDate(2003, 5, 1);
@@ -791,16 +791,16 @@ namespace DataCentric.Test
             keyList1.RecordIndex = 4;
             rec.KeyElementList.Add(keyList1);
 
-            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetName, context.DataSet);
             context.Save(rec, dataSet);
             return rec.Id;
         }
 
         /// <summary>Save other derived record.</summary>
-        private ObjectId SaveOtherDerivedRecord(IContext context, string dataSetId, string recordId, int recordIndex)
+        private ObjectId SaveOtherDerivedRecord(IContext context, string dataSetName, string recordName, int recordIndex)
         {
             var rec = new OtherDerivedSampleData();
-            rec.RecordName = recordId;
+            rec.RecordName = recordName;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;
             rec.LocalDateElement = new LocalDate(2003, 5, 1);
@@ -810,16 +810,16 @@ namespace DataCentric.Test
             rec.OtherStringElement2 = String.Empty; // Test how empty value is recorded
             rec.OtherDoubleElement2 = 200.0;
 
-            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetName, context.DataSet);
             context.Save(rec, dataSet);
             return rec.Id;
         }
 
         /// <summary>Save record that is derived from derived.</summary>
-        private ObjectId SaveDerivedFromDerivedRecord(IContext context, string dataSetId, string recordId, int recordIndex)
+        private ObjectId SaveDerivedFromDerivedRecord(IContext context, string dataSetName, string recordName, int recordIndex)
         {
             var rec = new DerivedFromDerivedSampleData();
-            rec.RecordName = recordId;
+            rec.RecordName = recordName;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;
             rec.LocalDateElement = new LocalDate(2003, 5, 1);
@@ -829,7 +829,7 @@ namespace DataCentric.Test
             rec.OtherStringElement3 = String.Empty; // Test how empty value is recorded
             rec.OtherDoubleElement3 = 200.0;
 
-            var dataSet = context.GetDataSet(dataSetId, context.DataSet);
+            var dataSet = context.GetDataSet(dataSetName, context.DataSet);
             context.Save(rec, dataSet);
             return rec.Id;
         }

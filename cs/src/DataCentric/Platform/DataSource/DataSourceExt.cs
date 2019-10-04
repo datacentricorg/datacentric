@@ -133,11 +133,11 @@ namespace DataCentric
         /// if not found in cache. Use LoadDataSet method to
         /// force reloading the dataset from storage.
         /// </summary>
-        public static ObjectId GetDataSet(this IDataSource obj, string dataSetId, ObjectId loadFrom)
+        public static ObjectId GetDataSet(this IDataSource obj, string dataSetName, ObjectId loadFrom)
         {
-            var result = obj.GetDataSetOrEmpty(dataSetId, loadFrom);
+            var result = obj.GetDataSetOrEmpty(dataSetName, loadFrom);
             if (result == ObjectId.Empty) throw new Exception(
-                $"Dataset {dataSetId} is not found in data store {obj.DataSourceName}.");
+                $"Dataset {dataSetName} is not found in data store {obj.DataSourceName}.");
             return result;
         }
 
@@ -190,13 +190,13 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, ObjectId parentDataSet)
+        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetName, ObjectId parentDataSet)
         {
             // If imports are not specified, define with parentDataSet as the only import
             var imports = new ObjectId[] { parentDataSet };
 
             // Create with default flags in parentDataSet
-            return obj.CreateDataSet(dataSetId, imports, DataSetFlags.Default, parentDataSet);
+            return obj.CreateDataSet(dataSetName, imports, DataSetFlags.Default, parentDataSet);
         }
 
         /// <summary>
@@ -206,10 +206,10 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, IEnumerable<ObjectId> imports, ObjectId parentDataSet)
+        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetName, IEnumerable<ObjectId> imports, ObjectId parentDataSet)
         {
             // Create with default flags in parentDataSet
-            return obj.CreateDataSet(dataSetId, imports, DataSetFlags.Default, parentDataSet);
+            return obj.CreateDataSet(dataSetName, imports, DataSetFlags.Default, parentDataSet);
         }
 
         /// <summary>
@@ -219,13 +219,13 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, DataSetFlags flags, ObjectId parentDataSet)
+        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetName, DataSetFlags flags, ObjectId parentDataSet)
         {
             // If imports are not specified, define with parent dataset as the only import
             var imports = new ObjectId[] {parentDataSet};
 
             // Create with the specified flags in parentDataSet
-            return obj.CreateDataSet(dataSetId, imports, flags, parentDataSet);
+            return obj.CreateDataSet(dataSetName, imports, flags, parentDataSet);
         }
 
         /// <summary>
@@ -235,10 +235,10 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, IEnumerable<ObjectId> imports, DataSetFlags flags, ObjectId parentDataSet)
+        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetName, IEnumerable<ObjectId> imports, DataSetFlags flags, ObjectId parentDataSet)
         {
             // Create dataset record with the specified name and import
-            var result = new DataSetData() {DataSetName = dataSetId, Imports = imports.ToList() };
+            var result = new DataSetData() {DataSetName = dataSetName, Imports = imports.ToList() };
 
             if ((flags & DataSetFlags.NonTemporal) == DataSetFlags.NonTemporal)
             {
