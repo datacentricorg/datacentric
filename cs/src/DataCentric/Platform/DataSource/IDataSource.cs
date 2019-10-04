@@ -189,7 +189,7 @@ namespace DataCentric
         /// <summary>
         /// Load record by its ObjectId.
         ///
-        /// Error message if there is no record for the specified ObjectId
+        /// Error message if there is no record for the specified ObjectId,
         /// or if the record exists but is not derived from TRecord.
         /// </summary>
         public static TRecord Load<TRecord>(this IDataSource obj, ObjectId id)
@@ -208,8 +208,8 @@ namespace DataCentric
         /// and its imports, expanded to arbitrary depth with repetitions
         /// and cyclic references removed.
         ///
-        /// ATTENTION - this method ignores context.DataSet
-        /// because the second parameter loadFrom overrides it.
+        /// IMPORTANT - this overload of the method loads from loadFrom
+        /// dataset, not from context.DataSet.
         ///
         /// If Record property is set, its value is returned without
         /// performing lookup in the data store; otherwise the record
@@ -227,42 +227,15 @@ namespace DataCentric
             where TKey : TypedKey<TKey, TRecord>, new()
             where TRecord : TypedRecord<TKey, TRecord>
         {
-            return key.Load(obj.Context, loadFrom);
-        }
+            // This method will return null if the record is
+            // not found or the found record is a DeletedRecord
+            var result = obj.LoadOrNull(key, loadFrom);
 
-        /// <summary>
-        /// Load record by string key from the specified dataset or
-        /// its list of imports. The lookup occurs first in descending
-        /// order of dataset ObjectIds, and then in the descending
-        /// order of record ObjectIds within the first dataset that
-        /// has at least one record. Both dataset and record ObjectIds
-        /// are ordered chronologically to one second resolution,
-        /// and are unique within the database server or cluster.
-        ///
-        /// The root dataset has empty ObjectId value that is less
-        /// than any other ObjectId value. Accordingly, the root
-        /// dataset is the last one in the lookup order of datasets.
-        ///
-        /// The first record in this lookup order is returned, or null
-        /// if no records are found or if DeletedRecord is the first
-        /// record.
-        ///
-        /// Return null if there is no record for the specified ObjectId;
-        /// however an exception will be thrown if the record exists but
-        /// is not derived from TRecord.
-        /// </summary>
-        public static TRecord LoadOrNull<TKey, TRecord>(this IDataSource obj, TypedKey<TKey, TRecord> key, ObjectId loadFrom)
-            where TKey : TypedKey<TKey, TRecord>, new()
-            where TRecord : TypedRecord<TKey, TRecord>
-        {
-            // This method forwards to the implementation in Key(TKey, TRecord),
-            // which in turn uses the non-caching variant of the same method,
-            // in this class, ReloadOrNull(key,dataSet).
-            //
-            // While it would have been cleaner to keep all of the implementations
-            // here, this method requires access to cachedRecord_ which is a private
-            // field of Key(TKey, TRecord) that is not accessible to this class.
-            return key.LoadOrNull(obj.Context, loadFrom);
+            // Error message if null, otherwise return
+            if (result == null) throw new Exception(
+                $"Record with key {key} is not found in dataset with ObjectId={loadFrom}.");
+
+            return result;
         }
 
         /// <summary>

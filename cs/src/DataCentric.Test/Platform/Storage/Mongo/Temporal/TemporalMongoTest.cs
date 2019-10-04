@@ -456,8 +456,8 @@ namespace DataCentric.Test
                 // Load each record by string key
                 if (true)
                 {
-                    var loadedA0 = new BaseSampleKey() {RecordName = "A", RecordIndex = 0}.LoadOrNull(context, dataSet1);
-                    var loadedC0 = new BaseSampleKey() {RecordName = "C", RecordIndex = 0}.LoadOrNull(context, dataSet1);
+                    var loadedA0 = context.LoadOrNull(new BaseSampleKey() {RecordName = "A", RecordIndex = 0}, dataSet1);
+                    var loadedC0 = context.LoadOrNull(new BaseSampleKey() {RecordName = "C", RecordIndex = 0}, dataSet1);
 
                     context.Verify.Text("Load records by string key without constraint");
                     if (loadedA0 != null) context.Verify.Text($"    Version found for key=A;0: {loadedA0.Version}");
@@ -493,8 +493,8 @@ namespace DataCentric.Test
                 // Load each record by string key
                 if (true)
                 {
-                    var loadedA0 = new BaseSampleKey() { RecordName = "A", RecordIndex = 0 }.LoadOrNull(context, dataSet1);
-                    var loadedC0 = new BaseSampleKey() { RecordName = "C", RecordIndex = 0 }.LoadOrNull(context, dataSet1);
+                    var loadedA0 = context.LoadOrNull(new BaseSampleKey() { RecordName = "A", RecordIndex = 0 }, dataSet1);
+                    var loadedC0 = context.LoadOrNull(new BaseSampleKey() { RecordName = "C", RecordIndex = 0 }, dataSet1);
 
                     context.Verify.Text("Load records by string key with SavedById constraint");
                     if (loadedA0 != null) context.Verify.Text($"    Version found for key=A;0: {loadedA0.Version}");
@@ -603,7 +603,7 @@ namespace DataCentric.Test
         {
             // Get dataset and try loading the record
             var dataSet = context.GetDataSet(dataSetName, context.DataSet);
-            TRecord record = key.LoadOrNull(context, dataSet);
+            TRecord record = context.LoadOrNull(key, dataSet);
 
             if (record == null)
             {

@@ -56,6 +56,18 @@ namespace DataCentric
         /// <summary>
         /// Load record by its ObjectId.
         ///
+        /// Error message if there is no record for the specified ObjectId,
+        /// or if the record exists but is not derived from TRecord.
+        /// </summary>
+        public static TRecord Load<TRecord>(this IContext obj, ObjectId id)
+            where TRecord : Record
+        {
+            return obj.DataSource.Load<TRecord>(id);
+        }
+
+        /// <summary>
+        /// Load record by its ObjectId.
+        ///
         /// Return null if there is no record for the specified ObjectId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
@@ -64,6 +76,63 @@ namespace DataCentric
             where TRecord : Record
         {
             return obj.DataSource.LoadOrNull<TRecord>(id);
+        }
+
+        /// <summary>
+        /// Load record from context.DataSource, overriding the dataset
+        /// specified in the context with the value specified as the
+        /// second parameter. The lookup occurs in the specified dataset
+        /// and its imports, expanded to arbitrary depth with repetitions
+        /// and cyclic references removed.
+        ///
+        /// This overload of the method loads from from context.DataSet.
+        ///
+        /// If Record property is set, its value is returned without
+        /// performing lookup in the data store; otherwise the record
+        /// is loaded from storage and cached in Record and the
+        /// cached value is returned from subsequent calls.
+        ///
+        /// Once the record has been cached, the same version will be
+        /// returned in subsequent calls with the same key instance.
+        /// Create a new key or call earRecord() method to force
+        /// reloading new version of the record from storage.
+        ///
+        /// Error message if the record is not found or is a DeletedRecord.
+        /// </summary>
+        public static TRecord Load<TKey, TRecord>(this IContext obj, TypedKey<TKey, TRecord> key)
+            where TKey : TypedKey<TKey, TRecord>, new()
+            where TRecord : TypedRecord<TKey, TRecord>
+        {
+            return obj.DataSource.Load(key, obj.DataSet);
+        }
+
+        /// <summary>
+        /// Load record from context.DataSource, overriding the dataset
+        /// specified in the context with the value specified as the
+        /// second parameter. The lookup occurs in the specified dataset
+        /// and its imports, expanded to arbitrary depth with repetitions
+        /// and cyclic references removed.
+        ///
+        /// IMPORTANT - this overload of the method loads from loadFrom
+        /// dataset, not from context.DataSet.
+        ///
+        /// If Record property is set, its value is returned without
+        /// performing lookup in the data store; otherwise the record
+        /// is loaded from storage and cached in Record and the
+        /// cached value is returned from subsequent calls.
+        ///
+        /// Once the record has been cached, the same version will be
+        /// returned in subsequent calls with the same key instance.
+        /// Create a new key or call earRecord() method to force
+        /// reloading new version of the record from storage.
+        ///
+        /// Error message if the record is not found or is a DeletedRecord.
+        /// </summary>
+        public static TRecord Load<TKey, TRecord>(this IContext obj, TypedKey<TKey, TRecord> key, ObjectId loadFrom)
+            where TKey : TypedKey<TKey, TRecord>, new()
+            where TRecord : TypedRecord<TKey, TRecord>
+        {
+            return obj.DataSource.Load(key, loadFrom);
         }
 
         /// <summary>

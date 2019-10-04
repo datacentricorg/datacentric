@@ -137,7 +137,8 @@ namespace DataCentric
             if (DataStore != null)
             {
                 // Load if data store key is set; the key may point to a local or remote server or cluster
-                dataStoreData = DataStore.Load(Context, ObjectId.Empty).CastTo<MongoDataStoreData>();
+                throw new NotImplementedException();
+                // TODO dataStoreData = DataStore.Load(Context, ObjectId.Empty).CastTo<MongoDataStoreData>();
             }
             else
             {

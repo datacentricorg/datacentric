@@ -65,9 +65,9 @@ namespace DataCentric.Test
 
                 // Load the records back
                 var queueKey = new JobQueueKey {Id = queueId};
-                var loadedQueue = queueKey.Load(context);
+                var loadedQueue = context.Load(queueKey);
                 var jobKey = new JobKey { Id = jobId };
-                var loadedJob = jobKey.Load(context);
+                var loadedJob = context.Load(jobKey);
 
                 // Check that ObjectId based key works correctly
                 Assert.True(loadedJob.Queue.Value == loadedQueue.ToKey().Value);
