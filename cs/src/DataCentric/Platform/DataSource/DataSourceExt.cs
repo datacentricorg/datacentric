@@ -154,12 +154,18 @@ namespace DataCentric
         /// </summary>
         public static ObjectId CreateCommon(this IDataSource obj)
         {
-            // Create with default flag values
-            return obj.CreateCommon(new DataSetFlags());
+            // Create with default flags in root dataset
+            return obj.CreateCommon(DataSetFlags.Default);
         }
 
         /// <summary>
         /// Create Common dataset with the specified flags.
+        ///
+        /// The flags may be used, among other things, to specify
+        /// that the created dataset will be NonTemporal even if the
+        /// data source is itself temporal. This setting is typically
+        /// used to prevent the accumulation of data where history is
+        /// not needed.
         ///
         /// By convention, the Common dataset contains reference and
         /// configuration data and is included as import in all other
@@ -172,34 +178,66 @@ namespace DataCentric
         /// </summary>
         public static ObjectId CreateCommon(this IDataSource obj, DataSetFlags flags)
         {
-            // Create with dataSetId Common in root dataset
+            // Create with the specified flags in root dataset
             return obj.CreateDataSet("Common", flags, ObjectId.Empty);
         }
 
         /// <summary>
         /// Create dataset with the specified dataSetId and default flags
-        /// in dataset with parentDataSetId.
+        /// in parentDataSet.
         ///
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, ObjectId parentDataSetId)
+        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, ObjectId parentDataSet)
         {
-            // Create with default flag values
-            return obj.CreateDataSet(dataSetId, new DataSetFlags(), parentDataSetId);
+            // If imports are not specified, define with parentDataSet as the only import
+            var imports = new ObjectId[] { parentDataSet };
+
+            // Create with default flags in parentDataSet
+            return obj.CreateDataSet(dataSetId, imports, DataSetFlags.Default, parentDataSet);
         }
 
         /// <summary>
-        /// Create dataset with the specified dataSetId and the specified flags
-        /// in dataset with parentDataSetId.
+        /// Create dataset with the specified dataSetId, specified
+        /// imports, and default flags in parentDataSet.
         ///
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, DataSetFlags flags, ObjectId parentDataSetId)
+        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, IEnumerable<ObjectId> imports, ObjectId parentDataSet)
         {
-            // Create dataset record
-            var result = new DataSetData() { DataSetName = dataSetId };
+            // Create with default flags in parentDataSet
+            return obj.CreateDataSet(dataSetId, imports, DataSetFlags.Default, parentDataSet);
+        }
+
+        /// <summary>
+        /// Create dataset with the specified dataSetId and flags
+        /// in context.DataSet, and make context.DataSet its sole import.
+        ///
+        /// This method updates in-memory dataset cache to include
+        /// the created dataset.
+        /// </summary>
+        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, DataSetFlags flags, ObjectId parentDataSet)
+        {
+            // If imports are not specified, define with parent dataset as the only import
+            var imports = new ObjectId[] {parentDataSet};
+
+            // Create with the specified flags in parentDataSet
+            return obj.CreateDataSet(dataSetId, imports, flags, parentDataSet);
+        }
+
+        /// <summary>
+        /// Create dataset with the specified dataSetId, imports,
+        /// and flags in parentDataSet.
+        ///
+        /// This method updates in-memory dataset cache to include
+        /// the created dataset.
+        /// </summary>
+        public static ObjectId CreateDataSet(this IDataSource obj, string dataSetId, IEnumerable<ObjectId> imports, DataSetFlags flags, ObjectId parentDataSet)
+        {
+            // Create dataset record with the specified name and import
+            var result = new DataSetData() {DataSetName = dataSetId, Imports = imports};
 
             if ((flags & DataSetFlags.NonTemporal) == DataSetFlags.NonTemporal)
             {
@@ -212,8 +250,8 @@ namespace DataCentric
                 result.NonTemporal = false;
             }
 
-            // Save the record (this also updates the dictionaries)
-            obj.SaveDataSet(result, parentDataSetId);
+            // Save in parentDataSet (this also updates the dictionaries)
+            obj.SaveDataSet(result, parentDataSet);
 
             // Return ObjectId that was assigned to the
             // record inside the SaveDataSet method
