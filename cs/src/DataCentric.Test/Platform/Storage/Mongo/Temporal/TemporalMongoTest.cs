@@ -123,8 +123,8 @@ namespace DataCentric.Test
 
                 foreach (var obj in query)
                 {
-                    var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
-                    context.Verify.Text($"Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
+                    var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
+                    context.Verify.Text($"Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                 }
             }
         }
@@ -475,8 +475,8 @@ namespace DataCentric.Test
                     context.Verify.Text("Query records without constraint");
                     foreach (var obj in query)
                     {
-                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
-                        context.Verify.Text($"    Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
+                        var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
+                        context.Verify.Text($"    Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                     }
                 }
 
@@ -512,8 +512,8 @@ namespace DataCentric.Test
                     context.Verify.Text("Query records with SavedById constraint");
                     foreach (var obj in query)
                     {
-                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
-                        context.Verify.Text($"    Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
+                        var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
+                        context.Verify.Text($"    Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                     }
                 }
 
@@ -559,8 +559,8 @@ namespace DataCentric.Test
                     int recordCount = 0;
                     foreach (var obj in query)
                     {
-                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
-                        context.Verify.Text($"Query returned Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
+                        var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
+                        context.Verify.Text($"Query returned Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                         recordCount++;
                     }
 
@@ -586,8 +586,8 @@ namespace DataCentric.Test
                     int recordCount = 0;
                     foreach (var obj in query)
                     {
-                        var dataSetId = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
-                        context.Verify.Text($"Query returned Key={obj.Key} DataSet={dataSetId} Version={obj.Version}");
+                        var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
+                        context.Verify.Text($"Query returned Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                         recordCount++;
                     }
 

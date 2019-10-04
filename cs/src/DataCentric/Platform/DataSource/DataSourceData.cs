@@ -242,7 +242,7 @@ namespace DataCentric
 
         /// <summary>
         /// Return ObjectId for the latest dataset record with
-        /// matching dataSetId string from in-memory cache. Try
+        /// matching dataSetName string from in-memory cache. Try
         /// loading from storage only if not found in cache.
         ///
         /// Return ObjectId.Empty if not found.
@@ -253,7 +253,7 @@ namespace DataCentric
         /// if not found in cache. Use LoadDataSet method to
         /// force reloading the dataset from storage.
         ///
-        /// Error message if no matching dataSetId string is found
+        /// Error message if no matching dataSetName string is found
         /// or a DeletedRecord is found instead.
         /// </summary>
         public ObjectId GetDataSetOrEmpty(string dataSetName, ObjectId loadFrom)
@@ -350,7 +350,7 @@ namespace DataCentric
 
         /// <summary>
         /// Load ObjectId for the latest dataset record with
-        /// matching dataSetId string from storage even if
+        /// matching dataSetName string from storage even if
         /// present in in-memory cache. Update the cache with
         /// the loaded value.
         ///

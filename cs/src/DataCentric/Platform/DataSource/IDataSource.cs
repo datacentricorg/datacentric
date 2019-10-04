@@ -168,7 +168,7 @@ namespace DataCentric
 
         /// <summary>
         /// Return ObjectId for the latest dataset record with
-        /// matching dataSetId string from in-memory cache. Try
+        /// matching dataSetName string from in-memory cache. Try
         /// loading from storage only if not found in cache.
         ///
         /// Return ObjectId.Empty if not found.
@@ -179,7 +179,7 @@ namespace DataCentric
         /// if not found in cache. Use LoadDataSet method to
         /// force reloading the dataset from storage.
         ///
-        /// Error message if no matching dataSetId string is found
+        /// Error message if no matching dataSetName string is found
         /// or a DeletedRecord is found instead.
         /// </summary>
         ObjectId GetDataSetOrEmpty(string dataSetName, ObjectId loadFrom);
@@ -297,7 +297,7 @@ namespace DataCentric
 
         /// <summary>
         /// Return ObjectId for the latest dataset record with
-        /// matching dataSetId string from in-memory cache. Try
+        /// matching dataSetName string from in-memory cache. Try
         /// loading from storage only if not found in cache.
         ///
         /// Error message if not found.
@@ -359,7 +359,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create dataset with the specified dataSetId and default flags
+        /// Create dataset with the specified dataSetName and default flags
         /// in parentDataSet.
         ///
         /// This method updates in-memory dataset cache to include
@@ -375,7 +375,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create dataset with the specified dataSetId, specified
+        /// Create dataset with the specified dataSetName, specified
         /// imports, and default flags in parentDataSet.
         ///
         /// This method updates in-memory dataset cache to include
@@ -388,7 +388,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create dataset with the specified dataSetId and flags
+        /// Create dataset with the specified dataSetName and flags
         /// in context.DataSet, and make context.DataSet its sole import.
         ///
         /// This method updates in-memory dataset cache to include
@@ -404,7 +404,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create dataset with the specified dataSetId, imports,
+        /// Create dataset with the specified dataSetName, imports,
         /// and flags in parentDataSet.
         ///
         /// This method updates in-memory dataset cache to include

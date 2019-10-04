@@ -290,7 +290,7 @@ namespace DataCentric
 
         /// <summary>
         /// Return ObjectId for the latest dataset record with
-        /// matching dataSetId string from in-memory cache. Try
+        /// matching dataSetName string from in-memory cache. Try
         /// loading from storage only if not found in cache.
         ///
         /// This overload of the GetDataSet method does not
@@ -312,7 +312,7 @@ namespace DataCentric
 
         /// <summary>
         /// Return ObjectId for the latest dataset record with
-        /// matching dataSetId string from in-memory cache. Try
+        /// matching dataSetName string from in-memory cache. Try
         /// loading from storage only if not found in cache.
         ///
         /// This overload of the GetDataSet method specifies
@@ -333,7 +333,7 @@ namespace DataCentric
 
         /// <summary>
         /// Return ObjectId for the latest dataset record with
-        /// matching dataSetId string from in-memory cache. Try
+        /// matching dataSetName string from in-memory cache. Try
         /// loading from storage only if not found in cache.
         ///
         /// This overload of the GetDataSetOrEmpty method does not
@@ -348,7 +348,7 @@ namespace DataCentric
         /// if not found in cache. Use LoadDataSet method to
         /// force reloading the dataset from storage.
         ///
-        /// Error message if no matching dataSetId string is found
+        /// Error message if no matching dataSetName string is found
         /// or a DeletedRecord is found instead.
         /// </summary>
         public static ObjectId GetDataSetOrEmpty(this IContext obj, string dataSetName)
@@ -358,7 +358,7 @@ namespace DataCentric
 
         /// <summary>
         /// Return ObjectId for the latest dataset record with
-        /// matching dataSetId string from in-memory cache. Try
+        /// matching dataSetName string from in-memory cache. Try
         /// loading from storage only if not found in cache.
         ///
         /// This overload of the GetDataSetOrEmpty method specifies
@@ -372,7 +372,7 @@ namespace DataCentric
         /// if not found in cache. Use LoadDataSet method to
         /// force reloading the dataset from storage.
         ///
-        /// Error message if no matching dataSetId string is found
+        /// Error message if no matching dataSetName string is found
         /// or a DeletedRecord is found instead.
         /// </summary>
         public static ObjectId GetDataSetOrEmpty(this IContext obj, string dataSetName, ObjectId loadFrom)
@@ -421,7 +421,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create dataset with the specified dataSetId and default flags
+        /// Create dataset with the specified dataSetName and default flags
         /// in context.DataSet, and make context.DataSet its sole import.
         ///
         /// This method updates in-memory dataset cache to include
@@ -433,7 +433,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create dataset with the specified dataSetId and default flags
+        /// Create dataset with the specified dataSetName and default flags
         /// in parentDataSet, and make context.DataSet its sole import.
         ///
         /// This method updates in-memory dataset cache to include
@@ -445,7 +445,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create dataset with the specified dataSetId, specified imports,
+        /// Create dataset with the specified dataSetName, specified imports,
         /// and default flags in context.DataSet.
         ///
         /// This method updates in-memory dataset cache to include
@@ -457,7 +457,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create dataset with the specified dataSetId, specified
+        /// Create dataset with the specified dataSetName, specified
         /// imports, and default flags in parentDataSet.
         ///
         /// This method updates in-memory dataset cache to include
@@ -469,7 +469,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create dataset with the specified dataSetId and flags
+        /// Create dataset with the specified dataSetName and flags
         /// in context.DataSet, and make context.DataSet its sole import.
         ///
         /// The flags may be used, among other things, to specify
@@ -487,7 +487,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create dataset with the specified dataSetId and flags
+        /// Create dataset with the specified dataSetName and flags
         /// in parentDataSet, and make parentDataSet its sole import.
         ///
         /// The flags may be used, among other things, to specify
@@ -505,7 +505,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create dataset with the specified dataSetId, imports,
+        /// Create dataset with the specified dataSetName, imports,
         /// and flags in context.DataSet.
         ///
         /// The flags may be used, among other things, to specify
@@ -523,7 +523,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create dataset with the specified dataSetId, imports,
+        /// Create dataset with the specified dataSetName, imports,
         /// and flags in parentDataSet.
         ///
         /// The flags may be used, among other things, to specify
