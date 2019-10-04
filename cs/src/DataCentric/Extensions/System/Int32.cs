@@ -18,8 +18,8 @@ using System;
 
 namespace DataCentric
 {
-    /// <summary>Extension methods for System.Int32.</summary>
-    public static class Int32Ext
+    /// <summary>Extension methods for int (System.Int32).</summary>
+    public static class IntExt
     {
         /// <summary>Return false if equal to Int.Empty.</summary>
         public static bool HasValue(this int value)

@@ -19,8 +19,8 @@ using System.Globalization;
 
 namespace DataCentric
 {
-    /// <summary>Extension methods for System.Int64.</summary>
-    public static class Int64Ext
+    /// <summary>Extension methods for long (System.Int64).</summary>
+    public static class LongExt
     {
         /// <summary>Return false if equal to Long.Empty.</summary>
         public static bool HasValue(this long value)
