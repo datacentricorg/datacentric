@@ -3,7 +3,22 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <LangVersion>7.3</LangVersion>
+    <PackageId>DataCentric.Cli.Cs</PackageId>
+    <Version>2.1.1</Version>
+    <Authors>The DataCentric Authors</Authors>
+    <Company>DataCentric</Company>
+    <Product>DataCentric</Product>
+    <Description>DataCentric CLI module.</Description>
+    <Copyright>The DataCentric Authors</Copyright>
+    <AssemblyName>DataCentric.Cli.Cs</AssemblyName>
+    <RootNamespace>DataCentric.Cli</RootNamespace>
+    <PackageLicenseUrl>https://licenses.nuget.org/Apache-2.0</PackageLicenseUrl>
+    <PackageProjectUrl>www.datacentric.org</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/datacentricorg/datacentric-cs</RepositoryUrl>
+    <PackageTags>data-centric, mongodb</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
