@@ -57,4 +57,51 @@ namespace DataCentric
         /// <summary>Value representing Sunday (7).</summary>
         Sun
     }
+
+    /// <summary>Static and extension methods for ShortDayOfWeek.</summary>
+    public static class ShortDayOfWeekExt
+    {
+        /// <summary>Return false if equal to the default constructed value.</summary>
+        public static bool HasValue(this ShortDayOfWeek value)
+        {
+            return value != default;
+        }
+
+        /// <summary>Return false if null or equal to the default constructed value.</summary>
+        public static bool HasValue(this ShortDayOfWeek? value)
+        {
+            return value.HasValue && value.Value.HasValue();
+        }
+
+        /// <summary>Error message if equal to the default constructed value.</summary>
+        public static void CheckHasValue(this ShortDayOfWeek value)
+        {
+            if (!value.HasValue()) throw new Exception("Required ShortDayOfWeek value is not set.");
+        }
+
+        /// <summary>Error message if null or equal to the default constructed value.</summary>
+        public static void CheckHasValue(this ShortDayOfWeek? value)
+        {
+            if (!value.HasValue()) throw new Exception("Required ShortDayOfWeek value is not set.");
+        }
+
+        /// <summary>
+        /// Convert to IsoDayOfWeek enum that uses full names for the days of week
+        /// rather than the three-letter abbreviation used by ShortDayOfWeek.
+        /// </summary>
+        public static IsoDayOfWeek ToIsoDayOfWeek(this ShortDayOfWeek value)
+        {
+            return (IsoDayOfWeek)value;
+        }
+
+        /// <summary>
+        /// Convert to IsoDayOfWeek enum that uses full names for the days of week
+        /// rather than the three-letter abbreviation used by ShortDayOfWeek.
+        /// </summary>
+        public static IsoDayOfWeek? ToIsoDayOfWeek(this ShortDayOfWeek? value)
+        {
+            if (value != null) return (IsoDayOfWeek)value;
+            else return null;
+        }
+    }
 }

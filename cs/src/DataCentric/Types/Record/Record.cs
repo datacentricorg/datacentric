@@ -100,4 +100,40 @@ namespace DataCentric
         /// <summary>Return string representation of the record's key.</summary>
         public override string ToString() { return Key; }
     }
+
+    /// <summary>Extension methods for Record.</summary>
+    public static class RecordExt
+    {
+        /// <summary>Deserialize record from XML using short
+        /// class name without namespace for the root XML element.</summary>
+        public static void ParseXml(this Record obj, string xmlString)
+        {
+            ITreeReader reader = new XmlTreeReader(xmlString);
+
+            // Root node of serialized XML must be the same as mapped class name without namespace
+            var mappedFullName = ClassInfo.GetOrCreate(obj).MappedClassName;
+            ITreeReader recordNodes = reader.ReadElement(mappedFullName);
+
+            // Deserialize from XML nodes inside the root node
+            obj.DeserializeFrom(recordNodes);
+        }
+
+        /// <summary>Serialize record to XML using short
+        /// class name without namespace for the root XML element.</summary>
+        public static string ToXml(this Record obj)
+        {
+            // Get root XML element name using mapped final type of the object
+            string rootName = ClassInfo.GetOrCreate(obj).MappedClassName;
+
+            // Serialize to XML
+            ITreeWriter writer = new XmlTreeWriter();
+            writer.WriteStartDocument(rootName);
+            obj.SerializeTo(writer);
+            writer.WriteEndDocument(rootName);
+
+            // Convert to string
+            string result = writer.ToString();
+            return result;
+        }
+    }
 }

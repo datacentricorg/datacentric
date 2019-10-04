@@ -40,4 +40,58 @@ namespace DataCentric
         /// <summary>Flush approval log contents to permanent storage.</summary>
         void Flush();
     }
+
+    /// <summary>Extension methods for IVerify.</summary>
+    public static class VerifyExt
+    {
+        /// <summary>Record 'Verify.Text: {message}'.</summary>
+        public static void Text(this IVerify obj, string message, params object[] messageParams)
+        {
+            obj.Context.Log.Append(LogEntryType.Verify, "Text", message, messageParams);
+        }
+
+        /// <summary>Record 'Verify.Passed: {message}' when condition
+        /// is true and 'Verify.Failed: {message}' when condition is false.</summary>
+        public static void Assert(this IVerify obj, bool condition, string messageWhenFalse, params object[] messageParams)
+        {
+            string conditionString = condition ? "Passed" : "Failed";
+            obj.Context.Log.Append(LogEntryType.Verify, conditionString, messageWhenFalse, messageParams);
+        }
+
+        /// <summary>Record 'Verify.Value: {message} = {value}'.</summary>
+        public static void Value(this IVerify obj, object value, string message, params object[] messageParams)
+        {
+            if (obj.IsSet)
+            {
+                // Use AsString() instead of ToString() for custom formatting of certain types
+                string approvalMessage = System.String.Concat(message, " = ", value.AsString());
+                obj.Context.Log.Append(LogEntryType.Verify, "Value", approvalMessage, messageParams);
+            }
+        }
+
+        /// <summary>Record 'Verify.File: {fileName} ({N} bytes) and save contents to a file.</summary>
+        public static void File(this IVerify obj, string fileName, string fileContents)
+        {
+            if (obj.IsSet)
+            {
+                string[] fileNameTokens = fileName.Split('.');
+                if (fileNameTokens.Length == 1) throw new Exception(
+                    $"Filename {fileName} passed to Verify.File method must have an extension.");
+                if (fileNameTokens.Length > 2) throw new Exception(
+                    $"Filename {fileName} passed to Verify.File method must not have dot delimiters other than in front of the file extension.");
+
+                string fileNameWithPrefix = String.Join(".", obj.ClassName, obj.MethodName, fileNameTokens[0], "approved", fileNameTokens[1]);
+
+                // Record approval message with file byte size
+                int byteSize = Encoding.UTF8.GetByteCount(fileContents);
+                string approvalMessage = System.String.Concat(fileNameWithPrefix, " (", byteSize, " bytes)");
+                obj.Context.Log.Append(LogEntryType.Verify, "File", approvalMessage);
+
+                // Save contents to a file
+                var fileWriter = obj.Context.Out.CreateTextWriter(fileNameWithPrefix, FileWriteMode.Replace);
+                fileWriter.Write(fileContents);
+                fileWriter.Flush();
+            }
+        }
+    }
 }

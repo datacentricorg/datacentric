@@ -412,4 +412,40 @@ namespace DataCentric
                 throw new Exception($"Key {string.Join(";", tokens)} for key type {GetType().Name} contains an empty token.");
         }
     }
+
+    /// <summary>Extension methods for Key.</summary>
+    public static class KeyExt
+    {
+        /// <summary>Deserialize record from XML using short
+        /// class name without namespace for the root XML element.</summary>
+        public static void ParseXml(this Key obj, string xmlString)
+        {
+            ITreeReader reader = new XmlTreeReader(xmlString);
+
+            // Root node of serialized XML must be the same as mapped class name without namespace
+            var mappedFullName = ClassInfo.GetOrCreate(obj).MappedClassName;
+            ITreeReader recordNodes = reader.ReadElement(mappedFullName);
+
+            // Deserialize from XML nodes inside the root node
+            obj.DeserializeFrom(recordNodes);
+        }
+
+        /// <summary>Serialize record to XML using short
+        /// class name without namespace for the root XML element.</summary>
+        public static string ToXml(this Key obj)
+        {
+            // Get root XML element name using mapped final type of the object
+            string rootName = ClassInfo.GetOrCreate(obj).MappedClassName;
+
+            // Serialize to XML
+            ITreeWriter writer = new XmlTreeWriter();
+            writer.WriteStartDocument(rootName);
+            obj.SerializeTo(writer);
+            writer.WriteEndDocument(rootName);
+
+            // Convert to string
+            string result = writer.ToString();
+            return result;
+        }
+    }
 }
