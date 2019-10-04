@@ -67,13 +67,6 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// This method uses cached record inside the key if present,
-        /// and only loads a record from storage if there is no cached
-        /// record. To always retrieve a new record from storage, use
-        /// the non-caching variant of this method:
-        ///
-        /// ReloadOrNull(key,dataSet)
-        ///
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
         /// order of dataset ObjectIds, and then in the descending
@@ -99,41 +92,6 @@ namespace DataCentric
             where TRecord : TypedRecord<TKey, TRecord>
         {
             return obj.DataSource.LoadOrNull(key, loadFrom);
-        }
-
-        /// <summary>
-        /// This method does not use cached value inside the key
-        /// and always retrieves a new record from storage. To get
-        /// the record cached inside the key instead (if present), use
-        /// the caching variant of this method:
-        ///
-        /// LoadOrNull(key, loadFrom)
-        ///
-        /// Load record by string key from the specified dataset or
-        /// its list of imports. The lookup occurs first in descending
-        /// order of dataset ObjectIds, and then in the descending
-        /// order of record ObjectIds within the first dataset that
-        /// has at least one record. Both dataset and record ObjectIds
-        /// are ordered chronologically to one second resolution,
-        /// and are unique within the database server or cluster.
-        ///
-        /// The root dataset has empty ObjectId value that is less
-        /// than any other ObjectId value. Accordingly, the root
-        /// dataset is the last one in the lookup order of datasets.
-        ///
-        /// The first record in this lookup order is returned, or null
-        /// if no records are found or if DeletedRecord is the first
-        /// record.
-        ///
-        /// Return null if there is no record for the specified ObjectId;
-        /// however an exception will be thrown if the record exists but
-        /// is not derived from TRecord.
-        /// </summary>
-        public static TRecord ReloadOrNull<TKey, TRecord>(this IContext obj, TypedKey<TKey, TRecord> key, ObjectId loadFrom)
-            where TKey : TypedKey<TKey, TRecord>, new()
-            where TRecord : TypedRecord<TKey, TRecord>
-        {
-            return obj.DataSource.ReloadOrNull(key, loadFrom);
         }
 
         /// <summary>

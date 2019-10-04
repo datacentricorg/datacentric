@@ -71,13 +71,6 @@ namespace DataCentric
             where TRecord : Record;
 
         /// <summary>
-        /// This method does not use cached value inside the key
-        /// and always retrieves a new record from storage. To get
-        /// the record cached inside the key instead (if present), use
-        /// the caching variant of this method:
-        ///
-        /// LoadOrNull(key, loadFrom)
-        ///
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
         /// order of dataset ObjectIds, and then in the descending
@@ -98,7 +91,7 @@ namespace DataCentric
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        TRecord ReloadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, ObjectId loadFrom)
+        TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, ObjectId loadFrom)
             where TKey : TypedKey<TKey, TRecord>, new()
             where TRecord : TypedRecord<TKey, TRecord>;
 
@@ -238,13 +231,6 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// This method uses cached record inside the key if present,
-        /// and only loads a record from storage if there is no cached
-        /// record. To always retrieve a new record from storage, use
-        /// the non-caching variant of this method:
-        ///
-        /// ReloadOrNull(key,dataSet)
-        ///
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
         /// order of dataset ObjectIds, and then in the descending

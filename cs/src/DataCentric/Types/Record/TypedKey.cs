@@ -140,7 +140,7 @@ namespace DataCentric
         {
             // This method will return null if the record is
             // not found or the found record is a DeletedRecord
-            TRecord result = context.ReloadOrNull(this, loadFrom);
+            TRecord result = context.LoadOrNull(this, loadFrom);
 
             // If not null, check that the key matches (even if DeletedRecord)
             if (result != null && Value != result.Key)
