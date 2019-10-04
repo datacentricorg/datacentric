@@ -65,7 +65,7 @@ namespace DataCentric
         ///
         /// Return null if there is no record for the specified ObjectId;
         /// however an exception will be thrown if the record exists but
-        /// is not derived from TRecord. 
+        /// is not derived from TRecord.
         /// </summary>
         TRecord LoadOrNull<TRecord>(ObjectId id)
             where TRecord : Record;
@@ -77,14 +77,14 @@ namespace DataCentric
         /// the caching variant of this method:
         ///
         /// LoadOrNull(key, loadFrom)
-        /// 
+        ///
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
         /// order of dataset ObjectIds, and then in the descending
         /// order of record ObjectIds within the first dataset that
         /// has at least one record. Both dataset and record ObjectIds
         /// are ordered chronologically to one second resolution,
-        /// and are unique within the database server or cluster. 
+        /// and are unique within the database server or cluster.
         ///
         /// The root dataset has empty ObjectId value that is less
         /// than any other ObjectId value. Accordingly, the root
@@ -96,7 +96,7 @@ namespace DataCentric
         ///
         /// Return null if there is no record for the specified ObjectId;
         /// however an exception will be thrown if the record exists but
-        /// is not derived from TRecord. 
+        /// is not derived from TRecord.
         /// </summary>
         TRecord ReloadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, ObjectId loadFrom)
             where TKey : TypedKey<TKey, TRecord>, new()
@@ -110,7 +110,7 @@ namespace DataCentric
         /// order of record ObjectIds within the first dataset that
         /// has at least one record. Both dataset and record ObjectIds
         /// are ordered chronologically to one second resolution,
-        /// and are unique within the database server or cluster. 
+        /// and are unique within the database server or cluster.
         ///
         /// The root dataset has empty ObjectId value that is less
         /// than any other ObjectId value. Accordingly, the root
@@ -190,14 +190,14 @@ namespace DataCentric
         /// This method sets Id element of the argument to be the
         /// new ObjectId assigned to the record when it is saved.
         /// The timestamp of the new ObjectId is the current time.
-        /// 
+        ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
         void SaveDataSet(DataSetData dataSetData, ObjectId saveTo);
     }
 
     /// <summary>Extension methods for IDataSource.</summary>
-    public static class DataSourceExt
+    public static class IDataSourceExt
     {
         /// <summary>
         /// Load record by its ObjectId.

@@ -43,7 +43,7 @@ namespace DataCentric
     }
 
     /// <summary>Extension methods for IOutputFolder.</summary>
-    public static class OutputFolderExt
+    public static class IOutputFolderExt
     {
         /// <summary>Appends text to the specified file, creating it if does not exist.</summary>
         public static void AppendText(this IOutputFolder obj, string filePath, string fileContents)

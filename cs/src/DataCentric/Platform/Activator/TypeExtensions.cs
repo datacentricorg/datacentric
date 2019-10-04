@@ -3,8 +3,10 @@ using System.Collections.Generic;
 
 namespace DataCentric
 {
-    public static class TypeExtensions // TODO Rename class to TypeEx and rename the file
+    /// <summary>Extension methods for Type.</summary>
+    public static class TypeExt
     {
+        /// <summary>Get generic argument by index.</summary>
         public static Type GetGenericArgument(this Type type, int index)
         {
             if (type == null)
@@ -13,6 +15,7 @@ namespace DataCentric
             return type.GetGenericArguments()[index];
         }
 
+        /// <summary>Find parent interfaces.</summary>
         public static IEnumerable<Type> FindInterfaces(this Type type, Type interfaceType)
         {
             if (type == null)

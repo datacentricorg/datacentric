@@ -44,7 +44,7 @@ namespace DataCentric
     }
 
     /// <summary>Extension methods for ILog.</summary>
-    public static class LogExt
+    public static class ILogExt
     {
         /// <summary>Record an error message and return exception with the same message.
         /// The caller is expected to throw the exception: throw Log.Exception(message, messageParams).</summary>

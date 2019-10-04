@@ -51,10 +51,8 @@ namespace DataCentric
     /// This class permits the methods of IDataSource to be called for
     /// IContext by forwarding the implementation to IContext.DataSource.
     /// </summary>
-    public static class ContextExt
+    public static class IContextExt
     {
-        //--- METHODS
-
         /// <summary>
         /// Load record by its ObjectId.
         ///
@@ -479,7 +477,7 @@ namespace DataCentric
         /// data source is itself temporal. This setting is typically
         /// used to prevent the accumulation of data where history is
         /// not needed.
-        /// 
+        ///
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
@@ -497,7 +495,7 @@ namespace DataCentric
         /// data source is itself temporal. This setting is typically
         /// used to prevent the accumulation of data where history is
         /// not needed.
-        /// 
+        ///
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
@@ -515,7 +513,7 @@ namespace DataCentric
         /// data source is itself temporal. This setting is typically
         /// used to prevent the accumulation of data where history is
         /// not needed.
-        /// 
+        ///
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
@@ -533,7 +531,7 @@ namespace DataCentric
         /// data source is itself temporal. This setting is typically
         /// used to prevent the accumulation of data where history is
         /// not needed.
-        /// 
+        ///
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>

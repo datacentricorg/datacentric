@@ -42,7 +42,7 @@ namespace DataCentric
     }
 
     /// <summary>Extension methods for IVerify.</summary>
-    public static class VerifyExt
+    public static class IVerifyExt
     {
         /// <summary>Record 'Verify.Text: {message}'.</summary>
         public static void Text(this IVerify obj, string message, params object[] messageParams)
