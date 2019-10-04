@@ -167,22 +167,16 @@ namespace DataCentric
         void DeleteDb();
 
         /// <summary>
-        /// Return ObjectId for the latest dataset record with
-        /// matching dataSetName string from in-memory cache. Try
-        /// loading from storage only if not found in cache.
+        /// Get ObjectId of the dataset with the specified name.
         ///
-        /// Return ObjectId.Empty if not found.
+        /// All of the previously requested dataSetIds are cached by
+        /// the data source. To load the latest version of the dataset
+        /// written by a separate process, clear the cache first by
+        /// calling DataSource.ClearDataSetCache() method.
         ///
-        /// This method will return the value from in-memory
-        /// cache even if it is no longer the latest version
-        /// in the data store and will only load it from storage
-        /// if not found in cache. Use LoadDataSet method to
-        /// force reloading the dataset from storage.
-        ///
-        /// Error message if no matching dataSetName string is found
-        /// or a DeletedRecord is found instead.
+        /// Returns null if not found.
         /// </summary>
-        ObjectId GetDataSetOrEmpty(string dataSetName, ObjectId loadFrom);
+        ObjectId? GetDataSetOrNull(string dataSetName, ObjectId loadFrom);
 
         /// <summary>
         /// Save new version of the dataset.
@@ -296,24 +290,23 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Return ObjectId for the latest dataset record with
-        /// matching dataSetName string from in-memory cache. Try
-        /// loading from storage only if not found in cache.
+        /// Get ObjectId of the dataset with the specified name.
+        ///
+        /// All of the previously requested dataSetIds are cached by
+        /// the data source. To load the latest version of the dataset
+        /// written by a separate process, clear the cache first by
+        /// calling DataSource.ClearDataSetCache() method.
         ///
         /// Error message if not found.
-        ///
-        /// This method will return the value from in-memory
-        /// cache even if it is no longer the latest version
-        /// in the data store and will only load it from storage
-        /// if not found in cache. Use LoadDataSet method to
-        /// force reloading the dataset from storage.
         /// </summary>
         public static ObjectId GetDataSet(this IDataSource obj, string dataSetName, ObjectId loadFrom)
         {
-            var result = obj.GetDataSetOrEmpty(dataSetName, loadFrom);
-            if (result == ObjectId.Empty) throw new Exception(
-                $"Dataset {dataSetName} is not found in data store {obj.DataSourceName}.");
-            return result;
+            // Get dataset or null
+            var result = obj.GetDataSetOrNull(dataSetName, loadFrom);
+
+            // Check that it is not null and return
+            if (result == null) throw new Exception($"Dataset {dataSetName} is not found in data store {obj.DataSourceName}.");
+            return result.Value;
         }
 
         /// <summary>

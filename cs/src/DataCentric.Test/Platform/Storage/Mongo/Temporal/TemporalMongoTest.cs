@@ -302,7 +302,7 @@ namespace DataCentric.Test
                 SaveCompleteData(context);
 
                 // Look in B dataset
-                var dataSet1 = context.GetDataSetOrEmpty("DataSet1", context.DataSet);
+                var dataSet1 = context.GetDataSet("DataSet1", context.DataSet);
                 var testQuery = context.GetQuery<DerivedSampleData>(dataSet1)
                     .Where(p => p.DataElementList[0].DoubleElement3 == 1.0)
                     .Where(p => p.DataElementList[0].StringElement3 == "A0")
@@ -336,7 +336,7 @@ namespace DataCentric.Test
                 SaveCompleteData(context);
 
                 // Look in B dataset
-                var dataSet3 = context.GetDataSetOrEmpty("DataSet3", context.DataSet);
+                var dataSet3 = context.GetDataSet("DataSet3", context.DataSet);
 
                 // Load record of derived types by base
                 context.Verify.Text("Load all records by key as MongoTestData.");
@@ -405,7 +405,7 @@ namespace DataCentric.Test
                 SaveCompleteData(context);
 
                 // Look in B dataset
-                var dataSet3 = context.GetDataSetOrEmpty("DataSet3", context.DataSet);
+                var dataSet3 = context.GetDataSet("DataSet3", context.DataSet);
 
                 context.Verify.Text("Query by MongoTestData, sort by RecordIndex descending, then by DoubleElement ascending");
                 var baseQuery = context.GetQuery<BaseSampleData>(dataSet3)

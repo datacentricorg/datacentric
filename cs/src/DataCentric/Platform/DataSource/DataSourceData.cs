@@ -241,22 +241,16 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Return ObjectId for the latest dataset record with
-        /// matching dataSetName string from in-memory cache. Try
-        /// loading from storage only if not found in cache.
+        /// Get ObjectId of the dataset with the specified name.
         ///
-        /// Return ObjectId.Empty if not found.
+        /// All of the previously requested dataSetIds are cached by
+        /// the data source. To load the latest version of the dataset
+        /// written by a separate process, clear the cache first by
+        /// calling DataSource.ClearDataSetCache() method.
         ///
-        /// This method will return the value from in-memory
-        /// cache even if it is no longer the latest version
-        /// in the data store and will only load it from storage
-        /// if not found in cache. Use LoadDataSet method to
-        /// force reloading the dataset from storage.
-        ///
-        /// Error message if no matching dataSetName string is found
-        /// or a DeletedRecord is found instead.
+        /// Returns null if not found.
         /// </summary>
-        public ObjectId GetDataSetOrEmpty(string dataSetName, ObjectId loadFrom)
+        public ObjectId? GetDataSetOrNull(string dataSetName, ObjectId loadFrom)
         {
             if (dataSetDict_.TryGetValue(dataSetName, out ObjectId result))
             {
@@ -266,7 +260,23 @@ namespace DataCentric
             else
             {
                 // Otherwise load from storage (this also updates the dictionaries)
-                return LoadDataSetOrEmpty(dataSetName, loadFrom);
+                DataSetKey dataSetKey = new DataSetKey() { DataSetName = dataSetName };
+                DataSetData dataSetData = this.LoadOrNull(dataSetKey, loadFrom);
+
+                // If not found, return ObjectId.Empty
+                if (dataSetData == null) return null;
+
+                // If found, cache result in ObjectId dictionary
+                dataSetDict_[dataSetName] = dataSetData.Id;
+
+                // Build and cache dataset lookup list if not found
+                if (!importDict_.TryGetValue(dataSetData.Id, out HashSet<ObjectId> importSet))
+                {
+                    importSet = BuildDataSetLookupList(dataSetData);
+                    importDict_.Add(dataSetData.Id, importSet);
+                }
+
+                return dataSetData.Id;
             }
         }
 
@@ -347,43 +357,6 @@ namespace DataCentric
         protected abstract ObjectId? GetSavedBy();
 
         //--- PRIVATE
-
-        /// <summary>
-        /// Load ObjectId for the latest dataset record with
-        /// matching dataSetName string from storage even if
-        /// present in in-memory cache. Update the cache with
-        /// the loaded value.
-        ///
-        /// Return ObjectId.Empty if not found.
-        ///
-        /// This method will always load the latest data from
-        /// storage. Consider using the corresponding Get...
-        /// method when there is no need to load the latest
-        /// value from storage. The Get... method is faster
-        /// because it will return the value from in-memory
-        /// cache when present.
-        /// </summary>
-        private ObjectId LoadDataSetOrEmpty(string dataSetName, ObjectId loadFrom)
-        {
-            // Always load even if present in cache
-            DataSetKey dataSetKey = new DataSetKey() { DataSetName = dataSetName };
-            DataSetData dataSetData = this.LoadOrNull(dataSetKey, loadFrom);
-
-            // If not found, return ObjectId.Empty
-            if (dataSetData == null) return ObjectId.Empty;
-
-            // If found, cache result in ObjectId dictionary
-            dataSetDict_[dataSetName] = dataSetData.Id;
-
-            // Build and cache dataset lookup list if not found
-            if (!importDict_.TryGetValue(dataSetData.Id, out HashSet<ObjectId> importSet))
-            {
-                importSet = BuildDataSetLookupList(dataSetData);
-                importDict_.Add(dataSetData.Id, importSet);
-            }
-
-            return dataSetData.Id;
-        }
 
         /// <summary>
         /// Builds hashset of import datasets for specified dataset data,

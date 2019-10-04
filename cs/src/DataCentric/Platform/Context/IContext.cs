@@ -289,21 +289,18 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Return ObjectId for the latest dataset record with
-        /// matching dataSetName string from in-memory cache. Try
-        /// loading from storage only if not found in cache.
+        /// Get ObjectId of the dataset with the specified name.
         ///
-        /// This overload of the GetDataSet method does not
+        /// This overload of the GetDataSetOrNull method does not
         /// specify the loadFrom parameter explicitly and instead
         /// uses context.DataSet for its value.
         ///
-        /// Error message if not found.
+        /// All of the previously requested dataSetIds are cached by
+        /// the data source. To load the latest version of the dataset
+        /// written by a separate process, clear the cache first by
+        /// calling DataSource.ClearDataSetCache() method.
         ///
-        /// This method will return the value from in-memory
-        /// cache even if it is no longer the latest version
-        /// in the data store and will only load it from storage
-        /// if not found in cache. Use LoadDataSet method to
-        /// force reloading the dataset from storage.
+        /// Error message if not found.
         /// </summary>
         public static ObjectId GetDataSet(this IContext obj, string dataSetName)
         {
@@ -311,20 +308,14 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Return ObjectId for the latest dataset record with
-        /// matching dataSetName string from in-memory cache. Try
-        /// loading from storage only if not found in cache.
+        /// Get ObjectId of the dataset with the specified name.
         ///
-        /// This overload of the GetDataSet method specifies
-        /// the loadFrom parameter explicitly.
+        /// All of the previously requested dataSetIds are cached by
+        /// the data source. To load the latest version of the dataset
+        /// written by a separate process, clear the cache first by
+        /// calling DataSource.ClearDataSetCache() method.
         ///
         /// Error message if not found.
-        ///
-        /// This method will return the value from in-memory
-        /// cache even if it is no longer the latest version
-        /// in the data store and will only load it from storage
-        /// if not found in cache. Use LoadDataSet method to
-        /// force reloading the dataset from storage.
         /// </summary>
         public static ObjectId GetDataSet(this IContext obj, string dataSetName, ObjectId loadFrom)
         {
@@ -332,52 +323,37 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Return ObjectId for the latest dataset record with
-        /// matching dataSetName string from in-memory cache. Try
-        /// loading from storage only if not found in cache.
+        /// Get ObjectId of the dataset with the specified name.
         ///
-        /// This overload of the GetDataSetOrEmpty method does not
+        /// This overload of the GetDataSetOrNull method does not
         /// specify the loadFrom parameter explicitly and instead
         /// uses context.DataSet for its value.
         ///
-        /// Return ObjectId.Empty if not found.
+        /// All of the previously requested dataSetIds are cached by
+        /// the data source. To load the latest version of the dataset
+        /// written by a separate process, clear the cache first by
+        /// calling DataSource.ClearDataSetCache() method.
         ///
-        /// This method will return the value from in-memory
-        /// cache even if it is no longer the latest version
-        /// in the data store and will only load it from storage
-        /// if not found in cache. Use LoadDataSet method to
-        /// force reloading the dataset from storage.
-        ///
-        /// Error message if no matching dataSetName string is found
-        /// or a DeletedRecord is found instead.
+        /// Returns null if not found.
         /// </summary>
-        public static ObjectId GetDataSetOrEmpty(this IContext obj, string dataSetName)
+        public static ObjectId? GetDataSetOrNull(this IContext obj, string dataSetName)
         {
-            return obj.DataSource.GetDataSetOrEmpty(dataSetName, obj.DataSet);
+            return obj.DataSource.GetDataSetOrNull(dataSetName, obj.DataSet);
         }
 
         /// <summary>
-        /// Return ObjectId for the latest dataset record with
-        /// matching dataSetName string from in-memory cache. Try
-        /// loading from storage only if not found in cache.
+        /// Get ObjectId of the dataset with the specified name.
         ///
-        /// This overload of the GetDataSetOrEmpty method specifies
-        /// the loadFrom parameter explicitly.
+        /// All of the previously requested dataSetIds are cached by
+        /// the data source. To load the latest version of the dataset
+        /// written by a separate process, clear the cache first by
+        /// calling DataSource.ClearDataSetCache() method.
         ///
-        /// Return ObjectId.Empty if not found.
-        ///
-        /// This method will return the value from in-memory
-        /// cache even if it is no longer the latest version
-        /// in the data store and will only load it from storage
-        /// if not found in cache. Use LoadDataSet method to
-        /// force reloading the dataset from storage.
-        ///
-        /// Error message if no matching dataSetName string is found
-        /// or a DeletedRecord is found instead.
+        /// Returns null if not found.
         /// </summary>
-        public static ObjectId GetDataSetOrEmpty(this IContext obj, string dataSetName, ObjectId loadFrom)
+        public static ObjectId? GetDataSetOrNull(this IContext obj, string dataSetName, ObjectId loadFrom)
         {
-            return obj.DataSource.GetDataSetOrEmpty(dataSetName, loadFrom);
+            return obj.DataSource.GetDataSetOrNull(dataSetName, loadFrom);
         }
 
         /// <summary>

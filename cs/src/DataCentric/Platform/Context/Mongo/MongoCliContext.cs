@@ -27,7 +27,7 @@ namespace DataCentric
         /// <summary>
         /// Create with environment and source passed cli arguments.
         /// </summary>
-        public MongoCliContext(DbNameKey db, DataStoreData dataStore)
+        public MongoCliContext(DbNameKey db, DataStoreData dataStore, ObjectId dataSetId)
         {
             var dataSource = new TemporalMongoDataSourceData
             {
@@ -40,9 +40,8 @@ namespace DataCentric
             dataSource.Init(this);
             DataSource = dataSource;
 
-            // Get or create Common dataset
-            var common = DataSource.GetDataSetOrEmpty("Common", ObjectId.Empty);
-            DataSet = common == ObjectId.Empty ? DataSource.CreateCommon() : common;
+            // Set dataset
+            DataSet = dataSetId;
         }
 
         /// <summary>Get the default data source of the context.</summary>

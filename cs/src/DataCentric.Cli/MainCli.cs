@@ -141,7 +141,7 @@ namespace DataCentric.Cli
             {
                 DataStoreName = "From Csv",
             };
-            IContext context = new MongoCliContext(dbName, dbServer);
+            IContext context = new MongoCliContext(dbName, dbServer, ObjectId.Empty);
 
             // Process all directories inside given folder
             foreach (var dir in Directory.GetDirectories(convertOptions.CsvPath))
@@ -264,7 +264,7 @@ namespace DataCentric.Cli
                 DataStoreName = "LOCAL_TEST",
             };
 
-            IContext context = new MongoCliContext(dbName, dbServer);
+            IContext context = new MongoCliContext(dbName, dbServer, ObjectId.Empty);
 
             object handler = createHandlerMethod.Invoke(null, new object[] { context, options });
 
