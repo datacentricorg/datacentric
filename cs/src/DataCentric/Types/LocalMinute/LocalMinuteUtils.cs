@@ -21,7 +21,7 @@ using NodaTime.Text;
 namespace DataCentric
 {
     /// <summary>Static helper class for LocalMinute.</summary>
-    public static class LocalMinuteUtils
+    public static class LocalMinuteImpl
     {
         /// <summary>Strict ISO 8601 time pattern with fractional seconds to millisecond precision.</summary>
         public static LocalTimePattern Pattern { get; } = LocalTimePattern.CreateWithInvariantCulture("HH':'mm");

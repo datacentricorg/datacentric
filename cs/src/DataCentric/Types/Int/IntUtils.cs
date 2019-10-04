@@ -20,7 +20,7 @@ using System.Globalization;
 namespace DataCentric
 {
     /// <summary>Static helper class for Int32.</summary>
-    public static class IntUtils
+    public static class IntImpl
     {
         /// <summary>Constant representing the empty value in non-nullable variables.</summary>
         public static int Empty { get { return int.MinValue; } }

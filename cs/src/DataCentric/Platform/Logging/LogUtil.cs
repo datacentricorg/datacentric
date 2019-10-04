@@ -21,7 +21,7 @@ using System.Text;
 namespace DataCentric
 {
     /// <summary>Static helper class for ILog.</summary>
-    public abstract class LogUtil
+    public abstract class LogImpl
     {
         private const int maxMessageParamLength_ = 255;
 

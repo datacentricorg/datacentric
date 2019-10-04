@@ -42,12 +42,12 @@ namespace DataCentric.Test
 
             // Verify string serialization roundtrip
             string stringValue = value.AsString();
-            LocalMinute parsedStringValue = LocalMinuteUtils.Parse(stringValue);
+            LocalMinute parsedStringValue = LocalMinuteImpl.Parse(stringValue);
             context.CastTo<IVerifyable>().Verify.Assert(value == parsedStringValue, $"String roundtrip for {nameAsString}");
 
             // Verify int serialization roundtrip
             int intValue = value.ToIsoInt();
-            LocalMinute parsedIntValue = LocalMinuteUtils.ParseIsoInt(intValue);
+            LocalMinute parsedIntValue = LocalMinuteImpl.ParseIsoInt(intValue);
             context.CastTo<IVerifyable>().Verify.Assert(value == parsedIntValue, $"Int roundtrip for {nameAsString}");
         }
     }

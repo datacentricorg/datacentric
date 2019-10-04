@@ -33,7 +33,7 @@ namespace DataCentric
             int isoDate = context.Reader.ReadInt32();
 
             // Create LocalDate object by parsing readable int
-            var result = LocalDateUtils.ParseIsoInt(isoDate);
+            var result = LocalDateImpl.ParseIsoInt(isoDate);
             return result;
         }
 

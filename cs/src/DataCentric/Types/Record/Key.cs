@@ -307,7 +307,7 @@ namespace DataCentric
                             $"that cannot be converted to readable int in non-delimited yyyymmdd format.");
                     }
 
-                    LocalDate tokenValue = LocalDateUtils.ParseIsoInt(isoInt);
+                    LocalDate tokenValue = LocalDateImpl.ParseIsoInt(isoInt);
                     elementInfo.SetValue(this, tokenValue);
                 }
                 else if (elementType == typeof(LocalTime) || elementType == typeof(LocalTime?))
@@ -326,7 +326,7 @@ namespace DataCentric
                             $"that cannot be converted to readable int in non-delimited hhmmssfff format.");
                     }
 
-                    LocalTime tokenValue = LocalTimeUtils.ParseIsoInt(isoInt);
+                    LocalTime tokenValue = LocalTimeImpl.ParseIsoInt(isoInt);
                     elementInfo.SetValue(this, tokenValue);
                 }
                 else if (elementType == typeof(LocalMinute) || elementType == typeof(LocalMinute?))
@@ -345,7 +345,7 @@ namespace DataCentric
                             $"that cannot be converted to readable int in non-delimited hhmm format.");
                     }
 
-                    LocalMinute tokenValue = LocalMinuteUtils.ParseIsoInt(isoInt);
+                    LocalMinute tokenValue = LocalMinuteImpl.ParseIsoInt(isoInt);
                     elementInfo.SetValue(this, tokenValue);
                 }
                 else if (elementType == typeof(LocalDateTime) || elementType == typeof(LocalDateTime?))
@@ -364,7 +364,7 @@ namespace DataCentric
                             $"that cannot be converted to readable long in non-delimited yyyymmddhhmmssfff format.");
                     }
 
-                    LocalDateTime tokenValue = LocalDateTimeUtils.ParseIsoLong(isoLong);
+                    LocalDateTime tokenValue = LocalDateTimeImpl.ParseIsoLong(isoLong);
                     elementInfo.SetValue(this, tokenValue);
                 }
                 else if (elementType == typeof(ObjectId) || elementType == typeof(ObjectId?))

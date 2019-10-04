@@ -20,7 +20,7 @@ using System.Text;
 namespace DataCentric
 {
     /// <summary>Static helper class for String.</summary>
-    public static class StringUtils
+    public static class StringImpl
     {
         /// <summary>Constant representing the OS-specific end of line (newline) character.</summary>
         public static string Eol { get { return Environment.NewLine; } }

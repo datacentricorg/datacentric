@@ -51,7 +51,7 @@ namespace DataCentric.Cli
             bool IsKeyType(Type t) => t.BaseType.IsGenericType &&
                                       (t.BaseType.GetGenericTypeDefinition() == typeof(TypedKey<,>));
 
-            return ActivatorUtils.EnumerateTypes(assembly)
+            return ActivatorUtil.EnumerateTypes(assembly)
                                // Get all Data successors
                               .Where(t => t.IsSubclassOf(typeof(Data)))
                                // Filter using user input or skip if none
@@ -67,7 +67,7 @@ namespace DataCentric.Cli
         {
             Regex nameFilter = CreateTypeNameFilter(filters);
 
-            return ActivatorUtils.EnumerateTypes(assembly)
+            return ActivatorUtil.EnumerateTypes(assembly)
                                // Get all Data successors
                               .Where(t => t.IsSubclassOf(typeof(Enum)))
                                // Filter using user input or skip if none
@@ -82,7 +82,7 @@ namespace DataCentric.Cli
         {
             Regex nameFilter = CreateTypeNameFilter(filters);
 
-            var interfaces = ActivatorUtils.EnumerateTypes(assembly).Where(t => t.IsInterface)
+            var interfaces = ActivatorUtil.EnumerateTypes(assembly).Where(t => t.IsInterface)
                                         .Where(t => nameFilter == null || nameFilter.IsMatch(t.FullName))
                                         .ToList();
 

@@ -32,7 +32,7 @@ namespace DataCentric
             string str = context.Reader.ReadString();
 
             // Deserialize using the custom method that uses three-letter format
-            return IsoDayOfWeekUtil.Parse(str);
+            return IsoDayOfWeekImpl.Parse(str);
         }
 
         /// <summary>Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.</summary>

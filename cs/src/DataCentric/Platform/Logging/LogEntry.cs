@@ -28,7 +28,7 @@ namespace DataCentric
         public LogEntry(LogEntryType entryType, string entrySubType, string message, params object[] messageParams)
         {
             // Truncates message parameters before formatting the message.
-            string formattedMessage = LogUtil.FormatMessage(message, messageParams);
+            string formattedMessage = LogImpl.FormatMessage(message, messageParams);
 
 
             string prefix = entryType.ToString();

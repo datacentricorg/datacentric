@@ -24,7 +24,7 @@ namespace DataCentric
         /// <summary>Return false if equal to Int.Empty.</summary>
         public static bool HasValue(this int value)
         {
-            return value != IntUtils.Empty;
+            return value != IntImpl.Empty;
         }
 
         /// <summary>Convert int to variant.</summary>

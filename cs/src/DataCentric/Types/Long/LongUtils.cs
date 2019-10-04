@@ -20,7 +20,7 @@ using System.Globalization;
 namespace DataCentric
 {
     /// <summary>Static helper class for Int64.</summary>
-    public static class LongUtils
+    public static class LongImpl
     {
         /// <summary>Constant representing the empty value in non-nullable variables.</summary>
         public static long Empty { get { return long.MinValue; } }

@@ -28,7 +28,7 @@ namespace DataCentric
         /// </summary>
         public int Compare(double x, double y)
         {
-            return DoubleUtils.Compare(x, y);
+            return DoubleImpl.Compare(x, y);
         }
     }
 }

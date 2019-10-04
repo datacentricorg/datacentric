@@ -162,7 +162,7 @@ namespace DataCentric.Cli
             foreach (var csvFile in Directory.GetFiles(path, "*.csv"))
             {
                 var type = Path.GetFileNameWithoutExtension(csvFile);
-                Type recordType = ActivatorUtils.ResolveType($"{type}Data", ActivatorSettings.Assemblies)
+                Type recordType = ActivatorUtil.ResolveType($"{type}Data", ActivatorSettings.Assemblies)
                                   ?? throw new ArgumentException($"Type '{type}' not found");
 
                 MethodInfo convertToMongo = typeof(MainCli).GetMethod(nameof(ConvertCsvToMongo), BindingFlags.Static | BindingFlags.NonPublic)
@@ -226,7 +226,7 @@ namespace DataCentric.Cli
         /// </summary>
         public static void DoRun(RunVerbOptions options)
         {
-            Type recordType = ActivatorUtils.ResolveType($"{options.Type}Data", ActivatorSettings.Assemblies)
+            Type recordType = ActivatorUtil.ResolveType($"{options.Type}Data", ActivatorSettings.Assemblies)
                               ?? throw new ArgumentException($"Type '{options.Type}' not found");
 
             // Register type in BsonClassMap if not yet registered.
@@ -271,7 +271,7 @@ namespace DataCentric.Cli
             MethodInfo handlerMethod = handler.GetType().GetMethod(options.Handler)
                 ?? throw new ArgumentException($"Method '{options.Handler}' not found");
 
-            handlerMethod.Invoke(handler, ActivatorUtils.CreateParameterValues(handlerMethod, options.Arguments));
+            handlerMethod.Invoke(handler, ActivatorUtil.CreateParameterValues(handlerMethod, options.Arguments));
         }
 
         /// <summary>

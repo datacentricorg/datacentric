@@ -4,8 +4,10 @@ using System.Reflection;
 
 namespace DataCentric
 {
-    public static class ActivatorUtils
+    /// <summary>Static helper class for working with the activator.</summary>
+    public static class ActivatorUtil
     {
+        /// <summary>Get a list of parameter values from a list of their names for a given method.</summary>
         public static object[] CreateParameterValues(MethodInfo method, IEnumerable<string> parameters)
         {
             ParameterInfo[] descriptions = method.GetParameters();
@@ -69,6 +71,7 @@ namespace DataCentric
             return values;
         }
 
+        /// <summary>Enumerate types in an assembly.</summary>
         public static IEnumerable<Type> EnumerateTypes(Assembly assembly)
         {
             Type[] types;
@@ -91,6 +94,7 @@ namespace DataCentric
             }
         }
 
+        /// <summary>Get type by name from a list of assemblies.</summary>
         public static Type ResolveType(string typeName, IEnumerable<Assembly> assemblies)
         {
             if (typeName.IndexOf(',') > 0)
