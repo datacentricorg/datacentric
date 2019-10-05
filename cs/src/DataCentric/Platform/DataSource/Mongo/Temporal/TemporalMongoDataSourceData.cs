@@ -111,6 +111,12 @@ namespace DataCentric
 
         //--- METHODS
 
+        /// <summary>Flush data to permanent storage.</summary>
+        public override void Flush()
+        {
+            // Do nothing
+        }
+
         /// <summary>
         /// Returns true if the data source is readonly,
         /// which may be for the following reasons:

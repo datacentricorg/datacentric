@@ -95,6 +95,9 @@ namespace DataCentric
 
         //--- ABSTRACT
 
+        /// <summary>Flush data to permanent storage.</summary>
+        public abstract void Flush();
+
         /// <summary>
         /// Returns true if the data source is readonly,
         /// which may be because ReadOnly flag is true,

@@ -29,6 +29,12 @@ namespace DataCentric
     /// </summary>
     public class NullDataSourceData : DataSourceData
     {
+        /// <summary>Flush data to permanent storage.</summary>
+        public override void Flush()
+        {
+            ErrorMessage();
+        }
+
         /// <summary>
         /// Returns true if the data source is readonly,
         /// which may be because ReadOnly flag is true,
