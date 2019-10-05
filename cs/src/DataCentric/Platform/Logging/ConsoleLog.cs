@@ -21,26 +21,25 @@ using System.Text;
 namespace DataCentric
 {
     /// <summary>Logging to system console.</summary>
-    public class ConsoleLog : ILog
+    public class ConsoleLog : Log
     {
         /// <summary>Create from context.</summary>
         public ConsoleLog(IContext context)
         {
-            Context = context;
+            Init(context);
         }
 
-        /// <summary>Context for which this interface is defined.
-        /// Use to access other interfaces of the same context.</summary>
-        public IContext Context { get; }
+        //--- METHODS
 
-        /// <summary>Log verbosity is the highest log entry type displayed.
-        /// Verbosity can be modified at runtime to provide different levels of
-        /// verbosity for different code segments.</summary>
-        public LogEntryType Verbosity { get; set; }
+        /// <summary>Flush data to permanent storage.</summary>
+        public override void Flush()
+        {
+            // Do nothing as system console does not require buffer flush
+        }
 
         /// <summary>Append new entry to the log if entry type is the same or lower than log verbosity.
         /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
-        public void Append(LogEntryType entryType, string entrySubType, string message, params object[] messageParams)
+        public override void Append(LogEntryType entryType, string entrySubType, string message, params object[] messageParams)
         {
             // Do not record the log entry if entry verbosity exceeds log verbosity
             // Record all entries if log verbosity is not specified
@@ -51,14 +50,8 @@ namespace DataCentric
             }
         }
 
-        /// <summary>Flush log contents to permanent storage.</summary>
-        public void Flush()
-        {
-            // Do nothing as system console does not require buffer flush
-        }
-
         /// <summary>Close log and release handle to permanent storage.</summary>
-        public void Close()
+        public override void Close()
         {
             // Do nothing as system console does not require closing the connection
         }

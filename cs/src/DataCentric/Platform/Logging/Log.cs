@@ -26,15 +26,16 @@ namespace DataCentric
     /// Accumulates log output in memory and converts it
     /// to string using ToString() method.
     /// </summary>
-    public class StringLog : Log
+    public abstract class Log : ILog
     {
-        private TextWriter textWriter_;
+        /// <summary>Context for which this interface is defined.
+        /// Use to access other interfaces of the same context.</summary>
+        public IContext Context { get; private set; }
 
-        /// <summary>Create in-memory log for use in approval tests</summary>
-        public StringLog(IContext context)
-        {
-            Init(context);
-        }
+        /// <summary>Log verbosity is the highest log entry type displayed.
+        /// Verbosity can be modified at runtime to provide different levels of
+        /// verbosity for different code segments.</summary>
+        public LogEntryType Verbosity { get; set; }
 
         //--- METHODS
 
@@ -48,44 +49,24 @@ namespace DataCentric
         /// IMPORTANT - Every override of this method must call base.Init()
         /// first, and only then execute the rest of the override method's code.
         /// </summary>
-        public override void Init(IContext context)
+        public virtual void Init(IContext context)
         {
-            // Initialize base
-            base.Init(context);
+            // Uncomment except in root class of the hierarchy
+            // base.Init(context);
 
-            textWriter_ = new StringWriter();
+            // Check that argument is not null and assign to the Context property
+            if (context == null) throw new Exception($"Null context is passed to the Init(...) method for {GetType().Name}.");
+            Context = context;
         }
 
         /// <summary>Flush data to permanent storage.</summary>
-        public override void Flush()
-        {
-            textWriter_.Flush();
-        }
+        public abstract void Flush();
 
         /// <summary>Append new entry to the log if entry type is the same or lower than log verbosity.
         /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
-        public override void Append(LogEntryType entryType, string entrySubType, string message, params object[] messageParams)
-        {
-            // Do not record the log entry if entry verbosity exceeds log verbosity
-            // Record all entries if log verbosity is not specified
-            if (Verbosity == LogEntryType.Empty || entryType <= Verbosity)
-            {
-                var logEntry = new LogEntry(entryType, entrySubType, message, messageParams);
-                string logString = logEntry.ToString();
-                textWriter_.WriteLine(logString);
-            }
-        }
+        public abstract void Append(LogEntryType entryType, string entrySubType, string message, params object[] messageParams);
 
         /// <summary>Close log and release handle to permanent storage.</summary>
-        public override void Close()
-        {
-            // Do nothing
-        }
-
-        /// <summary>Convert log output to string.</summary>
-        public override string ToString()
-        {
-            return textWriter_.ToString();
-        }
+        public abstract void Close();
     }
 }

@@ -24,34 +24,57 @@ using System.Text;
 namespace DataCentric
 {
     /// <summary>Writes log output to the specified text file as it arrives.</summary>
-    public class FileLog : ILog
+    public class FileLog : Log
     {
         private TextWriter indentedTextWriter_;
+
+        //--- PROPERTIES
+
+        /// <summary>Log file path relative to output folder root.</summary>
+        public string LogFilePath { get; set; }
+
+        //--- CONSTRUCTORS
 
         /// <summary>Create log file at path specified relative to output folder root
         /// using regular path separator or in dot delimited (``namespace'') format.</summary>
         public FileLog(IContext context, string logFilePath)
         {
-            Context = context;
+            LogFilePath = logFilePath;
+            Init(context);
+        }
 
-            // Create text writer for the file, then wrap
-            // IndentedTextWriter using 4 space indent string
-            var textWriter = context.Out.CreateTextWriter(logFilePath, FileWriteMode.Replace);
+        //--- METHODS
+
+        /// <summary>
+        /// Set Context property and perform validation of the record's data,
+        /// then initialize any fields or properties that depend on that data.
+        ///
+        /// This method may be called multiple times for the same instance,
+        /// possibly with a different context parameter for each subsequent call.
+        ///
+        /// IMPORTANT - Every override of this method must call base.Init()
+        /// first, and only then execute the rest of the override method's code.
+        /// </summary>
+        public override void Init(IContext context)
+        {
+            // Initialize base
+            base.Init(context);
+
+            // Create text writer for the file, then wrap it into
+            // an indented writer using 4 space indent string
+            var textWriter = context.Out.CreateTextWriter(LogFilePath, FileWriteMode.Replace);
             indentedTextWriter_ = new IndentedTextWriter(textWriter, "    ");
         }
 
-        /// <summary>Context for which this interface is defined.
-        /// Use to access other interfaces of the same context.</summary>
-        public IContext Context { get; }
-
-        /// <summary>Log verbosity is the highest log entry type displayed.
-        /// Verbosity can be modified at runtime to provide different levels of
-        /// verbosity for different code segments.</summary>
-        public LogEntryType Verbosity { get; set; }
+        /// <summary>Flush data to permanent storage.</summary>
+        public override void Flush()
+        {
+            indentedTextWriter_.Flush();
+        }
 
         /// <summary>Append new entry to the log if entry type is the same or lower than log verbosity.
         /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
-        public void Append(LogEntryType entryType, string entrySubType, string message, params object[] messageParams)
+        public override void Append(LogEntryType entryType, string entrySubType, string message, params object[] messageParams)
         {
             // Do not record the log entry if entry verbosity exceeds log verbosity
             // Record all entries if log verbosity is not specified
@@ -63,14 +86,8 @@ namespace DataCentric
             }
         }
 
-        /// <summary>Flush log contents to permanent storage.</summary>
-        public void Flush()
-        {
-            indentedTextWriter_.Flush();
-        }
-
         /// <summary>Close log and release handle to permanent storage.</summary>
-        public void Close()
+        public override void Close()
         {
             indentedTextWriter_.Close();
         }

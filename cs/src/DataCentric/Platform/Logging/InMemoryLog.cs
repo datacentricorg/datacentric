@@ -23,7 +23,7 @@ namespace DataCentric
 {
     /// <summary>Accumulates log data in memory as it arrives and provides
     /// the possibility to output it as multi-line text string.</summary>
-    public class InMemoryLog : ILog
+    public class InMemoryLog : Log
     {
         private TextWriter stringWriter_ = new StringWriter();
 
@@ -31,21 +31,20 @@ namespace DataCentric
         /// Accepts path with regular path separator or in dot delimited (``namespace'') format.</summary>
         public InMemoryLog(IContext context)
         {
-            Context = context;
+            Init(context);
         }
 
-        /// <summary>Context for which this interface is defined.
-        /// Use to access other interfaces of the same context.</summary>
-        public IContext Context { get; }
+        //--- METHODS
 
-        /// <summary>Log verbosity is the highest log entry type displayed.
-        /// Verbosity can be modified at runtime to provide different levels of
-        /// verbosity for different code segments.</summary>
-        public LogEntryType Verbosity { get; set; }
+        /// <summary>Flush data to permanent storage.</summary>
+        public override void Flush()
+        {
+            stringWriter_.Flush();
+        }
 
         /// <summary>Append new entry to the log if entry type is the same or lower than log verbosity.
         /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
-        public void Append(LogEntryType entryType, string entrySubType, string message, params object[] messageParams)
+        public override void Append(LogEntryType entryType, string entrySubType, string message, params object[] messageParams)
         {
             // Do not record the log entry if entry verbosity exceeds log verbosity
             // Record all entries if log verbosity is not specified
@@ -63,14 +62,8 @@ namespace DataCentric
             return stringWriter_.ToString();
         }
 
-        /// <summary>Flush log contents to permanent storage.</summary>
-        public void Flush()
-        {
-            stringWriter_.Flush();
-        }
-
         /// <summary>Close log and release handle to permanent storage.</summary>
-        public void Close()
+        public override void Close()
         {
             // Do nothing as string writer does not require closing the connection
         }
