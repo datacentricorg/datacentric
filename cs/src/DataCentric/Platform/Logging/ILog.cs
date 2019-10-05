@@ -21,7 +21,7 @@ using System.Text;
 namespace DataCentric
 {
     /// <summary>Log interface.</summary>
-    public interface ILog
+    public interface ILog : IDisposable
     {
         /// <summary>Context for which this interface is defined.
         /// Use to access other interfaces of the same context.</summary>
@@ -52,9 +52,6 @@ namespace DataCentric
         /// <summary>Append new entry to the log if entry type is the same or lower than log verbosity.
         /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
         void Append(LogEntryType entryType, string entrySubType, string message, params object[] messageParams);
-
-        /// <summary>Close log and release handle to permanent storage.</summary>
-        void Close();
     }
 
     /// <summary>Extension methods for ILog.</summary>

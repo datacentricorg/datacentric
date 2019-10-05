@@ -14,11 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+
 namespace DataCentric
 {
     /// <summary>Progress interface provides access to
     /// progress ratio and progress message.</summary>
-    public interface IProgress
+    public interface IProgress : IDisposable
     {
         /// <summary>Context for which this interface is defined.
         /// Use to access other interfaces of the same context.</summary>

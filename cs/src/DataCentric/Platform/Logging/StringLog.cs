@@ -56,6 +56,26 @@ namespace DataCentric
             textWriter_ = new StringWriter();
         }
 
+        /// <summary>
+        /// Releases resources and calls base.Dispose().
+        ///
+        /// This method will not be called by the garbage collector.
+        /// It will only be executed if:
+        ///
+        /// * This class implements IDisposable; and
+        /// * The class instance is created through the using clause
+        ///
+        /// IMPORTANT - Every override of this method must call base.Dispose()
+        /// after executing its own code.
+        /// </summary>
+        public override void Dispose()
+        {
+            textWriter_.Dispose();
+
+            // Dispose base
+            base.Dispose();
+        }
+
         /// <summary>Flush data to permanent storage.</summary>
         public override void Flush()
         {
@@ -74,12 +94,6 @@ namespace DataCentric
                 string logString = logEntry.ToString();
                 textWriter_.WriteLine(logString);
             }
-        }
-
-        /// <summary>Close log and release handle to permanent storage.</summary>
-        public override void Close()
-        {
-            // Do nothing
         }
 
         /// <summary>Convert log output to string.</summary>

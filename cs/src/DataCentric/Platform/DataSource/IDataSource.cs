@@ -34,7 +34,7 @@ namespace DataCentric
     ///
     /// This record is stored in root dataset.
     /// </summary>
-    public interface IDataSource
+    public interface IDataSource : IDisposable
     {
         //--- PROPERTIES
 

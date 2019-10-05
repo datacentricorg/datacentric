@@ -71,23 +71,19 @@ namespace DataCentric
             };
 
             // Initialize and assign to property
-            dataSource.Init(this);
             DataSource = dataSource;
-
-            // Delete (drop) the database to clear the existing data
-            DataSource.DeleteDb();
 
             // Create common dataset and assign it to DataSet property of this context
             DataSet = DataSource.CreateCommon();
+
+            // Initialize
+            Init();
+
+            // Delete (drop) the database to clear the existing data
+            DataSource.DeleteDb();
         }
 
         //--- PROPERTIES
-
-        /// <summary>Get the default data source of the context.</summary>
-        public override IDataSource DataSource { get; }
-
-        /// <summary>Returns ObjectId of the context dataset.</summary>
-        public override ObjectId DataSet { get; }
 
         /// <summary>
         /// The data in test database is erased when the context is created

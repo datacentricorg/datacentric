@@ -33,7 +33,7 @@ namespace DataCentric
     ///
     /// For tests that require MongoDB, use IDataTestDataContext.
     /// </summary>
-    public class UnitTestContext : IContext, IVerifyable, IDisposable
+    public class UnitTestContext : Context, IVerifyable
     {
         /// <summary>
         /// Create with class name, method name, and source file path.
@@ -66,65 +66,12 @@ namespace DataCentric
             Log = new FileLog(this, logFileName);
             Progress = new NullProgress(this);
             Verify = new LogVerify(this, className, methodName);
+
+            // Initialize
+            Init();
         }
-
-        /// <summary>Get the default data source of the context.</summary>
-        public virtual IDataSource DataSource
-        {
-            get { throw new Exception("Class UnitTestContext does not provide access to DataSource. Use MongoTestContext instead."); }
-        }
-
-        /// <summary>Returns ObjectId of the context dataset.</summary>
-        public virtual ObjectId DataSet
-        {
-            get { throw new Exception("Class UnitTestContext does not provide access to DataSet. Use MongoTestContext instead."); }
-        }
-
-        /// <summary>Output folder root of the context's virtualized filesystem.</summary>
-        public IOutputFolder Out { get; }
-
-        /// <summary>Logging interface.</summary>
-        public ILog Log { get; }
-
-        /// <summary>Progress interface.</summary>
-        public IProgress Progress { get; }
 
         /// <summary>Approval testing interface.</summary>
         public IVerify Verify { get; }
-
-        //--- METHODS
-
-        /// <summary>
-        /// Releases resources and calls base.Dispose().
-        ///
-        /// This method will not be called by the garbage collector.
-        /// It will only be executed if:
-        ///
-        /// * This class implements IDisposable; and
-        /// * The class instance is created through the using clause
-        ///
-        /// IMPORTANT - Every override of this method must call base.Dispose()
-        /// after executing its own code.
-        /// </summary>
-        public virtual void Dispose()
-        {
-            // Flush all buffers
-            Flush();
-
-            // Close the log
-            Log.Close();
-
-            // Uncomment except in root class of the hierarchy
-            // base.Dispose();
-        }
-
-        /// <summary>Flush data to permanent storage.</summary>
-        public void Flush()
-        {
-            // Flush to permanent storage
-            Log.Flush();
-            Verify.Flush();
-            Progress.Flush();
-        }
     }
 }

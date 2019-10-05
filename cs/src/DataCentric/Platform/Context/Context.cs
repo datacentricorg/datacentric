@@ -25,24 +25,78 @@ namespace DataCentric
     /// </summary>
     public class Context : IContext
     {
-        /// <summary>Get the default data source of the context.</summary>
-        public IDataSource DataSource { get; set; }
+        private IDataSource dataSource_;
+        private ObjectId? dataSet_;
+        private IOutputFolder out_;
+        private ILog log_;
+        private IProgress progress_;
 
-        /// <summary>
-        /// Returns default dataset of the context.
-        ///
-        /// Defaults to root dataset (ObjectId.Empty) if not set.
-        /// </summary>
-        public ObjectId DataSet { get; set; }
+        /// <summary>Get the default data source of the context.</summary>
+        public IDataSource DataSource
+        {
+            get
+            {
+                if (dataSource_ == null)
+                    throw new Exception(
+                        $"Context type {GetType().Name} does not provide a data source, " +
+                        $"or DataSource property has not been set.");
+                return dataSource_;
+            }
+            set { dataSource_ = value; }
+        }
+
+        /// <summary>Returns default dataset of the context.</summary>
+        public ObjectId DataSet
+        {
+            get
+            {
+                if (dataSet_ == null) throw new Exception(
+                    $"Context type {GetType().Name} does not provide a dataset, " +
+                    $"or DataSet property has not been set.");
+                return dataSet_.Value;
+            }
+            set { dataSet_ = value; }
+        }
 
         /// <summary>Output folder root of the context's virtualized filesystem.</summary>
-        public IOutputFolder Out { get; }
+        public IOutputFolder Out
+        {
+            get
+            {
+                if (out_ == null) throw new Exception(
+                    $"Context type {GetType().Name} does not provide output folder, " +
+                    $"or one has not been set.");
+                return out_;
+            }
+            set { out_ = value; }
+        }
 
         /// <summary>Logging interface.</summary>
-        public ILog Log { get; set; }
+        public ILog Log
+        {
+            get
+            {
+                if (log_ == null) throw new Exception(
+                    $"Context type {GetType().Name} does not provide logging, " +
+                    $"or Log property has not been set.");
+                return log_;
+            }
+            set { log_ = value; }
+        }
 
         /// <summary>Progress interface.</summary>
-        public IProgress Progress { get; set; }
+        public IProgress Progress
+        {
+            get
+            {
+                if (progress_ == null)
+                    throw new Exception(
+                        $"Context type {GetType().Name} does not provide progress reporting, " +
+                        $"or Progress property has not been set.");
+                return progress_;
+            }
+            set { progress_ = value; }
+        }
 
         //--- METHODS
 
@@ -62,15 +116,11 @@ namespace DataCentric
             // Uncomment except in root class of the hierarchy
             // base.Init();
 
-            // Check that each property are set, error message otherwise
-            if (DataSource == null) throw new Exception("Set context.DataSource property before calling context.Init().");
-            if (Log == null) throw new Exception("Set context.Log property before calling context.Init().");
-            if (Progress == null) throw new Exception("Set context.Progress property before calling context.Init().");
-
-            // Call Init(this) for each property of the context
-            DataSource.Init(this);
-            Log.Init(this);
-            Progress.Init(this);
+            // Call Init(this) for each initialized property of the context
+            if (dataSource_ != null) dataSource_.Init(this);
+            if (out_ != null) out_.Init(this);
+            if (log_ != null) log_.Init(this);
+            if (progress_!= null) progress_.Init(this);
         }
 
         /// <summary>
@@ -87,6 +137,11 @@ namespace DataCentric
         /// </summary>
         public virtual void Dispose()
         {
+            // Call Dispose() for each initialized property of the context
+            if (dataSource_ != null) dataSource_.Dispose();
+            if (progress_ != null) progress_.Dispose();
+            if (log_ != null) log_.Dispose();
+
             // Uncomment except in root class of the hierarchy
             // base.Dispose();
         }
@@ -94,10 +149,10 @@ namespace DataCentric
         /// <summary>Flush data to permanent storage.</summary>
         public virtual void Flush()
         {
-            // Call Flush() for each resources of the current context
-            DataSource.Flush();
-            Log.Flush();
-            Progress.Flush();
+            // Call Flush() for each initialized property of the context
+            if (dataSource_ != null) dataSource_.Flush();
+            if (progress_ != null) progress_.Flush();
+            if (log_ != null) log_.Flush();
         }
     }
 }

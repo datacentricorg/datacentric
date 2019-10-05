@@ -22,7 +22,7 @@ namespace DataCentric
     /// <summary>Log only context provides logging to the output but no other functionality.
     /// It does not support loading or saving objects to a cache or file storage.
     /// Progress is reported only if progress interface is passed to the constructor.</summary>
-    public class LogOnlyContext : IContext, IDisposable
+    public class LogOnlyContext : Context
     {
         /// <summary>Create with logging to the output, progress messages are ignored.
         /// Log and progress destinations can be modified after construction.</summary>
@@ -33,61 +33,9 @@ namespace DataCentric
             Out = new DiskOutputFolder(this, "test/out");
             Log = new ConsoleLog(this);
             Progress = new LogProgress(this);
-        }
 
-        //--- PROPERTIES
-
-        /// <summary>Get interface to the context data source.</summary>
-        public IDataSource DataSource { get; }
-
-        /// <summary>Returns default dataset of the context.</summary>
-        public ObjectId DataSet { get; }
-
-        /// <summary>Output folder root of the context's virtualized filesystem.</summary>
-        public IOutputFolder Out { get; }
-
-        /// <summary>Logging interface.</summary>
-        public ILog Log { get; }
-
-        /// <summary>Progress interface.</summary>
-        public IProgress Progress { get; }
-
-        /// <summary>Approval testing interface.</summary>
-        public IVerify Verify { get; }
-
-        //--- METHODS
-
-        /// <summary>
-        /// Releases resources and calls base.Dispose().
-        ///
-        /// This method will not be called by the garbage collector.
-        /// It will only be executed if:
-        ///
-        /// * This class implements IDisposable; and
-        /// * The class instance is created through the using clause
-        ///
-        /// IMPORTANT - Every override of this method must call base.Dispose()
-        /// after executing its own code.
-        /// </summary>
-        public virtual void Dispose()
-        {
-            // Flush all buffers
-            Flush();
-
-            // Close the log
-            Log.Close();
-
-            // Uncomment except in root class of the hierarchy
-            // base.Dispose();
-        }
-
-        /// <summary>Flush data to permanent storage.</summary>
-        public void Flush()
-        {
-            // Flush to permanent storage
-            Log.Flush();
-            Verify.Flush();
-            Progress.Flush();
+            // Initialize
+            Init();
         }
     }
 }

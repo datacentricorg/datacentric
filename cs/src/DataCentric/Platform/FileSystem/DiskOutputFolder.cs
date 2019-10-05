@@ -37,7 +37,29 @@ namespace DataCentric
 
         /// <summary>Context for which this interface is defined.
         /// Use to access other interfaces of the same context.</summary>
-        public IContext Context { get; }
+        public IContext Context { get; private set; }
+
+        //--- METHODS
+
+        /// <summary>
+        /// Set Context property and perform validation of the record's data,
+        /// then initialize any fields or properties that depend on that data.
+        ///
+        /// This method may be called multiple times for the same instance,
+        /// possibly with a different context parameter for each subsequent call.
+        ///
+        /// IMPORTANT - Every override of this method must call base.Init()
+        /// first, and only then execute the rest of the override method's code.
+        /// </summary>
+        public virtual void Init(IContext context)
+        {
+            // Uncomment except in root class of the hierarchy
+            // base.Init(context);
+
+            // Check that argument is not null and assign to the Context property
+            if (context == null) throw new Exception($"Null context is passed to the Init(...) method for {GetType().Name}.");
+            Context = context;
+        }
 
         /// <summary>Determines whether the specified file exists.
         /// This method accepts dot delimited folder path.</summary>

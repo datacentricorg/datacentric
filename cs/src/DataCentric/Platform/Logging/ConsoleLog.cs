@@ -49,11 +49,5 @@ namespace DataCentric
                 Console.WriteLine(logEntry.ToString());
             }
         }
-
-        /// <summary>Close log and release handle to permanent storage.</summary>
-        public override void Close()
-        {
-            // Do nothing as system console does not require closing the connection
-        }
     }
 }

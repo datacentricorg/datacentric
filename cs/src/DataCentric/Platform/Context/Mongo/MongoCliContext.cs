@@ -22,7 +22,7 @@ namespace DataCentric
     /// <summary>
     /// Mongo context to connect from cli.
     /// </summary>
-    public class MongoCliContext : IContext
+    public class MongoCliContext : Context
     {
         /// <summary>
         /// Create with environment and source passed cli arguments.
@@ -36,59 +36,12 @@ namespace DataCentric
                 DbName = db
             };
 
-            // Initialize and assign to property
-            dataSource.Init(this);
+            // Set data source and dataset
             DataSource = dataSource;
-
-            // Set dataset
             DataSet = dataSetId;
-        }
 
-        /// <summary>Get the default data source of the context.</summary>
-        public IDataSource DataSource { get; }
-
-        /// <summary>Returns default dataset of the context.</summary>
-        public ObjectId DataSet { get; }
-
-        // TODO: review hierarchy
-        public IOutputFolder Out { get; }
-
-        // TODO: review hierarchy
-        public ILog Log { get; }
-
-        // TODO: review hierarchy
-        public IProgress Progress { get; }
-
-        //--- METHODS
-
-        /// <summary>Flush data to permanent storage.</summary>
-        public void Flush()
-        {
-            // Do nothing
-        }
-
-        /// <summary>
-        /// Releases resources and calls base.Dispose().
-        ///
-        /// This method will not be called by the garbage collector.
-        /// It will only be executed if:
-        ///
-        /// * This class implements IDisposable; and
-        /// * The class instance is created through the using clause
-        ///
-        /// IMPORTANT - Every override of this method must call base.Dispose()
-        /// after executing its own code.
-        /// </summary>
-        public virtual void Dispose()
-        {
-            // Flush all buffers
-            Flush();
-
-            // Close the log
-            Log.Close();
-
-            // Uncomment except in root class of the hierarchy
-            // base.Dispose();
+            // Initialize
+            dataSource.Init(this);
         }
     }
 }

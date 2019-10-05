@@ -54,6 +54,24 @@ namespace DataCentric
             Context = context;
         }
 
+        /// <summary>
+        /// Releases resources and calls base.Dispose().
+        ///
+        /// This method will not be called by the garbage collector.
+        /// It will only be executed if:
+        ///
+        /// * This class implements IDisposable; and
+        /// * The class instance is created through the using clause
+        ///
+        /// IMPORTANT - Every override of this method must call base.Dispose()
+        /// after executing its own code.
+        /// </summary>
+        public virtual void Dispose()
+        {
+            // Uncomment except in root class of the hierarchy
+            // base.Dispose();
+        }
+
         /// <summary>Flush data to permanent storage.</summary>
         public abstract void Flush();
     }
