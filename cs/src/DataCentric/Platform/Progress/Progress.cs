@@ -14,21 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+
 namespace DataCentric
 {
-    /// <summary>Progress interface provides access to
-    /// progress ratio and progress message.</summary>
-    public interface IProgress
+    /// <summary>Progress data is recorded in Context.Log under
+    /// Progress.Ratio and Progress.Message entry types.</summary>
+    public abstract class Progress : IProgress
     {
         /// <summary>Context for which this interface is defined.
         /// Use to access other interfaces of the same context.</summary>
-        IContext Context { get; }
+        public IContext Context { get; private set; }
 
         /// <summary>Get or set progress ratio from 0 to 1 (0 if not set).</summary>
-        double Ratio { get; set; }
+        public abstract double Ratio { get; set; }
 
         /// <summary>Get or set message displayed next to the progress ratio (null if not set).</summary>
-        string Message { get; set; }
+        public abstract string Message { get; set; }
 
         //--- METHODS
 
@@ -42,9 +44,17 @@ namespace DataCentric
         /// IMPORTANT - Every override of this method must call base.Init()
         /// first, and only then execute the rest of the override method's code.
         /// </summary>
-        void Init(IContext context);
+        public virtual void Init(IContext context)
+        {
+            // Uncomment except in root class of the hierarchy
+            // base.Init(context);
+
+            // Check that argument is not null and assign to the Context property
+            if (context == null) throw new Exception($"Null context is passed to the Init(...) method for {GetType().Name}.");
+            Context = context;
+        }
 
         /// <summary>Flush data to permanent storage.</summary>
-        void Flush();
+        public abstract void Flush();
     }
 }

@@ -20,7 +20,7 @@ namespace DataCentric
 {
     /// <summary>Progress data is recorded in Context.Log under
     /// Progress.Ratio and Progress.Message entry types.</summary>
-    public class LogProgress : IProgress
+    public class LogProgress : Progress
     {
         private double ratio_;
         private string message_;
@@ -28,15 +28,11 @@ namespace DataCentric
         /// <summary>Create from context.</summary>
         public LogProgress(IContext context)
         {
-            Context = context;
+            Init(context);
         }
 
-        /// <summary>Context for which this interface is defined.
-        /// Use to access other interfaces of the same context.</summary>
-        public IContext Context { get; }
-
         /// <summary>Get or set progress ratio from 0 to 1 (0 if not set).</summary>
-        public double Ratio
+        public override double Ratio
         {
             get { return ratio_; }
             set
@@ -47,7 +43,7 @@ namespace DataCentric
         }
 
         /// <summary>Get or set message displayed next to the progress ratio (null if not set).</summary>
-        public string Message
+        public override string Message
         {
             get { return message_; }
             set
@@ -57,8 +53,10 @@ namespace DataCentric
             }
         }
 
-        /// <summary>Flush progress state to permanent storage.</summary>
-        public void Flush()
+        //--- METHODS
+
+        /// <summary>Flush data to permanent storage.</summary>
+        public override void Flush()
         {
             Context.Log.Flush();
         }

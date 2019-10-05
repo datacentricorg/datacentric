@@ -20,25 +20,26 @@ namespace DataCentric
 {
     /// <summary>Use this class to skip recording progress to permanent storage.
     /// The values of Ratio and Message work normally through the API.</summary>
-    public class NullProgress : IProgress
+    public class NullProgress : Progress
     {
         /// <summary>Create from context.</summary>
         public NullProgress(IContext context)
         {
-            Context = context;
+            Init(context);
         }
 
-        /// <summary>Context for which this interface is defined.
-        /// Use to access other interfaces of the same context.</summary>
-        public IContext Context { get; }
-
         /// <summary>Get or set progress ratio from 0 to 1 (0 if not set).</summary>
-        public double Ratio { get; set; }
+        public override double Ratio { get; set; }
 
         /// <summary>Get or set message displayed next to the progress ratio (null if not set).</summary>
-        public string Message { get; set; }
+        public override string Message { get; set; }
 
-        /// <summary>Flush progress state to permanent storage.</summary>
-        public void Flush() { }
+        //--- METHODS
+
+        /// <summary>Flush data to permanent storage.</summary>
+        public override void Flush()
+        {
+            // Do nothing
+        }
     }
 }
