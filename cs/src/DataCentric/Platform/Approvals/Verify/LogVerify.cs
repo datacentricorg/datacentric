@@ -51,7 +51,9 @@ namespace DataCentric
             }
         }
 
-        /// <summary>Flush approval log contents to permanent storage.</summary>
+        //--- METHODS
+
+        /// <summary>Flush data to permanent storage.</summary>
         public void Flush()
         {
             Context.Log.Flush();

@@ -29,14 +29,18 @@ namespace DataCentric
         where TRecord : RootRecord<TKey, TRecord>
     {
         /// <summary>
-        /// Set context and perform initialization or validation of object data.
+        /// Set Context property and perform validation of the record's data,
+        /// then initialize any fields or properties that depend on that data.
         ///
-        /// All derived classes overriding this method must call base.Init(context)
-        /// before executing the the rest of the code in the method override.
+        /// This method must work when called multiple times for the same instance,
+        /// possibly with a different context parameter for each subsequent call.
+        ///
+        /// All overrides of this method must call base.Init(context) first, then
+        /// execute the rest of the code in the override.
         /// </summary>
         public override void Init(IContext context)
         {
-            // Initialize the base class
+            // Initialize base before executing the rest of the code in this method
             base.Init(context);
 
             // For this base type of records stored in root dataset,

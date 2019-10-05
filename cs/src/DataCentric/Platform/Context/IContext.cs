@@ -41,7 +41,9 @@ namespace DataCentric
         /// <summary>Progress interface.</summary>
         IProgress Progress { get; }
 
-        /// <summary>Flush context data to permanent storage.</summary>
+        //--- METHODS
+
+        /// <summary>Flush data to permanent storage.</summary>
         void Flush();
     }
 

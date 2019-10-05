@@ -35,7 +35,7 @@ namespace DataCentric
     ///
     /// For tests that do not require a data source, use UnitTestContext.
     /// </summary>
-    public class DataTestContext<TDataSource> : UnitTestContext, IVerifyable, IDisposable
+    public class DataTestContext<TDataSource> : UnitTestContext, IVerifyable
         where TDataSource : DataSourceData, IDataSource, new()
     {
         /// <summary>
@@ -103,18 +103,14 @@ namespace DataCentric
         /// <summary>
         /// Releases resources and calls base.Dispose().
         ///
-        /// This method will NOT be called by the garbage
-        /// collector, therefore instantiating it inside
-        /// the ``using'' clause is essential to ensure
-        /// that Dispose() method gets invoked.
+        /// This method will not be called by the garbage collector.
+        /// It will only be executed if:
         ///
-        /// ATTENTION:
+        /// * This class implements IDisposable; and
+        /// * The class instance is created through the using clause
         ///
-        /// Each class that overrides this method must
-        ///
-        /// (a) Specify IDisposable in interface list; and
-        /// (b) Call base.Dispose() at the end of its own
-        ///     Dispose() method.
+        /// IMPORTANT - Every override of this method must call base.Dispose()
+        /// after executing its own code.
         /// </summary>
         public override void Dispose()
         {

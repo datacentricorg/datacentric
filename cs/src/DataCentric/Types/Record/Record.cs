@@ -77,23 +77,22 @@ namespace DataCentric
         //--- METHODS
 
         /// <summary>
-        /// Set context and perform initialization or validation of object data.
+        /// Set Context property and perform validation of the record's data,
+        /// then initialize any fields or properties that depend on that data.
         ///
-        /// All derived classes overriding this method must call base.Init(context)
-        /// before executing the the rest of the code in the method override.
+        /// This method may be called multiple times for the same instance,
+        /// possibly with a different context parameter for each subsequent call.
+        ///
+        /// IMPORTANT - Every override of this method must call base.Init()
+        /// first, and only then execute the rest of the override method's code.
         /// </summary>
         public virtual void Init(IContext context)
         {
-            // The line below is an example of calling Init(context) method for base class.
-            // It should be uncommented for all classes derived from this class directly
-            // or indirectly that override Init(context)
-            //
-            // Initialize the base class
+            // Uncomment except in root class of the hierarchy
             // base.Init(context);
 
             // Check that argument is not null and assign to the Context property
-            if (context == null) throw new Exception(
-                $"Null context is passed to the Init(...) method for {GetType().Name}.");
+            if (context == null) throw new Exception($"Null context is passed to the Init(...) method for {GetType().Name}.");
             Context = context;
         }
 

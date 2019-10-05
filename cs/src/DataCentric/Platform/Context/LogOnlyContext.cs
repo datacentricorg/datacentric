@@ -40,7 +40,7 @@ namespace DataCentric
         /// <summary>Get interface to the context data source.</summary>
         public IDataSource DataSource { get; }
 
-        /// <summary>Returns ObjectId of the context dataset.</summary>
+        /// <summary>Returns default dataset of the context.</summary>
         public ObjectId DataSet { get; }
 
         /// <summary>Output folder root of the context's virtualized filesystem.</summary>
@@ -60,18 +60,14 @@ namespace DataCentric
         /// <summary>
         /// Releases resources and calls base.Dispose().
         ///
-        /// This method will NOT be called by the garbage
-        /// collector, therefore instantiating it inside
-        /// the ``using'' clause is essential to ensure
-        /// that Dispose() method gets invoked.
+        /// This method will not be called by the garbage collector.
+        /// It will only be executed if:
         ///
-        /// ATTENTION:
+        /// * This class implements IDisposable; and
+        /// * The class instance is created through the using clause
         ///
-        /// Each class that overrides this method must
-        ///
-        /// (a) Specify IDisposable in interface list; and
-        /// (b) Call base.Dispose() at the end of its own
-        ///     Dispose() method.
+        /// IMPORTANT - Every override of this method must call base.Dispose()
+        /// after executing its own code.
         /// </summary>
         public virtual void Dispose()
         {
@@ -80,9 +76,12 @@ namespace DataCentric
 
             // Close the log
             Log.Close();
+
+            // Uncomment except in root class of the hierarchy
+            // base.Dispose();
         }
- 
-        /// <summary>Flush context data to permanent storage.</summary>
+
+        /// <summary>Flush data to permanent storage.</summary>
         public void Flush()
         {
             // Flush to permanent storage

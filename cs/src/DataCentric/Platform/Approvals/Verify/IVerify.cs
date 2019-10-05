@@ -37,7 +37,9 @@ namespace DataCentric
         /// Check to avoid performing expensive calculations that will not be recorded.</summary>
         bool IsSet { get; }
 
-        /// <summary>Flush approval log contents to permanent storage.</summary>
+        //--- METHODS
+
+        /// <summary>Flush data to permanent storage.</summary>
         void Flush();
     }
 
