@@ -46,7 +46,7 @@ namespace DataCentric.Test
 
                 string copyString = copy.ToXml();
                 context.Verify.File("Copy.xml", copyString);
-                context.Verify.Assert(xmlString == copyString, "Serialization roundtrip");
+                context.Log.Assert(xmlString == copyString, "Serialization roundtrip assert.");
             }
         }
 
@@ -111,7 +111,7 @@ namespace DataCentric.Test
 
                 string copyString = copy.ToXml();
                 context.Verify.File("Copy.xml", copyString);
-                context.Verify.Assert(xmlString == copyString, "Serialization roundtrip");
+                context.Log.Assert(xmlString == copyString, "Serialization roundtrip assert.");
             }
         }
     }

@@ -1,2 +1,2 @@
-Verify.Passed: Serialized key for a singleton must be String.Empty.
-Verify.Passed: Deserialized key for a singleton must be String.Empty.
+Info: Serialized key for a singleton must be String.Empty assert.
+Info: Deserialized key for a singleton must be String.Empty assert.

@@ -139,12 +139,12 @@ namespace DataCentric.Test
 
                 // Verify key serialization
                 string keyValue = rec.ToKey().ToString();
-                context.Verify.Assert(keyValue == String.Empty, "Serialized key for a singleton must be String.Empty.");
+                context.Log.Assert(keyValue == String.Empty, "Serialized key for a singleton must be String.Empty assert.");
 
                 // Verify key deserialization
                 var key = new SingletonSampleKey();
                 key.PopulateFrom(keyValue);
-                context.Verify.Assert(key.ToString() == String.Empty, "Deserialized key for a singleton must be String.Empty.");
+                context.Log.Assert(key.ToString() == String.Empty, "Deserialized key for a singleton must be String.Empty assert.");
             }
         }
 

@@ -60,22 +60,6 @@ namespace DataCentric
             obj.Context.Log.Entry(LogVerbosity.Verify, "Text", message);
         }
 
-        /// <summary>Record 'Verify.Passed: {message}' when condition
-        /// is true and 'Verify.Failed: {message}' when condition is false.</summary>
-        public static void Assert(this IVerify obj, bool condition, string messageWhenFalse)
-        {
-            string conditionString = condition ? "Passed" : "Failed";
-            obj.Context.Log.Entry(LogVerbosity.Verify, conditionString, messageWhenFalse);
-        }
-
-        /// <summary>Record 'Verify.Value: {message} = {value}'.</summary>
-        public static void Value(this IVerify obj, object value, string message)
-        {
-            // Use AsString() instead of ToString() for custom formatting of certain types
-            string approvalMessage = System.String.Concat(message, " = ", value.AsString());
-            obj.Context.Log.Entry(LogVerbosity.Verify, "Value", approvalMessage);
-        }
-
         /// <summary>Record 'Verify.File: {fileName} ({N} bytes) and save contents to a file.</summary>
         public static void File(this IVerify obj, string fileName, string fileContents)
         {

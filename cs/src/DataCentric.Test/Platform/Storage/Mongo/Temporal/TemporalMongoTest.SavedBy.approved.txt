@@ -1,8 +1,8 @@
 Verify.Text: Load records by ObjectId without constraint
-Verify.Value:     Found by ObjectId=A0 = true
-Verify.Value:     Found by ObjectId=A1 = true
-Verify.Value:     Found by ObjectId=A2 = true
-Verify.Value:     Found by ObjectId=C0 = true
+Verify.Text: Found for ObjectId(A0)=True
+Verify.Text: Found for ObjectId(A1)=True
+Verify.Text: Found for ObjectId(A2)=True
+Verify.Text: Found for ObjectId(C0)=True
 Verify.Text: Load records by string key without constraint
 Verify.Text:     Version found for key=A;0: 2
 Verify.Text:     Version found for key=C;0: 0
@@ -11,10 +11,10 @@ Verify.Text:     Key=A;0 DataSet=DataSet0 Version=1
 Verify.Text:     Key=B;0 DataSet=DataSet1 Version=2
 Verify.Text:     Key=D;0 DataSet=DataSet1 Version=0
 Verify.Text: Load records by ObjectId with SavedById constraint
-Verify.Value:     Found by ObjectId=A0 = true
-Verify.Value:     Found by ObjectId=A1 = true
-Verify.Value:     Found by ObjectId=A2 = false
-Verify.Value:     Found by ObjectId=C0 = false
+Verify.Text: Found for ObjectId(A0)=True
+Verify.Text: Found for ObjectId(A1)=True
+Verify.Text: Found for ObjectId(A2)=False
+Verify.Text: Found for ObjectId(C0)=False
 Verify.Text: Load records by string key with SavedById constraint
 Verify.Text:     Version found for key=A;0: 1
 Verify.Text: Query records with SavedById constraint

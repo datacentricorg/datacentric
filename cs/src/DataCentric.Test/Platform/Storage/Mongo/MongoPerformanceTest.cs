@@ -217,7 +217,7 @@ namespace DataCentric.Test
                 }
 
                 context.Verify.Text($"Found {count} records.");
-                context.Verify.Value(sum, "Sum(DoubleElement)");
+                context.Verify.Text($"Sum(DoubleElement)={sum}");
             }
         }
 
@@ -245,7 +245,7 @@ namespace DataCentric.Test
                 }
 
                 context.Verify.Text($"Found {count} records.");
-                context.Verify.Value(sum, "Sum(DoubleElement)");
+                context.Verify.Text($"Sum(DoubleElement)={sum}");
             }
         }
 
@@ -271,7 +271,7 @@ namespace DataCentric.Test
                 }
 
                 context.Verify.Text($"Query returned {count} records.");
-                context.Verify.Value(sum, "Sum(DoubleElement)");
+                context.Verify.Text($"Sum(DoubleElement)={sum}");
             }
         }
 
@@ -313,7 +313,7 @@ namespace DataCentric.Test
                 }
 
                 context.Verify.Text($"Query returned {count} records.");
-                context.Verify.Value(sum, "Sum(DoubleElement)");
+                context.Verify.Text($"Sum(DoubleElement)={sum}");
             }
         }
 
@@ -368,7 +368,7 @@ namespace DataCentric.Test
                 }
 
                 context.Verify.Text($"Query returned {recordCount} records from {objectIdCount} ObjectIds.");
-                context.Verify.Value(sum, "Sum(DoubleElement)");
+                context.Verify.Text($"Sum(DoubleElement)={sum}");
             }
         }
     }

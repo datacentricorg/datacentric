@@ -1,2 +1,2 @@
-Verify.Value: String Representation = MyTable;Token1;Token2
-Verify.Value: After deserialization = MyTable;Token1;Token2
+Verify.Text: String Representation=MyTable;Token1;Token2
+Verify.Text: After deserialization=MyTable;Token1;Token2

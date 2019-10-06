@@ -42,7 +42,7 @@ namespace DataCentric.Test
                 deserialized.ParseXml(xmlString);
                 string deserializedString = deserialized.ToXml();
                 context.Verify.File("Copy.xml", deserializedString);
-                context.Verify.Assert(xmlString == deserializedString, "Serialization roundtrip");
+                context.Log.Assert(xmlString == deserializedString, "Serialization roundtrip assert.");
             }
         }
 
@@ -102,7 +102,7 @@ namespace DataCentric.Test
                 deserialized.ParseXml(xmlString);
                 string deserializedString = deserialized.ToXml();
                 context.Verify.File("Copy.xml", deserializedString);
-                context.Verify.Assert(xmlString == deserializedString, "Serialization roundtrip");
+                context.Log.Assert(xmlString == deserializedString, "Serialization roundtrip assert.");
             }
         }
     }

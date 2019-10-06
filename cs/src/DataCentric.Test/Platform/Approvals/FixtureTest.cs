@@ -35,9 +35,8 @@ namespace DataCentric.Test
 
                 // Verify entries
                 context.Verify.Text("Result verify entry.");
-                context.Verify.Assert(true, "Assert(true) verify entry.");
-                context.Verify.Assert(false, "Assert(false) verify entry.");
-                context.Verify.Value(123, "Value(123)");
+                context.Log.Assert(true, "Assert when condition is true.");
+                context.Log.Assert(false, "Assert when condition is false.");
 
                 // File verify entry and saving
                 // FIXME - check that file is saved when enabled
@@ -62,7 +61,7 @@ namespace DataCentric.Test
                 catch (Exception e)
                 {
                     // The message is recorded by the catch only
-                    context.Verify.Value(e.Message, "Message");
+                    context.Verify.Text($"Message={e.Message}");
                 }
             }
         }

@@ -448,10 +448,10 @@ namespace DataCentric.Test
 
                 // Load each record by ObjectId
                 context.Verify.Text("Load records by ObjectId without constraint");
-                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objA0) != null, "    Found by ObjectId=A0");
-                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objA1) != null, "    Found by ObjectId=A1");
-                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objA2) != null, "    Found by ObjectId=A2");
-                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objC0) != null, "    Found by ObjectId=C0");
+                context.Verify.Text($"Found for ObjectId(A0)={context.LoadOrNull<BaseSampleData>(objA0) != null}");
+                context.Verify.Text($"Found for ObjectId(A1)={context.LoadOrNull<BaseSampleData>(objA1) != null}");
+                context.Verify.Text($"Found for ObjectId(A2)={context.LoadOrNull<BaseSampleData>(objA2) != null}");
+                context.Verify.Text($"Found for ObjectId(C0)={context.LoadOrNull<BaseSampleData>(objC0) != null}");
 
                 // Load each record by string key
                 if (true)
@@ -485,10 +485,10 @@ namespace DataCentric.Test
 
                 // Get each record by ObjectId
                 context.Verify.Text("Load records by ObjectId with SavedById constraint");
-                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objA0) != null, "    Found by ObjectId=A0");
-                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objA1) != null, "    Found by ObjectId=A1");
-                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objA2) != null, "    Found by ObjectId=A2");
-                context.Verify.Value(context.LoadOrNull<BaseSampleData>(objC0) != null, "    Found by ObjectId=C0");
+                context.Verify.Text($"Found for ObjectId(A0)={context.LoadOrNull<BaseSampleData>(objA0) != null}");
+                context.Verify.Text($"Found for ObjectId(A1)={context.LoadOrNull<BaseSampleData>(objA1) != null}");
+                context.Verify.Text($"Found for ObjectId(A2)={context.LoadOrNull<BaseSampleData>(objA2) != null}");
+                context.Verify.Text($"Found for ObjectId(C0)={context.LoadOrNull<BaseSampleData>(objC0) != null}");
 
                 // Load each record by string key
                 if (true)
@@ -547,7 +547,7 @@ namespace DataCentric.Test
                 if (true)
                 {
                     var loadedRecord = context.LoadOrNull(keyA0, dataSet0);
-                    context.Verify.Assert(loadedRecord != null, "Record found before deletion.");
+                    context.Log.Assert(loadedRecord != null, "Record found before deletion assert.");
                 }
 
                 // Query before deletion
@@ -574,7 +574,7 @@ namespace DataCentric.Test
                 if (true)
                 {
                     var loadedRecord = context.LoadOrNull(keyA0, dataSet0);
-                    context.Verify.Assert(loadedRecord == null, "Record not found after deletion.");
+                    context.Log.Assert(loadedRecord == null, "Record not found after deletion assert.");
                 }
 
                 // Query after deletion
