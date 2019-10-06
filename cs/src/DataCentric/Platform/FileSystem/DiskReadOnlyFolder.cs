@@ -15,9 +15,7 @@ limitations under the License.
 */
 
 using System;
-using System.CodeDom.Compiler;
 using System.IO;
-using System.Reflection;
 
 namespace DataCentric
 {
@@ -55,6 +53,24 @@ namespace DataCentric
             // Check that argument is not null and assign to the Context property
             if (context == null) throw new Exception($"Null context is passed to the Init(...) method for {GetType().Name}.");
             Context = context;
+        }
+
+        /// <summary>
+        /// Releases resources and calls base.Dispose().
+        ///
+        /// This method will not be called by the garbage collector.
+        /// It will only be executed if:
+        ///
+        /// * This class implements IDisposable; and
+        /// * The class instance is created through the using clause
+        ///
+        /// IMPORTANT - Every override of this method must call base.Dispose()
+        /// after executing its own code.
+        /// </summary>
+        public virtual void Dispose()
+        {
+            // Uncomment except in root class of the hierarchy
+            // base.Dispose();
         }
 
         /// <summary>

@@ -26,7 +26,7 @@ namespace DataCentric
     ///
     /// For provide read-write API, use IFolder interface instead.
     /// </summary>
-    public interface IReadOnlyFolder
+    public interface IReadOnlyFolder : IDisposable
     {
         /// <summary>Context for which this interface is defined.
         /// Use to access other interfaces of the same context.</summary>

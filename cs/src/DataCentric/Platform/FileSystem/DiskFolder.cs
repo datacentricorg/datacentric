@@ -15,9 +15,7 @@ limitations under the License.
 */
 
 using System;
-using System.CodeDom.Compiler;
 using System.IO;
-using System.Reflection;
 
 namespace DataCentric
 {
@@ -28,6 +26,13 @@ namespace DataCentric
     /// </summary>
     public class DiskFolder : DiskReadOnlyFolder, IFolder
     {
+        /// <summary>Flush data to permanent storage.</summary>
+        public virtual void Flush()
+        {
+            // Uncomment except in root class of the hierarchy
+            // base.Flush();
+        }
+
         /// <summary>
         /// Creates or opens the specified file for writing using UTF-8 encoding.
         ///

@@ -28,6 +28,9 @@ namespace DataCentric
     /// </summary>
     public interface IFolder : IReadOnlyFolder
     {
+        /// <summary>Flush data to permanent storage.</summary>
+        void Flush();
+
         /// <summary>
         /// Creates or opens the specified file for writing using UTF-8 encoding.
         ///

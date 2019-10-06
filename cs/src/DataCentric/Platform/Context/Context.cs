@@ -127,7 +127,7 @@ namespace DataCentric
         {
             // Call Dispose() for each initialized property of the context
             // in the reverse order of initialization
-            // TODO - if (outputFolder_ != null) outputFolder_.Dispose();
+            if (outputFolder_ != null) outputFolder_.Dispose();
             if (log_ != null) log_.Dispose();
             if (progress_ != null) progress_.Dispose();
             if (dataSource_ != null) dataSource_.Dispose();
@@ -139,8 +139,11 @@ namespace DataCentric
         /// <summary>Flush data to permanent storage.</summary>
         public virtual void Flush()
         {
+            // Uncomment except in root class of the hierarchy
+            // base.Flush();
+
             // Call Flush() for each initialized property of the context
-            // TODO - if (outputFolder_ != null) outputFolder_.Flush();
+            if (outputFolder_ != null) outputFolder_.Flush();
             if (log_ != null) log_.Flush();
             if (progress_ != null) progress_.Flush();
             if (dataSource_ != null) dataSource_.Flush();

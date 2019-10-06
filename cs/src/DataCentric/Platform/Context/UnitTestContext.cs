@@ -37,6 +37,8 @@ namespace DataCentric
     {
         private IVerify verify_;
 
+        //--- PROPERTIES
+
         /// <summary>Approval testing interface.</summary>
         public IVerify Verify
         {
@@ -104,7 +106,7 @@ namespace DataCentric
         {
             // Call Dispose() for each initialized property of the context
             // in the reverse order of initialization
-            // TODO - if (verify_ != null) verify_.Dispose();
+            if (verify_ != null) verify_.Dispose();
 
             // Dispose base
             base.Dispose();
@@ -115,7 +117,7 @@ namespace DataCentric
         {
             // Call Flush() for each initialized property of the context
             // in the order of initialization
-            // TODO - if (verify_ != null) verify_.Flush();
+            if (verify_ != null) verify_.Flush();
         }
     }
 }

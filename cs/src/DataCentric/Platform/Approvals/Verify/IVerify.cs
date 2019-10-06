@@ -21,7 +21,7 @@ using System.Text;
 namespace DataCentric
 {
     /// <summary>Approval testing interface.</summary>
-    public interface IVerify
+    public interface IVerify : IDisposable
     {
         /// <summary>Context for which this interface is defined.
         /// Use to access other interfaces of the same context.</summary>
@@ -36,8 +36,6 @@ namespace DataCentric
         /// <summary>Indicates whether approval data is recorded by the context.
         /// Check to avoid performing expensive calculations that will not be recorded.</summary>
         bool IsSet { get; }
-
-        //--- METHODS
 
         //--- METHODS
 
