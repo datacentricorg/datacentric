@@ -35,7 +35,7 @@ namespace DataCentric
         {
             // Do not record the log entry if entry verbosity exceeds log verbosity
             // Record all entries if log verbosity is not specified
-            if (Verbosity == LogEntryType.Empty || entryType <= Verbosity)
+            if (entryType <= Verbosity)
             {
                 var logEntry = new LogEntry(LogEntryType.Status, entrySubType, message);
                 Console.WriteLine(logEntry.ToString());

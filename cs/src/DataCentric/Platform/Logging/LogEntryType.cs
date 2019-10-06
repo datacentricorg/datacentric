@@ -21,10 +21,12 @@ namespace DataCentric
     /// <summary>Enumeration for the log entry type.</summary>
     public enum LogEntryType
     {
-        /// <summary>Empty</summary>
-        Empty,
-
-        /// <summary>Error message (recorded when exception is thrown).</summary>
+        /// <summary>
+        /// Error is the default entry type, used when entry type is not set.
+        ///
+        /// Because this is the latest value in the enumeration,  errors are
+        /// reported irrespective of the verbosity level.
+        /// </summary>
         Error,
 
         /// <summary>Warning message.</summary>
@@ -36,7 +38,7 @@ namespace DataCentric
         /// <summary>Progress ratio or message.</summary>
         Progress,
 
-        /// <summary>Approval test verification record.</summary>
+        /// <summary>Approval test output.</summary>
         Verify
     }
 }
