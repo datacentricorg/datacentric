@@ -47,7 +47,7 @@ namespace DataCentric.Test
         /// </summary>
         public virtual void Dispose()
         {
-            Context.CastTo<IVerifyable>().Verify.Text("Disposing resources of BaseClassSample");
+            Context.Log.Verify("Disposing resources of BaseClassSample");
 
             // Uncomment except in root class of the hierarchy
             // base.Dispose();
@@ -76,7 +76,7 @@ namespace DataCentric.Test
         /// </summary>
         public override void Dispose()
         {
-            Context.CastTo<IVerifyable>().Verify.Text("Disposing resources of DerivedClassSample");
+            Context.Log.Verify("Disposing resources of DerivedClassSample");
 
             // Dispose base
             base.Dispose();

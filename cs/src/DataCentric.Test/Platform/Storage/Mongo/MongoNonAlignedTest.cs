@@ -45,18 +45,18 @@ namespace DataCentric.Test
                 record.InitialElement1 = 2;
 
                 // Verify key serialization
-                context.Verify.Text(record.Key);
+                context.Log.Verify(record.Key);
 
                 // Verify key creation
                 var key = record.ToKey();
-                context.Verify.Text(key.Value);
+                context.Log.Verify(key.Value);
 
                 // Save
                 context.Save(record, context.DataSet);
 
                 // Load from storage
                 var loadedRecord = context.LoadOrNull(key, context.DataSet);
-                context.Verify.Text(loadedRecord.Key);
+                context.Log.Verify(loadedRecord.Key);
             }
         }
     }

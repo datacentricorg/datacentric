@@ -1,2 +1,2 @@
-Verify.Text: Serialized key: abc;def;123;xyz
-Verify.Text: Deserialized key: abc;def;123;xyz
+Verify: Serialized key: abc;def;123;xyz
+Verify: Deserialized key: abc;def;123;xyz

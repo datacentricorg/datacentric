@@ -1,41 +1,41 @@
-Verify.Text: Load all records by key as MongoTestData.
-Verify.Text:     Key=A;0 Type=BaseSampleData
-Verify.Text:     Key=B;0 Type=DerivedSampleData
-Verify.Text:     Key=C;0 Type=OtherDerivedSampleData
-Verify.Text:     Key=D;0 Type=DerivedFromDerivedSampleData
-Verify.Text: Query by MongoTestData, unconstrained
-Verify.Text:     Key=A;0 Type=BaseSampleData
-Verify.Text:     Key=A;1 Type=BaseSampleData
-Verify.Text:     Key=A;2 Type=BaseSampleData
-Verify.Text:     Key=A;3 Type=BaseSampleData
-Verify.Text:     Key=B;0 Type=DerivedSampleData
-Verify.Text:     Key=B;1 Type=DerivedSampleData
-Verify.Text:     Key=B;2 Type=DerivedSampleData
-Verify.Text:     Key=B;3 Type=DerivedSampleData
-Verify.Text:     Key=C;0 Type=OtherDerivedSampleData
-Verify.Text:     Key=C;1 Type=OtherDerivedSampleData
-Verify.Text:     Key=C;2 Type=OtherDerivedSampleData
-Verify.Text:     Key=C;3 Type=OtherDerivedSampleData
-Verify.Text:     Key=D;0 Type=DerivedFromDerivedSampleData
-Verify.Text:     Key=D;1 Type=DerivedFromDerivedSampleData
-Verify.Text:     Key=D;2 Type=DerivedFromDerivedSampleData
-Verify.Text:     Key=D;3 Type=DerivedFromDerivedSampleData
-Verify.Text: Query by MongoTestDerivedData : MongoTestData which also picks up MongoTestDerivedFromDerivedData : MongoTestDerivedData, unconstrained
-Verify.Text:     Key=B;0 Type=DerivedSampleData
-Verify.Text:     Key=B;1 Type=DerivedSampleData
-Verify.Text:     Key=B;2 Type=DerivedSampleData
-Verify.Text:     Key=B;3 Type=DerivedSampleData
-Verify.Text:     Key=D;0 Type=DerivedFromDerivedSampleData
-Verify.Text:     Key=D;1 Type=DerivedFromDerivedSampleData
-Verify.Text:     Key=D;2 Type=DerivedFromDerivedSampleData
-Verify.Text:     Key=D;3 Type=DerivedFromDerivedSampleData
-Verify.Text: Query by MongoTestOtherDerivedData : MongoTestData, unconstrained
-Verify.Text:     Key=C;0 Type=OtherDerivedSampleData
-Verify.Text:     Key=C;1 Type=OtherDerivedSampleData
-Verify.Text:     Key=C;2 Type=OtherDerivedSampleData
-Verify.Text:     Key=C;3 Type=OtherDerivedSampleData
-Verify.Text: Query by MongoTestDerivedFromDerivedData : MongoTestDerivedData, where MongoTestDerivedData : MongoTestData, unconstrained
-Verify.Text:     Key=D;0 Type=DerivedFromDerivedSampleData
-Verify.Text:     Key=D;1 Type=DerivedFromDerivedSampleData
-Verify.Text:     Key=D;2 Type=DerivedFromDerivedSampleData
-Verify.Text:     Key=D;3 Type=DerivedFromDerivedSampleData
+Verify: Load all records by key as MongoTestData.
+Verify:     Key=A;0 Type=BaseSampleData
+Verify:     Key=B;0 Type=DerivedSampleData
+Verify:     Key=C;0 Type=OtherDerivedSampleData
+Verify:     Key=D;0 Type=DerivedFromDerivedSampleData
+Verify: Query by MongoTestData, unconstrained
+Verify:     Key=A;0 Type=BaseSampleData
+Verify:     Key=A;1 Type=BaseSampleData
+Verify:     Key=A;2 Type=BaseSampleData
+Verify:     Key=A;3 Type=BaseSampleData
+Verify:     Key=B;0 Type=DerivedSampleData
+Verify:     Key=B;1 Type=DerivedSampleData
+Verify:     Key=B;2 Type=DerivedSampleData
+Verify:     Key=B;3 Type=DerivedSampleData
+Verify:     Key=C;0 Type=OtherDerivedSampleData
+Verify:     Key=C;1 Type=OtherDerivedSampleData
+Verify:     Key=C;2 Type=OtherDerivedSampleData
+Verify:     Key=C;3 Type=OtherDerivedSampleData
+Verify:     Key=D;0 Type=DerivedFromDerivedSampleData
+Verify:     Key=D;1 Type=DerivedFromDerivedSampleData
+Verify:     Key=D;2 Type=DerivedFromDerivedSampleData
+Verify:     Key=D;3 Type=DerivedFromDerivedSampleData
+Verify: Query by MongoTestDerivedData : MongoTestData which also picks up MongoTestDerivedFromDerivedData : MongoTestDerivedData, unconstrained
+Verify:     Key=B;0 Type=DerivedSampleData
+Verify:     Key=B;1 Type=DerivedSampleData
+Verify:     Key=B;2 Type=DerivedSampleData
+Verify:     Key=B;3 Type=DerivedSampleData
+Verify:     Key=D;0 Type=DerivedFromDerivedSampleData
+Verify:     Key=D;1 Type=DerivedFromDerivedSampleData
+Verify:     Key=D;2 Type=DerivedFromDerivedSampleData
+Verify:     Key=D;3 Type=DerivedFromDerivedSampleData
+Verify: Query by MongoTestOtherDerivedData : MongoTestData, unconstrained
+Verify:     Key=C;0 Type=OtherDerivedSampleData
+Verify:     Key=C;1 Type=OtherDerivedSampleData
+Verify:     Key=C;2 Type=OtherDerivedSampleData
+Verify:     Key=C;3 Type=OtherDerivedSampleData
+Verify: Query by MongoTestDerivedFromDerivedData : MongoTestDerivedData, where MongoTestDerivedData : MongoTestData, unconstrained
+Verify:     Key=D;0 Type=DerivedFromDerivedSampleData
+Verify:     Key=D;1 Type=DerivedFromDerivedSampleData
+Verify:     Key=D;2 Type=DerivedFromDerivedSampleData
+Verify:     Key=D;3 Type=DerivedFromDerivedSampleData

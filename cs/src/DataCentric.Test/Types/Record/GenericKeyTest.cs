@@ -34,8 +34,8 @@ namespace DataCentric.Test
                 var stringRepresentation = key.ToString();
                 var deserializedKey = new GenericKey(stringRepresentation);
 
-                context.Verify.Text($"String Representation={stringRepresentation}");
-                context.Verify.Text($"After deserialization={deserializedKey}");
+                context.Log.Verify($"String Representation={stringRepresentation}");
+                context.Log.Verify($"After deserialization={deserializedKey}");
             }
         }
     }

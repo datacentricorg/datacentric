@@ -1,22 +1,22 @@
-Verify.Text: Load records by ObjectId without constraint
-Verify.Text: Found for ObjectId(A0)=True
-Verify.Text: Found for ObjectId(A1)=True
-Verify.Text: Found for ObjectId(A2)=True
-Verify.Text: Found for ObjectId(C0)=True
-Verify.Text: Load records by string key without constraint
-Verify.Text:     Version found for key=A;0: 2
-Verify.Text:     Version found for key=C;0: 0
-Verify.Text: Query records without constraint
-Verify.Text:     Key=A;0 DataSet=DataSet0 Version=1
-Verify.Text:     Key=B;0 DataSet=DataSet1 Version=2
-Verify.Text:     Key=D;0 DataSet=DataSet1 Version=0
-Verify.Text: Load records by ObjectId with SavedById constraint
-Verify.Text: Found for ObjectId(A0)=True
-Verify.Text: Found for ObjectId(A1)=True
-Verify.Text: Found for ObjectId(A2)=False
-Verify.Text: Found for ObjectId(C0)=False
-Verify.Text: Load records by string key with SavedById constraint
-Verify.Text:     Version found for key=A;0: 1
-Verify.Text: Query records with SavedById constraint
-Verify.Text:     Key=A;0 DataSet=DataSet0 Version=1
-Verify.Text:     Key=B;0 DataSet=DataSet1 Version=1
+Verify: Load records by ObjectId without constraint
+Verify: Found for ObjectId(A0)=True
+Verify: Found for ObjectId(A1)=True
+Verify: Found for ObjectId(A2)=True
+Verify: Found for ObjectId(C0)=True
+Verify: Load records by string key without constraint
+Verify:     Version found for key=A;0: 2
+Verify:     Version found for key=C;0: 0
+Verify: Query records without constraint
+Verify:     Key=A;0 DataSet=DataSet0 Version=1
+Verify:     Key=B;0 DataSet=DataSet1 Version=2
+Verify:     Key=D;0 DataSet=DataSet1 Version=0
+Verify: Load records by ObjectId with SavedById constraint
+Verify: Found for ObjectId(A0)=True
+Verify: Found for ObjectId(A1)=True
+Verify: Found for ObjectId(A2)=False
+Verify: Found for ObjectId(C0)=False
+Verify: Load records by string key with SavedById constraint
+Verify:     Version found for key=A;0: 1
+Verify: Query records with SavedById constraint
+Verify:     Key=A;0 DataSet=DataSet0 Version=1
+Verify:     Key=B;0 DataSet=DataSet1 Version=1

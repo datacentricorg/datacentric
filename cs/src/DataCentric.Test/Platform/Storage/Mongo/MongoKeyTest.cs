@@ -47,18 +47,18 @@ namespace DataCentric.Test
                 record.EnumToken = SampleEnum.EnumValue2;
 
                 // Verify key serialization
-                context.Verify.Text(record.Key);
+                context.Log.Verify(record.Key);
 
                 // Verify key creation
                 var key = record.ToKey();
-                context.Verify.Text(key.Value);
+                context.Log.Verify(key.Value);
 
                 // Save
                 context.Save(record, context.DataSet);
 
                 // Load from storage
                 var loadedRecord = context.LoadOrNull(key, context.DataSet);
-                context.Verify.Text(loadedRecord.Key);
+                context.Log.Verify(loadedRecord.Key);
             }
         }
 
@@ -81,18 +81,18 @@ namespace DataCentric.Test
                 record.EnumToken = SampleEnum.EnumValue2;
 
                 // Verify key serialization
-                context.Verify.Text(record.Key);
+                context.Log.Verify(record.Key);
 
                 // Verify key creation
                 var key = record.ToKey();
-                context.Verify.Text(key.Value);
+                context.Log.Verify(key.Value);
 
                 // Save
                 context.Save(record, context.DataSet);
 
                 // Load from storage
                 var loadedRecord = context.LoadOrNull(key, context.DataSet);
-                context.Verify.Text(loadedRecord.Key);
+                context.Log.Verify(loadedRecord.Key);
             }
         }
 
@@ -115,12 +115,12 @@ namespace DataCentric.Test
 
                 // Verify key serialization
                 string keyValue = rec.ToKey().ToString();
-                context.Verify.Text($"Serialized key: {keyValue}");
+                context.Log.Verify($"Serialized key: {keyValue}");
 
                 // Verify key deserialization
                 var key = new CompositeKeySampleKey();
                 key.PopulateFrom(keyValue);
-                context.Verify.Text($"Deserialized key: {key}");
+                context.Log.Verify($"Deserialized key: {key}");
             }
         }
 
@@ -164,12 +164,12 @@ namespace DataCentric.Test
 
                 // Verify key serialization
                 string keyValue = rec.ToKey().ToString();
-                context.Verify.Text($"Serialized key: {keyValue}");
+                context.Log.Verify($"Serialized key: {keyValue}");
 
                 // Verify key deserialization
                 var key = new IdBasedKeySampleKey();
                 key.PopulateFrom(keyValue);
-                context.Verify.Text($"Deserialized key: {key}");
+                context.Log.Verify($"Deserialized key: {key}");
             }
         }
     }

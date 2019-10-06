@@ -1,3 +1,3 @@
-Verify.Text: Inserted 40 record versions.
-Verify.Text: Found 10 records.
-Verify.Text: Sum(DoubleElement)=45
+Verify: Inserted 40 record versions.
+Verify: Found 10 records.
+Verify: Sum(DoubleElement)=45

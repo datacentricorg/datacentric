@@ -46,21 +46,21 @@ namespace DataCentric.Test
 
                 // Read root element with two attributes
                 ITreeReader firstElement = reader.ReadElement("firstElement");
-                context.Verify.Text($"attributeOfFirstElement1={firstElement.ReadAttribute("attributeOfFirstElement1")}");
-                context.Verify.Text($"attributeOfFirstElement2={firstElement.ReadAttribute("attributeOfFirstElement2")}");
+                context.Log.Verify($"attributeOfFirstElement1={firstElement.ReadAttribute("attributeOfFirstElement1")}");
+                context.Log.Verify($"attributeOfFirstElement2={firstElement.ReadAttribute("attributeOfFirstElement2")}");
 
                 // Read embedded element
                 ITreeReader secondElement = firstElement.ReadElement("secondElement");
 
                 // Read value element using a single method call
                 string valueElement1 = secondElement.ReadValueElement("valueElement1");
-                context.Verify.Text($"valueElement1={valueElement1}");
+                context.Log.Verify($"valueElement1={valueElement1}");
 
                 // Add value element with two attributes by creating element explicitly
                 ITreeReader valueElementNode2 = secondElement.ReadElement("valueElement2");
                 string valueElement2 = valueElementNode2.ReadValue();
-                context.Verify.Text($"attributeOfValueElement={valueElementNode2.ReadAttribute("attributeOfValueElement")}");
-                context.Verify.Text($"valueElement2={valueElement2}");
+                context.Log.Verify($"attributeOfValueElement={valueElementNode2.ReadAttribute("attributeOfValueElement")}");
+                context.Log.Verify($"valueElement2={valueElement2}");
             }
         }
     }

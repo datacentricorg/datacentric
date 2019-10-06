@@ -34,7 +34,7 @@ namespace DataCentric.Test
                 context.Log.Info("Status log entry.");
 
                 // Verify entries
-                context.Verify.Text("Result verify entry.");
+                context.Log.Verify("Result verify entry.");
                 context.Log.Assert(true, "Assert when condition is true.");
                 context.Log.Assert(false, "Assert when condition is false.");
 
@@ -61,7 +61,7 @@ namespace DataCentric.Test
                 catch (Exception e)
                 {
                     // The message is recorded by the catch only
-                    context.Verify.Text($"Message={e.Message}");
+                    context.Log.Verify($"Message={e.Message}");
                 }
             }
         }

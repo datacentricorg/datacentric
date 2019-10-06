@@ -40,13 +40,13 @@ namespace DataCentric.Test
             string stringValue = value.AsString();
             LocalDate parsedStringValue = LocalDateImpl.Parse(stringValue);
             Assert.Equal(value, parsedStringValue);
-            context.CastTo<IVerifyable>().Verify.Text($"ISO 8601 format: {stringValue}");
+            context.Log.Verify($"ISO 8601 format: {stringValue}");
 
             // Verify int serialization roundtrip
             int intValue = value.ToIsoInt();
             LocalDate parsedIntValue = LocalDateImpl.ParseIsoInt(intValue);
             Assert.Equal(value, parsedIntValue);
-            context.CastTo<IVerifyable>().Verify.Text($"Readable int format: {intValue}");
+            context.Log.Verify($"Readable int format: {intValue}");
         }
     }
 }

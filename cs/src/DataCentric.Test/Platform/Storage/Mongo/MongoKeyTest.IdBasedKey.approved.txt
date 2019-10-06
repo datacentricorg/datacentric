@@ -1,2 +1,2 @@
-Verify.Text: Serialized key: 075bcd150000000000000000
-Verify.Text: Deserialized key: 075bcd150000000000000000
+Verify: Serialized key: 075bcd150000000000000000
+Verify: Deserialized key: 075bcd150000000000000000

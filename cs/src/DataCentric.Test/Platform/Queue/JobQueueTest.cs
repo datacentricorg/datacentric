@@ -42,7 +42,7 @@ namespace DataCentric.Test
             /// </summary>
             public override void Run()
             {
-                Context.CastTo<IVerifyable>().Verify.Text("Running");
+                Context.Log.Verify("Running");
             }
         }
 
@@ -75,7 +75,7 @@ namespace DataCentric.Test
                 // Run the job
                 loadedJob.Run();
 
-                context.Verify.Text("Completed");
+                context.Log.Verify("Completed");
             }
         }
     }

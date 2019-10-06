@@ -1,1 +1,1 @@
-Verify.Text: Inserted 40 record versions.
+Verify: Inserted 40 record versions.

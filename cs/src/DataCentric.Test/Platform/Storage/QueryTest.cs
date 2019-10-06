@@ -59,10 +59,10 @@ namespace DataCentric.Test
                     // each record has two versions
                     var query = context.DataSource.GetQuery<NullableElementsSampleData>(context.DataSet);
 
-                    context.Verify.Text("Unconstrained query");
+                    context.Log.Verify("Unconstrained query");
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    {obj.Key} (record index {obj.RecordIndex}).");
+                        context.Log.Verify($"    {obj.Key} (record index {obj.RecordIndex}).");
                     }
                 }
 
@@ -83,10 +83,10 @@ namespace DataCentric.Test
                         .Where(p => p.LocalDateTimeToken == new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(1))
                         .Where(p => p.EnumToken == (SampleEnum)2);
 
-                    context.Verify.Text("Constrained query");
+                    context.Log.Verify("Constrained query");
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    {obj.Key} (record index {obj.RecordIndex}).");
+                        context.Log.Verify($"    {obj.Key} (record index {obj.RecordIndex}).");
                     }
                 }
             }
@@ -126,10 +126,10 @@ namespace DataCentric.Test
                     // each record has two versions
                     var query = context.DataSource.GetQuery<NonNullableElementsSampleData>(context.DataSet);
 
-                    context.Verify.Text("Unconstrained query");
+                    context.Log.Verify("Unconstrained query");
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    {obj.Key} (record index {obj.RecordIndex}).");
+                        context.Log.Verify($"    {obj.Key} (record index {obj.RecordIndex}).");
                     }
                 }
 
@@ -150,10 +150,10 @@ namespace DataCentric.Test
                         .Where(p => p.LocalDateTimeToken == new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(1))
                         .Where(p => p.EnumToken == (SampleEnum)2);
 
-                    context.Verify.Text("Constrained query");
+                    context.Log.Verify("Constrained query");
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    {obj.Key} (record index {obj.RecordIndex}).");
+                        context.Log.Verify($"    {obj.Key} (record index {obj.RecordIndex}).");
                     }
                 }
             }

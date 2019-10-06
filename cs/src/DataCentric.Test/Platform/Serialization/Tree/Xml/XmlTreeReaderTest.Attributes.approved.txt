@@ -1,5 +1,5 @@
-Verify.Text: attributeOfFirstElement1=AttributeValue1
-Verify.Text: attributeOfFirstElement2=AttributeValue2
-Verify.Text: valueElement1=TestValue1
-Verify.Text: attributeOfValueElement=AttributeValue
-Verify.Text: valueElement2=TestValue2
+Verify: attributeOfFirstElement1=AttributeValue1
+Verify: attributeOfFirstElement2=AttributeValue2
+Verify: valueElement1=TestValue1
+Verify: attributeOfValueElement=AttributeValue
+Verify: valueElement2=TestValue2

@@ -1,1 +1,1 @@
-Verify.Text: Log should have no lines before this one.
+Verify: Log should have no lines before this one.

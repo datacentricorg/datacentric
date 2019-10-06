@@ -1,2 +1,2 @@
 Info: Normal status entry preceding exception
-Verify.Text: Message=Test exception message.
+Verify: Message=Test exception message.

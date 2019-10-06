@@ -1,28 +1,28 @@
-Verify.Text: Initial load
-Verify.Text: Record A;0 in dataset DataSet0 found and has Type=DerivedSampleData.
-Verify.Text: Record A;0 in dataset DataSet1 found and has Type=DerivedSampleData.
-Verify.Text: Record B;0 in dataset DataSet0 not found.
-Verify.Text: Record B;0 in dataset DataSet1 found and has Type=DerivedFromDerivedSampleData.
-Verify.Text: Query in dataset DataSet0 for type MongoTestDerivedData
-Verify.Text: Record A;0 returned by query in dataset DataSet0 and has Type=DerivedSampleData.
-Verify.Text: Query in dataset DataSet1 for type MongoTestDerivedData
-Verify.Text: Record A;0 returned by query in dataset DataSet1 and has Type=DerivedSampleData.
-Verify.Text: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedFromDerivedSampleData.
-Verify.Text: Change A0 record type in B dataset to C
-Verify.Text: Record A;0 in dataset DataSet0 found and has Type=DerivedSampleData.
-Verify.Text: Record A;0 in dataset DataSet1 found and has Type=OtherDerivedSampleData.
-Verify.Text: Query in dataset DataSet0 for type MongoTestDerivedData
-Verify.Text: Record A;0 returned by query in dataset DataSet0 and has Type=DerivedSampleData.
-Verify.Text: Query in dataset DataSet1 for type MongoTestDerivedData
-Verify.Text: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedFromDerivedSampleData.
-Verify.Text: Change A0 record type in A dataset to C
-Verify.Text: Record A;0 in dataset DataSet0 found and has Type=OtherDerivedSampleData.
-Verify.Text: Record A;0 in dataset DataSet1 found and has Type=OtherDerivedSampleData.
-Verify.Text: Query in dataset DataSet0 for type MongoTestDerivedData
-Verify.Text: Query in dataset DataSet1 for type MongoTestDerivedData
-Verify.Text: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedFromDerivedSampleData.
-Verify.Text: Change B0 record type in B dataset to C
-Verify.Text: Record B;0 in dataset DataSet0 not found.
-Verify.Text: Record B;0 in dataset DataSet1 found and has Type=OtherDerivedSampleData.
-Verify.Text: Query in dataset DataSet0 for type MongoTestDerivedData
-Verify.Text: Query in dataset DataSet1 for type MongoTestDerivedData
+Verify: Initial load
+Verify: Record A;0 in dataset DataSet0 found and has Type=DerivedSampleData.
+Verify: Record A;0 in dataset DataSet1 found and has Type=DerivedSampleData.
+Verify: Record B;0 in dataset DataSet0 not found.
+Verify: Record B;0 in dataset DataSet1 found and has Type=DerivedFromDerivedSampleData.
+Verify: Query in dataset DataSet0 for type MongoTestDerivedData
+Verify: Record A;0 returned by query in dataset DataSet0 and has Type=DerivedSampleData.
+Verify: Query in dataset DataSet1 for type MongoTestDerivedData
+Verify: Record A;0 returned by query in dataset DataSet1 and has Type=DerivedSampleData.
+Verify: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedFromDerivedSampleData.
+Verify: Change A0 record type in B dataset to C
+Verify: Record A;0 in dataset DataSet0 found and has Type=DerivedSampleData.
+Verify: Record A;0 in dataset DataSet1 found and has Type=OtherDerivedSampleData.
+Verify: Query in dataset DataSet0 for type MongoTestDerivedData
+Verify: Record A;0 returned by query in dataset DataSet0 and has Type=DerivedSampleData.
+Verify: Query in dataset DataSet1 for type MongoTestDerivedData
+Verify: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedFromDerivedSampleData.
+Verify: Change A0 record type in A dataset to C
+Verify: Record A;0 in dataset DataSet0 found and has Type=OtherDerivedSampleData.
+Verify: Record A;0 in dataset DataSet1 found and has Type=OtherDerivedSampleData.
+Verify: Query in dataset DataSet0 for type MongoTestDerivedData
+Verify: Query in dataset DataSet1 for type MongoTestDerivedData
+Verify: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedFromDerivedSampleData.
+Verify: Change B0 record type in B dataset to C
+Verify: Record B;0 in dataset DataSet0 not found.
+Verify: Record B;0 in dataset DataSet1 found and has Type=OtherDerivedSampleData.
+Verify: Query in dataset DataSet0 for type MongoTestDerivedData
+Verify: Query in dataset DataSet1 for type MongoTestDerivedData

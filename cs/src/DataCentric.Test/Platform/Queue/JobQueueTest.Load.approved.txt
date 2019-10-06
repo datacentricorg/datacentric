@@ -1,2 +1,2 @@
-Verify.Text: Running
-Verify.Text: Completed
+Verify: Running
+Verify: Completed

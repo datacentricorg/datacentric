@@ -92,10 +92,10 @@ namespace DataCentric.Test
                     // should return 8 records
                     var query = context.DataSource.GetQuery<EnumTestNonNullableSampleData>(context.DataSet);
 
-                    context.Verify.Text("Unconstrained query");
+                    context.Log.Verify("Unconstrained query");
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
+                        context.Log.Verify($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
                     }
                 }
 
@@ -109,10 +109,10 @@ namespace DataCentric.Test
                         .Where(p => p.EnumValue == (EnumTestSampleType) 1)
                         .Where(p => p.DayOfWeek == (IsoDayOfWeek) 1);
 
-                    context.Verify.Text("Constrained query");
+                    context.Log.Verify("Constrained query");
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
+                        context.Log.Verify($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
                     }
                 }
             }
@@ -142,10 +142,10 @@ namespace DataCentric.Test
                     // should return 8 records
                     var query = context.DataSource.GetQuery<EnumTestNullableSampleData>(context.DataSet);
 
-                    context.Verify.Text("Unconstrained query");
+                    context.Log.Verify("Unconstrained query");
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
+                        context.Log.Verify($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
                     }
                 }
 
@@ -159,10 +159,10 @@ namespace DataCentric.Test
                         .Where(p => p.EnumValue == (EnumTestSampleType)1)
                         .Where(p => p.DayOfWeek == (IsoDayOfWeek)1);
 
-                    context.Verify.Text("Constrained query");
+                    context.Log.Verify("Constrained query");
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
+                        context.Log.Verify($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
                     }
                 }
             }

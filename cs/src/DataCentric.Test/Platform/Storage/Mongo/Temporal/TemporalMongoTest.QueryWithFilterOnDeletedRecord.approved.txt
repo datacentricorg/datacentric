@@ -1,7 +1,7 @@
-Verify.Text: Write A;0 record to A dataset
+Verify: Write A;0 record to A dataset
 Info: Record found before deletion assert.
-Verify.Text: Query returned Key=A;0 DataSet=DataSet0 Version=1
-Verify.Text: Query record count before deletion 1
-Verify.Text: Delete A;0 record in A dataset
+Verify: Query returned Key=A;0 DataSet=DataSet0 Version=1
+Verify: Query record count before deletion 1
+Verify: Delete A;0 record in A dataset
 Info: Record not found after deletion assert.
-Verify.Text: Query record count after deletion 0
+Verify: Query record count after deletion 0

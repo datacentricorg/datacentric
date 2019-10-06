@@ -124,7 +124,7 @@ namespace DataCentric.Test
                 foreach (var obj in query)
                 {
                     var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
-                    context.Verify.Text($"Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
+                    context.Log.Verify($"Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                 }
             }
         }
@@ -142,7 +142,7 @@ namespace DataCentric.Test
                 }
 
                 // Confirm no log output indicating non-increasing id from inside the for loop
-                context.Verify.Text("Log should have no lines before this one.");
+                context.Log.Verify("Log should have no lines before this one.");
             }
         }
 
@@ -171,45 +171,45 @@ namespace DataCentric.Test
                 };
 
                 // Verify the result of loading records from datasets A and B
-                context.Verify.Text("Initial load");
+                context.Log.Verify("Initial load");
                 VerifyLoad(context, "DataSet0", keyA0);
                 VerifyLoad(context, "DataSet1", keyA0);
                 VerifyLoad(context, "DataSet0", keyB0);
                 VerifyLoad(context, "DataSet1", keyB0);
 
-                context.Verify.Text("Query in dataset DataSet0");
+                context.Log.Verify("Query in dataset DataSet0");
                 VerifyQuery<BaseSampleData>(context, "DataSet0");
-                context.Verify.Text("Query in dataset DataSet1");
+                context.Log.Verify("Query in dataset DataSet1");
                 VerifyQuery<BaseSampleData>(context, "DataSet1");
 
-                context.Verify.Text("Delete A0 record in B dataset");
+                context.Log.Verify("Delete A0 record in B dataset");
                 context.Delete(keyA0, dataSet1);
                 VerifyLoad(context, "DataSet0", keyA0);
                 VerifyLoad(context, "DataSet1", keyA0);
 
-                context.Verify.Text("Query in dataset DataSet0");
+                context.Log.Verify("Query in dataset DataSet0");
                 VerifyQuery<BaseSampleData>(context, "DataSet0");
-                context.Verify.Text("Query in dataset DataSet1");
+                context.Log.Verify("Query in dataset DataSet1");
                 VerifyQuery<BaseSampleData>(context, "DataSet1");
 
-                context.Verify.Text("Delete A0 record in A dataset");
+                context.Log.Verify("Delete A0 record in A dataset");
                 context.Delete(keyA0, dataSet0);
                 VerifyLoad(context, "DataSet0", keyA0);
                 VerifyLoad(context, "DataSet1", keyA0);
 
-                context.Verify.Text("Query in dataset DataSet0");
+                context.Log.Verify("Query in dataset DataSet0");
                 VerifyQuery<BaseSampleData>(context, "DataSet0");
-                context.Verify.Text("Query in dataset DataSet1");
+                context.Log.Verify("Query in dataset DataSet1");
                 VerifyQuery<BaseSampleData>(context, "DataSet1");
 
-                context.Verify.Text("Delete B0 record in B dataset");
+                context.Log.Verify("Delete B0 record in B dataset");
                 context.Delete(keyB0, dataSet1);
                 VerifyLoad(context, "DataSet0", keyB0);
                 VerifyLoad(context, "DataSet1", keyB0);
 
-                context.Verify.Text("Query in dataset DataSet0");
+                context.Log.Verify("Query in dataset DataSet0");
                 VerifyQuery<BaseSampleData>(context, "DataSet0");
-                context.Verify.Text("Query in dataset DataSet1");
+                context.Log.Verify("Query in dataset DataSet1");
                 VerifyQuery<BaseSampleData>(context, "DataSet1");
             }
         }
@@ -249,45 +249,45 @@ namespace DataCentric.Test
                 };
 
                 // Verify the result of loading records from datasets A and B
-                context.Verify.Text("Initial load");
+                context.Log.Verify("Initial load");
                 VerifyLoad(context, "DataSet0", keyA0);
                 VerifyLoad(context, "DataSet1", keyA0);
                 VerifyLoad(context, "DataSet0", keyB0);
                 VerifyLoad(context, "DataSet1", keyB0);
 
-                context.Verify.Text("Query in dataset DataSet0 for type MongoTestDerivedData");
+                context.Log.Verify("Query in dataset DataSet0 for type MongoTestDerivedData");
                 VerifyQuery<DerivedSampleData>(context, "DataSet0");
-                context.Verify.Text("Query in dataset DataSet1 for type MongoTestDerivedData");
+                context.Log.Verify("Query in dataset DataSet1 for type MongoTestDerivedData");
                 VerifyQuery<DerivedSampleData>(context, "DataSet1");
 
-                context.Verify.Text("Change A0 record type in B dataset to C");
+                context.Log.Verify("Change A0 record type in B dataset to C");
                 SaveOtherDerivedRecord(context, "DataSet1", "A", 0);
                 VerifyLoad(context, "DataSet0", keyA0);
                 VerifyLoad(context, "DataSet1", keyA0);
 
-                context.Verify.Text("Query in dataset DataSet0 for type MongoTestDerivedData");
+                context.Log.Verify("Query in dataset DataSet0 for type MongoTestDerivedData");
                 VerifyQuery<DerivedSampleData>(context, "DataSet0");
-                context.Verify.Text("Query in dataset DataSet1 for type MongoTestDerivedData");
+                context.Log.Verify("Query in dataset DataSet1 for type MongoTestDerivedData");
                 VerifyQuery<DerivedSampleData>(context, "DataSet1");
 
-                context.Verify.Text("Change A0 record type in A dataset to C");
+                context.Log.Verify("Change A0 record type in A dataset to C");
                 SaveOtherDerivedRecord(context, "DataSet0", "A", 0);
                 VerifyLoad(context, "DataSet0", keyA0);
                 VerifyLoad(context, "DataSet1", keyA0);
 
-                context.Verify.Text("Query in dataset DataSet0 for type MongoTestDerivedData");
+                context.Log.Verify("Query in dataset DataSet0 for type MongoTestDerivedData");
                 VerifyQuery<DerivedSampleData>(context, "DataSet0");
-                context.Verify.Text("Query in dataset DataSet1 for type MongoTestDerivedData");
+                context.Log.Verify("Query in dataset DataSet1 for type MongoTestDerivedData");
                 VerifyQuery<DerivedSampleData>(context, "DataSet1");
 
-                context.Verify.Text("Change B0 record type in B dataset to C");
+                context.Log.Verify("Change B0 record type in B dataset to C");
                 SaveOtherDerivedRecord(context, "DataSet1", "B", 0);
                 VerifyLoad(context, "DataSet0", keyB0);
                 VerifyLoad(context, "DataSet1", keyB0);
 
-                context.Verify.Text("Query in dataset DataSet0 for type MongoTestDerivedData");
+                context.Log.Verify("Query in dataset DataSet0 for type MongoTestDerivedData");
                 VerifyQuery<DerivedSampleData>(context, "DataSet0");
-                context.Verify.Text("Query in dataset DataSet1 for type MongoTestDerivedData");
+                context.Log.Verify("Query in dataset DataSet1 for type MongoTestDerivedData");
                 VerifyQuery<DerivedSampleData>(context, "DataSet1");
             }
         }
@@ -321,7 +321,7 @@ namespace DataCentric.Test
 
                 foreach (var obj in testQuery.AsEnumerable())
                 {
-                    context.Verify.Text($"Key={obj.Key} Type={obj.GetType().Name}");
+                    context.Log.Verify($"Key={obj.Key} Type={obj.GetType().Name}");
                 }
             }
         }
@@ -339,57 +339,57 @@ namespace DataCentric.Test
                 var dataSet3 = context.GetDataSet("DataSet3", context.DataSet);
 
                 // Load record of derived types by base
-                context.Verify.Text("Load all records by key as MongoTestData.");
+                context.Log.Verify("Load all records by key as MongoTestData.");
                 {
                     var key = new BaseSampleKey {RecordName = "A", RecordIndex = 0};
                     var obj = context.LoadOrNull(key, dataSet3);
-                    context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
+                    context.Log.Verify($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
                     var key = new BaseSampleKey { RecordName = "B", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSet3);
-                    context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
+                    context.Log.Verify($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
                     var key = new BaseSampleKey { RecordName = "C", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSet3);
-                    context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
+                    context.Log.Verify($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
                     var key = new BaseSampleKey { RecordName = "D", RecordIndex = 0 };
                     var obj = context.LoadOrNull(key, dataSet3);
-                    context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
+                    context.Log.Verify($"    Key={obj.Key} Type={obj.GetType().Name}");
                 }
                 {
-                    context.Verify.Text("Query by MongoTestData, unconstrained");
+                    context.Log.Verify("Query by MongoTestData, unconstrained");
                     var query = context.GetQuery<BaseSampleData>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
+                        context.Log.Verify($"    Key={obj.Key} Type={obj.GetType().Name}");
                     }
                 }
                 {
-                    context.Verify.Text("Query by MongoTestDerivedData : MongoTestData which also picks up MongoTestDerivedFromDerivedData : MongoTestDerivedData, unconstrained");
+                    context.Log.Verify("Query by MongoTestDerivedData : MongoTestData which also picks up MongoTestDerivedFromDerivedData : MongoTestDerivedData, unconstrained");
                     var query = context.GetQuery<DerivedSampleData>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
+                        context.Log.Verify($"    Key={obj.Key} Type={obj.GetType().Name}");
                     }
                 }
                 {
-                    context.Verify.Text("Query by MongoTestOtherDerivedData : MongoTestData, unconstrained");
+                    context.Log.Verify("Query by MongoTestOtherDerivedData : MongoTestData, unconstrained");
                     var query = context.GetQuery<OtherDerivedSampleData>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
+                        context.Log.Verify($"    Key={obj.Key} Type={obj.GetType().Name}");
                     }
                 }
                 {
-                    context.Verify.Text("Query by MongoTestDerivedFromDerivedData : MongoTestDerivedData, where MongoTestDerivedData : MongoTestData, unconstrained");
+                    context.Log.Verify("Query by MongoTestDerivedFromDerivedData : MongoTestDerivedData, where MongoTestDerivedData : MongoTestData, unconstrained");
                     var query = context.GetQuery<DerivedFromDerivedSampleData>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    Key={obj.Key} Type={obj.GetType().Name}");
+                        context.Log.Verify($"    Key={obj.Key} Type={obj.GetType().Name}");
                     }
                 }
             }
@@ -407,13 +407,13 @@ namespace DataCentric.Test
                 // Look in B dataset
                 var dataSet3 = context.GetDataSet("DataSet3", context.DataSet);
 
-                context.Verify.Text("Query by MongoTestData, sort by RecordIndex descending, then by DoubleElement ascending");
+                context.Log.Verify("Query by MongoTestData, sort by RecordIndex descending, then by DoubleElement ascending");
                 var baseQuery = context.GetQuery<BaseSampleData>(dataSet3)
                     .SortByDescending(p => p.RecordIndex)
                     .SortBy(p => p.DoubleElement);
                 foreach (var obj in baseQuery.AsEnumerable())
                 {
-                    context.Verify.Text(
+                    context.Log.Verify(
                         $"    RecordIndex={obj.RecordIndex} DoubleElement={obj.DoubleElement} " +
                         $"Key={obj.Key} Type={obj.GetType().Name}");
                 }
@@ -447,11 +447,11 @@ namespace DataCentric.Test
                 ObjectId objD0 = SaveMinimalRecord(context, "DataSet1", "D", 0, 0);
 
                 // Load each record by ObjectId
-                context.Verify.Text("Load records by ObjectId without constraint");
-                context.Verify.Text($"Found for ObjectId(A0)={context.LoadOrNull<BaseSampleData>(objA0) != null}");
-                context.Verify.Text($"Found for ObjectId(A1)={context.LoadOrNull<BaseSampleData>(objA1) != null}");
-                context.Verify.Text($"Found for ObjectId(A2)={context.LoadOrNull<BaseSampleData>(objA2) != null}");
-                context.Verify.Text($"Found for ObjectId(C0)={context.LoadOrNull<BaseSampleData>(objC0) != null}");
+                context.Log.Verify("Load records by ObjectId without constraint");
+                context.Log.Verify($"Found for ObjectId(A0)={context.LoadOrNull<BaseSampleData>(objA0) != null}");
+                context.Log.Verify($"Found for ObjectId(A1)={context.LoadOrNull<BaseSampleData>(objA1) != null}");
+                context.Log.Verify($"Found for ObjectId(A2)={context.LoadOrNull<BaseSampleData>(objA2) != null}");
+                context.Log.Verify($"Found for ObjectId(C0)={context.LoadOrNull<BaseSampleData>(objC0) != null}");
 
                 // Load each record by string key
                 if (true)
@@ -459,9 +459,9 @@ namespace DataCentric.Test
                     var loadedA0 = context.LoadOrNull(new BaseSampleKey() {RecordName = "A", RecordIndex = 0}, dataSet1);
                     var loadedC0 = context.LoadOrNull(new BaseSampleKey() {RecordName = "C", RecordIndex = 0}, dataSet1);
 
-                    context.Verify.Text("Load records by string key without constraint");
-                    if (loadedA0 != null) context.Verify.Text($"    Version found for key=A;0: {loadedA0.Version}");
-                    if (loadedC0 != null) context.Verify.Text($"    Version found for key=C;0: {loadedC0.Version}");
+                    context.Log.Verify("Load records by string key without constraint");
+                    if (loadedA0 != null) context.Log.Verify($"    Version found for key=A;0: {loadedA0.Version}");
+                    if (loadedC0 != null) context.Log.Verify($"    Version found for key=C;0: {loadedC0.Version}");
                 }
 
                 // Query for all records
@@ -472,11 +472,11 @@ namespace DataCentric.Test
                         .SortBy(p => p.RecordIndex)
                         .AsEnumerable();
 
-                    context.Verify.Text("Query records without constraint");
+                    context.Log.Verify("Query records without constraint");
                     foreach (var obj in query)
                     {
                         var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
-                        context.Verify.Text($"    Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
+                        context.Log.Verify($"    Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                     }
                 }
 
@@ -484,11 +484,11 @@ namespace DataCentric.Test
                 context.DataSource.CastTo<TemporalMongoDataSourceData>().SavedById = cutoffObjectId;
 
                 // Get each record by ObjectId
-                context.Verify.Text("Load records by ObjectId with SavedById constraint");
-                context.Verify.Text($"Found for ObjectId(A0)={context.LoadOrNull<BaseSampleData>(objA0) != null}");
-                context.Verify.Text($"Found for ObjectId(A1)={context.LoadOrNull<BaseSampleData>(objA1) != null}");
-                context.Verify.Text($"Found for ObjectId(A2)={context.LoadOrNull<BaseSampleData>(objA2) != null}");
-                context.Verify.Text($"Found for ObjectId(C0)={context.LoadOrNull<BaseSampleData>(objC0) != null}");
+                context.Log.Verify("Load records by ObjectId with SavedById constraint");
+                context.Log.Verify($"Found for ObjectId(A0)={context.LoadOrNull<BaseSampleData>(objA0) != null}");
+                context.Log.Verify($"Found for ObjectId(A1)={context.LoadOrNull<BaseSampleData>(objA1) != null}");
+                context.Log.Verify($"Found for ObjectId(A2)={context.LoadOrNull<BaseSampleData>(objA2) != null}");
+                context.Log.Verify($"Found for ObjectId(C0)={context.LoadOrNull<BaseSampleData>(objC0) != null}");
 
                 // Load each record by string key
                 if (true)
@@ -496,9 +496,9 @@ namespace DataCentric.Test
                     var loadedA0 = context.LoadOrNull(new BaseSampleKey() { RecordName = "A", RecordIndex = 0 }, dataSet1);
                     var loadedC0 = context.LoadOrNull(new BaseSampleKey() { RecordName = "C", RecordIndex = 0 }, dataSet1);
 
-                    context.Verify.Text("Load records by string key with SavedById constraint");
-                    if (loadedA0 != null) context.Verify.Text($"    Version found for key=A;0: {loadedA0.Version}");
-                    if (loadedC0 != null) context.Verify.Text($"    Version found for key=C;0: {loadedC0.Version}");
+                    context.Log.Verify("Load records by string key with SavedById constraint");
+                    if (loadedA0 != null) context.Log.Verify($"    Version found for key=A;0: {loadedA0.Version}");
+                    if (loadedC0 != null) context.Log.Verify($"    Version found for key=C;0: {loadedC0.Version}");
                 }
 
                 // Query for revised before the cutoff time
@@ -509,11 +509,11 @@ namespace DataCentric.Test
                         .SortBy(p => p.RecordIndex)
                         .AsEnumerable();
 
-                    context.Verify.Text("Query records with SavedById constraint");
+                    context.Log.Verify("Query records with SavedById constraint");
                     foreach (var obj in query)
                     {
                         var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
-                        context.Verify.Text($"    Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
+                        context.Log.Verify($"    Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                     }
                 }
 
@@ -534,7 +534,7 @@ namespace DataCentric.Test
                 var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
 
                 // Create initial version of the records
-                context.Verify.Text("Write A;0 record to A dataset");
+                context.Log.Verify("Write A;0 record to A dataset");
                 SaveMinimalRecord(context, "DataSet0", "A", 0, 1);
 
                 var keyA0 = new BaseSampleKey
@@ -560,14 +560,14 @@ namespace DataCentric.Test
                     foreach (var obj in query)
                     {
                         var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
-                        context.Verify.Text($"Query returned Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
+                        context.Log.Verify($"Query returned Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                         recordCount++;
                     }
 
-                    context.Verify.Text($"Query record count before deletion {recordCount}");
+                    context.Log.Verify($"Query record count before deletion {recordCount}");
                 }
 
-                context.Verify.Text("Delete A;0 record in A dataset");
+                context.Log.Verify("Delete A;0 record in A dataset");
                 context.Delete(keyA0, dataSet0);
 
                 // Load from storage before deletion
@@ -587,11 +587,11 @@ namespace DataCentric.Test
                     foreach (var obj in query)
                     {
                         var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
-                        context.Verify.Text($"Query returned Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
+                        context.Log.Verify($"Query returned Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                         recordCount++;
                     }
 
-                    context.Verify.Text($"Query record count after deletion {recordCount}");
+                    context.Log.Verify($"Query record count after deletion {recordCount}");
                 }
             }
         }
@@ -608,7 +608,7 @@ namespace DataCentric.Test
             if (record == null)
             {
                 // Not found
-                context.CastTo<IVerifyable>().Verify.Text($"Record {key} in dataset {dataSetName} not found.");
+                context.Log.Verify($"Record {key} in dataset {dataSetName} not found.");
             }
             else
             {
@@ -616,7 +616,7 @@ namespace DataCentric.Test
                 Assert.True(record.Key == key.ToString(),
                     $"Record found for key={key} in dataset {dataSetName} " +
                     $"has wrong key record.Key={record.Key}");
-                context.CastTo<IVerifyable>().Verify.Text(
+                context.Log.Verify(
                     $"Record {key} in dataset {dataSetName} found and " +
                     $"has Type={record.GetType().Name}.");
             }
@@ -633,7 +633,7 @@ namespace DataCentric.Test
             // Iterate over records
             foreach (var record in query.AsEnumerable())
             {
-                context.CastTo<IVerifyable>().Verify.Text(
+                context.Log.Verify(
                     $"Record {record.Key} returned by query in dataset {dataSetName} and " +
                     $"has Type={record.GetType().Name}.");
             }
