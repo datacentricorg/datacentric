@@ -39,6 +39,20 @@ namespace DataCentric
 
         //--- METHODS
 
+        //--- METHODS
+
+        /// <summary>
+        /// Set Context property and perform validation of the record's data,
+        /// then initialize any fields or properties that depend on that data.
+        ///
+        /// This method may be called multiple times for the same instance,
+        /// possibly with a different context parameter for each subsequent call.
+        ///
+        /// IMPORTANT - Every override of this method must call base.Init()
+        /// first, and only then execute the rest of the override method's code.
+        /// </summary>
+        void Init(IContext context);
+
         /// <summary>Flush data to permanent storage.</summary>
         void Flush();
     }
