@@ -25,11 +25,11 @@ namespace DataCentric
     /// </summary>
     public class Context : IContext
     {
-        private IDataSource dataSource_;
-        private ObjectId? dataSet_;
-        private IFolder out_;
+        private IFolder outputFolder_;
         private ILog log_;
         private IProgress progress_;
+        private IDataSource dataSource_;
+        private ObjectId? dataSet_;
 
         /// <summary>
         /// Provides a unified API for an output folder located in a
@@ -40,12 +40,14 @@ namespace DataCentric
         {
             get
             {
-                if (out_ == null) throw new Exception(
-                    $"Context type {GetType().Name} does not provide output folder, " +
-                    $"or one has not been set.");
-                return out_;
+                if (outputFolder_ == null) throw new Exception($"OutputFolder property is not set in {GetType().Name}.");
+                return outputFolder_;
             }
-            set { out_ = value; }
+            set
+            {
+                outputFolder_ = value;
+                outputFolder_.Init(this);
+            }
         }
 
         /// <summary>Logging interface.</summary>
@@ -53,12 +55,14 @@ namespace DataCentric
         {
             get
             {
-                if (log_ == null) throw new Exception(
-                    $"Context type {GetType().Name} does not provide logging, " +
-                    $"or Log property has not been set.");
+                if (log_ == null) throw new Exception($"Log property is not set in {GetType().Name}.");
                 return log_;
             }
-            set { log_ = value; }
+            set
+            {
+                log_ = value;
+                log_.Init(this);
+            }
         }
 
         /// <summary>Progress interface.</summary>
@@ -66,13 +70,14 @@ namespace DataCentric
         {
             get
             {
-                if (progress_ == null)
-                    throw new Exception(
-                        $"Context type {GetType().Name} does not provide progress reporting, " +
-                        $"or Progress property has not been set.");
+                if (progress_ == null) throw new Exception($"Progress property is not set in {GetType().Name}.");
                 return progress_;
             }
-            set { progress_ = value; }
+            set
+            {
+                progress_ = value;
+                progress_.Init(this);
+            }
         }
 
         /// <summary>Default data source of the context.</summary>
@@ -80,13 +85,14 @@ namespace DataCentric
         {
             get
             {
-                if (dataSource_ == null)
-                    throw new Exception(
-                        $"Context type {GetType().Name} does not provide a data source, " +
-                        $"or DataSource property has not been set.");
+                if (dataSource_ == null) throw new Exception($"DataSource property is not set in {GetType().Name}.");
                 return dataSource_;
             }
-            set { dataSource_ = value; }
+            set
+            {
+                dataSource_ = value;
+                dataSource_.Init(this);
+            }
         }
 
         /// <summary>Default dataset of the context.</summary>
@@ -94,38 +100,16 @@ namespace DataCentric
         {
             get
             {
-                if (dataSet_ == null) throw new Exception(
-                    $"Context type {GetType().Name} does not provide a dataset, " +
-                    $"or DataSet property has not been set.");
+                if (dataSet_ == null) throw new Exception($"DataSet property is not set in {GetType().Name}.");
                 return dataSet_.Value;
             }
-            set { dataSet_ = value; }
+            set
+            {
+                dataSet_ = value;
+            }
         }
 
         //--- METHODS
-
-        /// <summary>
-        /// Initialize the current context after its properties are set,
-        /// and set default values for the properties that are not set.
-        /// 
-        /// Includes calling Init(this) for each property of the context.
-        ///
-        /// This method may be called multiple times for the same instance.
-        ///
-        /// IMPORTANT - Every override of this method must call base.Init()
-        /// first, and only then execute the rest of the override method's code.
-        /// </summary>
-        public virtual void Init()
-        {
-            // Uncomment except in root class of the hierarchy
-            // base.Init();
-
-            // Call Init(this) for each initialized property of the context
-            if (out_ != null) out_.Init(this);
-            if (log_ != null) log_.Init(this);
-            if (progress_!= null) progress_.Init(this);
-            if (dataSource_ != null) dataSource_.Init(this);
-        }
 
         /// <summary>
         /// Releases resources and calls base.Dispose().
@@ -142,10 +126,11 @@ namespace DataCentric
         public virtual void Dispose()
         {
             // Call Dispose() for each initialized property of the context
-            // in reverse order of initialization
-            if (dataSource_ != null) dataSource_.Dispose();
-            if (progress_ != null) progress_.Dispose();
+            // in the reverse order of initialization
+            // TODO - if (outputFolder_ != null) outputFolder_.Dispose();
             if (log_ != null) log_.Dispose();
+            if (progress_ != null) progress_.Dispose();
+            if (dataSource_ != null) dataSource_.Dispose();
 
             // Uncomment except in root class of the hierarchy
             // base.Dispose();
@@ -155,9 +140,10 @@ namespace DataCentric
         public virtual void Flush()
         {
             // Call Flush() for each initialized property of the context
-            if (dataSource_ != null) dataSource_.Flush();
-            if (progress_ != null) progress_.Flush();
+            // TODO - if (outputFolder_ != null) outputFolder_.Flush();
             if (log_ != null) log_.Flush();
+            if (progress_ != null) progress_.Flush();
+            if (dataSource_ != null) dataSource_.Flush();
         }
     }
 }

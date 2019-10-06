@@ -69,9 +69,6 @@ namespace DataCentric
                 }
             };
 
-            // Initialize data source
-            DataSource.Init(this);
-
             // Create common dataset and assign it to DataSet property of this context
             DataSet = DataSource.CreateCommon();
 

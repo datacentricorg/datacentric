@@ -33,29 +33,24 @@ namespace DataCentric
     ///
     /// For tests that require MongoDB, use IDataTestDataContext.
     /// </summary>
-    public class UnitTestContext : IContext, IVerifyable
+    public class UnitTestContext : Context, IVerifyable
     {
-        /// <summary>
-        /// Provides a unified API for an output folder located in a
-        /// conventional filesystem or an alternative backing store
-        /// such as S3.
-        /// </summary>
-        public IFolder OutputFolder { get; }
-
-        /// <summary>Logging interface.</summary>
-        public ILog Log { get; }
-
-        /// <summary>Progress interface.</summary>
-        public IProgress Progress { get; }
-
-        /// <summary>Default data source of the context.</summary>
-        public IDataSource DataSource { get; protected set; }
-
-        /// <summary>Default dataset of the context.</summary>
-        public ObjectId DataSet { get; protected set; }
+        private IVerify verify_;
 
         /// <summary>Approval testing interface.</summary>
-        public IVerify Verify { get; set; }
+        public IVerify Verify
+        {
+            get
+            {
+                if (verify_ == null) throw new Exception($"Verify property is not set in {GetType().Name}.");
+                return verify_;
+            }
+            set
+            {
+                verify_ = value;
+                verify_.Init(this);
+            }
+        }
 
         /// <summary>
         /// Create with class name, method name, and source file path.
@@ -91,31 +86,6 @@ namespace DataCentric
             Log = new FileLog { LogFilePath = logFileName };
             Progress = new NullProgress();
             Verify = new LogVerify { ClassName = className, MethodName = methodName };
-
-            // Initialize properties
-            OutputFolder.Init(this);
-            Log.Init(this);
-            Progress.Init(this);
-            Verify.Init(this);
-        }
-
-        /// <summary>
-        /// Initialize the current context after its properties are set,
-        /// and set default values for the properties that are not set.
-        /// 
-        /// Includes calling Init(this) for each property of the context.
-        ///
-        /// This method may be called multiple times for the same instance.
-        ///
-        /// IMPORTANT - Every override of this method must call base.Init()
-        /// first, and only then execute the rest of the override method's code.
-        /// </summary>
-        public virtual void Init()
-        {
-            // Uncomment except in root class of the hierarchy
-            // base.Init();
-
-            // Do nothing - initialization is performed in the constructor
         }
 
         /// <summary>
@@ -134,13 +104,10 @@ namespace DataCentric
         {
             // Call Dispose() for each initialized property of the context
             // in the reverse order of initialization
-            // TODO - Verify.Dispose();
-            Progress.Dispose();
-            Log.Dispose();
-            // TODO - OutputFolder.Dispose();
+            // TODO - if (verify_ != null) verify_.Dispose();
 
-            // Uncomment except in root class of the hierarchy
-            // base.Dispose();
+            // Dispose base
+            base.Dispose();
         }
 
         /// <summary>Flush data to permanent storage.</summary>
@@ -148,10 +115,7 @@ namespace DataCentric
         {
             // Call Flush() for each initialized property of the context
             // in the order of initialization
-            // TODO - OutputFolder.Flush();
-            Log.Flush();
-            Progress.Flush();
-            // TODO - Verify.Flush();
+            // TODO - if (verify_ != null) verify_.Flush();
         }
     }
 }

@@ -28,14 +28,10 @@ namespace DataCentric
         /// Log and progress destinations can be modified after construction.</summary>
         public LogOnlyContext()
         {
-            DataSource = new NullDataSourceData();
-            DataSet = ObjectId.Empty;
-            OutputFolder = new DiskFolder {FolderPath = "test/out"};
             Log = new ConsoleLog();
             Progress = new LogProgress();
-
-            // Initialize
-            Init();
+            DataSource = new NullDataSourceData();
+            DataSet = ObjectId.Empty;
         }
     }
 }
