@@ -32,6 +32,13 @@ namespace DataCentric
         /// verbosity for different code segments.</summary>
         LogVerbosity Verbosity { get; set; }
 
+        /// <summary>
+        /// Current indent of the text writer in tab stop units.
+        ///
+        /// Increment or decrement by one when writing formatted text.
+        /// </summary>
+        int Indent { get; set; }
+
         //--- METHODS
 
         /// <summary>

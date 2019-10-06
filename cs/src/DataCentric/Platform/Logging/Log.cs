@@ -50,6 +50,13 @@ namespace DataCentric
             Verbosity = LogVerbosity.Warning;
         }
 
+        /// <summary>
+        /// Current indent of the text writer in tab stop units.
+        ///
+        /// Increment or decrement by one when writing formatted text.
+        /// </summary>
+        public int Indent { get; set; }
+
         //--- METHODS
 
         /// <summary>

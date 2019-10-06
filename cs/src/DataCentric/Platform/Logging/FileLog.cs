@@ -23,7 +23,7 @@ namespace DataCentric
     /// <summary>Writes log output to the specified text file as it arrives.</summary>
     public class FileLog : Log
     {
-        private TextWriter indentedTextWriter_;
+        private IndentedTextWriter indentedTextWriter_;
 
         //--- PROPERTIES
 
@@ -94,6 +94,9 @@ namespace DataCentric
             {
                 var logEntry = new LogEntry(verbosity, message);
                 string logString = logEntry.ToString();
+
+                // Set indent to the current indent of the log before writing the log entry string
+                indentedTextWriter_.Indent = Indent;
                 indentedTextWriter_.WriteLine(logString);
             }
         }
@@ -114,8 +117,21 @@ namespace DataCentric
             {
                 var logTitleEntry = new LogEntry(verbosity, title);
                 string logTitleString = logTitleEntry.ToString();
+
+                // Set indent to the current indent of the log
+                // before writing the title string
+                indentedTextWriter_.Indent = Indent;
                 indentedTextWriter_.WriteLine(logTitleString);
+
+                // Increment indent by one tab stop before writing the body
+                Indent++;
+                indentedTextWriter_.Indent = Indent;
+
                 indentedTextWriter_.WriteLine(body);
+
+                // Restore the previous value
+                Indent++;
+                indentedTextWriter_.Indent = Indent;
             }
         }
     }
