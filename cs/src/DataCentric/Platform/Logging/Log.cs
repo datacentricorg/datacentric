@@ -35,7 +35,7 @@ namespace DataCentric
         /// <summary>Log verbosity is the highest log entry type displayed.
         /// Verbosity can be modified at runtime to provide different levels of
         /// verbosity for different code segments.</summary>
-        public LogEntryType Verbosity { get; set; }
+        public LogVerbosity Verbosity { get; set; }
 
         //--- METHODS
 
@@ -80,8 +80,9 @@ namespace DataCentric
         /// <summary>Flush data to permanent storage.</summary>
         public abstract void Flush();
 
-        /// <summary>Append new entry to the log if entry type is the same or lower than log verbosity.
-        /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
-        public abstract void Append(LogEntryType entryType, string entrySubType, string message);
+        /// <summary>
+        /// Append new entry to the log unless entry verbosity exceeds log verbosity.
+        /// </summary>
+        public abstract void Entry(LogVerbosity verbosity, string entrySubType, string message);
     }
 }

@@ -25,9 +25,9 @@ namespace DataCentric
         private string entryText_;
 
         /// <summary>Truncates message parameters before formatting the message.</summary>
-        public LogEntry(LogEntryType entryType, string entrySubType, string message)
+        public LogEntry(LogVerbosity verbosity, string entrySubType, string message)
         {
-            string prefix = entryType.ToString();
+            string prefix = verbosity.ToString();
             if (!string.IsNullOrEmpty(entrySubType))
             {
                 // Append dot delimited subtype if specified

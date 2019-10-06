@@ -30,7 +30,7 @@ namespace DataCentric
         /// <summary>Log verbosity is the highest log entry type displayed.
         /// Verbosity can be modified at runtime to provide different levels of
         /// verbosity for different code segments.</summary>
-        LogEntryType Verbosity { get; set; }
+        LogVerbosity Verbosity { get; set; }
 
         //--- METHODS
 
@@ -49,9 +49,10 @@ namespace DataCentric
         /// <summary>Flush data to permanent storage.</summary>
         void Flush();
 
-        /// <summary>Append new entry to the log if entry type is the same or lower than log verbosity.
-        /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
-        void Append(LogEntryType entryType, string entrySubType, string message);
+        /// <summary>
+        /// Append new entry to the log unless entry verbosity exceeds log verbosity.
+        /// </summary>
+        void Entry(LogVerbosity verbosity, string entrySubType, string message);
     }
 
     /// <summary>Extension methods for ILog.</summary>
@@ -61,21 +62,21 @@ namespace DataCentric
         public static void Error(this ILog obj, string message)
         {
             // Published at any level of verbosity
-            obj.Append(LogEntryType.Error, String.Empty, message);
+            obj.Entry(LogVerbosity.Error, String.Empty, message);
         }
 
         /// <summary>Record a warning.</summary>
         public static void Warning(this ILog obj, string message)
         {
             // Requires at least Warning verbosity
-            obj.Append(LogEntryType.Warning, String.Empty, message);
+            obj.Entry(LogVerbosity.Warning, String.Empty, message);
         }
 
         /// <summary>Record a status message.</summary>
         public static void Status(this ILog obj, string message)
         {
             // Requires at least Status verbosity
-            obj.Append(LogEntryType.Status, String.Empty, message);
+            obj.Entry(LogVerbosity.Status, String.Empty, message);
         }
     }
 }

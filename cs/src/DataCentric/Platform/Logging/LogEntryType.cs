@@ -19,7 +19,7 @@ using System;
 namespace DataCentric
 {
     /// <summary>Enumeration for the log entry type.</summary>
-    public enum LogEntryType
+    public enum LogVerbosity
     {
         /// <summary>
         /// Error is the default entry type, used when entry type is not set.

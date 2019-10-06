@@ -45,7 +45,7 @@ namespace DataCentric
         /// order of their ObjectId.
         /// </summary>
         [BsonRequired]
-        public LogEntryType? EntryType { get; set; }
+        public LogVerbosity? EntryType { get; set; }
 
         /// <summary>
         /// Message associated with a single log entry.

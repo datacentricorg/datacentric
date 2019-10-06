@@ -34,7 +34,7 @@ namespace DataCentric
             set
             {
                 ratio_ = value;
-                Context.Log.Append(LogEntryType.Progress, "Ratio", ratio_.ToString());
+                Context.Log.Entry(LogVerbosity.Progress, "Ratio", ratio_.ToString());
             }
         }
 
@@ -45,7 +45,7 @@ namespace DataCentric
             set
             {
                 message_ = value;
-                Context.Log.Append(LogEntryType.Progress, "Message", message_.ToString());
+                Context.Log.Entry(LogVerbosity.Progress, "Message", message_.ToString());
             }
         }
 

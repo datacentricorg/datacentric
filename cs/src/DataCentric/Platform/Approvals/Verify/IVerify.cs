@@ -57,7 +57,7 @@ namespace DataCentric
         /// <summary>Record 'Verify.Text: {message}'.</summary>
         public static void Text(this IVerify obj, string message)
         {
-            obj.Context.Log.Append(LogEntryType.Verify, "Text", message);
+            obj.Context.Log.Entry(LogVerbosity.Verify, "Text", message);
         }
 
         /// <summary>Record 'Verify.Passed: {message}' when condition
@@ -65,7 +65,7 @@ namespace DataCentric
         public static void Assert(this IVerify obj, bool condition, string messageWhenFalse)
         {
             string conditionString = condition ? "Passed" : "Failed";
-            obj.Context.Log.Append(LogEntryType.Verify, conditionString, messageWhenFalse);
+            obj.Context.Log.Entry(LogVerbosity.Verify, conditionString, messageWhenFalse);
         }
 
         /// <summary>Record 'Verify.Value: {message} = {value}'.</summary>
@@ -73,7 +73,7 @@ namespace DataCentric
         {
             // Use AsString() instead of ToString() for custom formatting of certain types
             string approvalMessage = System.String.Concat(message, " = ", value.AsString());
-            obj.Context.Log.Append(LogEntryType.Verify, "Value", approvalMessage);
+            obj.Context.Log.Entry(LogVerbosity.Verify, "Value", approvalMessage);
         }
 
         /// <summary>Record 'Verify.File: {fileName} ({N} bytes) and save contents to a file.</summary>
@@ -90,7 +90,7 @@ namespace DataCentric
             // Record approval message with file byte size
             int byteSize = Encoding.UTF8.GetByteCount(fileContents);
             string approvalMessage = System.String.Concat(fileNameWithPrefix, " (", byteSize, " bytes)");
-            obj.Context.Log.Append(LogEntryType.Verify, "File", approvalMessage);
+            obj.Context.Log.Entry(LogVerbosity.Verify, "File", approvalMessage);
 
             // Save contents to a file
             var fileWriter = obj.Context.OutputFolder.GetTextWriter(fileNameWithPrefix, FileWriteMode.Replace);
