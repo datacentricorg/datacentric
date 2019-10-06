@@ -23,8 +23,7 @@ using System.Text;
 namespace DataCentric
 {
     /// <summary>
-    /// Accumulates log output in memory and converts it
-    /// to string using ToString() method.
+    /// Implements ILog and sets default verbosity.
     /// </summary>
     public abstract class Log : ILog
     {
@@ -49,13 +48,6 @@ namespace DataCentric
         {
             Verbosity = LogVerbosity.Warning;
         }
-
-        /// <summary>
-        /// Current indent of the text writer in tab stop units.
-        ///
-        /// Increment or decrement by one when writing formatted text.
-        /// </summary>
-        public int Indent { get; set; }
 
         //--- METHODS
 

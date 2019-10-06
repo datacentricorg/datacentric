@@ -20,7 +20,16 @@ using System.Text;
 
 namespace DataCentric
 {
-    /// <summary>Log interface.</summary>
+    /// <summary>
+    /// Provides a unified API for writing log output to:
+    ///
+    /// * Console
+    /// * String
+    /// * File
+    /// * Database
+    /// * Logging frameworks such as log4net and other logging frameworks
+    /// * Cloud logging services such as AWS CloudWatch
+    /// </summary>
     public interface ILog : IDisposable
     {
         /// <summary>Context for which this interface is defined.
@@ -31,13 +40,6 @@ namespace DataCentric
         /// Verbosity can be modified at runtime to provide different levels of
         /// verbosity for different code segments.</summary>
         LogVerbosity Verbosity { get; set; }
-
-        /// <summary>
-        /// Current indent of the text writer in tab stop units.
-        ///
-        /// Increment or decrement by one when writing formatted text.
-        /// </summary>
-        int Indent { get; set; }
 
         //--- METHODS
 

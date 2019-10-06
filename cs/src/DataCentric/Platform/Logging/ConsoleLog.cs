@@ -20,51 +20,26 @@ using System.Text;
 
 namespace DataCentric
 {
-    /// <summary>Logging to system console.</summary>
-    public class ConsoleLog : Log
+    /// <summary>Writes log output to system console.</summary>
+    public class ConsoleLog : TextLog
     {
-        /// <summary>Flush data to permanent storage.</summary>
-        public override void Flush()
-        {
-            // Do nothing as system console does not require buffer flush
-        }
-
         /// <summary>
-        /// Append a new single-line entry to the log.
+        /// Set Context property and perform validation of the record's data,
+        /// then initialize any fields or properties that depend on that data.
         ///
-        /// This method has no effect unless entry verbosity
-        /// exceeds log verbosity.
+        /// This method may be called multiple times for the same instance,
+        /// possibly with a different context parameter for each subsequent call.
+        ///
+        /// IMPORTANT - Every override of this method must call base.Init()
+        /// first, and only then execute the rest of the override method's code.
         /// </summary>
-        public override void Entry(LogVerbosity verbosity, string message)
+        public override void Init(IContext context)
         {
-            // Do not record the log entry if entry verbosity exceeds log verbosity
-            // Record all entries if log verbosity is not specified
-            if (verbosity <= Verbosity)
-            {
-                var logEntry = new LogEntry(LogVerbosity.Info, message);
-                Console.WriteLine(logEntry.ToString());
-            }
-        }
+            // Initialize base
+            base.Init(context);
 
-        /// <summary>
-        /// Append a new entry to the log that has single-line title
-        /// and multi-line body. The body will be indented by one
-        /// tab stop.
-        ///
-        /// This method has no effect unless entry verbosity
-        /// exceeds log verbosity. 
-        /// </summary>
-        public override void Entry(LogVerbosity verbosity, string title, string body)
-        {
-            // Do not record the log entry if entry verbosity exceeds log verbosity
-            // Record all entries if log verbosity is not specified
-            if (verbosity <= Verbosity)
-            {
-                var logTitleEntry = new LogEntry(LogVerbosity.Info, title);
-                string logTitleString = logTitleEntry.ToString();
-                Console.WriteLine(logTitleString);
-                Console.WriteLine(body);
-            }
+            // Set log text writer to be console output
+            LogTextWriter = Console.Out;
         }
     }
 }

@@ -21,10 +21,8 @@ using System.IO;
 namespace DataCentric
 {
     /// <summary>Writes log output to the specified text file as it arrives.</summary>
-    public class FileLog : Log
+    public class FileLog : TextLog
     {
-        private IndentedTextWriter indentedTextWriter_;
-
         //--- PROPERTIES
 
         /// <summary>Log file path relative to output folder root.</summary>
@@ -47,92 +45,8 @@ namespace DataCentric
             // Initialize base
             base.Init(context);
 
-            // Create text writer for the file, then wrap it into
-            // an indented writer using 4 space indent string
-            var textWriter = context.OutputFolder.GetTextWriter(LogFilePath, FileWriteMode.Replace);
-            indentedTextWriter_ = new IndentedTextWriter(textWriter, "    ");
-        }
-
-        /// <summary>
-        /// Releases resources and calls base.Dispose().
-        ///
-        /// This method will not be called by the garbage collector.
-        /// It will only be executed if:
-        ///
-        /// * This class implements IDisposable; and
-        /// * The class instance is created through the using clause
-        ///
-        /// IMPORTANT - Every override of this method must call base.Dispose()
-        /// after executing its own code.
-        /// </summary>
-        public override void Dispose()
-        {
-            indentedTextWriter_.Close();
-            indentedTextWriter_.Dispose();
-
-            // Dispose base
-            base.Dispose();
-        }
-
-        /// <summary>Flush data to permanent storage.</summary>
-        public override void Flush()
-        {
-            indentedTextWriter_.Flush();
-        }
-
-        /// <summary>
-        /// Append a new single-line entry to the log.
-        ///
-        /// This method has no effect unless entry verbosity
-        /// exceeds log verbosity.
-        /// </summary>
-        public override void Entry(LogVerbosity verbosity, string message)
-        {
-            // Do not record the log entry if entry verbosity exceeds log verbosity
-            // Record all entries if log verbosity is not specified
-            if (verbosity <= Verbosity)
-            {
-                var logEntry = new LogEntry(verbosity, message);
-                string logString = logEntry.ToString();
-
-                // Set indent to the current indent of the log before writing the log entry string
-                indentedTextWriter_.Indent = Indent;
-                indentedTextWriter_.WriteLine(logString);
-            }
-        }
-
-        /// <summary>
-        /// Append a new entry to the log that has single-line title
-        /// and multi-line body. The body will be indented by one
-        /// tab stop.
-        ///
-        /// This method has no effect unless entry verbosity
-        /// exceeds log verbosity. 
-        /// </summary>
-        public override void Entry(LogVerbosity verbosity, string title, string body)
-        {
-            // Do not record the log entry if entry verbosity exceeds log verbosity
-            // Record all entries if log verbosity is not specified
-            if (verbosity <= Verbosity)
-            {
-                var logTitleEntry = new LogEntry(verbosity, title);
-                string logTitleString = logTitleEntry.ToString();
-
-                // Set indent to the current indent of the log
-                // before writing the title string
-                indentedTextWriter_.Indent = Indent;
-                indentedTextWriter_.WriteLine(logTitleString);
-
-                // Increment indent by one tab stop before writing the body
-                Indent++;
-                indentedTextWriter_.Indent = Indent;
-
-                indentedTextWriter_.WriteLine(body);
-
-                // Restore the previous value
-                Indent++;
-                indentedTextWriter_.Indent = Indent;
-            }
+            // Assign text writer for the log file
+            LogTextWriter = context.OutputFolder.GetTextWriter(LogFilePath, FileWriteMode.Replace);
         }
     }
 }

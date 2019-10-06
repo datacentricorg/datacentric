@@ -26,9 +26,9 @@ namespace DataCentric
     /// Accumulates log output in memory and converts it
     /// to string using ToString() method.
     /// </summary>
-    public class StringLog : Log
+    public class StringLog : TextLog
     {
-        private TextWriter textWriter_;
+        private StringWriter logStringWriter_;
 
         //--- METHODS
 
@@ -47,79 +47,15 @@ namespace DataCentric
             // Initialize base
             base.Init(context);
 
-            textWriter_ = new StringWriter();
+            // Set log text writer
+            logStringWriter_ = new StringWriter();
+            LogTextWriter = logStringWriter_;
         }
 
-        /// <summary>
-        /// Releases resources and calls base.Dispose().
-        ///
-        /// This method will not be called by the garbage collector.
-        /// It will only be executed if:
-        ///
-        /// * This class implements IDisposable; and
-        /// * The class instance is created through the using clause
-        ///
-        /// IMPORTANT - Every override of this method must call base.Dispose()
-        /// after executing its own code.
-        /// </summary>
-        public override void Dispose()
-        {
-            textWriter_.Close();
-            textWriter_.Dispose();
-
-            // Dispose base
-            base.Dispose();
-        }
-
-        /// <summary>Flush data to permanent storage.</summary>
-        public override void Flush()
-        {
-            textWriter_.Flush();
-        }
-
-        /// <summary>
-        /// Append a new single-line entry to the log.
-        ///
-        /// This method has no effect unless entry verbosity
-        /// exceeds log verbosity.
-        /// </summary>
-        public override void Entry(LogVerbosity verbosity, string message)
-        {
-            // Do not record the log entry if entry verbosity exceeds log verbosity
-            // Record all entries if log verbosity is not specified
-            if (verbosity <= Verbosity)
-            {
-                var logEntry = new LogEntry(verbosity, message);
-                string logString = logEntry.ToString();
-                textWriter_.WriteLine(logString);
-            }
-        }
-
-        /// <summary>
-        /// Append a new entry to the log that has single-line title
-        /// and multi-line body. The body will be indented by one
-        /// tab stop.
-        ///
-        /// This method has no effect unless entry verbosity
-        /// exceeds log verbosity. 
-        /// </summary>
-        public override void Entry(LogVerbosity verbosity, string title, string body)
-        {
-            // Do not record the log entry if entry verbosity exceeds log verbosity
-            // Record all entries if log verbosity is not specified
-            if (verbosity <= Verbosity)
-            {
-                var logTitleEntry = new LogEntry(LogVerbosity.Info, title);
-                string logTitleString = logTitleEntry.ToString();
-                textWriter_.WriteLine(logTitleString);
-                textWriter_.WriteLine(body);
-            }
-        }
-
-        /// <summary>Convert log output to string.</summary>
+        /// <summary>Output the entire log as string.</summary>
         public override string ToString()
         {
-            return textWriter_.ToString();
+            return logStringWriter_.ToString();
         }
     }
 }
