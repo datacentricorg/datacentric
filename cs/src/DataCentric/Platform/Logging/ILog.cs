@@ -65,7 +65,7 @@ namespace DataCentric
         /// This method has no effect unless entry verbosity
         /// exceeds log verbosity. 
         /// </summary>
-        // void Entry(LogVerbosity verbosity, string entrySubType, string title, string body);
+        void Entry(LogVerbosity verbosity, string title, string body);
     }
 
     /// <summary>Extension methods for ILog.</summary>
@@ -84,11 +84,39 @@ namespace DataCentric
             obj.Entry(LogVerbosity.Error, message);
         }
 
-        /// <summary>Record a single-line warning.</summary>
+        /// <summary>
+        /// Record an error message with a single-line title
+        /// and multi-line body. The body will be indented by one
+        /// tab stop.
+        ///
+        /// This method does not throw an exception; it is invoked
+        /// to indicate an error when exception is not necessary,
+        /// and it may also be invoked when the exception is caught.
+        /// </summary>
+        public static void Error(this ILog obj, string title, string body)
+        {
+            // Published at any level of verbosity
+            obj.Entry(LogVerbosity.Error, title, body);
+        }
+
+        /// <summary>
+        /// Record a single-line warning message.
+        /// </summary>
         public static void Warning(this ILog obj, string message)
         {
             // Requires at least Warning verbosity
             obj.Entry(LogVerbosity.Warning, message);
+        }
+
+        /// <summary>
+        /// Record a warning message with a single-line title
+        /// and multi-line body. The body will be indented by one
+        /// tab stop.
+        /// </summary>
+        public static void Warning(this ILog obj, string title, string body)
+        {
+            // Requires at least Warning verbosity
+            obj.Entry(LogVerbosity.Warning, title, body);
         }
 
         /// <summary>
@@ -102,6 +130,21 @@ namespace DataCentric
         {
             // Requires at least Status verbosity
             obj.Entry(LogVerbosity.Info, message);
+        }
+
+        /// <summary>
+        /// Record a information message with a single-line title
+        /// and multi-line body. The body will be indented by one
+        /// tab stop.
+        ///
+        /// Information output should be used sparingly to avoid
+        /// flooding log output with superfluous data. An information
+        /// message should never be generated inside a loop.
+        /// </summary>
+        public static void Info(this ILog obj, string title, string body)
+        {
+            // Requires at least Status verbosity
+            obj.Entry(LogVerbosity.Info, title, body);
         }
 
         /// <summary>
@@ -125,10 +168,10 @@ namespace DataCentric
         /// are displayed at Verify or higher verbosity level, but
         /// not at the Info verbosity level.
         /// </summary>
-        //public static void Verify(this ILog obj, string title, string body)
-        //{
-        //    obj.Entry(LogVerbosity.Verify, String.Empty, title, body);
-        //}
+        public static void Verify(this ILog obj, string title, string body)
+        {
+            obj.Entry(LogVerbosity.Verify, title, body);
+        }
 
         /// <summary>
         /// Record a single-line error message if condition is false,
@@ -141,6 +184,19 @@ namespace DataCentric
         {
             if (!condition) obj.Error(message);
             else obj.Verify(message);
+        }
+
+        /// <summary>
+        /// Record a multi-line error message if condition is false,
+        /// and a multi-line information message if condition is true.
+        ///
+        /// The information message is recorded only if
+        /// log verbosity is at least Info.
+        /// </summary>
+        public static void Assert(this ILog obj, bool condition, string title, string body)
+        {
+            if (!condition) obj.Error(title, body);
+            else obj.Verify(title, body);
         }
     }
 }

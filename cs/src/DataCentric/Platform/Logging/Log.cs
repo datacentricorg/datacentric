@@ -94,8 +94,21 @@ namespace DataCentric
         public abstract void Flush();
 
         /// <summary>
-        /// Append new entry to the log unless entry verbosity exceeds log verbosity.
+        /// Append a new single-line entry to the log.
+        ///
+        /// This method has no effect unless entry verbosity
+        /// exceeds log verbosity.
         /// </summary>
         public abstract void Entry(LogVerbosity verbosity, string message);
+
+        /// <summary>
+        /// Append a new entry to the log that has single-line title
+        /// and multi-line body. The body will be indented by one
+        /// tab stop.
+        ///
+        /// This method has no effect unless entry verbosity
+        /// exceeds log verbosity. 
+        /// </summary>
+        public abstract void Entry(LogVerbosity verbosity, string title, string body);
     }
 }

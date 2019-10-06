@@ -81,7 +81,10 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Append new entry to the log unless entry verbosity exceeds log verbosity.
+        /// Append a new single-line entry to the log.
+        ///
+        /// This method has no effect unless entry verbosity
+        /// exceeds log verbosity.
         /// </summary>
         public override void Entry(LogVerbosity verbosity, string message)
         {
@@ -92,6 +95,27 @@ namespace DataCentric
                 var logEntry = new LogEntry(verbosity, message);
                 string logString = logEntry.ToString();
                 indentedTextWriter_.WriteLine(logString);
+            }
+        }
+
+        /// <summary>
+        /// Append a new entry to the log that has single-line title
+        /// and multi-line body. The body will be indented by one
+        /// tab stop.
+        ///
+        /// This method has no effect unless entry verbosity
+        /// exceeds log verbosity. 
+        /// </summary>
+        public override void Entry(LogVerbosity verbosity, string title, string body)
+        {
+            // Do not record the log entry if entry verbosity exceeds log verbosity
+            // Record all entries if log verbosity is not specified
+            if (verbosity <= Verbosity)
+            {
+                var logTitleEntry = new LogEntry(verbosity, title);
+                string logTitleString = logTitleEntry.ToString();
+                indentedTextWriter_.WriteLine(logTitleString);
+                indentedTextWriter_.WriteLine(body);
             }
         }
     }
