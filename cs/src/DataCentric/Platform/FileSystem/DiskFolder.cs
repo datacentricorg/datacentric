@@ -59,10 +59,10 @@ namespace DataCentric
                     if (File.Exists(fullFilePath)) File.Delete(fullFilePath);
                     return new StreamWriter(fullFilePath);
                 case FileWriteMode.CreateNew:
-                    if (File.Exists(fullFilePath)) Context.Log.Error("File {0} already exists.", fullFilePath);
+                    if (File.Exists(fullFilePath)) Context.Log.Error($"File {fullFilePath} already exists.");
                     return new StreamWriter(fullFilePath);
                 default:
-                    throw Context.Log.Exception("FileMode={0} is not supported.", writeMode.ToString());
+                    throw Context.Log.Exception($"FileMode={writeMode} is not supported.");
             }
         }
 

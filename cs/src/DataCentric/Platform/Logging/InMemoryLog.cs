@@ -58,13 +58,13 @@ namespace DataCentric
 
         /// <summary>Append new entry to the log if entry type is the same or lower than log verbosity.
         /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
-        public override void Append(LogEntryType entryType, string entrySubType, string message, params object[] messageParams)
+        public override void Append(LogEntryType entryType, string entrySubType, string message)
         {
             // Do not record the log entry if entry verbosity exceeds log verbosity
             // Record all entries if log verbosity is not specified
             if (Verbosity == LogEntryType.Empty || entryType <= Verbosity)
             {
-                var logEntry = new LogEntry(entryType, entrySubType, message, messageParams);
+                var logEntry = new LogEntry(entryType, entrySubType, message);
                 string logString = logEntry.ToString();
                 stringWriter_.WriteLine(logString);
             }

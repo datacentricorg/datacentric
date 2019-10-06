@@ -1,7 +1,7 @@
-Warning: Warning log entry with params Param1 and Param2
-Status: Status log entry with params Param1 and Param2
-Verify.Text: Result verify entry with params Param1 and Param2
-Verify.Passed: Assert(true) verify entry with params Param1 and Param2
-Verify.Failed: Assert(false) verify entry with params Param1 and Param2
-Verify.Value: Value(123) verify entry with params Param1 and Param2 = 123
-Verify.File: FixtureTest.Logging.FileName.approved.txt (17 bytes)
+Warning: Warning log entry.
+Status: Status log entry.
+Verify.Text: Result verify entry.
+Verify.Passed: Assert(true) verify entry.
+Verify.Failed: Assert(false) verify entry.
+Verify.Value: Value(123) = 123
+Verify.File: FixtureTest.Logging.FileName.approved.txt (18 bytes)

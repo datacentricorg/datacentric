@@ -82,6 +82,6 @@ namespace DataCentric
 
         /// <summary>Append new entry to the log if entry type is the same or lower than log verbosity.
         /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
-        public abstract void Append(LogEntryType entryType, string entrySubType, string message, params object[] messageParams);
+        public abstract void Append(LogEntryType entryType, string entrySubType, string message);
     }
 }

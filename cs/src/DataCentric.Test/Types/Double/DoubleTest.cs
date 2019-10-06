@@ -49,13 +49,13 @@ namespace DataCentric.Test
                 // Conversion of positive values to string using default format
                 foreach (double value in values)
                 {
-                    context.Verify.Text("Positive value to string: {0}", value.DisplayFormat());
+                    context.Verify.Text($"Positive value to string: {value.DisplayFormat()}");
                 }
 
                 // Conversion of negative values to string using default format
                 foreach (double value in values)
                 {
-                    context.Verify.Text("Negative value to string: {0}", (-value).DisplayFormat());
+                    context.Verify.Text($"Negative value to string: {(-value).DisplayFormat()}");
                 }
             }
         }

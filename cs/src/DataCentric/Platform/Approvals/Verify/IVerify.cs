@@ -55,25 +55,25 @@ namespace DataCentric
     public static class IVerifyExt
     {
         /// <summary>Record 'Verify.Text: {message}'.</summary>
-        public static void Text(this IVerify obj, string message, params object[] messageParams)
+        public static void Text(this IVerify obj, string message)
         {
-            obj.Context.Log.Append(LogEntryType.Verify, "Text", message, messageParams);
+            obj.Context.Log.Append(LogEntryType.Verify, "Text", message);
         }
 
         /// <summary>Record 'Verify.Passed: {message}' when condition
         /// is true and 'Verify.Failed: {message}' when condition is false.</summary>
-        public static void Assert(this IVerify obj, bool condition, string messageWhenFalse, params object[] messageParams)
+        public static void Assert(this IVerify obj, bool condition, string messageWhenFalse)
         {
             string conditionString = condition ? "Passed" : "Failed";
-            obj.Context.Log.Append(LogEntryType.Verify, conditionString, messageWhenFalse, messageParams);
+            obj.Context.Log.Append(LogEntryType.Verify, conditionString, messageWhenFalse);
         }
 
         /// <summary>Record 'Verify.Value: {message} = {value}'.</summary>
-        public static void Value(this IVerify obj, object value, string message, params object[] messageParams)
+        public static void Value(this IVerify obj, object value, string message)
         {
             // Use AsString() instead of ToString() for custom formatting of certain types
             string approvalMessage = System.String.Concat(message, " = ", value.AsString());
-            obj.Context.Log.Append(LogEntryType.Verify, "Value", approvalMessage, messageParams);
+            obj.Context.Log.Append(LogEntryType.Verify, "Value", approvalMessage);
         }
 
         /// <summary>Record 'Verify.File: {fileName} ({N} bytes) and save contents to a file.</summary>

@@ -25,12 +25,8 @@ namespace DataCentric
         private string entryText_;
 
         /// <summary>Truncates message parameters before formatting the message.</summary>
-        public LogEntry(LogEntryType entryType, string entrySubType, string message, params object[] messageParams)
+        public LogEntry(LogEntryType entryType, string entrySubType, string message)
         {
-            // Truncates message parameters before formatting the message.
-            string formattedMessage = LogImpl.FormatMessage(message, messageParams);
-
-
             string prefix = entryType.ToString();
             if (!string.IsNullOrEmpty(entrySubType))
             {
@@ -39,7 +35,7 @@ namespace DataCentric
             }
 
             // Format entry text
-            entryText_ = string.Concat(prefix, ": ", formattedMessage);
+            entryText_ = string.Concat(prefix, ": ", message);
         }
 
         /// <summary>Formatted message with truncated parameter strings.

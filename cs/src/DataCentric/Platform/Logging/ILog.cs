@@ -51,7 +51,7 @@ namespace DataCentric
 
         /// <summary>Append new entry to the log if entry type is the same or lower than log verbosity.
         /// Entry subtype is an optional tag in dot delimited format (specify null if no subtype).</summary>
-        void Append(LogEntryType entryType, string entrySubType, string message, params object[] messageParams);
+        void Append(LogEntryType entryType, string entrySubType, string message);
     }
 
     /// <summary>Extension methods for ILog.</summary>
@@ -59,43 +59,38 @@ namespace DataCentric
     {
         /// <summary>Record an error message and return exception with the same message.
         /// The caller is expected to throw the exception: throw Log.Exception(message, messageParams).</summary>
-        public static Exception Exception(this ILog obj, string message, params object[] messageParams)
+        public static Exception Exception(this ILog obj, string message)
         {
             // Requires at least Error verbosity
-            obj.Append(LogEntryType.Error, String.Empty, message, messageParams);
+            obj.Append(LogEntryType.Error, String.Empty, message);
 
             // Copy message parameters to the Data dictionary of the exception
-            Exception e = new Exception(string.Format(message, messageParams));
-            for (int i = 0; i < messageParams.Length; i++)
-            {
-                // Record with key equal to index of the parameter in messageParams array
-                e.Data[i] = messageParams[i];
-            }
+            Exception e = new Exception(message);
 
             // The caller must throw the returned exception
             return e;
         }
 
         /// <summary>Record an error message and throw exception return by Log.Exception(...).</summary>
-        public static void Error(this ILog obj, string message, params object[] messageParams)
+        public static void Error(this ILog obj, string message)
         {
             // Exception is thrown irrespective of verbosity,
             // but the log entry requires at least Error verbosity
-            throw obj.Exception(message, messageParams);
+            throw obj.Exception(message);
         }
 
         /// <summary>Record a warning.</summary>
-        public static void Warning(this ILog obj, string message, params object[] messageParams)
+        public static void Warning(this ILog obj, string message)
         {
             // Requires at least Warning verbosity
-            obj.Append(LogEntryType.Warning, String.Empty, message, messageParams);
+            obj.Append(LogEntryType.Warning, String.Empty, message);
         }
 
         /// <summary>Record a status message.</summary>
-        public static void Status(this ILog obj, string message, params object[] messageParams)
+        public static void Status(this ILog obj, string message)
         {
             // Requires at least Status verbosity
-            obj.Append(LogEntryType.Status, String.Empty, message, messageParams);
+            obj.Append(LogEntryType.Status, String.Empty, message);
         }
     }
 }

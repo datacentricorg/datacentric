@@ -30,18 +30,18 @@ namespace DataCentric.Test
             using (var context = new UnitTestContext(this))
             {
                 // Log entries other than Exception
-                context.Log.Warning("Warning log entry with params {0} and {1}", "Param1", "Param2");
-                context.Log.Status("Status log entry with params {0} and {1}", "Param1", "Param2");
+                context.Log.Warning("Warning log entry.");
+                context.Log.Status("Status log entry.");
 
                 // Verify entries
-                context.Verify.Text("Result verify entry with params {0} and {1}", "Param1", "Param2");
-                context.Verify.Assert(true, "Assert(true) verify entry with params {0} and {1}", "Param1", "Param2");
-                context.Verify.Assert(false, "Assert(false) verify entry with params {0} and {1}", "Param1", "Param2");
-                context.Verify.Value(123, "Value(123) verify entry with params {0} and {1}", "Param1", "Param2");
+                context.Verify.Text("Result verify entry.");
+                context.Verify.Assert(true, "Assert(true) verify entry.");
+                context.Verify.Assert(false, "Assert(false) verify entry.");
+                context.Verify.Value(123, "Value(123)");
 
                 // File verify entry and saving
                 // FIXME - check that file is saved when enabled
-                context.Verify.File("FileName.txt", "File verify entry");
+                context.Verify.File("FileName.txt", "File verify entry.");
             }
         }
 
@@ -57,7 +57,7 @@ namespace DataCentric.Test
                 try
                 {
                     // This should record exception into the log and then throw
-                    throw context.Log.Exception("Engine exception with {0}, {1}", "Param1", "Param2");
+                    throw context.Log.Exception("Test exception message.");
                 }
                 catch (Exception e)
                 {
@@ -79,7 +79,7 @@ namespace DataCentric.Test
                 try
                 {
                     // Exception is not recorded to log in unit test
-                    throw new Exception(string.Format("Engine exception with {0}, {1}", "Param1", "Param2"));
+                    throw new Exception("Test exception message.");
                 }
                 catch (Exception e)
                 {
