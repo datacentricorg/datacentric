@@ -54,12 +54,6 @@ namespace DataCentric
     /// <summary>Extension methods for IVerify.</summary>
     public static class IVerifyExt
     {
-        /// <summary>Record 'Verify.Text: {message}'.</summary>
-        public static void Text(this IVerify obj, string message)
-        {
-            obj.Context.Log.Entry(LogVerbosity.Verify, "Text", message);
-        }
-
         /// <summary>Record 'Verify.File: {fileName} ({N} bytes) and save contents to a file.</summary>
         public static void File(this IVerify obj, string fileName, string fileContents)
         {

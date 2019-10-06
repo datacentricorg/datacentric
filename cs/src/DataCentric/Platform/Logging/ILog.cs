@@ -72,11 +72,29 @@ namespace DataCentric
             obj.Entry(LogVerbosity.Warning, String.Empty, message);
         }
 
-        /// <summary>Record an information message.</summary>
+        /// <summary>
+        /// Record an information message.
+        ///
+        /// Information output should be used sparingly to avoid
+        /// flooding log output with superfluous data. An information
+        /// message should never be generated inside a loop.
+        /// </summary>
         public static void Info(this ILog obj, string message)
         {
             // Requires at least Status verbosity
             obj.Entry(LogVerbosity.Info, String.Empty, message);
+        }
+
+        /// <summary>
+        /// Record a verification message.
+        ///
+        /// Verification messages are used in approval testing and
+        /// are displayed at Verify or higher verbosity level, but
+        /// not at the Info verbosity level.
+        /// </summary>
+        public static void Verify(this ILog obj, string message)
+        {
+            obj.Context.Log.Entry(LogVerbosity.Verify, String.Empty, message);
         }
 
         /// <summary>
