@@ -75,7 +75,7 @@ namespace DataCentric
             set { progress_ = value; }
         }
 
-        /// <summary>Get the default data source of the context.</summary>
+        /// <summary>Default data source of the context.</summary>
         public IDataSource DataSource
         {
             get
@@ -89,7 +89,7 @@ namespace DataCentric
             set { dataSource_ = value; }
         }
 
-        /// <summary>Returns default dataset of the context.</summary>
+        /// <summary>Default dataset of the context.</summary>
         public ObjectId DataSet
         {
             get

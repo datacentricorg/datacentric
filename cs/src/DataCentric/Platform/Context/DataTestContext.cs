@@ -35,7 +35,7 @@ namespace DataCentric
     ///
     /// For tests that do not require a data source, use UnitTestContext.
     /// </summary>
-    public class DataTestContext<TDataSource> : UnitTestContext, IVerifyable
+    public class DataTestContext<TDataSource> : UnitTestContext
         where TDataSource : DataSourceData, IDataSource, new()
     {
         /// <summary>
@@ -52,6 +52,31 @@ namespace DataCentric
             :
             base(classInstance, methodName, sourceFilePath)
         {
+            // Create and initialize data source with TEST instance type.
+            //
+            // This does not create the database until the data source
+            // is actually used to access data.
+            string mappedClassName = ClassInfo.GetOrCreate(classInstance).MappedClassName;
+
+            // Create data source specified as generic argument
+            DataSource = new TDataSource()
+            {
+                DbName = new DbNameKey()
+                {
+                    InstanceType = InstanceType.TEST,
+                    InstanceName = mappedClassName,
+                    EnvName = methodName
+                }
+            };
+
+            // Initialize data source
+            DataSource.Init(this);
+
+            // Create common dataset and assign it to DataSet property of this context
+            DataSet = DataSource.CreateCommon();
+
+            // Delete (drop) the database to clear the existing data
+            DataSource.DeleteDb();
         }
 
         //--- PROPERTIES
@@ -66,50 +91,6 @@ namespace DataCentric
         public bool KeepTestData { get; set; }
 
         //--- METHODS
-
-        /// <summary>
-        /// Initialize the current context after its properties are set,
-        /// and set default values for the properties that are not set.
-        /// 
-        /// Includes calling Init(this) for each property of the context.
-        ///
-        /// This method may be called multiple times for the same instance.
-        ///
-        /// IMPORTANT - Every override of this method must call base.Init()
-        /// first, and only then execute the rest of the override method's code.
-        /// </summary>
-        public virtual void Init()
-        {
-            // Initialize base
-            base.Init();
-
-            // Create and initialize data source with TEST instance type.
-            //
-            // This does not create the database until the data source
-            // is actually used to access data.
-            string mappedClassName = ClassInfo.GetOrCreate(ClassInstance).MappedClassName;
-
-            // Create data source specified as generic argument
-            var dataSource = new TDataSource();
-            dataSource.DbName = new DbNameKey()
-            {
-                InstanceType = InstanceType.TEST,
-                InstanceName = mappedClassName,
-                EnvName = MethodName
-            };
-
-            // Initialize and assign to property
-            DataSource = dataSource;
-
-            // Initialize data source
-            DataSource.Init(this);
-
-            // Create common dataset and assign it to DataSet property of this context
-            DataSet = DataSource.CreateCommon();
-
-            // Delete (drop) the database to clear the existing data
-            DataSource.DeleteDb();
-        }
 
         /// <summary>
         /// Releases resources and calls base.Dispose().

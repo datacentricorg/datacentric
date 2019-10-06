@@ -33,21 +33,26 @@ namespace DataCentric
     ///
     /// For tests that require MongoDB, use IDataTestDataContext.
     /// </summary>
-    public class UnitTestContext : Context, IVerifyable
+    public class UnitTestContext : IContext, IVerifyable
     {
-        /// <summary>Unit test class instance.</summary>
-        public object ClassInstance { get; }
-
-        /// <summary>Unit test method name.</summary>
-        public string MethodName { get; }
-
         /// <summary>
-        /// Path to the source code of the unit test.
-        ///
-        /// Approval files and log output will be located in the same folder
-        /// as the source code of the unit test.
+        /// Provides a unified API for an output folder located in a
+        /// conventional filesystem or an alternative backing store
+        /// such as S3.
         /// </summary>
-        public string SourceFilePath { get; }
+        public IFolder OutputFolder { get; }
+
+        /// <summary>Logging interface.</summary>
+        public ILog Log { get; }
+
+        /// <summary>Progress interface.</summary>
+        public IProgress Progress { get; }
+
+        /// <summary>Default data source of the context.</summary>
+        public IDataSource DataSource { get; protected set; }
+
+        /// <summary>Default dataset of the context.</summary>
+        public ObjectId DataSet { get; protected set; }
 
         /// <summary>Approval testing interface.</summary>
         public IVerify Verify { get; set; }
@@ -64,12 +69,35 @@ namespace DataCentric
             [CallerMemberName] string methodName = null,
             [CallerFilePath] string sourceFilePath = null)
         {
-            ClassInstance = classInstance;
-            MethodName = methodName;
-            SourceFilePath = sourceFilePath;
-        }
+            // Check that properties required by the unit test are set
+            if (classInstance == null) throw new Exception("Method name passed to UnitTestContext is null.");
+            if (methodName == null) throw new Exception("Method name passed to UnitTestContext is null.");
+            if (sourceFilePath == null) throw new Exception("Source file path passed to UnitTestContext is null.");
 
-        //--- METHODS
+            // Split file path into test folder path and source filename
+            string testFolderPath = Path.GetDirectoryName(sourceFilePath);
+            string sourceFileName = Path.GetFileName(sourceFilePath);
+
+            // Test class path is the path to source file followed by
+            // subfolder whose name is source file name without extension
+            if (!sourceFileName.EndsWith(".cs")) throw new Exception($"Source filename '{sourceFileName}' does not end with '.cs'");
+            string className = sourceFileName.Substring(0, sourceFileName.Length - 3);
+
+            // Use log file name format assName.MethodName.approved.txt from ApprovalTests.NET.
+            string logFileName = String.Join(".", className, methodName, "approved.txt");
+
+            // All properties must be set before initialization is performed
+            OutputFolder = new DiskFolder { FolderPath = testFolderPath };
+            Log = new FileLog { LogFilePath = logFileName };
+            Progress = new NullProgress();
+            Verify = new LogVerify { ClassName = className, MethodName = methodName };
+
+            // Initialize properties
+            OutputFolder.Init(this);
+            Log.Init(this);
+            Progress.Init(this);
+            Verify.Init(this);
+        }
 
         /// <summary>
         /// Initialize the current context after its properties are set,
@@ -84,36 +112,46 @@ namespace DataCentric
         /// </summary>
         public virtual void Init()
         {
-            // As an exception to the general rule, properties of the base
-            // must be set before base.Init() is called
+            // Uncomment except in root class of the hierarchy
+            // base.Init();
 
-            // Check that properties required by the unit test are set
-            if (ClassInstance == null) throw new Exception("Method name passed to UnitTestContext is null.");
-            if (MethodName == null) throw new Exception("Method name passed to UnitTestContext is null.");
-            if (SourceFilePath == null) throw new Exception("Source file path passed to UnitTestContext is null.");
+            // Do nothing - initialization is performed in the constructor
+        }
 
-            // Split file path into test folder path and source filename
-            string testFolderPath = Path.GetDirectoryName(SourceFilePath);
-            string sourceFileName = Path.GetFileName(SourceFilePath);
+        /// <summary>
+        /// Releases resources and calls base.Dispose().
+        ///
+        /// This method will not be called by the garbage collector.
+        /// It will only be executed if:
+        ///
+        /// * This class implements IDisposable; and
+        /// * The class instance is created through the using clause
+        ///
+        /// IMPORTANT - Every override of this method must call base.Dispose()
+        /// after executing its own code.
+        /// </summary>
+        public virtual void Dispose()
+        {
+            // Call Dispose() for each initialized property of the context
+            // in the reverse order of initialization
+            // TODO - Verify.Dispose();
+            Progress.Dispose();
+            Log.Dispose();
+            // TODO - OutputFolder.Dispose();
 
-            // Test class path is the path to source file followed by
-            // subfolder whose name is source file name without extension
-            if (!sourceFileName.EndsWith(".cs")) throw new Exception($"Source filename '{sourceFileName}' does not end with '.cs'");
-            string className = sourceFileName.Substring(0, sourceFileName.Length - 3);
+            // Uncomment except in root class of the hierarchy
+            // base.Dispose();
+        }
 
-            // Use log file name format assName.MethodName.approved.txt from ApprovalTests.NET.
-            string logFileName = String.Join(".", className, MethodName, "approved.txt");
-
-            OutputFolder = new DiskFolder { FolderPath = testFolderPath };
-            Log = new FileLog { LogFilePath = logFileName };
-            Progress = new NullProgress();
-
-            // Initialize base
-            base.Init();
-
-            // Set and initialize approval testing interface
-            Verify = new LogVerify { ClassName = className, MethodName = MethodName };
-            Verify.Init(this);
+        /// <summary>Flush data to permanent storage.</summary>
+        public virtual void Flush()
+        {
+            // Call Flush() for each initialized property of the context
+            // in the order of initialization
+            // TODO - OutputFolder.Flush();
+            Log.Flush();
+            Progress.Flush();
+            // TODO - Verify.Flush();
         }
     }
 }

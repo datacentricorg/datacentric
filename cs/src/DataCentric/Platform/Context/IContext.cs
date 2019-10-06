@@ -39,13 +39,26 @@ namespace DataCentric
         /// <summary>Progress interface.</summary>
         IProgress Progress { get; }
 
-        /// <summary>Get the default data source of the context.</summary>
+        /// <summary>Default data source of the context.</summary>
         IDataSource DataSource { get; }
 
-        /// <summary>Returns ObjectId of the context dataset.</summary>
+        /// <summary>Default dataset of the context.</summary>
         ObjectId DataSet { get; }
 
         //--- METHODS
+
+        /// <summary>
+        /// Initialize the current context after its properties are set,
+        /// and set default values for the properties that are not set.
+        /// 
+        /// Includes calling Init(this) for each property of the context.
+        ///
+        /// This method may be called multiple times for the same instance.
+        ///
+        /// IMPORTANT - Every override of this method must call base.Init()
+        /// first, and only then execute the rest of the override method's code.
+        /// </summary>
+        void Init();
 
         /// <summary>Flush data to permanent storage.</summary>
         void Flush();
