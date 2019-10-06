@@ -41,14 +41,6 @@ namespace DataCentric
         /// <summary>Test method name.</summary>
         public string MethodName { get; }
 
-        /// <summary>Indicates whether approval data is recorded by the context.
-        /// Check to avoid performing expensive calculations that will not be recorded.</summary>
-        public bool IsSet
-        {
-            // Return false for null approval class as the data is not recorded
-            get { return false; }
-        }
-
         //--- METHODS
 
         /// <summary>

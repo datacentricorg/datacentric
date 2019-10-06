@@ -31,18 +31,6 @@ namespace DataCentric
         /// <summary>Test method name.</summary>
         public string MethodName { get; set; }
 
-        /// <summary>Indicates whether approval data is recorded by the context.
-        /// Check to avoid performing expensive calculations that will not be recorded.</summary>
-        public bool IsSet // TODO - rename to make the role of this method more clear
-        {
-            get
-            {
-                // Returns true if verbosity level is at least Verify
-                var verbosity = Context.Log.Verbosity;
-                return verbosity == LogEntryType.Empty || verbosity >= LogEntryType.Verify;
-            }
-        }
-
         //--- METHODS
 
         /// <summary>
