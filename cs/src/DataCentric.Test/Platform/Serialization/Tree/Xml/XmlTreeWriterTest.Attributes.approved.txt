@@ -1,1 +1,1 @@
-Verify.File: XmlTreeWriterTest.Attributes.Output.approved.xml (1064 bytes)
+Verify: XmlTreeWriterTest.Attributes.Output.approved.xml (1064 bytes)

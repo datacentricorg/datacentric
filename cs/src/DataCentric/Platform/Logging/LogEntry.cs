@@ -25,17 +25,10 @@ namespace DataCentric
         private string entryText_;
 
         /// <summary>Truncates message parameters before formatting the message.</summary>
-        public LogEntry(LogVerbosity verbosity, string entrySubType, string message)
+        public LogEntry(LogVerbosity verbosity, string message)
         {
-            string prefix = verbosity.ToString();
-            if (!string.IsNullOrEmpty(entrySubType))
-            {
-                // Append dot delimited subtype if specified
-                prefix = string.Concat(prefix, ".", entrySubType);
-            }
-
             // Format entry text
-            entryText_ = string.Concat(prefix, ": ", message);
+            entryText_ = string.Join(": ", verbosity.ToString(), message);
         }
 
         /// <summary>Formatted message with truncated parameter strings.

@@ -32,13 +32,13 @@ namespace DataCentric
         /// <summary>
         /// Append new entry to the log unless entry verbosity exceeds log verbosity.
         /// </summary>
-        public override void Entry(LogVerbosity verbosity, string entrySubType, string message)
+        public override void Entry(LogVerbosity verbosity, string message)
         {
             // Do not record the log entry if entry verbosity exceeds log verbosity
             // Record all entries if log verbosity is not specified
             if (verbosity <= Verbosity)
             {
-                var logEntry = new LogEntry(LogVerbosity.Info, entrySubType, message);
+                var logEntry = new LogEntry(LogVerbosity.Info, message);
                 Console.WriteLine(logEntry.ToString());
             }
         }

@@ -38,9 +38,6 @@ namespace DataCentric
         /// <summary>Status message.</summary>
         Info,
 
-        /// <summary>Progress ratio or message.</summary>
-        Progress,
-
         /// <summary>Approval test output.</summary>
         Verify
     }

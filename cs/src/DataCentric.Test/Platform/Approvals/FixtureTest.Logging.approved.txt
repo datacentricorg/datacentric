@@ -3,4 +3,4 @@ Info: Status log entry.
 Verify: Result verify entry.
 Verify: Assert when condition is true.
 Error: Assert when condition is false.
-Verify.File: FixtureTest.Logging.FileName.approved.txt (18 bytes)
+Verify: FixtureTest.Logging.FileName.approved.txt (18 bytes)

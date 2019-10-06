@@ -96,6 +96,6 @@ namespace DataCentric
         /// <summary>
         /// Append new entry to the log unless entry verbosity exceeds log verbosity.
         /// </summary>
-        public abstract void Entry(LogVerbosity verbosity, string entrySubType, string message);
+        public abstract void Entry(LogVerbosity verbosity, string message);
     }
 }

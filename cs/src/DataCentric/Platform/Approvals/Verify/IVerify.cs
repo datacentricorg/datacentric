@@ -68,7 +68,7 @@ namespace DataCentric
             // Record approval message with file byte size
             int byteSize = Encoding.UTF8.GetByteCount(fileContents);
             string approvalMessage = System.String.Concat(fileNameWithPrefix, " (", byteSize, " bytes)");
-            obj.Context.Log.Entry(LogVerbosity.Verify, "File", approvalMessage);
+            obj.Context.Log.Entry(LogVerbosity.Verify, approvalMessage);
 
             // Save contents to a file
             var fileWriter = obj.Context.OutputFolder.GetTextWriter(fileNameWithPrefix, FileWriteMode.Replace);

@@ -50,30 +50,49 @@ namespace DataCentric
         void Flush();
 
         /// <summary>
-        /// Append new entry to the log unless entry verbosity exceeds log verbosity.
+        /// Append a new single-line entry to the log.
+        ///
+        /// This method has no effect unless entry verbosity
+        /// exceeds log verbosity.
         /// </summary>
-        void Entry(LogVerbosity verbosity, string entrySubType, string message);
+        void Entry(LogVerbosity verbosity, string message);
+
+        /// <summary>
+        /// Append a new entry to the log that has single-line title
+        /// and multi-line body. The body will be indented by one
+        /// tab stop.
+        ///
+        /// This method has no effect unless entry verbosity
+        /// exceeds log verbosity. 
+        /// </summary>
+        // void Entry(LogVerbosity verbosity, string entrySubType, string title, string body);
     }
 
     /// <summary>Extension methods for ILog.</summary>
     public static class ILogExt
     {
-        /// <summary>Record an error message and throw exception return by Log.Exception(...).</summary>
+        /// <summary>
+        /// Record a single-line error message.
+        ///
+        /// This method does not throw an exception; it is invoked
+        /// to indicate an error when exception is not necessary,
+        /// and it may also be invoked when the exception is caught.
+        /// </summary>
         public static void Error(this ILog obj, string message)
         {
             // Published at any level of verbosity
-            obj.Entry(LogVerbosity.Error, String.Empty, message);
+            obj.Entry(LogVerbosity.Error, message);
         }
 
-        /// <summary>Record a warning.</summary>
+        /// <summary>Record a single-line warning.</summary>
         public static void Warning(this ILog obj, string message)
         {
             // Requires at least Warning verbosity
-            obj.Entry(LogVerbosity.Warning, String.Empty, message);
+            obj.Entry(LogVerbosity.Warning, message);
         }
 
         /// <summary>
-        /// Record an information message.
+        /// Record a single-line information message.
         ///
         /// Information output should be used sparingly to avoid
         /// flooding log output with superfluous data. An information
@@ -82,11 +101,11 @@ namespace DataCentric
         public static void Info(this ILog obj, string message)
         {
             // Requires at least Status verbosity
-            obj.Entry(LogVerbosity.Info, String.Empty, message);
+            obj.Entry(LogVerbosity.Info, message);
         }
 
         /// <summary>
-        /// Record a verification message.
+        /// Record a single-line verification message.
         ///
         /// Verification messages are used in approval testing and
         /// are displayed at Verify or higher verbosity level, but
@@ -94,12 +113,26 @@ namespace DataCentric
         /// </summary>
         public static void Verify(this ILog obj, string message)
         {
-            obj.Context.Log.Entry(LogVerbosity.Verify, String.Empty, message);
+            obj.Entry(LogVerbosity.Verify, message);
         }
 
         /// <summary>
-        /// Record an error message if condition is false,
-        /// and an information message if true.
+        /// Record a verification message with a single-line title
+        /// and multi-line body. The body will be indented by one
+        /// tab stop.
+        ///
+        /// Verification messages are used in approval testing and
+        /// are displayed at Verify or higher verbosity level, but
+        /// not at the Info verbosity level.
+        /// </summary>
+        //public static void Verify(this ILog obj, string title, string body)
+        //{
+        //    obj.Entry(LogVerbosity.Verify, String.Empty, title, body);
+        //}
+
+        /// <summary>
+        /// Record a single-line error message if condition is false,
+        /// and a single-line information message if condition is true.
         ///
         /// The information message is recorded only if
         /// log verbosity is at least Info.

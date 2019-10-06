@@ -1,3 +1,3 @@
-Verify.File: DataTreeWriterTest.Basic.Original.approved.xml (145 bytes)
-Verify.File: DataTreeWriterTest.Basic.Copy.approved.xml (145 bytes)
+Verify: DataTreeWriterTest.Basic.Original.approved.xml (145 bytes)
+Verify: DataTreeWriterTest.Basic.Copy.approved.xml (145 bytes)
 Verify: Serialization roundtrip assert.
