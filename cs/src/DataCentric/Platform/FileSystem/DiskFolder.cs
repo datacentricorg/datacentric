@@ -62,7 +62,7 @@ namespace DataCentric
                     if (File.Exists(fullFilePath)) Context.Log.Error($"File {fullFilePath} already exists.");
                     return new StreamWriter(fullFilePath);
                 default:
-                    throw Context.Log.Exception($"FileMode={writeMode} is not supported.");
+                    throw new Exception($"FileMode={writeMode} is not supported.");
             }
         }
 

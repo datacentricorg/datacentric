@@ -57,26 +57,11 @@ namespace DataCentric
     /// <summary>Extension methods for ILog.</summary>
     public static class ILogExt
     {
-        /// <summary>Record an error message and return exception with the same message.
-        /// The caller is expected to throw the exception: throw Log.Exception(message, messageParams).</summary>
-        public static Exception Exception(this ILog obj, string message)
-        {
-            // Requires at least Error verbosity
-            obj.Append(LogEntryType.Error, String.Empty, message);
-
-            // Copy message parameters to the Data dictionary of the exception
-            Exception e = new Exception(message);
-
-            // The caller must throw the returned exception
-            return e;
-        }
-
         /// <summary>Record an error message and throw exception return by Log.Exception(...).</summary>
         public static void Error(this ILog obj, string message)
         {
-            // Exception is thrown irrespective of verbosity,
-            // but the log entry requires at least Error verbosity
-            throw obj.Exception(message);
+            // Published at any level of verbosity
+            obj.Append(LogEntryType.Error, String.Empty, message);
         }
 
         /// <summary>Record a warning.</summary>

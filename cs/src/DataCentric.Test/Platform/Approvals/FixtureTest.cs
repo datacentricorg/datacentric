@@ -45,28 +45,6 @@ namespace DataCentric.Test
             }
         }
 
-        /// <summary>Test exception logging after context initialization.</summary>
-        [Fact]
-        public void EngineException()
-        {
-            using (var context = new UnitTestContext(this))
-            {
-                // The test checks that the entry preceding exception is recorded
-                context.Log.Status("Normal status entry preceding exception");
-
-                try
-                {
-                    // This should record exception into the log and then throw
-                    throw context.Log.Exception("Test exception message.");
-                }
-                catch (Exception e)
-                {
-                    // The message is recorded second time by the catch
-                    context.Verify.Value(e.Message, "Message");
-                }
-            }
-        }
-
         /// <summary>Test native .NET exception logging after context initialization.</summary>
         [Fact]
         public void NativeException()
