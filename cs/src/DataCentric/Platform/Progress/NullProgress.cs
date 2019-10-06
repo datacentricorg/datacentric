@@ -22,12 +22,6 @@ namespace DataCentric
     /// The values of Ratio and Message work normally through the API.</summary>
     public class NullProgress : Progress
     {
-        /// <summary>Create from context.</summary>
-        public NullProgress(IContext context)
-        {
-            Init(context);
-        }
-
         /// <summary>Get or set progress ratio from 0 to 1 (0 if not set).</summary>
         public override double Ratio { get; set; }
 

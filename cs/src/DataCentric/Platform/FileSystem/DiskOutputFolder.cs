@@ -26,18 +26,12 @@ namespace DataCentric
     /// </summary>
     public class DiskOutputFolder : IOutputFolder
     {
-        private readonly string outputFolderPath_;
-
-        /// <summary>Creates in the specified output folder.</summary>
-        public DiskOutputFolder(IContext context, string outputFolderPath)
-        {
-            Context = context;
-            outputFolderPath_ = outputFolderPath;
-        }
-
         /// <summary>Context for which this interface is defined.
         /// Use to access other interfaces of the same context.</summary>
         public IContext Context { get; private set; }
+
+        /// <summary>Output folder path.</summary>
+        public string OutputFolderPath { get; set; }
 
         //--- METHODS
 
@@ -65,7 +59,7 @@ namespace DataCentric
         /// This method accepts dot delimited folder path.</summary>
         public bool Exists(string filePath)
         {
-            string fullFilePath = Path.Combine(outputFolderPath_, filePath);
+            string fullFilePath = Path.Combine(OutputFolderPath, filePath);
             bool result = File.Exists(fullFilePath);
             return result;
         }
@@ -76,7 +70,7 @@ namespace DataCentric
         public TextWriter CreateTextWriter(string filePath, FileWriteMode writeMode)
         {
             // Create full path by combining with output folder path
-            string fullFilePath = Path.Combine(outputFolderPath_, filePath);
+            string fullFilePath = Path.Combine(OutputFolderPath, filePath);
             string fullFolderPath = Path.GetDirectoryName(fullFilePath);
 
             // Check if directory exists, if not create
@@ -101,7 +95,7 @@ namespace DataCentric
         /// This method accepts dot delimited folder path.</summary>
         public void Delete(string filePath)
         {
-            string fullFilePath = Path.Combine(outputFolderPath_, filePath);
+            string fullFilePath = Path.Combine(OutputFolderPath, filePath);
             if (File.Exists(fullFilePath)) File.Delete(fullFilePath);
         }
     }

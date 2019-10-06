@@ -25,11 +25,7 @@ namespace DataCentric
         private double ratio_;
         private string message_;
 
-        /// <summary>Create from context.</summary>
-        public LogProgress(IContext context)
-        {
-            Init(context);
-        }
+        //--- PROPERTIES
 
         /// <summary>Get or set progress ratio from 0 to 1 (0 if not set).</summary>
         public override double Ratio

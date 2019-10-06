@@ -30,12 +30,6 @@ namespace DataCentric
     {
         private TextWriter textWriter_;
 
-        /// <summary>Create in-memory log for use in approval tests</summary>
-        public StringLog(IContext context)
-        {
-            Init(context);
-        }
-
         //--- METHODS
 
         /// <summary>

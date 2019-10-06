@@ -27,13 +27,6 @@ namespace DataCentric
     {
         private TextWriter stringWriter_ = new StringWriter();
 
-        /// <summary>Create from the execution context and folder path, without a linked log.\\
-        /// Accepts path with regular path separator or in dot delimited (``namespace'') format.</summary>
-        public InMemoryLog(IContext context)
-        {
-            Init(context);
-        }
-
         //--- METHODS
 
         /// <summary>

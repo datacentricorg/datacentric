@@ -33,16 +33,6 @@ namespace DataCentric
         /// <summary>Log file path relative to output folder root.</summary>
         public string LogFilePath { get; set; }
 
-        //--- CONSTRUCTORS
-
-        /// <summary>Create log file at path specified relative to output folder root
-        /// using regular path separator or in dot delimited (``namespace'') format.</summary>
-        public FileLog(IContext context, string logFilePath)
-        {
-            LogFilePath = logFilePath;
-            Init(context);
-        }
-
         //--- METHODS
 
         /// <summary>

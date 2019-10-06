@@ -23,14 +23,6 @@ namespace DataCentric
     /// <summary>Logging to system console.</summary>
     public class ConsoleLog : Log
     {
-        /// <summary>Create from context.</summary>
-        public ConsoleLog(IContext context)
-        {
-            Init(context);
-        }
-
-        //--- METHODS
-
         /// <summary>Flush data to permanent storage.</summary>
         public override void Flush()
         {
