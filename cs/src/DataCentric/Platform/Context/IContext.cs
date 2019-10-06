@@ -26,12 +26,6 @@ namespace DataCentric
     /// </summary>
     public interface IContext : IDisposable
     {
-        /// <summary>Get the default data source of the context.</summary>
-        IDataSource DataSource { get; }
-
-        /// <summary>Returns ObjectId of the context dataset.</summary>
-        ObjectId DataSet { get; }
-
         /// <summary>Output folder root of the context's virtualized filesystem.</summary>
         IOutputFolder Out { get; }
 
@@ -40,6 +34,12 @@ namespace DataCentric
 
         /// <summary>Progress interface.</summary>
         IProgress Progress { get; }
+
+        /// <summary>Get the default data source of the context.</summary>
+        IDataSource DataSource { get; }
+
+        /// <summary>Returns ObjectId of the context dataset.</summary>
+        ObjectId DataSet { get; }
 
         //--- METHODS
 

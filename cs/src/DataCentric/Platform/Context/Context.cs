@@ -31,33 +31,6 @@ namespace DataCentric
         private ILog log_;
         private IProgress progress_;
 
-        /// <summary>Get the default data source of the context.</summary>
-        public IDataSource DataSource
-        {
-            get
-            {
-                if (dataSource_ == null)
-                    throw new Exception(
-                        $"Context type {GetType().Name} does not provide a data source, " +
-                        $"or DataSource property has not been set.");
-                return dataSource_;
-            }
-            set { dataSource_ = value; }
-        }
-
-        /// <summary>Returns default dataset of the context.</summary>
-        public ObjectId DataSet
-        {
-            get
-            {
-                if (dataSet_ == null) throw new Exception(
-                    $"Context type {GetType().Name} does not provide a dataset, " +
-                    $"or DataSet property has not been set.");
-                return dataSet_.Value;
-            }
-            set { dataSet_ = value; }
-        }
-
         /// <summary>Output folder root of the context's virtualized filesystem.</summary>
         public IOutputFolder Out
         {
@@ -98,6 +71,33 @@ namespace DataCentric
             set { progress_ = value; }
         }
 
+        /// <summary>Get the default data source of the context.</summary>
+        public IDataSource DataSource
+        {
+            get
+            {
+                if (dataSource_ == null)
+                    throw new Exception(
+                        $"Context type {GetType().Name} does not provide a data source, " +
+                        $"or DataSource property has not been set.");
+                return dataSource_;
+            }
+            set { dataSource_ = value; }
+        }
+
+        /// <summary>Returns default dataset of the context.</summary>
+        public ObjectId DataSet
+        {
+            get
+            {
+                if (dataSet_ == null) throw new Exception(
+                    $"Context type {GetType().Name} does not provide a dataset, " +
+                    $"or DataSet property has not been set.");
+                return dataSet_.Value;
+            }
+            set { dataSet_ = value; }
+        }
+
         //--- METHODS
 
         /// <summary>
@@ -117,10 +117,10 @@ namespace DataCentric
             // base.Init();
 
             // Call Init(this) for each initialized property of the context
-            if (dataSource_ != null) dataSource_.Init(this);
             if (out_ != null) out_.Init(this);
             if (log_ != null) log_.Init(this);
             if (progress_!= null) progress_.Init(this);
+            if (dataSource_ != null) dataSource_.Init(this);
         }
 
         /// <summary>

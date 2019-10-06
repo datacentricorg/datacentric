@@ -35,6 +35,23 @@ namespace DataCentric
     /// </summary>
     public class UnitTestContext : Context, IVerifyable
     {
+        /// <summary>Unit test class instance.</summary>
+        public object ClassInstance { get; }
+
+        /// <summary>Unit test method name.</summary>
+        public string MethodName { get; }
+
+        /// <summary>
+        /// Path to the source code of the unit test.
+        ///
+        /// Approval files and log output will be located in the same folder
+        /// as the source code of the unit test.
+        /// </summary>
+        public string SourceFilePath { get; }
+
+        /// <summary>Approval testing interface.</summary>
+        public IVerify Verify { get; set; }
+
         /// <summary>
         /// Create with class name, method name, and source file path.
         ///
@@ -47,12 +64,37 @@ namespace DataCentric
             [CallerMemberName] string methodName = null,
             [CallerFilePath] string sourceFilePath = null)
         {
-            if (methodName == null) throw new Exception("Method name passed to UnitTestContext is null.");
-            if (sourceFilePath == null) throw new Exception("Source file path passed to UnitTestContext is null.");
+            ClassInstance = classInstance;
+            MethodName = methodName;
+            SourceFilePath = sourceFilePath;
+        }
+
+        //--- METHODS
+
+        /// <summary>
+        /// Initialize the current context after its properties are set,
+        /// and set default values for the properties that are not set.
+        /// 
+        /// Includes calling Init(this) for each property of the context.
+        ///
+        /// This method may be called multiple times for the same instance.
+        ///
+        /// IMPORTANT - Every override of this method must call base.Init()
+        /// first, and only then execute the rest of the override method's code.
+        /// </summary>
+        public virtual void Init()
+        {
+            // As an exception to the general rule, properties of the base
+            // must be set before base.Init() is called
+
+            // Check that properties required by the unit test are set
+            if (ClassInstance == null) throw new Exception("Method name passed to UnitTestContext is null.");
+            if (MethodName == null) throw new Exception("Method name passed to UnitTestContext is null.");
+            if (SourceFilePath == null) throw new Exception("Source file path passed to UnitTestContext is null.");
 
             // Split file path into test folder path and source filename
-            string testFolderPath = Path.GetDirectoryName(sourceFilePath);
-            string sourceFileName = Path.GetFileName(sourceFilePath);
+            string testFolderPath = Path.GetDirectoryName(SourceFilePath);
+            string sourceFileName = Path.GetFileName(SourceFilePath);
 
             // Test class path is the path to source file followed by
             // subfolder whose name is source file name without extension
@@ -60,18 +102,18 @@ namespace DataCentric
             string className = sourceFileName.Substring(0, sourceFileName.Length - 3);
 
             // Use log file name format assName.MethodName.approved.txt from ApprovalTests.NET.
-            string logFileName = String.Join(".", className, methodName, "approved.txt");
+            string logFileName = String.Join(".", className, MethodName, "approved.txt");
 
-            Out =  new DiskOutputFolder(this, testFolderPath);
-            Log = new FileLog(this, logFileName);
-            Progress = new NullProgress(this);
-            Verify = new LogVerify(this, className, methodName);
+            Out = new DiskOutputFolder { OutputFolderPath = testFolderPath };
+            Log = new FileLog { LogFilePath = logFileName };
+            Progress = new NullProgress();
 
-            // Initialize
-            Init();
+            // Initialize base
+            base.Init();
+
+            // Set and initialize approval testing interface
+            Verify = new LogVerify { ClassName = className, MethodName = MethodName };
+            Verify.Init(this);
         }
-
-        /// <summary>Approval testing interface.</summary>
-        public IVerify Verify { get; }
     }
 }

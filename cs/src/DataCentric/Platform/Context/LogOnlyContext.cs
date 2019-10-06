@@ -30,9 +30,9 @@ namespace DataCentric
         {
             DataSource = new NullDataSourceData();
             DataSet = ObjectId.Empty;
-            Out = new DiskOutputFolder(this, "test/out");
-            Log = new ConsoleLog(this);
-            Progress = new LogProgress(this);
+            Out = new DiskOutputFolder {OutputFolderPath = "test/out"};
+            Log = new ConsoleLog();
+            Progress = new LogProgress();
 
             // Initialize
             Init();

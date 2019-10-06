@@ -52,35 +52,6 @@ namespace DataCentric
             :
             base(classInstance, methodName, sourceFilePath)
         {
-            if (methodName == null) throw new Exception("Method name passed to MongoTestContext is null.");
-            if (sourceFilePath == null) throw new Exception("Source file path passed to MongoTestContext is null.");
-
-            // Create and initialize data source with TEST instance type.
-            //
-            // This does not create the database until the data source
-            // is actually used to access data.
-            string mappedClassName = ClassInfo.GetOrCreate(classInstance).MappedClassName;
-
-            // Create data source specified as generic argument
-            var dataSource = new TDataSource();
-            dataSource.DbName = new DbNameKey()
-            {
-                InstanceType = InstanceType.TEST,
-                InstanceName = mappedClassName,
-                EnvName = methodName
-            };
-
-            // Initialize and assign to property
-            DataSource = dataSource;
-
-            // Create common dataset and assign it to DataSet property of this context
-            DataSet = DataSource.CreateCommon();
-
-            // Initialize
-            Init();
-
-            // Delete (drop) the database to clear the existing data
-            DataSource.DeleteDb();
         }
 
         //--- PROPERTIES
@@ -95,6 +66,50 @@ namespace DataCentric
         public bool KeepTestData { get; set; }
 
         //--- METHODS
+
+        /// <summary>
+        /// Initialize the current context after its properties are set,
+        /// and set default values for the properties that are not set.
+        /// 
+        /// Includes calling Init(this) for each property of the context.
+        ///
+        /// This method may be called multiple times for the same instance.
+        ///
+        /// IMPORTANT - Every override of this method must call base.Init()
+        /// first, and only then execute the rest of the override method's code.
+        /// </summary>
+        public virtual void Init()
+        {
+            // Initialize base
+            base.Init();
+
+            // Create and initialize data source with TEST instance type.
+            //
+            // This does not create the database until the data source
+            // is actually used to access data.
+            string mappedClassName = ClassInfo.GetOrCreate(ClassInstance).MappedClassName;
+
+            // Create data source specified as generic argument
+            var dataSource = new TDataSource();
+            dataSource.DbName = new DbNameKey()
+            {
+                InstanceType = InstanceType.TEST,
+                InstanceName = mappedClassName,
+                EnvName = MethodName
+            };
+
+            // Initialize and assign to property
+            DataSource = dataSource;
+
+            // Initialize data source
+            DataSource.Init(this);
+
+            // Create common dataset and assign it to DataSet property of this context
+            DataSet = DataSource.CreateCommon();
+
+            // Delete (drop) the database to clear the existing data
+            DataSource.DeleteDb();
+        }
 
         /// <summary>
         /// Releases resources and calls base.Dispose().
