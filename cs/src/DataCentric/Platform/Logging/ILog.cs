@@ -78,5 +78,18 @@ namespace DataCentric
             // Requires at least Status verbosity
             obj.Entry(LogVerbosity.Info, String.Empty, message);
         }
+
+        /// <summary>
+        /// Record an error message if condition is false,
+        /// and an information message if true.
+        ///
+        /// The information message is recorded only if
+        /// log verbosity is at least Info.
+        /// </summary>
+        public static void Assert(this ILog obj, bool condition, string message)
+        {
+            if (!condition) obj.Error(message);
+            else obj.Info(message);
+        }
     }
 }
