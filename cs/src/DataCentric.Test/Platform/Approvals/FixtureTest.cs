@@ -34,13 +34,10 @@ namespace DataCentric.Test
                 context.Log.Info("Status log entry.");
 
                 // Verify entries
-                context.Log.Verify("Result verify entry.");
+                context.Log.Verify("Single-line verify entry.");
+                context.Log.Verify("Title", "Multi-line verify entry.");
                 context.Log.Assert(true, "Assert when condition is true.");
                 context.Log.Assert(false, "Assert when condition is false.");
-
-                // File verify entry and saving
-                // FIXME - check that file is saved when enabled
-                context.Verify.File("FileName.txt", "File verify entry.");
             }
         }
 

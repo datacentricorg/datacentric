@@ -36,12 +36,12 @@ namespace DataCentric.Test
 
                 string xmlString = obj.ToXml();
                 string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;
-                context.Verify.File("Original.xml", xmlString);
+                context.Log.Verify("Original", xmlString);
 
                 var deserialized = new BaseTypeSampleData();
                 deserialized.ParseXml(xmlString);
                 string deserializedString = deserialized.ToXml();
-                context.Verify.File("Copy.xml", deserializedString);
+                context.Log.Verify("Copy", deserializedString);
                 context.Log.Assert(xmlString == deserializedString, "Serialization roundtrip assert.");
             }
         }
@@ -96,12 +96,12 @@ namespace DataCentric.Test
 
                 string xmlString = obj.ToXml();
                 string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;
-                context.Verify.File("Original.xml", xmlString);
+                context.Log.Verify("Original", xmlString);
 
                 var deserialized = new DerivedTypeSampleData();
                 deserialized.ParseXml(xmlString);
                 string deserializedString = deserialized.ToXml();
-                context.Verify.File("Copy.xml", deserializedString);
+                context.Log.Verify("Copy", deserializedString);
                 context.Log.Assert(xmlString == deserializedString, "Serialization roundtrip assert.");
             }
         }

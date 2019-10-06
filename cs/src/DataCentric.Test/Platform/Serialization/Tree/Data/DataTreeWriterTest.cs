@@ -36,7 +36,7 @@ namespace DataCentric.Test
 
                 string xmlString = obj.ToXml();
                 string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;
-                context.Verify.File("Original.xml", xmlString);
+                context.Log.Verify("Original", xmlString);
 
                 var copy = new BaseTypeSampleData();
                 var copyWriter = new DataTreeWriter(copy);
@@ -45,7 +45,7 @@ namespace DataCentric.Test
                 copyWriter.WriteEndDocument(mappedClassName);
 
                 string copyString = copy.ToXml();
-                context.Verify.File("Copy.xml", copyString);
+                context.Log.Verify("Copy", copyString);
                 context.Log.Assert(xmlString == copyString, "Serialization roundtrip assert.");
             }
         }
@@ -107,10 +107,10 @@ namespace DataCentric.Test
                 copyWriter.WriteEndDocument(mappedClassName);
 
                 string xmlString = obj.ToXml();
-                context.Verify.File("Original.xml", xmlString);
+                context.Log.Verify("Original", xmlString);
 
                 string copyString = copy.ToXml();
-                context.Verify.File("Copy.xml", copyString);
+                context.Log.Verify("Copy", copyString);
                 context.Log.Assert(xmlString == copyString, "Serialization roundtrip assert.");
             }
         }

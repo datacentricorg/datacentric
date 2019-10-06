@@ -79,7 +79,7 @@ namespace DataCentric.Test
 
             // Serialize the generated table and save serialized string to file
             string originalNoHeadersString = originalTable.ToString();
-            context.CastTo<IVerifyable>().Verify.File($"{layout}.csv", originalNoHeadersString);
+            context.Log.Verify($"{layout}", originalNoHeadersString);
 
             // Deserialize from string back into table
             var parsedNoHeadersTable = new ValueTableData();

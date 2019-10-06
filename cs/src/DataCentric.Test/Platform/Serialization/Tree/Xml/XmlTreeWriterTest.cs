@@ -107,7 +107,7 @@ namespace DataCentric.Test
 
                 // Output the result
                 string result = writer.ToString();
-                context.Verify.File("Output.xml", result);
+                context.Log.Verify("Output", result);
             }
         }
     }
