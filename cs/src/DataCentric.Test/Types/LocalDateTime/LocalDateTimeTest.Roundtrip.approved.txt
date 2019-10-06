@@ -1,4 +1,4 @@
-Info: String roundtrip for 2003-05-01 10:15:30 assert.
-Info: Long roundtrip for 2003-05-01 10:15:30 assert.
-Info: String roundtrip for 2003-05-01 10:15:30.005 assert.
-Info: Long roundtrip for 2003-05-01 10:15:30.005 assert.
+Verify: String roundtrip for 2003-05-01 10:15:30 assert.
+Verify: Long roundtrip for 2003-05-01 10:15:30 assert.
+Verify: String roundtrip for 2003-05-01 10:15:30.005 assert.
+Verify: Long roundtrip for 2003-05-01 10:15:30.005 assert.

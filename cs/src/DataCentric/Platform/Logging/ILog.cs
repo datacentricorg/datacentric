@@ -107,7 +107,7 @@ namespace DataCentric
         public static void Assert(this ILog obj, bool condition, string message)
         {
             if (!condition) obj.Error(message);
-            else obj.Info(message);
+            else obj.Verify(message);
         }
     }
 }
