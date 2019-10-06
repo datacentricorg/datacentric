@@ -31,7 +31,7 @@ namespace DataCentric.Test
             {
                 // Log entries other than Exception
                 context.Log.Warning("Warning log entry.");
-                context.Log.Status("Status log entry.");
+                context.Log.Info("Status log entry.");
 
                 // Verify entries
                 context.Verify.Text("Result verify entry.");
@@ -52,7 +52,7 @@ namespace DataCentric.Test
             using (var context = new UnitTestContext(this))
             {
                 // The test checks that the entry preceding exception is recorded
-                context.Log.Status("Normal status entry preceding exception");
+                context.Log.Info("Normal status entry preceding exception");
 
                 try
                 {

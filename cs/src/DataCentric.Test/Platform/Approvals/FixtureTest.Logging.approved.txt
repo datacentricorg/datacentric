@@ -1,5 +1,5 @@
 Warning: Warning log entry.
-Status: Status log entry.
+Info: Status log entry.
 Verify.Text: Result verify entry.
 Verify.Passed: Assert(true) verify entry.
 Verify.Failed: Assert(false) verify entry.

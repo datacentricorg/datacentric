@@ -38,7 +38,7 @@ namespace DataCentric
             // Record all entries if log verbosity is not specified
             if (verbosity <= Verbosity)
             {
-                var logEntry = new LogEntry(LogVerbosity.Status, entrySubType, message);
+                var logEntry = new LogEntry(LogVerbosity.Info, entrySubType, message);
                 Console.WriteLine(logEntry.ToString());
             }
         }

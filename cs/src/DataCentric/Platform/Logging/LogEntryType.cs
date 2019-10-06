@@ -36,7 +36,7 @@ namespace DataCentric
         Warning,
 
         /// <summary>Status message.</summary>
-        Status,
+        Info,
 
         /// <summary>Progress ratio or message.</summary>
         Progress,

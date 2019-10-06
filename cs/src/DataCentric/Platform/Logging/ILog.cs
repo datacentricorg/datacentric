@@ -72,11 +72,11 @@ namespace DataCentric
             obj.Entry(LogVerbosity.Warning, String.Empty, message);
         }
 
-        /// <summary>Record a status message.</summary>
-        public static void Status(this ILog obj, string message)
+        /// <summary>Record an information message.</summary>
+        public static void Info(this ILog obj, string message)
         {
             // Requires at least Status verbosity
-            obj.Entry(LogVerbosity.Status, String.Empty, message);
+            obj.Entry(LogVerbosity.Info, String.Empty, message);
         }
     }
 }
