@@ -70,6 +70,7 @@ namespace DataCentric
         /// </summary>
         public override void Dispose()
         {
+            indentedTextWriter_.Close();
             indentedTextWriter_.Dispose();
 
             // Dispose base

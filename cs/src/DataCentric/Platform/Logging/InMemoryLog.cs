@@ -43,6 +43,7 @@ namespace DataCentric
         /// </summary>
         public override void Dispose()
         {
+            stringWriter_.Close();
             stringWriter_.Dispose();
 
             // Dispose base

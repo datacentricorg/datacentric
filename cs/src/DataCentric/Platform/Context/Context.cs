@@ -138,6 +138,7 @@ namespace DataCentric
         public virtual void Dispose()
         {
             // Call Dispose() for each initialized property of the context
+            // in reverse order of initialization
             if (dataSource_ != null) dataSource_.Dispose();
             if (progress_ != null) progress_.Dispose();
             if (log_ != null) log_.Dispose();
