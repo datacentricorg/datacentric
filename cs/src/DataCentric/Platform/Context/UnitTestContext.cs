@@ -88,6 +88,9 @@ namespace DataCentric
             Log = new FileLog { LogFilePath = logFileName };
             Progress = new NullProgress();
             Verify = new LogVerify { ClassName = className, MethodName = methodName };
+
+            // Set log verbosity level to Verify
+            Log.Verbosity = LogVerbosity.Verify;
         }
 
         /// <summary>

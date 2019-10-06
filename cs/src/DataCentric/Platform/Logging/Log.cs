@@ -37,6 +37,19 @@ namespace DataCentric
         /// verbosity for different code segments.</summary>
         public LogVerbosity Verbosity { get; set; }
 
+        //--- CONSTRUCTORS
+
+        /// <summary>
+        /// Set default verbosity level to Warning.
+        ///
+        /// The verbosity level can subsequently be modified
+        /// using ILog interface.
+        /// </summary>
+        protected Log()
+        {
+            Verbosity = LogVerbosity.Warning;
+        }
+
         //--- METHODS
 
         /// <summary>

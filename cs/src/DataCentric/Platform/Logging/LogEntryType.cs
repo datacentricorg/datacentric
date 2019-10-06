@@ -18,13 +18,16 @@ using System;
 
 namespace DataCentric
 {
-    /// <summary>Enumeration for the log entry type.</summary>
+    /// <summary>
+    /// A log entry is not published to log output if entry verbosity
+    /// exceeds log verbosity.
+    /// </summary>
     public enum LogVerbosity
     {
         /// <summary>
-        /// Error is the default entry type, used when entry type is not set.
+        /// Error is the default verbosity, used when verbosity is not set.
         ///
-        /// Because this is the latest value in the enumeration,  errors are
+        /// Because this is the lowest value in the enumeration, errors are
         /// reported irrespective of the verbosity level.
         /// </summary>
         Error,
