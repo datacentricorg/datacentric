@@ -22,55 +22,25 @@ using System.Reflection;
 namespace DataCentric
 {
     /// <summary>
-    /// Output folder based on disk filesystem.
+    /// Implements read-write IFolder interface for a conventional filesystem.
+    ///
+    /// To provide read-only interface, use DiskReadOnlyFolder class instead.
     /// </summary>
-    public class DiskOutputFolder : IOutputFolder
+    public class DiskFolder : DiskReadOnlyFolder, IFolder
     {
-        /// <summary>Context for which this interface is defined.
-        /// Use to access other interfaces of the same context.</summary>
-        public IContext Context { get; private set; }
-
-        /// <summary>Output folder path.</summary>
-        public string OutputFolderPath { get; set; }
-
-        //--- METHODS
-
         /// <summary>
-        /// Set Context property and perform validation of the record's data,
-        /// then initialize any fields or properties that depend on that data.
+        /// Creates or opens the specified file for writing using UTF-8 encoding.
         ///
-        /// This method may be called multiple times for the same instance,
-        /// possibly with a different context parameter for each subsequent call.
+        /// Append vs. overwrite behavior is determined by write mode.
         ///
-        /// IMPORTANT - Every override of this method must call base.Init()
-        /// first, and only then execute the rest of the override method's code.
+        /// This method throws an exception if path is null, an invalid path,
+        /// a zero-length string, or if the caller does not have sufficient
+        /// permissions to write to the specified file.
         /// </summary>
-        public virtual void Init(IContext context)
-        {
-            // Uncomment except in root class of the hierarchy
-            // base.Init(context);
-
-            // Check that argument is not null and assign to the Context property
-            if (context == null) throw new Exception($"Null context is passed to the Init(...) method for {GetType().Name}.");
-            Context = context;
-        }
-
-        /// <summary>Determines whether the specified file exists.
-        /// This method accepts dot delimited folder path.</summary>
-        public bool Exists(string filePath)
-        {
-            string fullFilePath = Path.Combine(OutputFolderPath, filePath);
-            bool result = File.Exists(fullFilePath);
-            return result;
-        }
-
-        /// <summary>Creates or opens the specified file for writing
-        /// using UTF-8 encoding. Append vs. overwrite behavior is determined by writeMode.
-        /// This method accepts dot delimited folder path.</summary>
-        public TextWriter CreateTextWriter(string filePath, FileWriteMode writeMode)
+        public TextWriter GetTextWriter(string filePath, FileWriteMode writeMode)
         {
             // Create full path by combining with output folder path
-            string fullFilePath = Path.Combine(OutputFolderPath, filePath);
+            string fullFilePath = Path.Combine(FolderPath, filePath);
             string fullFolderPath = Path.GetDirectoryName(fullFilePath);
 
             // Check if directory exists, if not create
@@ -91,11 +61,18 @@ namespace DataCentric
             }
         }
 
-        /// <summary>Deletes the specified file.
-        /// This method accepts dot delimited folder path.</summary>
-        public void Delete(string filePath)
+        /// <summary>
+        /// Deletes the specified file if it exists.
+        ///
+        /// This method has no effect if the specified file does not exist.
+        ///
+        /// This method throws an exception if path is null, an invalid path,
+        /// a zero-length string, a directory, or if the caller does not have
+        /// sufficient permissions to delete the specified file.
+        /// </summary>
+        public void DeleteFile(string filePath)
         {
-            string fullFilePath = Path.Combine(OutputFolderPath, filePath);
+            string fullFilePath = Path.Combine(FolderPath, filePath);
             if (File.Exists(fullFilePath)) File.Delete(fullFilePath);
         }
     }

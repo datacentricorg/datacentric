@@ -104,7 +104,7 @@ namespace DataCentric
                 obj.Context.Log.Append(LogEntryType.Verify, "File", approvalMessage);
 
                 // Save contents to a file
-                var fileWriter = obj.Context.Out.CreateTextWriter(fileNameWithPrefix, FileWriteMode.Replace);
+                var fileWriter = obj.Context.OutputFolder.GetTextWriter(fileNameWithPrefix, FileWriteMode.Replace);
                 fileWriter.Write(fileContents);
                 fileWriter.Flush();
             }

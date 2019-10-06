@@ -52,7 +52,7 @@ namespace DataCentric
 
             // Create text writer for the file, then wrap it into
             // an indented writer using 4 space indent string
-            var textWriter = context.Out.CreateTextWriter(LogFilePath, FileWriteMode.Replace);
+            var textWriter = context.OutputFolder.GetTextWriter(LogFilePath, FileWriteMode.Replace);
             indentedTextWriter_ = new IndentedTextWriter(textWriter, "    ");
         }
 

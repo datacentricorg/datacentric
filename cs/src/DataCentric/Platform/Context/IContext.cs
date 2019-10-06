@@ -26,8 +26,12 @@ namespace DataCentric
     /// </summary>
     public interface IContext : IDisposable
     {
-        /// <summary>Output folder root of the context's virtualized filesystem.</summary>
-        IOutputFolder Out { get; }
+        /// <summary>
+        /// Provides a unified API for an output folder located in a
+        /// conventional filesystem or an alternative backing store
+        /// such as S3.
+        /// </summary>
+        IFolder OutputFolder { get; }
 
         /// <summary>Logging interface.</summary>
         ILog Log { get; }

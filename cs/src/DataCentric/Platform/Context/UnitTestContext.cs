@@ -104,7 +104,7 @@ namespace DataCentric
             // Use log file name format assName.MethodName.approved.txt from ApprovalTests.NET.
             string logFileName = String.Join(".", className, MethodName, "approved.txt");
 
-            Out = new DiskOutputFolder { OutputFolderPath = testFolderPath };
+            OutputFolder = new DiskFolder { FolderPath = testFolderPath };
             Log = new FileLog { LogFilePath = logFileName };
             Progress = new NullProgress();
 

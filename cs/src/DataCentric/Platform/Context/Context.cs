@@ -27,12 +27,16 @@ namespace DataCentric
     {
         private IDataSource dataSource_;
         private ObjectId? dataSet_;
-        private IOutputFolder out_;
+        private IFolder out_;
         private ILog log_;
         private IProgress progress_;
 
-        /// <summary>Output folder root of the context's virtualized filesystem.</summary>
-        public IOutputFolder Out
+        /// <summary>
+        /// Provides a unified API for an output folder located in a
+        /// conventional filesystem or an alternative backing store
+        /// such as S3.
+        /// </summary>
+        public IFolder OutputFolder
         {
             get
             {
