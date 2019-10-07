@@ -29,7 +29,8 @@ namespace DataCentric
     /// </summary>
     public abstract class TextLog : Log
     {
-        private const int indentSize_ = 4;
+        private readonly string indentString_ = new String(' ', 4);
+        private readonly string[] lineSeparators_ = new string[] {"\r\n", "\r", "\n"};
 
         //--- PROPERTIES
 
@@ -68,10 +69,17 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Append a new single-line entry to the log.
+        /// Record a new entry to the log if log verbosity
+        /// is the same or high as entry verbosity.
         ///
-        /// This method has no effect unless entry verbosity
-        /// exceeds log verbosity.
+        /// In a text log, first line of the message follows
+        /// verbosity prefix after semicolon separator. Remaining
+        /// lines of the message (if any) are recorded with 4 space
+        /// indent, for example:
+        ///
+        /// Info: Message Line 1
+        ///     Message Line 2
+        ///     Message Line 3
         /// </summary>
         public override void Entry(LogVerbosity verbosity, string message)
         {
@@ -82,18 +90,50 @@ namespace DataCentric
                 var logEntry = new LogEntry(verbosity, message);
                 string logString = logEntry.ToString();
 
-                // Do not write indent for a single-line entry
-                LogTextWriter.WriteLine(logString);
+                // Split the log string into lines
+                string[] logStringLines = logString.Split(lineSeparators_, StringSplitOptions.None);
+
+                int lineCount = logStringLines.Length;
+                for (int i = 0; i < lineCount; ++i)
+                {
+                    string logStringLine = logStringLines[i];
+                    if (string.IsNullOrEmpty(logStringLine))
+                    {
+                        if (i < lineCount - 1)
+                        {
+                            // Write empty line unless the empty token is last, in which
+                            // case it represents the trailing EOL and including it would
+                            // create in a trailing empty line not present in the original
+                            // log message
+                            LogTextWriter.WriteLine();
+                        }
+                    }
+                    else
+                    {
+                        // Write indent string for all lines except the first.
+                        // The first line follows entry type on the same line
+                        if (i > 0) LogTextWriter.Write(indentString_);
+
+                        // Write output line
+                        LogTextWriter.WriteLine(logStringLine);
+                    }
+                }
             }
         }
 
         /// <summary>
-        /// Append a new entry to the log that has single-line title
-        /// and multi-line body. The body will be indented by one
-        /// tab stop.
+        /// Record a new entry to the log if log verbosity
+        /// is the same or high as entry verbosity.
         ///
-        /// This method has no effect unless entry verbosity
-        /// exceeds log verbosity. 
+        /// In a text log, first line of the title follows verbosity
+        /// prefix after semicolon separator. Remaining lines of the
+        /// title (if any) and all lines of the body are recorded
+        /// with 4 space indent, for example:
+        ///
+        /// Info: Title Line 1
+        ///     Title Line 2
+        ///     Body Line 1
+        ///     Body Line 2
         /// </summary>
         public override void Entry(LogVerbosity verbosity, string title, string body)
         {
@@ -101,18 +141,9 @@ namespace DataCentric
             // Record all entries if log verbosity is not specified
             if (verbosity <= Verbosity)
             {
-                var logTitleEntry = new LogEntry(verbosity, title);
-                string logTitleString = logTitleEntry.ToString();
-
-                // Do not write indent for the title
-                LogTextWriter.WriteLine(logTitleString);
-
-                // Create an indented writer for long entry body and set indent size
-                var indentedWriter = new IndentedTextWriter(LogTextWriter, new String(' ', indentSize_));
-
-                // Increment indent by one tab stop before writing the body
-                indentedWriter.Indent++;
-                indentedWriter.WriteLine(body);
+                // Message is title followed by line separator and then body
+                string message = string.Concat(title, Environment.NewLine, body);
+                Entry(verbosity, message);
             }
         }
     }
