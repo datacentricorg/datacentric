@@ -35,28 +35,45 @@ namespace DataCentric
     ///
     /// For tests that do not require a data source, use UnitTestContext.
     /// </summary>
-    public class DataTestContext<TDataSource> : UnitTestContext
+    public class MongoTestContext<TDataSource> : UnitTestContext
         where TDataSource : MongoDataSourceData, IDataSource, new()
     {
         /// <summary>
-        /// Create with class name, method name, and source file path.
-        ///
-        /// When ``this'' is passed as the the only argument to the
-        /// constructor, the latter two arguments are provided by
-        /// the compiler.
+        /// Unit test context for the specified object for the Mongo
+        /// server running on the default port of localhost.
+        /// 
+        /// The last two arguments are provided by the compiler unless
+        /// specified explicitly by the caller.
         /// </summary>
-        public DataTestContext(
-            object classInstance,
+        public MongoTestContext(
+            object obj,
             [CallerMemberName] string methodName = null,
             [CallerFilePath] string sourceFilePath = null)
             :
-            base(classInstance, methodName, sourceFilePath)
+            this(obj, null, methodName, sourceFilePath)
+        {
+            // Will use Mongo server running on the default port of localhost
+        }
+
+        /// <summary>
+        /// Unit test context for the specified object and Mongo server URI.
+        /// 
+        /// The last two arguments are provided by the compiler unless
+        /// specified explicitly by the caller.
+        /// </summary>
+        public MongoTestContext(
+            object obj,
+            string mongoServerUri,
+            [CallerMemberName] string methodName = null,
+            [CallerFilePath] string sourceFilePath = null)
+            :
+            base(obj, methodName, sourceFilePath)
         {
             // Create and initialize data source with TEST instance type.
             //
             // This does not create the database until the data source
             // is actually used to access data.
-            string mappedClassName = ClassInfo.GetOrCreate(classInstance).MappedClassName;
+            string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;
 
             // Create data source specified as generic argument
             DataSource = new TDataSource()
@@ -66,7 +83,8 @@ namespace DataCentric
                     InstanceType = InstanceType.TEST,
                     InstanceName = mappedClassName,
                     EnvName = methodName
-                }
+                },
+                MongoServerUri = mongoServerUri
             };
 
             // Create common dataset and assign it to DataSet property of this context

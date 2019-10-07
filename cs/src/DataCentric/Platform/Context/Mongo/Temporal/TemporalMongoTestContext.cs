@@ -36,21 +36,37 @@ namespace DataCentric
     ///
     /// For tests that do not require a data source, use UnitTestContext.
     /// </summary>
-    public class TemporalMongoTestContext : DataTestContext<TemporalMongoDataSourceData>
+    public class TemporalMongoTestContext : MongoTestContext<TemporalMongoDataSourceData>
     {
         /// <summary>
-        /// Create with class name, method name, and source file path.
-        ///
-        /// When ``this'' is passed as the the only argument to the
-        /// constructor, the latter two arguments are provided by
-        /// the compiler.
+        /// Unit test context for the specified object for the Mongo
+        /// server running on the default port of localhost.
+        /// 
+        /// The last two arguments are provided by the compiler unless
+        /// specified explicitly by the caller.
         /// </summary>
         public TemporalMongoTestContext(
-            object classInstance,
+            object obj,
             [CallerMemberName] string methodName = null,
             [CallerFilePath] string sourceFilePath = null)
             :
-            base(classInstance, methodName, sourceFilePath)
+            base(obj, methodName, sourceFilePath)
+        {
+        }
+
+        /// <summary>
+        /// Unit test context for the specified object and Mongo server URI.
+        /// 
+        /// The last two arguments are provided by the compiler unless
+        /// specified explicitly by the caller.
+        /// </summary>
+        public TemporalMongoTestContext(
+            object classInstance,
+            string mongoServerUri,
+            [CallerMemberName] string methodName = null,
+            [CallerFilePath] string sourceFilePath = null)
+            :
+            base(classInstance, mongoServerUri, methodName, sourceFilePath)
         {
         }
     }

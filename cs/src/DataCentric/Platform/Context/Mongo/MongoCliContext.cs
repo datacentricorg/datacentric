@@ -33,7 +33,7 @@ namespace DataCentric
             {
                 DataSourceName = mongoServerUri + db.Value,
                 DbName = db,
-                ServerUri = mongoServerUri
+                MongoServerUri = mongoServerUri
             };
 
             // Set data source and dataset

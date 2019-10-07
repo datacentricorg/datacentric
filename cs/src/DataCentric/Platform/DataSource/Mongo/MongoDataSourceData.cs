@@ -52,7 +52,7 @@ namespace DataCentric
         /// Server URI specified here must refer to the entire server, not
         /// an individual database.
         /// </summary>
-        public string ServerUri { get; set; }
+        public string MongoServerUri { get; set; }
 
         //--- PROPERTIES
 
@@ -134,10 +134,10 @@ namespace DataCentric
                     $"MongoDB database name {dbName_} exceeds the maximum length of 64 characters.");
 
             // Get client interface using the server instance loaded from root dataset
-            if (!string.IsNullOrEmpty(ServerUri))
+            if (!string.IsNullOrEmpty(MongoServerUri))
             {
                 // Create with the specified server URI
-                client_ = new MongoClient(ServerUri);
+                client_ = new MongoClient(MongoServerUri);
             }
             else
             {
