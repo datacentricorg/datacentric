@@ -59,20 +59,33 @@ namespace DataCentric
         void Flush();
 
         /// <summary>
-        /// Append a new single-line entry to the log.
+        /// Record a new entry to the log if log verbosity
+        /// is the same or high as entry verbosity.
         ///
-        /// This method has no effect unless entry verbosity
-        /// exceeds log verbosity.
+        /// In a text log, first line of the message follows
+        /// verbosity prefix after semicolon separator. Remaining
+        /// lines of the message (if any) are recorded with 4 space
+        /// indent, for example:
+        ///
+        /// Info: Message Line 1
+        ///     Message Line 2
+        ///     Message Line 3
         /// </summary>
         void Entry(LogVerbosity verbosity, string message);
 
         /// <summary>
-        /// Append a new entry to the log that has single-line title
-        /// and multi-line body. The body will be indented by one
-        /// tab stop.
+        /// Record a new entry to the log if log verbosity
+        /// is the same or high as entry verbosity.
         ///
-        /// This method has no effect unless entry verbosity
-        /// exceeds log verbosity. 
+        /// In a text log, first line of the title follows verbosity
+        /// prefix after semicolon separator. Remaining lines of the
+        /// title (if any) and all lines of the body are recorded
+        /// with 4 space indent, for example:
+        ///
+        /// Info: Title Line 1
+        ///     Title Line 2
+        ///     Body Line 1
+        ///     Body Line 2
         /// </summary>
         void Entry(LogVerbosity verbosity, string title, string body);
     }
@@ -81,11 +94,20 @@ namespace DataCentric
     public static class ILogExt
     {
         /// <summary>
-        /// Record a single-line error message.
+        /// Record an error message to the log for any log verbosity.
         ///
         /// This method does not throw an exception; it is invoked
         /// to indicate an error when exception is not necessary,
         /// and it may also be invoked when the exception is caught.
+        ///
+        /// In a text log, first line of the message follows
+        /// verbosity prefix after semicolon separator. Remaining
+        /// lines of the message (if any) are recorded with 4 space
+        /// indent, for example:
+        ///
+        /// Error: Message Line 1
+        ///     Message Line 2
+        ///     Message Line 3
         /// </summary>
         public static void Error(this ILog obj, string message)
         {
@@ -94,13 +116,21 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Record an error message with a single-line title
-        /// and multi-line body. The body will be indented by one
-        /// tab stop.
+        /// Record an error message to the log for any log verbosity.
         ///
         /// This method does not throw an exception; it is invoked
         /// to indicate an error when exception is not necessary,
         /// and it may also be invoked when the exception is caught.
+        ///
+        /// In a text log, first line of the message follows
+        /// verbosity prefix after semicolon separator. Remaining
+        /// lines of the message (if any) are recorded with 4 space
+        /// indent, for example:
+        ///
+        /// Error: Title Line 1
+        ///     Title Line 2
+        ///     Body Line 1
+        ///     Body Line 2
         /// </summary>
         public static void Error(this ILog obj, string title, string body)
         {
@@ -109,7 +139,22 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Record a single-line warning message.
+        /// Record a warning message to the log if log verbosity
+        /// is at least Warning.
+        ///
+        /// Warning messages should be used sparingly to avoid
+        /// flooding log output with insignificant warnings.
+        /// A warning message should never be generated inside
+        /// a loop.
+        ///
+        /// In a text log, first line of the message follows
+        /// verbosity prefix after semicolon separator. Remaining
+        /// lines of the message (if any) are recorded with 4 space
+        /// indent, for example:
+        ///
+        /// Warning: Message Line 1
+        ///     Message Line 2
+        ///     Message Line 3
         /// </summary>
         public static void Warning(this ILog obj, string message)
         {
@@ -118,9 +163,23 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Record a warning message with a single-line title
-        /// and multi-line body. The body will be indented by one
-        /// tab stop.
+        /// Record a warning message to the log if log verbosity
+        /// is at least Warning.
+        ///
+        /// Warning messages should be used sparingly to avoid
+        /// flooding log output with insignificant warnings.
+        /// A warning message should never be generated inside
+        /// a loop.
+        /// 
+        /// In a text log, first line of the message follows
+        /// verbosity prefix after semicolon separator. Remaining
+        /// lines of the message (if any) are recorded with 4 space
+        /// indent, for example:
+        ///
+        /// Warning: Title Line 1
+        ///     Title Line 2
+        ///     Body Line 1
+        ///     Body Line 2
         /// </summary>
         public static void Warning(this ILog obj, string title, string body)
         {
@@ -129,81 +188,130 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Record a single-line information message.
+        /// Record an info message to the log if log verbosity
+        /// is at least Info.
         ///
-        /// Information output should be used sparingly to avoid
-        /// flooding log output with superfluous data. An information
+        /// Info messages should be used sparingly to avoid
+        /// flooding log output with superfluous data. An info
         /// message should never be generated inside a loop.
+        ///
+        /// In a text log, first line of the message follows
+        /// verbosity prefix after semicolon separator. Remaining
+        /// lines of the message (if any) are recorded with 4 space
+        /// indent, for example:
+        ///
+        /// Info: Message Line 1
+        ///     Message Line 2
+        ///     Message Line 3
         /// </summary>
         public static void Info(this ILog obj, string message)
         {
-            // Requires at least Status verbosity
+            // Requires at least Info verbosity
             obj.Entry(LogVerbosity.Info, message);
         }
 
         /// <summary>
-        /// Record a information message with a single-line title
-        /// and multi-line body. The body will be indented by one
-        /// tab stop.
+        /// Record an info message to the log if log verbosity
+        /// is at least Info.
         ///
-        /// Information output should be used sparingly to avoid
-        /// flooding log output with superfluous data. An information
+        /// Info messages should be used sparingly to avoid
+        /// flooding log output with superfluous data. An info
         /// message should never be generated inside a loop.
+        /// 
+        /// In a text log, first line of the message follows
+        /// verbosity prefix after semicolon separator. Remaining
+        /// lines of the message (if any) are recorded with 4 space
+        /// indent, for example:
+        ///
+        /// Info: Title Line 1
+        ///     Title Line 2
+        ///     Body Line 1
+        ///     Body Line 2
         /// </summary>
         public static void Info(this ILog obj, string title, string body)
         {
-            // Requires at least Status verbosity
+            // Requires at least Info verbosity
             obj.Entry(LogVerbosity.Info, title, body);
         }
 
         /// <summary>
-        /// Record a single-line verification message.
+        /// Record a verification message to the log if log verbosity
+        /// is at least Verify.
         ///
-        /// Verification messages are used in approval testing and
-        /// are displayed at Verify or higher verbosity level, but
-        /// not at the Info verbosity level.
+        /// In a text log, first line of the message follows
+        /// verbosity prefix after semicolon separator. Remaining
+        /// lines of the message (if any) are recorded with 4 space
+        /// indent, for example:
+        ///
+        /// Verify: Message Line 1
+        ///     Message Line 2
+        ///     Message Line 3
         /// </summary>
         public static void Verify(this ILog obj, string message)
         {
+            // Requires at least Verify verbosity
             obj.Entry(LogVerbosity.Verify, message);
         }
 
         /// <summary>
-        /// Record a verification message with a single-line title
-        /// and multi-line body. The body will be indented by one
-        /// tab stop.
+        /// Record a verification message to the log if log verbosity
+        /// is at least Verify.
         ///
-        /// Verification messages are used in approval testing and
-        /// are displayed at Verify or higher verbosity level, but
-        /// not at the Info verbosity level.
+        /// In a text log, first line of the message follows
+        /// verbosity prefix after semicolon separator. Remaining
+        /// lines of the message (if any) are recorded with 4 space
+        /// indent, for example:
+        ///
+        /// Verify: Title Line 1
+        ///     Title Line 2
+        ///     Body Line 1
+        ///     Body Line 2
         /// </summary>
         public static void Verify(this ILog obj, string title, string body)
         {
+            // Requires at least Verify verbosity
             obj.Entry(LogVerbosity.Verify, title, body);
         }
 
         /// <summary>
-        /// Record a single-line error message if condition is false,
-        /// and a single-line information message if condition is true.
+        /// If condition is false, record an error message for any
+        /// verbosity. If condition is true, record a verification
+        /// message to the log if log verbosity is at least Verify.
         ///
-        /// The information message is recorded only if
-        /// log verbosity is at least Info.
+        /// In a text log, first line of the message follows
+        /// verbosity prefix after semicolon separator. Remaining
+        /// lines of the message (if any) are recorded with 4 space
+        /// indent, for example:
+        ///
+        /// Verify: Message Line 1
+        ///     Message Line 2
+        ///     Message Line 3
         /// </summary>
         public static void Assert(this ILog obj, bool condition, string message)
         {
+            // Requires at least Verify verbosity if condition is true
             if (!condition) obj.Error(message);
             else obj.Verify(message);
         }
 
         /// <summary>
-        /// Record a multi-line error message if condition is false,
-        /// and a multi-line information message if condition is true.
+        /// If condition is false, record an error message for any
+        /// verbosity. If condition is true, record a verification
+        /// message to the log if log verbosity is at least Verify.
         ///
-        /// The information message is recorded only if
-        /// log verbosity is at least Info.
+        /// In a text log, first line of the message follows
+        /// verbosity prefix after semicolon separator. Remaining
+        /// lines of the message (if any) are recorded with 4 space
+        /// indent, for example:
+        ///
+        /// Verify: Title Line 1
+        ///     Title Line 2
+        ///     Body Line 1
+        ///     Body Line 2
         /// </summary>
         public static void Assert(this ILog obj, bool condition, string title, string body)
         {
+            // Requires at least Verify verbosity if condition is true
             if (!condition) obj.Error(title, body);
             else obj.Verify(title, body);
         }

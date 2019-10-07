@@ -32,13 +32,26 @@ namespace DataCentric
         /// </summary>
         Error,
 
-        /// <summary>Warning message.</summary>
+        /// <summary>
+        /// Warning message.
+        ///
+        /// Warning messages should be used sparingly to avoid
+        /// flooding log output with insignificant warnings.
+        /// A warning message should never be generated inside
+        /// a loop.
+        /// </summary>
         Warning,
 
-        /// <summary>Status message.</summary>
+        /// <summary>
+        /// Info message.
+        ///
+        /// Info messages should be used sparingly to avoid
+        /// flooding log output with superfluous data. An info
+        /// message should never be generated inside a loop.
+        /// </summary>
         Info,
 
-        /// <summary>Approval test output.</summary>
+        /// <summary>Verification message for approval testing.</summary>
         Verify
     }
 }

@@ -93,20 +93,33 @@ namespace DataCentric
         public abstract void Flush();
 
         /// <summary>
-        /// Append a new single-line entry to the log.
+        /// Record a new entry to the log if log verbosity
+        /// is the same or high as entry verbosity.
         ///
-        /// This method has no effect unless entry verbosity
-        /// exceeds log verbosity.
+        /// In a text log, first line of the message follows
+        /// verbosity prefix after semicolon separator. Remaining
+        /// lines of the message (if any) are recorded with 4 space
+        /// indent, for example:
+        ///
+        /// Info: Message Line 1
+        ///     Message Line 2
+        ///     Message Line 3
         /// </summary>
         public abstract void Entry(LogVerbosity verbosity, string message);
 
         /// <summary>
-        /// Append a new entry to the log that has single-line title
-        /// and multi-line body. The body will be indented by one
-        /// tab stop.
+        /// Record a new entry to the log if log verbosity
+        /// is the same or high as entry verbosity.
         ///
-        /// This method has no effect unless entry verbosity
-        /// exceeds log verbosity. 
+        /// In a text log, first line of the title follows verbosity
+        /// prefix after semicolon separator. Remaining lines of the
+        /// title (if any) and all lines of the body are recorded
+        /// with 4 space indent, for example:
+        ///
+        /// Info: Title Line 1
+        ///     Title Line 2
+        ///     Body Line 1
+        ///     Body Line 2
         /// </summary>
         public abstract void Entry(LogVerbosity verbosity, string title, string body);
     }
