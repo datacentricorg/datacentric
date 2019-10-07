@@ -1,1 +1,22 @@
-Verify: XmlTreeWriterTest.Attributes.Output.approved.xml (1064 bytes)
+Verify: Output
+    <?xml version="1.0" encoding="utf-8"?>
+    <rootElement attributeOfRootElement1="AttributeValue1" attributeOfRootElement2="AttributeValue2">
+      <secondElement attributeOfSecondElement1="AttributeValue1" attributeOfSecondElement2="AttributeValue2">
+        <valueElement1>TestValue1</valueElement1>
+        <valueArray1>TestValue2</valueArray1>
+        <valueArray1>TestValue3</valueArray1>
+        <valueElement2 attributeOfValueElement1="AttributeValue1" attributeOfValueElement2="AttributeValue2">TestValue2</valueElement2>
+        <valueArray2 attributeOfValueArray1="AttributeValue1" attributeOfValueArray2="AttributeValue2">TestValue2</valueArray2>
+        <valueArray2 attributeOfValueArray1="AttributeValue1" attributeOfValueArray2="AttributeValue2">TestValue3</valueArray2>
+      </secondElement>
+      <thirdElement>
+        <arrayItem1>1</arrayItem1>
+        <arrayItem2>2</arrayItem2>
+        <arrayItem3>3</arrayItem3>
+      </thirdElement>
+      <thirdElement>
+        <arrayItem4>4</arrayItem4>
+        <arrayItem5>5</arrayItem5>
+        <arrayItem6>6</arrayItem6>
+      </thirdElement>
+    </rootElement>

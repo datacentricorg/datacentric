@@ -1,3 +1,13 @@
-Verify: XmlRecordSerializationTest.Basic.Original.approved.xml (145 bytes)
-Verify: XmlRecordSerializationTest.Basic.Copy.approved.xml (145 bytes)
+Verify: Original
+    <?xml version="1.0" encoding="utf-8"?>
+    <BaseTypeSample>
+      <SampleName>ABC</SampleName>
+      <DoubleElement>1</DoubleElement>
+    </BaseTypeSample>
+Verify: Copy
+    <?xml version="1.0" encoding="utf-8"?>
+    <BaseTypeSample>
+      <SampleName>ABC</SampleName>
+      <DoubleElement>1</DoubleElement>
+    </BaseTypeSample>
 Verify: Serialization roundtrip assert.
