@@ -38,13 +38,6 @@ namespace DataCentric
         /// <summary>Unique data source name.</summary>
         public string DataSourceName { get; set; }
 
-        //--- OPERATORS
-
-        /// <summary>Keys in which string id is the only element support implicit conversion from value.</summary>
-        public static implicit operator DataSourceKey(string value) { return new DataSourceKey { DataSourceName = value }; }
-
-        //--- STATIC
-
         /// <summary>
         /// By convention, Cache is the name of the Operational Data Store (ODS).
         /// </summary>

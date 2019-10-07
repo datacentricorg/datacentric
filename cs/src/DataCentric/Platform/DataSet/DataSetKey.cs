@@ -48,9 +48,6 @@ namespace DataCentric
         /// </summary>
         public string DataSetName { get; set; }
 
-        /// <summary>Keys in which string id is the only element support implicit conversion from value.</summary>
-        public static implicit operator DataSetKey(string value) { return new DataSetKey { DataSetName = value }; }
-
         /// <summary>
         /// By convention, Common is the default dataset in each data source.
         /// 
