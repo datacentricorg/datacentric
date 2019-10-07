@@ -50,7 +50,7 @@ namespace DataCentric
             [CallerMemberName] string methodName = null,
             [CallerFilePath] string sourceFilePath = null)
             :
-            this(obj, null, methodName, sourceFilePath)
+            this(obj, MongoServerKey.Default, methodName, sourceFilePath)
         {
             // Will use Mongo server running on the default port of localhost
         }
@@ -63,7 +63,7 @@ namespace DataCentric
         /// </summary>
         public MongoTestContext(
             object obj,
-            string mongoServerUri,
+            MongoServerKey mongoServerKey,
             [CallerMemberName] string methodName = null,
             [CallerFilePath] string sourceFilePath = null)
             :
@@ -84,7 +84,7 @@ namespace DataCentric
                     InstanceName = mappedClassName,
                     EnvName = methodName
                 },
-                MongoServerUri = mongoServerUri
+                MongoServer = mongoServerKey
             };
 
             // Create common dataset and assign it to DataSet property of this context

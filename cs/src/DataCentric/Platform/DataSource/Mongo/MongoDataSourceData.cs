@@ -45,14 +45,14 @@ namespace DataCentric
         //--- ELEMENTS
 
         /// <summary>
-        /// Mongo server URI.
+        /// Specifies Mongo server for this data source.
         ///
         /// Defaults to local server on the standard port if not specified.
         ///
         /// Server URI specified here must refer to the entire server, not
         /// an individual database.
         /// </summary>
-        public string MongoServerUri { get; set; }
+        public MongoServerKey MongoServer { get; set; }
 
         //--- PROPERTIES
 
@@ -134,10 +134,10 @@ namespace DataCentric
                     $"MongoDB database name {dbName_} exceeds the maximum length of 64 characters.");
 
             // Get client interface using the server instance loaded from root dataset
-            if (!string.IsNullOrEmpty(MongoServerUri))
+            if (MongoServer != null)
             {
                 // Create with the specified server URI
-                client_ = new MongoClient(MongoServerUri);
+                client_ = new MongoClient(MongoServer.MongoServerUri);
             }
             else
             {

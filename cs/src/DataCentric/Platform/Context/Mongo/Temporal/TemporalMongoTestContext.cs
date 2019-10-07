@@ -62,11 +62,11 @@ namespace DataCentric
         /// </summary>
         public TemporalMongoTestContext(
             object classInstance,
-            string mongoServerUri,
+            MongoServerKey mongoServerKey,
             [CallerMemberName] string methodName = null,
             [CallerFilePath] string sourceFilePath = null)
             :
-            base(classInstance, mongoServerUri, methodName, sourceFilePath)
+            base(classInstance, mongoServerKey, methodName, sourceFilePath)
         {
         }
     }

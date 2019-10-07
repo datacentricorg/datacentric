@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright (C) 2013-present The DataCentric Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,34 +14,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
+using CsvHelper.Configuration.Attributes;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using NodaTime;
 
 namespace DataCentric
 {
     /// <summary>
-    /// Mongo context to connect from cli.
+    /// Provides Mongo server URI.
+    ///
+    /// Server URI specified here must refer to the entire server, not
+    /// an individual database.
     /// </summary>
-    public class MongoCliContext : Context
+    public class MongoServerData : TypedRecord<MongoServerKey, MongoServerData>
     {
         /// <summary>
-        /// Create with environment and source passed cli arguments.
+        /// Mongo server URI.
+        ///
+        /// Server URI specified here must refer to the entire server, not
+        /// an individual database.
         /// </summary>
-        public MongoCliContext(DbNameKey db, string mongoServerUri, ObjectId dataSetId)
-        {
-            var dataSource = new TemporalMongoDataSourceData
-            {
-                DataSourceName = mongoServerUri + db.Value,
-                DbName = db,
-                MongoServer = new MongoServerKey { MongoServerUri = mongoServerUri}
-            };
-
-            // Set data source and dataset
-            DataSource = dataSource;
-            DataSet = dataSetId;
-
-            // Initialize
-            dataSource.Init(this);
-        }
+        [BsonRequired]
+        public string MongoServerUri { get; set; }
     }
 }
