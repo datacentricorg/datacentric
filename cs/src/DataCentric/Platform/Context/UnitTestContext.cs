@@ -33,27 +33,8 @@ namespace DataCentric
     ///
     /// For tests that require MongoDB, use IDataTestDataContext.
     /// </summary>
-    public class UnitTestContext : Context, IVerifyable
+    public class UnitTestContext : Context
     {
-        private IVerify verify_;
-
-        //--- PROPERTIES
-
-        /// <summary>Approval testing interface.</summary>
-        public IVerify Verify
-        {
-            get
-            {
-                if (verify_ == null) throw new Exception($"Verify property is not set in {GetType().Name}.");
-                return verify_;
-            }
-            set
-            {
-                verify_ = value;
-                verify_.Init(this);
-            }
-        }
-
         /// <summary>
         /// Create with class name, method name, and source file path.
         ///
@@ -87,40 +68,10 @@ namespace DataCentric
             OutputFolder = new DiskFolder { FolderPath = testFolderPath };
             Log = new FileLog { LogFilePath = logFileName };
             Progress = new NullProgress();
-            Verify = new LogVerify { ClassName = className, MethodName = methodName };
 
-            // Set log verbosity level to Verify
+            // Increase log verbosity to Verify from its
+            // default level set in base class Context
             Log.Verbosity = LogVerbosity.Verify;
-        }
-
-        /// <summary>
-        /// Releases resources and calls base.Dispose().
-        ///
-        /// This method will not be called by the garbage collector.
-        /// It will only be executed if:
-        ///
-        /// * This class implements IDisposable; and
-        /// * The class instance is created through the using clause
-        ///
-        /// IMPORTANT - Every override of this method must call base.Dispose()
-        /// after executing its own code.
-        /// </summary>
-        public virtual void Dispose()
-        {
-            // Call Dispose() for each initialized property of the context
-            // in the reverse order of initialization
-            if (verify_ != null) verify_.Dispose();
-
-            // Dispose base
-            base.Dispose();
-        }
-
-        /// <summary>Flush data to permanent storage.</summary>
-        public virtual void Flush()
-        {
-            // Call Flush() for each initialized property of the context
-            // in the order of initialization
-            if (verify_ != null) verify_.Flush();
         }
     }
 }
