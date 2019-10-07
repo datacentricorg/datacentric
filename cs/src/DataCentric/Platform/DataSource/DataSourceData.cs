@@ -37,18 +37,7 @@ namespace DataCentric
     /// </summary>
     public abstract class DataSourceData : RootRecord<DataSourceKey, DataSourceData>, IDataSource
     {
-        //--- FIELDS
-
-        /// <summary>
-        /// Dictionary of dataset ObjectIds stored under string dataSetName.
-        /// </summary>
         private Dictionary<string, ObjectId> dataSetDict_ { get; } = new Dictionary<string, ObjectId>();
-
-        /// <summary>
-        /// Dictionary of the expanded list of import ObjectIds for each dataset ObjectId,
-        /// including imports of imports to unlimited depth with cyclic references and
-        /// duplicates removed.
-        /// </summary>
         private Dictionary<ObjectId, HashSet<ObjectId>> importDict_ { get; } = new Dictionary<ObjectId, HashSet<ObjectId>>();
 
         //--- ELEMENTS
@@ -68,24 +57,9 @@ namespace DataCentric
         public DbNameKey DbName { get; set; }
 
         /// <summary>
-        /// Identifies the data store used by this data source.
-        ///
-        /// Data store represents a database server or similar concept for non-database
-        /// storage. It is not the same as data source (database) as it only specifies
-        /// the server, and each server can host multiple data sources (databases).
-        ///
-        /// Separating the data store from the data source helps separate server
-        /// specifics such as URI, connection string, etc in data store from the
-        /// definition of how the data is stored on the server, including the
-        /// environment (which usually maps to database name) and data representation
-        /// (basic or temporal).
-        /// </summary>
-        public DataStoreKey DataStore { get; set; }
-
-        /// <summary>
-        /// Use this flag to mark dataset as readonly, but use either
+        /// Use this flag to mark data source as readonly, but use either
         /// IsReadOnly() or CheckNotReadonly() method to determine the
-        /// readonly status because the dataset may be readonly for
+        /// readonly status because the data source may be readonly for
         /// two reasons:
         ///
         /// * ReadOnly flag is true; or

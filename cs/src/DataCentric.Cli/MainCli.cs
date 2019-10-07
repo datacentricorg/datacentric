@@ -135,13 +135,9 @@ namespace DataCentric.Cli
         {
             DbNameKey dbName = new DbNameKey
             {
-                InstanceType = InstanceType.USER, InstanceName = "user", EnvName = "Default"
+                InstanceType = InstanceType.USER, InstanceName = "TEMP", EnvName = "Default" // TODO - use GUID based DB name
             };
-            LocalMongoDataStoreData dbServer = new LocalMongoDataStoreData
-            {
-                DataStoreName = "From Csv",
-            };
-            IContext context = new MongoCliContext(dbName, dbServer, ObjectId.Empty);
+            IContext context = new MongoCliContext(dbName, "mongodb://localhost:27017", ObjectId.Empty); // TODO - specify server URI
 
             // Process all directories inside given folder
             foreach (var dir in Directory.GetDirectories(convertOptions.CsvPath))
@@ -259,12 +255,8 @@ namespace DataCentric.Cli
 
             DbNameKey dbName = Activator.CreateInstance<DbNameKey>();
             dbName.PopulateFrom(dbNameString);
-            LocalMongoDataStoreData dbServer = new LocalMongoDataStoreData
-            {
-                DataStoreName = "LOCAL_TEST",
-            };
 
-            IContext context = new MongoCliContext(dbName, dbServer, ObjectId.Empty);
+            IContext context = new MongoCliContext(dbName, "mongodb://localhost:27017", ObjectId.Empty);
 
             object handler = createHandlerMethod.Invoke(null, new object[] { context, options });
 

@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
@@ -33,29 +34,25 @@ namespace DataCentric
     /// </summary>
     public abstract class MongoDataSourceData : DataSourceData
     {
-        /// <summary>True for scalar and false for hierarchical discriminator convention for _t.</summary>
         protected const bool useScalarDiscriminatorConvention_ = false;
-
-        /// <summary>Prohibited characters in database name.</summary>
         static readonly char[] prohibitedDbNameSymbols_ = new char[] { '/', '\\', '.', ' ', '"', '$', '*', '<', '>', ':', '|', '?' };
-
-        /// <summary>Maximum length of the database on Mongo server including delimiters.</summary>
         static int maxDbNameLength_ = 64;
+        private InstanceType instanceType_;
+        private string dbName_;
+        private IMongoClient client_;
+        private ObjectId prevObjectId_ = ObjectId.Empty;
+
+        //--- ELEMENTS
 
         /// <summary>
-        /// Type of instance controls the ability to do certain
-        /// actions such as deleting (dropping) the database.
+        /// Mongo server URI.
+        ///
+        /// Defaults to local server on the standard port if not specified.
+        ///
+        /// Server URI specified here must refer to the entire server, not
+        /// an individual database.
         /// </summary>
-        private InstanceType instanceType_;
-
-        /// <summary>Full name of the database on Mongo server including delimiters.</summary>
-        private string dbName_;
-
-        /// <summary>Interface to Mongo client in MongoDB C# driver.</summary>
-        private IMongoClient client_;
-
-        /// <summary>Previous ObjectId returned by CreateOrderedObjectId() method.</summary>
-        private ObjectId prevObjectId_ = ObjectId.Empty;
+        public string ServerUri { get; set; }
 
         //--- PROPERTIES
 
@@ -136,23 +133,17 @@ namespace DataCentric
                 throw new Exception(
                     $"MongoDB database name {dbName_} exceeds the maximum length of 64 characters.");
 
-            // Load data store object by key; if key is not specified, create with default settings
-            MongoDataStoreData dataStoreData = null;
-            if (DataStore != null)
+            // Get client interface using the server instance loaded from root dataset
+            if (!string.IsNullOrEmpty(ServerUri))
             {
-                // Load if data store key is set; the key may point to a local or remote server or cluster
-                throw new NotImplementedException();
-                // TODO dataStoreData = DataStore.Load(Context, ObjectId.Empty).CastTo<MongoDataStoreData>();
+                // Create with the specified server URI
+                client_ = new MongoClient(ServerUri);
             }
             else
             {
-                // Otherwise default to local Mongo server on default port
-                dataStoreData = new LocalMongoDataStoreData();
+                // Create for the server running on default port on localhost 
+                client_ = new MongoClient();
             }
-
-            // Get client interface using the server instance loaded from root dataset
-            string dbUri = dataStoreData.GetMongoServerUri();
-            client_ = new MongoClient(dbUri);
 
             // Get database interface using the client and database name
             Db = client_.GetDatabase(dbName_);

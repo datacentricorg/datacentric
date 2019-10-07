@@ -27,13 +27,13 @@ namespace DataCentric
         /// <summary>
         /// Create with environment and source passed cli arguments.
         /// </summary>
-        public MongoCliContext(DbNameKey db, DataStoreData dataStore, ObjectId dataSetId)
+        public MongoCliContext(DbNameKey db, string mongoServerUri, ObjectId dataSetId)
         {
             var dataSource = new TemporalMongoDataSourceData
             {
-                DataSourceName = dataStore.DataStoreName + db.Value,
-                // DataStore = dataStore, TODO - need to specify using key
-                DbName = db
+                DataSourceName = mongoServerUri + db.Value,
+                DbName = db,
+                ServerUri = mongoServerUri
             };
 
             // Set data source and dataset
