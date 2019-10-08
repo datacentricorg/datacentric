@@ -100,34 +100,31 @@ namespace DataCentric
         public abstract void Flush();
 
         /// <summary>
-        /// Record a new entry to the log if log verbosity
+        /// Publish the specified entry to the log if log verbosity
         /// is the same or high as entry verbosity.
         ///
-        /// In a text log, first line of the message follows
-        /// verbosity prefix after semicolon separator. Remaining
-        /// lines of the message (if any) are recorded with 4 space
-        /// indent, for example:
+        /// When log entry data is passed to this method, only the following
+        /// elements are required:
         ///
-        /// Info: Message Line 1
-        ///     Message Line 2
-        ///     Message Line 3
+        /// * Verbosity
+        /// * Title (should not have line breaks; if found will be replaced by spaces)
+        /// * Description (line breaks and formatting will be preserved)
+        ///
+        /// The remaining fields of LogEntryData will be populated if the log
+        /// entry is published to a data source. They are not necessary if the
+        /// log entry is published to a text log.
+        ///
+        /// In a text log, the first line of each log entry is Verbosity
+        /// followed by semicolon separator and then Title of the log entry.
+        /// Remaining lines are Description of the log entry recorded with
+        /// 4 space indent but otherwise preserving its formatting.
+        ///
+        /// Example:
+        ///
+        /// Info: Sample Title
+        ///     Sample Description Line 1
+        ///     Sample Description Line 2
         /// </summary>
-        public abstract void Entry(LogVerbosity verbosity, string message);
-
-        /// <summary>
-        /// Record a new entry to the log if log verbosity
-        /// is the same or high as entry verbosity.
-        ///
-        /// In a text log, first line of the title follows verbosity
-        /// prefix after semicolon separator. Remaining lines of the
-        /// title (if any) and all lines of the body are recorded
-        /// with 4 space indent, for example:
-        ///
-        /// Info: Title Line 1
-        ///     Title Line 2
-        ///     Body Line 1
-        ///     Body Line 2
-        /// </summary>
-        public abstract void Entry(LogVerbosity verbosity, string title, string body);
+        public abstract void Publish(LogEntryData logEntryData);
     }
 }

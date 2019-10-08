@@ -66,5 +66,20 @@ namespace DataCentric
         /// will be preserved when the log entry is displayed.
         /// </summary>
         public string Description { get; set; }
+
+        //--- METHODS
+
+        /// <summary>
+        /// Returns verbosity followed by semicolon and then title
+        /// with line breaks replaced by spaces, for example:
+        ///
+        /// Info: Sample Info Message
+        /// </summary>
+        public override string ToString()
+        {
+            string singleLineTitle = Title.Replace(Environment.NewLine, " ");
+            string result = $"{Verbosity}: {singleLineTitle}";
+            return result;
+        }
     }
 }

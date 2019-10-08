@@ -1,12 +1,10 @@
 Warning: Warning log entry.
 Info: Status log entry.
 Verify: Single-line verify message.
-Verify: Multi-line verify message.
-    Second line of message.
+Verify: Multi-line verify message. Second line of message.
 Verify: Single-line verify title
     Single-line verify body.
-Verify: Multi-line verify title
-    Second line of title.
+Verify: Multi-line verify title. Second line of title.
     Multi-line verify body.
     Second line of body.
 Verify: Assert when condition is true.

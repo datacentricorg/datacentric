@@ -34,7 +34,7 @@ namespace DataCentric
             set
             {
                 ratio_ = value;
-                Context.Log.Entry(LogVerbosity.Info, $"ProgressRatio={ratio_}");
+                Context.Log.Publish(LogVerbosity.Info, $"ProgressRatio={ratio_}");
             }
         }
 
@@ -45,7 +45,7 @@ namespace DataCentric
             set
             {
                 message_ = value;
-                Context.Log.Entry(LogVerbosity.Info, $"ProgressMessage={message_}");
+                Context.Log.Publish(LogVerbosity.Info, $"ProgressMessage={message_}");
             }
         }
 
