@@ -41,8 +41,8 @@ namespace DataCentric
         /// </summary>
         public Type RootType { get; }
 
-        /// <summary>Kind of the root type (record, key, or element).</summary>
-        public RootKind RootKind { get; }
+        /// <summary>Kind of the data type (record, key, or element).</summary>
+        public DataKindEnum DataKind { get; }
 
         /// <summary>
         /// Inheritance chain from derived to base, ending
@@ -145,7 +145,7 @@ namespace DataCentric
                 {
                     if (RootType == null)
                     {
-                        RootKind = RootKind.Element;
+                        DataKind = DataKindEnum.Element;
                         RootType = currentType;
                     }
                 }
@@ -153,7 +153,7 @@ namespace DataCentric
                 {
                     if (RootType == null)
                     {
-                        RootKind = RootKind.Key;
+                        DataKind = DataKindEnum.Key;
                         RootType = currentType;
 
                         if (inheritanceChain.Count > 1)
@@ -166,7 +166,7 @@ namespace DataCentric
                 {
                     if (RootType == null)
                     {
-                        RootKind = RootKind.Record;
+                        DataKind = DataKindEnum.Record;
                         RootType = currentType;
                     }
                 }
@@ -181,7 +181,7 @@ namespace DataCentric
             }
 
             // Error message if the type is not derived from one of the permitted base classes 
-            if (RootKind == RootKind.Empty)
+            if (DataKind == DataKindEnum.Empty)
                 throw new Exception(
                     $"Data type {type.Name} is not derived from Data, TypedKey<TKey, TRecord>, or TypedRecord<TKey, TRecord>.");
 

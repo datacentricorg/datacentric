@@ -18,19 +18,19 @@ using System;
 
 namespace DataCentric
 {
-    /// <summary>Kind of the root type (record, key, or element).</summary>
-    public enum RootKind
+    /// <summary>Kind of the data type (record, key, or element).</summary>
+    public enum DataKindEnum
     {
         /// <summary>Empty</summary>
         Empty,
 
-        /// <summary>Root type is derived from Record(TKey).</summary>
+        /// <summary>Data type is derived from Record.</summary>
         Record,
 
-        /// <summary>Root type is derived from Key(TRecord).</summary>
+        /// <summary>Data type is derived from Key.</summary>
         Key,
 
-        /// <summary>Root type is derived from Element.</summary>
+        /// <summary>Data type is derived from Element.</summary>
         Element,
     }
 }
