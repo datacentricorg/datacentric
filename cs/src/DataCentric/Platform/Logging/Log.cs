@@ -27,13 +27,20 @@ namespace DataCentric
     /// </summary>
     public abstract class Log : ILog
     {
-        /// <summary>Context for which this interface is defined.
-        /// Use to access other interfaces of the same context.</summary>
+        /// <summary>
+        /// Execution context provides access to key resources including:
+        ///
+        /// * Logging and error reporting
+        /// * Cloud calculation service
+        /// * Data sources
+        /// * Filesystem
+        /// * Progress reporting
+        /// </summary>
         public IContext Context { get; private set; }
 
-        /// <summary>Log verbosity is the highest log entry type displayed.
-        /// Verbosity can be modified at runtime to provide different levels of
-        /// verbosity for different code segments.</summary>
+        /// <summary>
+        /// Minimal verbosity for which log entry will be displayed.
+        /// </summary>
         public LogVerbosity Verbosity { get; set; }
 
         //--- CONSTRUCTORS

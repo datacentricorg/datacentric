@@ -20,8 +20,10 @@ using MongoDB.Bson.Serialization.Serializers;
 
 namespace DataCentric
 {
-    /// <summary>Serializes and deserializes string, converting
-    /// empty or whitespace to null on deserialization only.</summary>
+    /// <summary>
+    /// Serializes and deserializes string, converting
+    /// empty or whitespace to null on deserialization only.
+    /// </summary>
     public class BsonStringSerializer : SerializerBase<string>
     {
         /// <summary>Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.</summary>

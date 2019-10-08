@@ -45,7 +45,7 @@ namespace DataCentric
         public LogKey Log { get; set; }
 
         /// <summary>
-        /// Minimal verbosity for which the log entry will be displayed.
+        /// Minimal verbosity for which log entry will be displayed.
         /// </summary>
         [BsonRequired]
         public LogVerbosity? Verbosity { get; set; }

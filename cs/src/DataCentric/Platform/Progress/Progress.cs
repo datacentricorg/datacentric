@@ -22,8 +22,15 @@ namespace DataCentric
     /// Progress.Ratio and Progress.Message entry types.</summary>
     public abstract class Progress : IProgress
     {
-        /// <summary>Context for which this interface is defined.
-        /// Use to access other interfaces of the same context.</summary>
+        /// <summary>
+        /// Execution context provides access to key resources including:
+        ///
+        /// * Logging and error reporting
+        /// * Cloud calculation service
+        /// * Data sources
+        /// * Filesystem
+        /// * Progress reporting
+        /// </summary>
         public IContext Context { get; private set; }
 
         /// <summary>Get or set progress ratio from 0 to 1 (0 if not set).</summary>

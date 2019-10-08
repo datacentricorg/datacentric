@@ -36,9 +36,9 @@ namespace DataCentric
         [BsonRequired]
         public string LogName { get; set; }
 
-        /// <summary>Log verbosity is the highest log entry type displayed.
-        /// Verbosity can be modified at runtime to provide different levels of
-        /// verbosity for different code segments.</summary>
+        /// <summary>
+        /// Minimal verbosity for which log entry will be displayed.
+        /// </summary>
         public LogVerbosity Verbosity { get; set; }
 
         //--- METHODS

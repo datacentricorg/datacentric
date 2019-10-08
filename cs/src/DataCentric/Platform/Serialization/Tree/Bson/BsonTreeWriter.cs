@@ -34,8 +34,10 @@ namespace DataCentric
             bsonWriter_ = bsonWriter;
         }
 
-        /// <summary>Write start document tags. This method
-        /// should be called only once for the entire document.</summary>
+        /// <summary>
+        /// Write start document tags. This method
+        /// should be called only once for the entire document.
+        /// </summary>
         public void WriteStartDocument(string rootElementName)
         {
             // Push state and name into the element stack. Writing the actual start tag occurs inside
@@ -51,10 +53,12 @@ namespace DataCentric
                     $"A call to WriteStartDocument(...) must be the first call to the tree writer.");
         }
 
-        /// <summary>Write end document tag. This method
+        /// <summary>
+        /// Write end document tag. This method
         /// should be called only once for the entire document.
         /// The root element name passed to this method must match the root element
-        /// name passed to the preceding call to WriteStartDocument(...).</summary>
+        /// name passed to the preceding call to WriteStartDocument(...).
+        /// </summary>
         public void WriteEndDocument(string rootElementName)
         {
             // Check state transition matrix
@@ -77,8 +81,10 @@ namespace DataCentric
                     $"WriteEndDocument({rootElementName}) follows WriteStartDocument({currentElementName}), root element name mismatch.");
         }
 
-        /// <summary>Write element start tag. Each element may contain
-        /// a single dictionary, a single value, or multiple array items.</summary>
+        /// <summary>
+        /// Write element start tag. Each element may contain
+        /// a single dictionary, a single value, or multiple array items.
+        /// </summary>
         public void WriteStartElement(string elementName)
         {
             // Push state and name into the element stack. Writing the actual start tag occurs inside
@@ -97,10 +103,12 @@ namespace DataCentric
             bsonWriter_.WriteName(elementStack_.Peek().Item1);
         }
 
-        /// <summary>Write element end tag. Each element may contain
+        /// <summary>
+        /// Write element end tag. Each element may contain
         /// a single dictionary, a single value, or multiple array items.
         /// The element name passed to this method must match the element name passed
-        /// to the matching WriteStartElement(...) call at the same indent level.</summary>
+        /// to the matching WriteStartElement(...) call at the same indent level.
+        /// </summary>
         public void WriteEndElement(string elementName)
         {
             // Check state transition matrix
@@ -124,8 +132,10 @@ namespace DataCentric
             // Nothing to write here but array closing bracket was written above
         }
 
-        /// <summary>Write dictionary start tag. A call to this method
-        /// must follow WriteStartElement(...) or WriteStartArrayItem().</summary>
+        /// <summary>
+        /// Write dictionary start tag. A call to this method
+        /// must follow WriteStartElement(...) or WriteStartArrayItem().
+        /// </summary>
         public void WriteStartDict()
         {
             // Save initial state to be used below
@@ -150,8 +160,10 @@ namespace DataCentric
             }
         }
 
-        /// <summary>Write dictionary end tag. A call to this method
-        /// must be followed by WriteEndElement(...) or WriteEndArrayItem().</summary>
+        /// <summary>
+        /// Write dictionary end tag. A call to this method
+        /// must be followed by WriteEndElement(...) or WriteEndArrayItem().
+        /// </summary>
         public void WriteEndDict()
         {
             // Check state transition matrix
@@ -166,8 +178,10 @@ namespace DataCentric
             bsonWriter_.WriteEndDocument();
         }
 
-        /// <summary>Write start tag for an array. A call to this method
-        /// must follow WriteStartElement(name).</summary>
+        /// <summary>
+        /// Write start tag for an array. A call to this method
+        /// must follow WriteStartElement(name).
+        /// </summary>
         public void WriteStartArray()
         {
             // Check state transition matrix
@@ -180,8 +194,10 @@ namespace DataCentric
             bsonWriter_.WriteStartArray();
         }
 
-        /// <summary>Write end tag for an array. A call to this method
-        /// must be followed by WriteEndElement(name).</summary>
+        /// <summary>
+        /// Write end tag for an array. A call to this method
+        /// must be followed by WriteEndElement(name).
+        /// </summary>
         public void WriteEndArray()
         {
             // Check state transition matrix
@@ -195,8 +211,10 @@ namespace DataCentric
             bsonWriter_.WriteEndArray();
         }
 
-        /// <summary>Write start tag for an array item. A call to this method
-        /// must follow either WriteStartArray() or WriteEndArrayItem().</summary>
+        /// <summary>
+        /// Write start tag for an array item. A call to this method
+        /// must follow either WriteStartArray() or WriteEndArrayItem().
+        /// </summary>
         public void WriteStartArrayItem()
         {
             // Check state transition matrix
@@ -208,8 +226,10 @@ namespace DataCentric
             // Nothing to write here
         }
 
-        /// <summary>Write end tag for an array item. A call to this method
-        /// must be followed by either WriteEndArray() or WriteStartArrayItem().</summary>
+        /// <summary>
+        /// Write end tag for an array item. A call to this method
+        /// must be followed by either WriteEndArray() or WriteStartArrayItem().
+        /// </summary>
         public void WriteEndArrayItem()
         {
             // Check state transition matrix
@@ -223,8 +243,10 @@ namespace DataCentric
             // Nothing to write here
         }
 
-        /// <summary>Write value start tag. A call to this method
-        /// must follow WriteStartElement(...) or WriteStartArrayItem().</summary>
+        /// <summary>
+        /// Write value start tag. A call to this method
+        /// must follow WriteStartElement(...) or WriteStartArrayItem().
+        /// </summary>
         public void WriteStartValue()
         {
             // Check state transition matrix
@@ -237,8 +259,10 @@ namespace DataCentric
             // Nothing to write here
         }
 
-        /// <summary>Write value end tag. A call to this method
-        /// must be followed by WriteEndElement(...) or WriteEndArrayItem().</summary>
+        /// <summary>
+        /// Write value end tag. A call to this method
+        /// must be followed by WriteEndElement(...) or WriteEndArrayItem().
+        /// </summary>
         public void WriteEndValue()
         {
             // Check state transition matrix
@@ -251,8 +275,10 @@ namespace DataCentric
             // Nothing to write here
         }
 
-        /// <summary>Write atomic value. Value type
-        /// will be inferred from object.GetType().</summary>
+        /// <summary>
+        /// Write atomic value. Value type
+        /// will be inferred from object.GetType().
+        /// </summary>
         public void WriteValue(object value)
         {
             // Check state transition matrix
@@ -343,8 +369,11 @@ namespace DataCentric
             this.WriteValueElement(elementName, attributeValue);
         }
 
-        /// <summary>Convert to BSON string without checking that BSON document is complete.
-        /// This permits the use of this method to inspect the BSON content during creation.</summary>
+        /// <summary>
+        /// Convert to BSON string without checking that BSON document is complete.
+        /// 
+        /// This permits the use of this method to inspect the BSON content during creation.
+        /// </summary>
         public override string ToString()
         {
             bsonWriter_.Flush();

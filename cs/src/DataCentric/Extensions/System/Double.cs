@@ -37,8 +37,10 @@ namespace DataCentric
             return result;
         }
 
-        /// <summary>Convert double to int if it is within roundoff
-        /// tolerance from a 32 bit integer, otherwise error message.</summary>
+        /// <summary>
+        /// Convert double to int if it is within roundoff tolerance
+        /// from a 32 bit integer, otherwise error message.
+        /// </summary>
         public static int ToInt(this double obj)
         {
             double rounded = Math.Round(obj);
@@ -50,8 +52,10 @@ namespace DataCentric
             return (int) rounded;
         }
 
-        /// <summary>Convert nullable double only if within roundoff tolerance
-        /// from a 64 bit integer, otherwise error message.</summary>
+        /// <summary>
+        /// Convert nullable double only if within roundoff tolerance
+        /// from a 64 bit integer, otherwise error message.
+        /// </summary>
         public static long ToLong(this double obj)
         {
             double rounded = Math.Round(obj);

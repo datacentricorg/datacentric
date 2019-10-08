@@ -24,7 +24,15 @@ namespace DataCentric.Test
     /// <summary>Sample base class implementing IDisposable.</summary>
     public class DisposableTestBaseSample : IDisposable
     {
-        /// <summary>Context.</summary>
+        /// <summary>
+        /// Execution context provides access to key resources including:
+        ///
+        /// * Logging and error reporting
+        /// * Cloud calculation service
+        /// * Data sources
+        /// * Filesystem
+        /// * Progress reporting
+        /// </summary>
         public IContext Context { get; }
 
         /// <summary>Create from context.</summary>

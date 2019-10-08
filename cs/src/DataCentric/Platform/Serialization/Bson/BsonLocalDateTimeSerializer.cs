@@ -56,14 +56,16 @@ namespace DataCentric
             return result;
         }
 
-        /// <summary>Serialize LocalDateTime to readable long in ISO 8601 format:
+        /// <summary>
+        /// Serialize LocalDateTime to readable long in ISO 8601 format:
         ///
         /// 2003-04-21T11:10:00.000Z
         ///
         /// All datetime values are assumed to be in UTC timezone
         /// and serialized with suffix Z.
         /// 
-        /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.</summary>
+        /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
+        /// </summary>
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, LocalDateTime value)
         {
             // Convert to milliseconds since the Unix epoch

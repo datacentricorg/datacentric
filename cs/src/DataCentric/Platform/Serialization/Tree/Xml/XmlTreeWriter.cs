@@ -353,8 +353,10 @@ namespace DataCentric
             xmlTextWriter_.WriteEndAttribute();
         }
 
-        /// <summary>Convert to XML string without checking that XML document is complete.
-        /// This permits the use of this method to inspect the XML content during creation.</summary>
+        /// <summary>
+        /// Convert to XML string without checking that XML document is complete.
+        /// This permits the use of this method to inspect the XML content during creation.
+        /// </summary>
         public override string ToString()
         {
             xmlTextWriter_.Flush();

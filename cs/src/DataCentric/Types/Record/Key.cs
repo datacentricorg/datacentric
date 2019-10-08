@@ -416,8 +416,10 @@ namespace DataCentric
     /// <summary>Extension methods for Key.</summary>
     public static class KeyExt
     {
-        /// <summary>Deserialize record from XML using short
-        /// class name without namespace for the root XML element.</summary>
+        /// <summary>
+        /// Deserialize record from XML using short class name without namespace
+        /// for the root XML element.
+        /// </summary>
         public static void ParseXml(this Key obj, string xmlString)
         {
             ITreeReader reader = new XmlTreeReader(xmlString);
@@ -430,8 +432,10 @@ namespace DataCentric
             obj.DeserializeFrom(recordNodes);
         }
 
-        /// <summary>Serialize record to XML using short
-        /// class name without namespace for the root XML element.</summary>
+        /// <summary>
+        /// Serialize record to XML using short class name without namespace
+        /// for the root XML element.
+        /// </summary>
         public static string ToXml(this Key obj)
         {
             // Get root XML element name using mapped final type of the object

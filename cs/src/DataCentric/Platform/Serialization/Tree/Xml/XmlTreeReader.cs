@@ -61,8 +61,10 @@ namespace DataCentric
             isRootNode_ = false;
         }
 
-        /// <summary>Read a single element (returns null if not found).
-        /// Error message if more than one element with the specified name is present.</summary>
+        /// <summary>
+        /// Read a single element (returns null if not found).
+        /// Error message if more than one element with the specified name is present.
+        /// </summary>
         public ITreeReader ReadElement(string elementName)
         {
             if (!isRootNode_)
@@ -104,9 +106,11 @@ namespace DataCentric
             else throw new Exception($"XML standard does not permit multiple elements at XML document root.");
         }
 
-        /// <summary>Read atomic value (returns empty string if not found).
+        /// <summary>
+        /// Read atomic value (returns empty string if not found).
         /// This overload is intended for value elements which also have
-        /// attributes, otherwise ReadValueElement can be used.</summary>
+        /// attributes, otherwise ReadValueElement can be used.
+        /// </summary>
         public string ReadValue()
         {
             if (xmlNode_.NodeType != XmlNodeType.Element) throw new Exception("ReadValue() is called for the outer XML node which is not an element.");
@@ -145,8 +149,10 @@ namespace DataCentric
             }
         }
 
-        /// <summary>Read a single element containing atomic value (returns empty string if not found).
-        /// Error message if more than one element with the specified name is present.</summary>
+        /// <summary>
+        /// Read a single element containing atomic value (returns empty string if not found).
+        /// Error message if more than one element with the specified name is present.
+        /// </summary>
         public string ReadValueElement(string elementName)
         {
             ITreeReader elementReader = ReadElement(elementName);

@@ -24,8 +24,10 @@ namespace DataCentric
     /// <summary>Function of two double arguments returning one double value.</summary>
     public delegate double DoubleBinaryOperator(double firstArg, double secondArg);
 
-    /// <summary>Abstract base class providing support for arithmetic operations
-    /// for objects of type T and their combination with double values.</summary>
+    /// <summary>
+    /// Abstract base class providing support for arithmetic operations
+    /// for objects of type T and their combination with double values.
+    /// </summary>
     public abstract class DoubleArithmetic<T>
         where T : DoubleArithmetic<T>
     {

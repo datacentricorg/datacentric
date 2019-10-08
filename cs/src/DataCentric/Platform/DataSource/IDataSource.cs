@@ -38,8 +38,15 @@ namespace DataCentric
     {
         //--- PROPERTIES
 
-        /// <summary>Context for which this interface is defined.
-        /// Use to access other interfaces of the same context.</summary>
+        /// <summary>
+        /// Execution context provides access to key resources including:
+        ///
+        /// * Logging and error reporting
+        /// * Cloud calculation service
+        /// * Data sources
+        /// * Filesystem
+        /// * Progress reporting
+        /// </summary>
         IContext Context { get; }
 
         /// <summary>Unique data source name.</summary>
