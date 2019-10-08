@@ -46,7 +46,7 @@ namespace DataCentric
         /// <summary>
         /// Minimal verbosity for which log entry will be displayed.
         /// </summary>
-        LogVerbosity Verbosity { get; set; }
+        LogVerbosity? Verbosity { get; set; }
 
         //--- METHODS
 

@@ -21,7 +21,7 @@ using System.Text;
 namespace DataCentric
 {
     /// <summary>Writes log output to system console.</summary>
-    public class ConsoleLog : TextLog
+    public class ConsoleLogData : TextLogData
     {
         /// <summary>
         /// Set Context property and perform validation of the record's data,
@@ -39,7 +39,7 @@ namespace DataCentric
             base.Init(context);
 
             // Set log text writer to be console output
-            LogTextWriter = Console.Out;
+            textWriter_ = Console.Out;
         }
     }
 }

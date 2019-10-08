@@ -27,17 +27,11 @@ namespace DataCentric
     /// * StringLog
     /// * FileLog
     /// </summary>
-    public abstract class TextLog : Log
+    public abstract class TextLogData : LogData
     {
         private readonly string indentString_ = new String(' ', 4);
         private readonly string[] lineSeparators_ = new string[] {"\r\n", "\r", "\n"};
-
-        //--- PROPERTIES
-
-        /// <summary>
-        /// Text writer
-        /// </summary>
-        protected TextWriter LogTextWriter { private get; set; }
+        protected TextWriter textWriter_;
 
         //--- METHODS
 
@@ -55,8 +49,8 @@ namespace DataCentric
         /// </summary>
         public override void Dispose()
         {
-            LogTextWriter.Close();
-            LogTextWriter.Dispose();
+            textWriter_.Close();
+            textWriter_.Dispose();
 
             // Dispose base
             base.Dispose();
@@ -65,7 +59,7 @@ namespace DataCentric
         /// <summary>Flush data to permanent storage.</summary>
         public override void Flush()
         {
-            LogTextWriter.Flush();
+            textWriter_.Flush();
         }
 
         /// <summary>
@@ -103,7 +97,7 @@ namespace DataCentric
                 // Title should not have line breaks; if found will be replaced by spaces
                 string titleWithNoSpaces = logEntryData.Title.Replace(Environment.NewLine, " ");
                 string formattedTitle = $"{logEntryData.Verbosity}: {titleWithNoSpaces}";
-                LogTextWriter.WriteLine(formattedTitle);
+                textWriter_.WriteLine(formattedTitle);
 
                 // Skip if Description is not specified
                 if (!string.IsNullOrEmpty(logEntryData.Description))
@@ -125,14 +119,14 @@ namespace DataCentric
                                 // case it represents the trailing EOL and including it would
                                 // create in a trailing empty line not present in the original
                                 // log message
-                                LogTextWriter.WriteLine();
+                                textWriter_.WriteLine();
                             }
                         }
                         else
                         {
                             // Write indent followed by description line
-                            LogTextWriter.Write(indentString_);
-                            LogTextWriter.WriteLine(descriptionLine);
+                            textWriter_.Write(indentString_);
+                            textWriter_.WriteLine(descriptionLine);
                         }
                     }
                 }

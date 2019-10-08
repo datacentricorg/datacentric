@@ -17,15 +17,17 @@ limitations under the License.
 using System;
 using System.CodeDom.Compiler;
 using System.IO;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace DataCentric
 {
     /// <summary>Writes log output to the specified text file as it arrives.</summary>
-    public class FileLog : TextLog
+    public class FileLogData : TextLogData
     {
         //--- PROPERTIES
 
         /// <summary>Log file path relative to output folder root.</summary>
+        [BsonRequired]
         public string LogFilePath { get; set; }
 
         //--- METHODS
@@ -46,7 +48,7 @@ namespace DataCentric
             base.Init(context);
 
             // Assign text writer for the log file
-            LogTextWriter = context.OutputFolder.GetTextWriter(LogFilePath, FileWriteMode.Replace);
+            textWriter_ = context.OutputFolder.GetTextWriter(LogFilePath, FileWriteMode.Replace);
         }
     }
 }

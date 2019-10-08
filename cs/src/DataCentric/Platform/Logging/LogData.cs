@@ -39,9 +39,31 @@ namespace DataCentric
         /// <summary>
         /// Minimal verbosity for which log entry will be displayed.
         /// </summary>
-        public LogVerbosity Verbosity { get; set; }
+        public LogVerbosity? Verbosity { get; set; }
 
         //--- METHODS
+
+        /// <summary>
+        /// Set Context property and perform validation of the record's data,
+        /// then initialize any fields or properties that depend on that data.
+        ///
+        /// This method may be called multiple times for the same instance,
+        /// possibly with a different context parameter for each subsequent call.
+        ///
+        /// IMPORTANT - Every override of this method must call base.Init()
+        /// first, and only then execute the rest of the override method's code.
+        /// </summary>
+        public virtual void Init(IContext context)
+        {
+            // Initialize base
+            base.Init(context);
+
+            if (Verbosity == null)
+            {
+                // If verbosity is null, set to default level of Warning
+                Verbosity = LogVerbosity.Warning;
+            }
+        }
 
         /// <summary>
         /// Releases resources and calls base.Dispose().

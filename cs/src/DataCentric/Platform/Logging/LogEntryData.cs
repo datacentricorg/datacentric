@@ -70,6 +70,27 @@ namespace DataCentric
         //--- METHODS
 
         /// <summary>
+        /// Set Context property and perform validation of the record's data,
+        /// then initialize any fields or properties that depend on that data.
+        ///
+        /// This method may be called multiple times for the same instance,
+        /// possibly with a different context parameter for each subsequent call.
+        ///
+        /// IMPORTANT - Every override of this method must call base.Init()
+        /// first, and only then execute the rest of the override method's code.
+        /// </summary>
+        public virtual void Init(IContext context)
+        {
+            // Initialize base
+            base.Init(context);
+
+            // We do not want to have an error inside logging code.
+            // If Verbosity and Title are not specified, provide defaults
+            if (Verbosity == null) Verbosity = LogVerbosity.Warning;
+            if (string.IsNullOrEmpty(Title)) Title = "Log entry title is not specified.";
+        }
+
+        /// <summary>
         /// Returns verbosity followed by semicolon and then title
         /// with line breaks replaced by spaces, for example:
         ///
