@@ -19,7 +19,7 @@ using System;
 namespace DataCentric
 {
     /// <summary>Specifies how to open a file for reading.</summary>
-    public enum FileReadMode
+    public enum FileReadModeEnum
     {
         /// <summary>Empty</summary>
         Empty,

@@ -40,7 +40,7 @@ namespace DataCentric
         /// a zero-length string, or if the caller does not have sufficient
         /// permissions to write to the specified file.
         /// </summary>
-        TextWriter GetTextWriter(string filePath, FileWriteMode writeMode);
+        TextWriter GetTextWriter(string filePath, FileWriteModeEnum writeMode);
 
         /// <summary>
         /// Deletes the specified file if it exists, or returns without
@@ -61,17 +61,17 @@ namespace DataCentric
         /// <summary>Appends text to the specified file, creating it if does not exist.</summary>
         public static void AppendText(this IFolder obj, string filePath, string fileContents)
         {
-            obj.SaveText(filePath, fileContents, FileWriteMode.Append);
+            obj.SaveText(filePath, fileContents, FileWriteModeEnum.Append);
         }
 
         /// <summary>Writes text to the specified file, overwriting it if exists and creating it otherwise.</summary>
         public static void WriteText(this IFolder obj, string filePath, string fileContents)
         {
-            obj.SaveText(filePath, fileContents, FileWriteMode.Replace);
+            obj.SaveText(filePath, fileContents, FileWriteModeEnum.Replace);
         }
 
         /// <summary>Appends or overwrites the specified file depending on write mode.</summary>
-        private static void SaveText(this IFolder obj, string filePath, string text, FileWriteMode writeMode)
+        private static void SaveText(this IFolder obj, string filePath, string text, FileWriteModeEnum writeMode)
         {
             TextWriter textWriter = obj.GetTextWriter(filePath, writeMode);
             textWriter.Write(text);
