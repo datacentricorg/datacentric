@@ -60,8 +60,8 @@ namespace DataCentric
 
             if (Verbosity == null)
             {
-                // If verbosity is null, set to default level of Warning
-                Verbosity = LogVerbosity.Warning;
+                // If verbosity is null, set to Error
+                Verbosity = LogVerbosity.Error;
             }
         }
 

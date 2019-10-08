@@ -86,7 +86,7 @@ namespace DataCentric
 
             // We do not want to have an error inside logging code.
             // If Verbosity and Title are not specified, provide defaults
-            if (Verbosity == null) Verbosity = LogVerbosity.Warning;
+            if (Verbosity == null) Verbosity = LogVerbosity.Error;
             if (string.IsNullOrEmpty(Title)) Title = "Log entry title is not specified.";
         }
 
