@@ -39,7 +39,7 @@ namespace DataCentric
         /// <summary>
         /// Minimal verbosity for which log entry will be displayed.
         /// </summary>
-        public LogVerbosity? Verbosity { get; set; }
+        public LogVerbosityEnum? Verbosity { get; set; }
 
         //--- METHODS
 
@@ -61,7 +61,7 @@ namespace DataCentric
             if (Verbosity == null)
             {
                 // If verbosity is null, set to Error
-                Verbosity = LogVerbosity.Error;
+                Verbosity = LogVerbosityEnum.Error;
             }
         }
 
