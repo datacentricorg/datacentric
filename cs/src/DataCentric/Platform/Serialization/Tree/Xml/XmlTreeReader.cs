@@ -138,7 +138,7 @@ namespace DataCentric
             var attributes = xmlNode_.Attributes;
             if (attributes != null)
             {
-                // Return empty string if attribute withh the specified name is not present
+                // Return empty string if attribute with the specified name is not present
                 string result = attributes.GetNamedItem(attributeName).Value;
                 return string.IsNullOrEmpty(result) ? string.Empty : result;
             }

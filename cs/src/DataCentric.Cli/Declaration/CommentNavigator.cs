@@ -25,14 +25,14 @@ using System.Xml.XPath;
 namespace DataCentric.Cli
 {
     /// <summary>
-    /// Comment navigator class. Extracts comment info from xml file which is created alongside assembly.
+    /// Comment navigator class. Extracts comment info from XML file which is created alongside assembly.
     /// </summary>
     public class CommentNavigator
     {
         private readonly XPathNavigator navigator;
 
         /// <summary>
-        /// Creates navigator instance from given xml document file.
+        /// Creates navigator instance from given XML document file.
         /// </summary>
         public CommentNavigator(string documentXmlLocation)
         {
