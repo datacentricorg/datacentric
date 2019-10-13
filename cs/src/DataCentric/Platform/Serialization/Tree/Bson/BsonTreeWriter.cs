@@ -371,7 +371,7 @@ namespace DataCentric
 
         /// <summary>
         /// Convert to BSON string without checking that BSON document is complete.
-        /// 
+        ///
         /// This permits the use of this method to inspect the BSON content during creation.
         /// </summary>
         public override string ToString()

@@ -25,8 +25,8 @@ namespace DataCentric
     ///
     /// Generic parameters TKey, TRecord represent a variation on
     /// the curiously recurring template pattern (CRTP). They make
-    /// it possible to get key type from the record and vice versa. 
-    /// 
+    /// it possible to get key type from the record and vice versa.
+    ///
     /// Any elements of defined in the class derived from this one
     /// become key tokens. Property Value and method ToString() of
     /// the key consists of key tokens with semicolon delimiter.
@@ -55,7 +55,7 @@ namespace DataCentric
             if (dataElementInfoDict.Count < keyElementInfoArray.Length) throw new Exception(
                  $"Root data type {rootTypeName} has fewer elements than key type {typeof(TKey).Name}.");
 
-            // Iterate over the key elements 
+            // Iterate over the key elements
             foreach (var keyElementInfo in keyElementInfoArray)
             {
                 if (!dataElementInfoDict.TryGetValue(keyElementInfo.Name, out var dataElementInfo))

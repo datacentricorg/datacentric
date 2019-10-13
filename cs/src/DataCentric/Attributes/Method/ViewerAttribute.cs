@@ -20,13 +20,13 @@ namespace DataCentric
 {
     /// <summary>
     /// Attribute for identifying methods that are viewers.
-    /// 
+    ///
     /// Viewers are methods of a Record that produce output
     /// displayed along with the record in the user interface,
     /// e.g. on a tab of the screen associated with the Record.
-    /// 
+    ///
     /// A viewer method must:
-    /// 
+    ///
     /// * Take parameters that are either atomic types or
     ///   classes derived from Data;
     /// * Return void; and

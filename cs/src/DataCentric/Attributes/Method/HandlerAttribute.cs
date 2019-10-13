@@ -20,12 +20,12 @@ namespace DataCentric
 {
     /// <summary>
     /// Attribute for identifying methods that are handlers.
-    /// 
+    ///
     /// Handlers are methods of a Record that can be invoked
     /// through the user interface or CLI.
-    /// 
+    ///
     /// A handler method must:
-    /// 
+    ///
     /// * Take parameters that are either atomic types or
     ///   classes derived from Data; and
     /// * Return void.

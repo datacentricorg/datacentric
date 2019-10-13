@@ -30,7 +30,7 @@ namespace DataCentric
     ///
     /// Only the following timezones can be defined:
     ///
-    /// * UTC timezone; and 
+    /// * UTC timezone; and
     /// * IANA city timezones such as America/New_York
     ///
     /// Other 3-letter regional timezones such as EST or EDT are
@@ -51,7 +51,7 @@ namespace DataCentric
         ///
         /// Only the following timezones can be defined:
         ///
-        /// * UTC timezone; and 
+        /// * UTC timezone; and
         /// * IANA city timezones such as America/New_York
         ///
         /// Other 3-letter regional timezones such as EST or EDT are
@@ -104,7 +104,7 @@ namespace DataCentric
             if (TimeZoneName != "UTC" && !TimeZoneName.Contains("/"))
                 throw new Exception(
                     $"TimeZoneName={TimeZoneName} is not UTC and is not a forward slash  " +
-                    $"delimited city timezone. Only (a) UTC timezone and (b) IANA TZDB " + 
+                    $"delimited city timezone. Only (a) UTC timezone and (b) IANA TZDB " +
                     $"city timezones such as America/New_York are permitted " +
                     $"as TimeZoneName values, but not three-symbol timezones without " +
                     $"delimiter such as EST or EDT that do not handle the switch " +

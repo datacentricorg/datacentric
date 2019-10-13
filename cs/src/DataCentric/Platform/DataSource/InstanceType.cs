@@ -21,7 +21,7 @@ namespace DataCentric
     /// <summary>
     /// Specifies instance type.
     ///
-    /// Some API functions are restricted based on the instance type. 
+    /// Some API functions are restricted based on the instance type.
     /// </summary>
     public enum InstanceType
     {
@@ -58,7 +58,7 @@ namespace DataCentric
 
         /// <summary>
         /// Personal instance type of a specific user.
-        /// 
+        ///
         /// This instance type is not shared between users and is
         /// free from most restrictions.
         /// </summary>
@@ -66,7 +66,7 @@ namespace DataCentric
 
         /// <summary>
         /// Instance type is used for unit testing.
-        /// 
+        ///
         /// Databases for the test instance type are routinely
         /// cleared (deleted). They should not be used for any
         /// purpose other than unit tests.

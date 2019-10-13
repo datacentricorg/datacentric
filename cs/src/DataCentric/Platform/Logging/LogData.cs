@@ -24,7 +24,7 @@ namespace DataCentric
     /// Log record implements ILog interface for recording log
     /// entries in a data source. Each log entry is a separate
     /// record.
-    /// 
+    ///
     /// The log record serves as the key for querying log entries.
     /// To obtain the entire log, run a query for the Log element
     /// of the LogEntry record, then sort the entry records by

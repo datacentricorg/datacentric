@@ -57,17 +57,17 @@ namespace DataCentric
                 // Error message if key has more element than the root data type
                 if (keyElementInfoArray.Length > dataElementInfoDict.Count)
                     throw new Exception(
-                        $"Key type {typeof(TKey).Name} has {keyElementInfoArray.Length} elements " + 
-                        $"which is greater than {dataElementInfoDict.Count} elements in the " + 
+                        $"Key type {typeof(TKey).Name} has {keyElementInfoArray.Length} elements " +
+                        $"which is greater than {dataElementInfoDict.Count} elements in the " +
                         $"corresponding root data type {rootTypeName}.");
 
-                // Iterate over the key elements 
+                // Iterate over the key elements
                 foreach (var keyElementInfo in keyElementInfoArray)
                 {
                     if (!dataElementInfoDict.TryGetValue(keyElementInfo.Name, out var dataElementInfo))
                     {
                         throw new Exception(
-                            $"Element {keyElementInfo.Name} of key type {typeof(TKey).Name} " + 
+                            $"Element {keyElementInfo.Name} of key type {typeof(TKey).Name} " +
                             $"is not found in the root data type {rootTypeName}.");
                     }
 
@@ -78,7 +78,7 @@ namespace DataCentric
                             $"root data type {rootTypeName}.");
 
                     // Convert key element to string key token.
-                    // 
+                    //
                     // Note that string representation of certain
                     // types inside the key is not the same as what
                     // is returned by ToString(). Specifically,

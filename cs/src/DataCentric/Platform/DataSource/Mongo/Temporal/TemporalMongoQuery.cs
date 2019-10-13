@@ -26,7 +26,7 @@ namespace DataCentric
 {
     /// <summary>
     /// Implements IQuery for temporal MongoDB data source.
-    /// 
+    ///
     /// This implementation combines methods of IQueryable(TRecord) with
     /// additional constraints and ordering to retrieve the correct version
     /// of the record across multiple datasets.
@@ -343,7 +343,7 @@ namespace DataCentric
                                         // in the latest dataset for this key subject to the freeze rule.
 
                                         // Take the first object for a new key, relying on sorting
-                                        // by dataset and then by record's ObjectId in descending 
+                                        // by dataset and then by record's ObjectId in descending
                                         // order.
                                         currentKey = objKey;
 
@@ -359,7 +359,7 @@ namespace DataCentric
                                     // Iterating over the dataset lookup list in descending order,
                                     // we reached a dataset which is earlier than the record before
                                     // we reached the dataset where the record is stored. This record
-                                    // is therefore excluded by the freeze rule and we should not 
+                                    // is therefore excluded by the freeze rule and we should not
                                     // yet set the new current key and skip the rest of the records
                                     // for this key
                                     if (dataSetId < recordId) break;
@@ -368,7 +368,7 @@ namespace DataCentric
                             else
                             {
                                 // Take the first object for a new key, relying on sorting
-                                // by dataset and then by record's ObjectId in descending 
+                                // by dataset and then by record's ObjectId in descending
                                 // order.
                                 currentKey = objKey;
 

@@ -27,7 +27,7 @@ namespace DataCentric
     ///
     /// Only the following timezones can be defined:
     ///
-    /// * UTC timezone; and 
+    /// * UTC timezone; and
     /// * IANA city timezones such as America/New_York
     ///
     /// Other 3-letter regional timezones such as EST or EDT are
@@ -49,7 +49,7 @@ namespace DataCentric
         ///
         /// Only the following timezones can be defined:
         ///
-        /// * UTC timezone; and 
+        /// * UTC timezone; and
         /// * IANA city timezones such as America/New_York
         ///
         /// Other 3-letter regional timezones such as EST or EDT are

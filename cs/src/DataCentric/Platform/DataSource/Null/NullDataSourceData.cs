@@ -69,7 +69,7 @@ namespace DataCentric
         ///
         /// Return null if there is no record for the specified ObjectId;
         /// however an exception will be thrown if the record exists but
-        /// is not derived from TRecord. 
+        /// is not derived from TRecord.
         /// </summary>
         public override TRecord LoadOrNull<TRecord>(ObjectId id)
         {
@@ -96,7 +96,7 @@ namespace DataCentric
         ///
         /// Return null if there is no record for the specified ObjectId;
         /// however an exception will be thrown if the record exists but
-        /// is not derived from TRecord. 
+        /// is not derived from TRecord.
         /// </summary>
         public override TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, ObjectId loadFrom)
         {

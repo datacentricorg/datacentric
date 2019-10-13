@@ -50,7 +50,7 @@ namespace DataCentric
 
         /// <summary>
         /// Specify horizontal position of the control counting from the left.
-        /// 
+        ///
         /// Only one of Left or Right properties can be specified.
         /// </summary>
         public LengthData Left { get; set; }

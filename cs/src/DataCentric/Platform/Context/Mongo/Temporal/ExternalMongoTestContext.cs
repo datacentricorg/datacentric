@@ -21,10 +21,10 @@ namespace DataCentric
     /// <summary>
     /// ExternalMongoTestContext is the context for use in test
     /// fixtures that will interact with external mongo database.
-    /// 
+    ///
     /// It extends UnitTestContext by connecting to the specified
     /// mongo server and picking specified database.
-    /// 
+    ///
     /// The context loads an existing Common dataset from data source
     /// and assigns its ObjectId to the DataSet property of the context.
     /// </summary>

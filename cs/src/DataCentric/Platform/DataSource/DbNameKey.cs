@@ -35,7 +35,7 @@ namespace DataCentric
         /// <summary>
         /// Instance type enumeration.
         ///
-        /// Some API functions are restricted based on the instance type. 
+        /// Some API functions are restricted based on the instance type.
         /// </summary>
         public InstanceType InstanceType { get; set; }
 

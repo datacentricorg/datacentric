@@ -36,7 +36,7 @@ namespace DataCentric
     /// * Executed in a different process or thread
     /// * Executed on a different machine
     /// * Executed in parallel or out of sequence
-    ///  
+    ///
     /// The Run() method must be implemented defensively to ensure
     /// that the job runs successfully in all of these cases.
     /// </summary>
@@ -53,7 +53,7 @@ namespace DataCentric
         /// * Executed in a different process or thread
         /// * Executed on a different machine
         /// * Executed in parallel or out of sequence
-        ///  
+        ///
         /// This method should be implemented defensively to
         /// ensure that the job runs successfully in all of
         /// these cases.

@@ -29,14 +29,14 @@ namespace DataCentric
         /// <summary>
         /// Executes the specified viewer when Run() is invoked
         /// and records viewer output in ViewerOutput record.
-        /// 
+        ///
         /// This method is executed by the queue to run the job.
         /// Depending on the type of queue, it may be
         ///
         /// * Executed in a different process or thread
         /// * Executed on a different machine
         /// * Executed in parallel or out of sequence
-        ///  
+        ///
         /// This method should be implemented defensively to
         /// ensure that the job runs successfully in all of
         /// these cases.

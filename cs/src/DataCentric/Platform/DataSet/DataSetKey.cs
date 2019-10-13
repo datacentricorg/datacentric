@@ -50,9 +50,9 @@ namespace DataCentric
 
         /// <summary>
         /// By convention, Common is the default dataset in each data source.
-        /// 
+        ///
         /// Common dataset is stored in root dataset.
-        /// 
+        ///
         /// It should have no imports, and is usually (but not always)
         /// included in the list of imports for other datasets. It should
         /// be used to store master records and other record types that

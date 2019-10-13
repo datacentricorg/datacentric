@@ -21,7 +21,7 @@ namespace DataCentric
 {
     /// <summary>
     /// Wrapper around native collection for temporal MongoDB data source.
-    /// 
+    ///
     /// This object holds two collection references - one for the base
     /// type of all records and the other for the record type specified
     /// as generic parameter.

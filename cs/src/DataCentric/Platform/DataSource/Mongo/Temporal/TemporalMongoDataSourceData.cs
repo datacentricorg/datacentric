@@ -134,7 +134,7 @@ namespace DataCentric
         ///
         /// Return null if there is no record for the specified ObjectId;
         /// however an exception will be thrown if the record exists but
-        /// is not derived from TRecord. 
+        /// is not derived from TRecord.
         /// </summary>
         public override TRecord LoadOrNull<TRecord>(ObjectId id)
         {
@@ -187,7 +187,7 @@ namespace DataCentric
         /// order of record ObjectIds within the first dataset that
         /// has at least one record. Both dataset and record ObjectIds
         /// are ordered chronologically to one second resolution,
-        /// and are unique within the database server or cluster. 
+        /// and are unique within the database server or cluster.
         ///
         /// The root dataset has empty ObjectId value that is less
         /// than any other ObjectId value. Accordingly, the root
@@ -199,7 +199,7 @@ namespace DataCentric
         ///
         /// Return null if there is no record for the specified ObjectId;
         /// however an exception will be thrown if the record exists but
-        /// is not derived from TRecord. 
+        /// is not derived from TRecord.
         /// </summary>
         public override TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, ObjectId loadFrom)
         {
@@ -308,7 +308,7 @@ namespace DataCentric
                     $"Attempting to save a record with ObjectId={objectId} that is later " +
                     $"than ObjectId={saveTo} of the dataset where it is being saved.");
 
-            // Assign ID and DataSet, and only then initialize, because 
+            // Assign ID and DataSet, and only then initialize, because
             // initialization code may use record.ID and record.DataSet
             record.Id = objectId;
             record.DataSet = saveTo;
@@ -344,7 +344,7 @@ namespace DataCentric
             var objectId = CreateOrderedObjectId();
             record.Id = objectId;
 
-            // Assign dataset and then initialize, as the results of 
+            // Assign dataset and then initialize, as the results of
             // initialization may depend on record.DataSet
             record.DataSet = deleteIn;
 

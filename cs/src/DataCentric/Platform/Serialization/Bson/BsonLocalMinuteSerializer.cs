@@ -29,7 +29,7 @@ namespace DataCentric
     {
         /// <summary>
         /// Deserialize LocalMinute from readable int in ISO hhmm format.
-        /// 
+        ///
         /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
         /// </summary>
         public override LocalMinute Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
@@ -44,7 +44,7 @@ namespace DataCentric
 
         /// <summary>
         /// Serialize LocalMinute to readable int in ISO hhmm format.
-        /// 
+        ///
         /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
         /// </summary>
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, LocalMinute value)

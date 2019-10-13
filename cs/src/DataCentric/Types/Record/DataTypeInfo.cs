@@ -180,7 +180,7 @@ namespace DataCentric
                 inheritanceChain.Add(currentType);
             }
 
-            // Error message if the type is not derived from one of the permitted base classes 
+            // Error message if the type is not derived from one of the permitted base classes
             if (DataKind == DataKindEnum.Empty)
                 throw new Exception(
                     $"Data type {type.Name} is not derived from Data, TypedKey<TKey, TRecord>, or TypedRecord<TKey, TRecord>.");

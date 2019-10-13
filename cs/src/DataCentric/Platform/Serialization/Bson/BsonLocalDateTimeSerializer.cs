@@ -28,7 +28,7 @@ namespace DataCentric
     ///
     /// All datetime values are assumed to be in UTC timezone
     /// and serialized with suffix Z.
-    /// 
+    ///
     /// This serializer is used for both the type itself
     /// and for its nullable counterpart.
     /// </summary>
@@ -41,7 +41,7 @@ namespace DataCentric
         ///
         /// All datetime values are assumed to be in UTC timezone
         /// and serialized with suffix Z.
-        /// 
+        ///
         /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
         /// </summary>
         public override LocalDateTime Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
@@ -63,7 +63,7 @@ namespace DataCentric
         ///
         /// All datetime values are assumed to be in UTC timezone
         /// and serialized with suffix Z.
-        /// 
+        ///
         /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
         /// </summary>
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, LocalDateTime value)

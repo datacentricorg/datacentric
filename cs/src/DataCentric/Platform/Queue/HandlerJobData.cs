@@ -43,14 +43,14 @@ namespace DataCentric
 
         /// <summary>
         /// Executes the specified handler.
-        /// 
+        ///
         /// This method is executed by the queue to run the job.
         /// Depending on the type of queue, it may be
         ///
         /// * Executed in a different process or thread
         /// * Executed on a different machine
         /// * Executed in parallel or out of sequence
-        ///  
+        ///
         /// This method should be implemented defensively to
         /// ensure that the job runs successfully in all of
         /// these cases.
@@ -60,7 +60,7 @@ namespace DataCentric
             // Load record by its ObjectId, error message if not found
             var record = Context.DataSource.Load<Record>(TargetId);
 
-            // Get handler method info using string handler name 
+            // Get handler method info using string handler name
             var type = record.GetType();
             var methodInfo = type.GetMethod(TargetHandler);
 

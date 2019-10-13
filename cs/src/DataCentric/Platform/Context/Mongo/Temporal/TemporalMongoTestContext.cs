@@ -21,7 +21,7 @@ namespace DataCentric
 {
     /// <summary>
     /// Specialization of DataTestContext for TemporalMongoDataSourceData.
-    /// 
+    ///
     /// DataTestContext is the context for use in test fixtures that
     /// require a data source, parameterized by data source type.
     /// It extends UnitTestContext by creating an empty test
@@ -41,7 +41,7 @@ namespace DataCentric
         /// <summary>
         /// Unit test context for the specified object for the Mongo
         /// server running on the default port of localhost.
-        /// 
+        ///
         /// The last two arguments are provided by the compiler unless
         /// specified explicitly by the caller.
         /// </summary>
@@ -56,7 +56,7 @@ namespace DataCentric
 
         /// <summary>
         /// Unit test context for the specified object and Mongo server URI.
-        /// 
+        ///
         /// The last two arguments are provided by the compiler unless
         /// specified explicitly by the caller.
         /// </summary>

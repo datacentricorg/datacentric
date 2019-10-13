@@ -141,7 +141,7 @@ namespace DataCentric
             }
             else
             {
-                // Create for the server running on default port on localhost 
+                // Create for the server running on default port on localhost
                 client_ = new MongoClient();
             }
 

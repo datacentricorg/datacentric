@@ -215,7 +215,7 @@ namespace DataCentric
         /// flooding log output with insignificant warnings.
         /// A warning message should never be generated inside
         /// a loop.
-        /// 
+        ///
         /// In a text log, the first line of each log entry is Verbosity
         /// followed by semicolon separator and then Title of the log entry.
         /// Remaining lines are Description of the log entry recorded with
@@ -261,7 +261,7 @@ namespace DataCentric
         /// Info messages should be used sparingly to avoid
         /// flooding log output with superfluous data. An info
         /// message should never be generated inside a loop.
-        /// 
+        ///
         /// In a text log, the first line of each log entry is Verbosity
         /// followed by semicolon separator and then Title of the log entry.
         /// Remaining lines are Description of the log entry recorded with
