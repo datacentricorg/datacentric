@@ -19,10 +19,22 @@ using System;
 namespace DataCentric
 {
     /// <summary>
-    /// Attribute for marking methods as a view handlers.
+    /// Attribute for identifying methods that are viewers.
+    /// 
+    /// Viewers are methods of a Record that produce output
+    /// displayed along with the record in the user interface,
+    /// e.g. on a tab of the screen associated with the Record.
+    /// 
+    /// A viewer method must:
+    /// 
+    /// * Take parameters that are either atomic types or
+    ///   classes derived from Data;
+    /// * Return void; and
+    /// * Create a view record associated with the record
+    ///   for which it is invoked.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    public class ViewAttribute : Attribute
+    public class ViewerAttribute : Attribute
     {
     }
 }
