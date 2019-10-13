@@ -34,6 +34,10 @@ namespace DataCentric.Test
             }
         }
 
+        /// <summary>
+        /// Verify that the result of serializing and then deserializing
+        /// an object is the same as the original.
+        /// </summary>
         private void VerifyRoundtrip(IContext context, LocalDate value)
         {
             // Verify string serialization roundtrip

@@ -35,6 +35,10 @@ namespace DataCentric.Test
             }
         }
 
+        /// <summary>
+        /// Verify that the result of serializing and then deserializing
+        /// an object is the same as the original.
+        /// </summary>
         private void VerifyRoundtrip(IContext context, LocalMinute value)
         {
             // To be used in assert message
