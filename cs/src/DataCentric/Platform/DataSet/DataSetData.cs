@@ -49,7 +49,7 @@ namespace DataCentric
         /// Unique dataset name.
         /// </summary>
         [BsonRequired]
-        [BsonElement("DataSetID")] // TODO - review for a possible rename
+        [BsonElement("DataSetID")] // TODO - remove when client code is updated
         public string DataSetName { get; set; }
 
         /// <summary>
@@ -83,6 +83,7 @@ namespace DataCentric
         /// The parent dataset is not included in the list of Imports by
         /// default and must be included in the list of Imports explicitly.
         /// </summary>
+        [BsonElement("Parents")] // TODO - remove when client code is updated
         public List<ObjectId> Imports { get; set; }
 
         //--- METHODS
