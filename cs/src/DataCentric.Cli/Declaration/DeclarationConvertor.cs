@@ -122,13 +122,13 @@ namespace DataCentric.Cli
                                : CreateTypeDeclKey(type.BaseType.Namespace, type.BaseType.Name.TrimEnd("Data"));
 
             // Skip special (property getters, setters, etc) and inherited methods
-            List<MethodInfo> methods = type.GetMethods(PublicInstanceDeclaredFlags)
-                                           .Where(IsAllowed)
+            List<MethodInfo> handlers = type.GetMethods(PublicInstanceDeclaredFlags)
+                                           .Where(IsProperHandler)
                                            .ToList();
 
             var declares = new List<HandlerDeclareDeclData>();
             var implements = new List<HandlerImplementDeclData>();
-            foreach (MethodInfo method in methods)
+            foreach (MethodInfo method in handlers)
             {
                 // Abstract methods have only declaration
                 if (method.IsAbstract)
@@ -224,21 +224,30 @@ namespace DataCentric.Cli
         }
 
         /// <summary>
-        /// Determines if given method could be converted to handler.
+        /// Checks if method fits handler restrictions. Take parameters that are either
+        /// atomic types or classes derived from Data; and its return type is void.
         /// </summary>
-        private static bool IsAllowed(MethodInfo method)
+        private static bool IsProperHandler(MethodInfo method)
         {
-            // Check if return type is allowed
-            bool isAllowedReturnType = (IsAllowedType(method.ReturnType) || method.ReturnType == typeof(void));
-            // Check if all method parameters are allowed
-            bool isAllowedParameterTypes = method.GetParameters().All(p => IsAllowedType(p.ParameterType));
-            // Check if method is declared in Data, Record or other root classes
-            bool isRootMethod = TypesExtractor.BasicTypes.Contains(method.GetBaseDefinition().ReflectedType);
+            // Only void methods are allowed
+            if (method.ReturnType != typeof(void))
+                return false;
 
-            return !method.IsSpecialName &&
-                   !isRootMethod &&
-                   isAllowedReturnType &&
-                   isAllowedParameterTypes;
+            // Filter out internal and private methods
+            if (method.IsSpecialName)
+                return false;
+
+            // Check if method is declared in Data, Record or other root classes
+            if (TypesExtractor.BasicTypes.Contains(method.GetBaseDefinition().ReflectedType))
+                return false;
+
+            var hasHandlerAttribute = method.GetCustomAttribute<HandlerAttribute>() != null;
+
+            // Check if all method parameters are allowed:
+            // either atomic types or classes derived from Data
+            bool hasAllowedParameters = method.GetParameters().All(p => IsAllowedType(p.ParameterType));
+
+            return hasAllowedParameters && hasHandlerAttribute;
         }
 
         /// <summary>
