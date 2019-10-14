@@ -18,7 +18,7 @@ limitations under the License.
 using System;
 using System.Linq;
 using DataCentric;
-using MongoDB.Bson;
+using MongoDB.Bson; // TODO - remove the remaining use of MongoDB so RecordId is fully portable
 using Xunit;
 
 namespace DataCentric.Test

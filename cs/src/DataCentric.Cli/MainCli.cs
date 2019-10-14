@@ -21,7 +21,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using CommandLine;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using Xunit;

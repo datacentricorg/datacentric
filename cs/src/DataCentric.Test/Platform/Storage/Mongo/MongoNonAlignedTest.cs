@@ -17,11 +17,9 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
 using NodaTime;
 using Xunit;
 using DataCentric;
-using MongoDB.Bson;
 
 namespace DataCentric.Test
 {

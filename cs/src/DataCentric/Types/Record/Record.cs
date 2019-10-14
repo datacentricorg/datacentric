@@ -16,7 +16,6 @@ limitations under the License.
 
 using System;
 using CsvHelper.Configuration.Attributes;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace DataCentric

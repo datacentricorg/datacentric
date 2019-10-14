@@ -19,8 +19,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace DataCentric
 {

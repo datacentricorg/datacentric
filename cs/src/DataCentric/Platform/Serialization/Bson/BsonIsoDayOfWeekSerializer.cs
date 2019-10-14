@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using NodaTime;

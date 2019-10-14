@@ -16,7 +16,6 @@ limitations under the License.
 
 using System;
 using System.Linq.Expressions;
-using MongoDB.Bson;
 using NodaTime;
 
 namespace DataCentric

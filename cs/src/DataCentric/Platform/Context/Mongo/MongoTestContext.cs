@@ -16,7 +16,6 @@ limitations under the License.
 
 using System;
 using System.Runtime.CompilerServices;
-using MongoDB.Bson;
 
 namespace DataCentric
 {
