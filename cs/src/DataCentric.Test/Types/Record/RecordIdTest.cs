@@ -37,7 +37,6 @@ namespace DataCentric.Test
             Assert.Equal(0x050607, objectId.Machine);
             Assert.Equal(0x0809, objectId.Pid);
             Assert.Equal(0x0a0b0c, objectId.Increment);
-            Assert.Equal(BsonConstants.UnixEpoch.AddSeconds(0x01020304), objectId.CreationTime);
             Assert.Equal("0102030405060708090a0b0c", objectId.ToString());
             Assert.True(bytes.SequenceEqual(objectId.ToByteArray()));
         }
@@ -54,7 +53,6 @@ namespace DataCentric.Test
             Assert.Equal(0x050607, objectId.Machine);
             Assert.Equal(0x0809, objectId.Pid);
             Assert.Equal(0x0a0b0c, objectId.Increment);
-            Assert.Equal(BsonConstants.UnixEpoch.AddSeconds(0x01020304), objectId.CreationTime);
             Assert.Equal("0102030405060708090a0b0c", objectId.ToString());
             Assert.True(bytes.SequenceEqual(objectId.ToByteArray()));
         }
@@ -329,33 +327,6 @@ namespace DataCentric.Test
             Assert.False(objectId1 == objectId2);
             Assert.True(objectId1 > objectId2);
             Assert.True(objectId1 >= objectId2);
-        }
-
-        [Fact]
-        public void TestIConvertibleMethods()
-        {
-            var value = RecordId.Empty;
-            Assert.Equal(TypeCode.Object, ((IConvertible)value).GetTypeCode());
-            Assert.Equal(value, ((IConvertible)value).ToType(typeof(object), null)); // not AreSame because of boxing
-            Assert.Equal(value, ((IConvertible)value).ToType(typeof(RecordId), null)); // not AreSame because of boxing
-            Assert.Throws<InvalidCastException>(() => Convert.ToBoolean(value));
-            Assert.Throws<InvalidCastException>(() => Convert.ToByte(value));
-            Assert.Throws<InvalidCastException>(() => Convert.ToChar(value));
-            Assert.Throws<InvalidCastException>(() => Convert.ToDateTime(value));
-            Assert.Throws<InvalidCastException>(() => Convert.ToDecimal(value));
-            Assert.Throws<InvalidCastException>(() => Convert.ToDouble(value));
-            Assert.Throws<InvalidCastException>(() => Convert.ToInt16(value));
-            Assert.Throws<InvalidCastException>(() => Convert.ToInt32(value));
-            Assert.Throws<InvalidCastException>(() => Convert.ToInt64(value));
-            Assert.Throws<InvalidCastException>(() => Convert.ToSByte(value));
-            Assert.Throws<InvalidCastException>(() => Convert.ToSingle(value));
-            Assert.Equal("000000000000000000000000", Convert.ToString(value));
-            Assert.Throws<InvalidCastException>(() => Convert.ToUInt16(value));
-            Assert.Throws<InvalidCastException>(() => Convert.ToUInt32(value));
-            Assert.Throws<InvalidCastException>(() => Convert.ToUInt64(value));
-
-            Assert.Equal("000000000000000000000000", ((IConvertible)value).ToType(typeof(string), null));
-            Assert.Throws<InvalidCastException>(() => ((IConvertible)value).ToType(typeof(UInt64), null));
         }
 
         [Fact]

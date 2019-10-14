@@ -25,29 +25,47 @@ using MongoDB.Bson;
 namespace DataCentric
 {
     /// <summary>
-    /// Represents an RecordId (see also BsonObjectId).
+    /// A portable, GUID-like, ordered 16-byte record identifier which has the
+    /// following properties irrespective of the database type:
+    /// 
+    /// * Unique within each database table
+    /// * Can be generated in strictly increasing order in a single thread
+    /// * Can be generated in increasing order across multiple threads
+    ///   or servers, but only up to one second resolution. Namely, two
+    ///   values generated within the same second are not guaranteed to be
+    ///   in an increasing order.
+    ///
+    /// The purpose of creating a portable version of Object Id is to have a
+    /// unique, semi-ordered identifier that can be used not only with MongoDB
+    /// but also with relational databases and other storage.
+    ///
+    /// RecordId is converted to the database-specific ordered or auto
+    /// incrementing identifier in the data source implementation. 
+    ///
+    /// Because RecordId does not require strict ordering across multiple
+    /// threads or servers, it can be used with distributed, web scale
+    /// databases where getting a strictly increasing auto-incremented
+    /// identifier would cause a performance hit.
+    ///
+    /// For MongoDB, RecordId maps to ObjectID with trailing 0s, and its
+    /// implementation and the algorithm for unique generation is based on
+    /// modified code for ObjectId in MongoDB driver.
+    ///
+    /// For relational databases, RecordId may use the same algorithm or
+    /// an auto incremented field, if available. 
     /// </summary>
-#if NET452
-    [Serializable]
-#endif
-    public struct RecordId : IComparable<RecordId>, IEquatable<RecordId>, IConvertible
+    public struct RecordId : IComparable<RecordId>, IEquatable<RecordId>
     {
-        // private static fields
         private static readonly RecordId __emptyInstance = default(RecordId);
         private static readonly int __staticMachine = (GetMachineHash() + GetAppDomainId()) & 0x00ffffff;
         private static readonly short __staticPid = GetPid();
         private static int __staticIncrement = (new Random()).Next();
 
-        // private fields
         private readonly int _a;
         private readonly int _b;
         private readonly int _c;
 
-        // constructors
-        /// <summary>
-        /// Initializes a new instance of the RecordId class.
-        /// </summary>
-        /// <param name="bytes">The bytes.</param>
+        /// <summary>Create from a byte array of size 12.</summary>
         public RecordId(byte[] bytes)
         {
             if (bytes == null)
@@ -538,10 +556,7 @@ namespace DataCentric
             destination[offset + 11] = (byte)(_c);
         }
 
-        /// <summary>
-        /// Returns a string representation of the value.
-        /// </summary>
-        /// <returns>A string representation of the value.</returns>
+        /// <summary>Returns a string representation of the value.</summary>
         public override string ToString()
         {
             var c = new char[24];
@@ -570,104 +585,6 @@ namespace DataCentric
             c[22] = BsonUtils.ToHexChar((_c >> 4) & 0x0f);
             c[23] = BsonUtils.ToHexChar(_c & 0x0f);
             return new string(c);
-        }
-
-        // explicit IConvertible implementation
-        TypeCode IConvertible.GetTypeCode()
-        {
-            return TypeCode.Object;
-        }
-
-        bool IConvertible.ToBoolean(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
-
-        byte IConvertible.ToByte(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
-
-        char IConvertible.ToChar(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
-
-        DateTime IConvertible.ToDateTime(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
-
-        decimal IConvertible.ToDecimal(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
-
-        double IConvertible.ToDouble(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
-
-        short IConvertible.ToInt16(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
-
-        int IConvertible.ToInt32(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
-
-        long IConvertible.ToInt64(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
-
-        sbyte IConvertible.ToSByte(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
-
-        float IConvertible.ToSingle(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
-
-        string IConvertible.ToString(IFormatProvider provider)
-        {
-            return ToString();
-        }
-
-        object IConvertible.ToType(Type conversionType, IFormatProvider provider)
-        {
-            switch (Type.GetTypeCode(conversionType))
-            {
-                case TypeCode.String:
-                    return ((IConvertible)this).ToString(provider);
-                case TypeCode.Object:
-                    if (conversionType == typeof(object) || conversionType == typeof(RecordId))
-                    {
-                        return this;
-                    }
-                    break;
-            }
-
-            throw new InvalidCastException();
-        }
-
-        ushort IConvertible.ToUInt16(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
-
-        uint IConvertible.ToUInt32(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
-        }
-
-        ulong IConvertible.ToUInt64(IFormatProvider provider)
-        {
-            throw new InvalidCastException();
         }
     }
 }
