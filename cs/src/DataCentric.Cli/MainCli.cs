@@ -137,7 +137,16 @@ namespace DataCentric.Cli
             {
                 InstanceType = InstanceType.USER, InstanceName = "TEMP", EnvName = "Default" // TODO - use GUID based DB name
             };
-            IContext context = new MongoCliContext(dbName, "mongodb://localhost:27017", ObjectId.Empty); // TODO - specify server URI
+
+            var dataSource = new TemporalMongoDataSourceData
+            {
+                DbName = dbName,
+                MongoServer = new MongoServerKey { MongoServerUri = "mongodb://localhost:27017"} // TODO - specify server URI
+            };
+
+            Context context = new Context();
+            context.DataSource = dataSource;
+            context.DataSet = dataSource.CreateCommon();
 
             // Process all directories inside given folder
             foreach (var dir in Directory.GetDirectories(convertOptions.CsvPath))
@@ -250,20 +259,32 @@ namespace DataCentric.Cli
 
             // Convert connection string to db name and hosts
             MongoUrl url = MongoUrl.Create(connectionString);
+
             string dbNameString = $"{url.DatabaseName};{options.Environment}";
-            List<string> hosts = url.Servers.Select(t => t.ToString()).ToList();
 
             DbNameKey dbName = Activator.CreateInstance<DbNameKey>();
             dbName.PopulateFrom(dbNameString);
 
-            IContext context = new MongoCliContext(dbName, "mongodb://localhost:27017", ObjectId.Empty);
+            var dataSource = new TemporalMongoDataSourceData
+            {
+                DbName = dbName,
+                MongoServer = new MongoServerKey { MongoServerUri = $"mongodb://{url.Server}"}
+            };
 
-            object handler = createHandlerMethod.Invoke(null, new object[] { context, options });
+            var context = new Context();
+            context.DataSource = dataSource;
+            context.DataSet = dataSource.GetCommon();
 
-            MethodInfo handlerMethod = handler.GetType().GetMethod(options.Handler)
-                ?? throw new ArgumentException($"Method '{options.Handler}' not found");
+            object record = createHandlerMethod.Invoke(null, new object[] { context, options });
 
-            handlerMethod.Invoke(handler, ActivatorUtil.CreateParameterValues(handlerMethod, options.Arguments));
+            MethodInfo handlerMethod = record.GetType().GetMethod(options.Handler)
+                                       ?? throw new ArgumentException($"Method '{options.Handler}' not found");
+
+            // Check that method has [Handler] attribute before calling it.
+            if (handlerMethod.GetCustomAttribute<HandlerAttribute>() == null)
+                throw new Exception($"Cannot run {options.Handler} method, missing [Handler] attribute.");
+
+            handlerMethod.Invoke(record, ActivatorUtil.CreateParameterValues(handlerMethod, options.Arguments));
         }
 
         /// <summary>
