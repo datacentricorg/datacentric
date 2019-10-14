@@ -49,7 +49,7 @@ namespace DataCentric
     ///
     /// For MongoDB, RecordId maps to ObjectID with trailing 0s, and its
     /// implementation and the algorithm for unique generation is based on
-    /// modified code for ObjectId in MongoDB driver.
+    /// modified code for RecordId in MongoDB driver.
     ///
     /// For relational databases, RecordId may use the same algorithm or
     /// an auto incremented field, if available. 

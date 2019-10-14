@@ -29,7 +29,7 @@ namespace DataCentric
     /// The log record serves as the key for querying log entries.
     /// To obtain the entire log, run a query for the Log element
     /// of the LogEntry record, then sort the entry records by
-    /// their ObjectId.
+    /// their RecordId.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<LogKey>))]
     public sealed class LogKey : TypedKey<LogKey, LogData>

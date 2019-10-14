@@ -29,7 +29,7 @@ namespace DataCentric
         private ILog log_;
         private IProgress progress_;
         private IDataSource dataSource_;
-        private ObjectId? dataSet_;
+        private RecordId? dataSet_;
 
         /// <summary>
         /// Provides a unified API for an output folder located in a
@@ -96,7 +96,7 @@ namespace DataCentric
         }
 
         /// <summary>Default dataset of the context.</summary>
-        public ObjectId DataSet
+        public RecordId DataSet
         {
             get
             {

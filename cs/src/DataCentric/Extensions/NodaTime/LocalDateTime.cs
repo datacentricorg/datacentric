@@ -126,26 +126,26 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Convert to the least possible value of \texttt{ObjectId}
+        /// Convert to the least possible value of \texttt{RecordId}
         /// with timestamp equal to \texttt{value}.
         ///
         /// Error message if equal to the default constructed value.
         /// </summary>
-        public static ObjectId ToObjectId(this LocalDateTime value)
+        public static RecordId ToRecordId(this LocalDateTime value)
         {
             value.CheckHasValue();
-            return new ObjectId(value.ToUtcDateTime(), 0, 0, 0);
+            return new RecordId(value.ToUtcDateTime(), 0, 0, 0);
         }
 
         /// <summary>
-        /// Convert to the least possible value of \texttt{ObjectId}
+        /// Convert to the least possible value of \texttt{RecordId}
         /// with timestamp equal to \texttt{value}.
         ///
         /// Return null if equal to the default constructed value.
         /// </summary>
-        public static ObjectId? ToObjectId(this LocalDateTime? value)
+        public static RecordId? ToRecordId(this LocalDateTime? value)
         {
-            if (value.HasValue) return value.Value.ToObjectId();
+            if (value.HasValue) return value.Value.ToRecordId();
             else return null;
         }
     }

@@ -43,24 +43,24 @@ namespace DataCentric
         //--- ELEMENTS
 
         /// <summary>
-        /// ObjectId of the record is specific to its version.
+        /// RecordId of the record is specific to its version.
         ///
         /// For the record's history to be captured correctly, all
-        /// update operations must assign a new ObjectId with the
+        /// update operations must assign a new RecordId with the
         /// timestamp that matches update time.
         /// </summary>
         [BsonId]
         [BsonRequired]
-        public ObjectId Id { get; set; }
+        public RecordId Id { get; set; }
 
         /// <summary>
-        /// ObjectId of the dataset where the record is stored.
+        /// RecordId of the dataset where the record is stored.
         ///
         /// For records stored in root dataset, the value of
-        /// DataSet element should be ObjectId.Empty.
+        /// DataSet element should be RecordId.Empty.
         /// </summary>
         [BsonElement("_dataset")]
-        public ObjectId DataSet { get; set; }
+        public RecordId DataSet { get; set; }
 
         /// <summary>
         /// String key consists of semicolon delimited primary key elements:

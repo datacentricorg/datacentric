@@ -46,7 +46,7 @@ namespace DataCentric.Cli
             typeof(LocalDate),
             typeof(LocalTime),
             typeof(LocalMinute),
-            typeof(ObjectId),
+            typeof(RecordId),
 
             // Nullables
             typeof(bool?),
@@ -58,7 +58,7 @@ namespace DataCentric.Cli
             typeof(LocalDate?),
             typeof(LocalTime?),
             typeof(LocalMinute?),
-            typeof(ObjectId?),
+            typeof(RecordId?),
         };
 
         /// <summary>
@@ -193,10 +193,10 @@ namespace DataCentric.Cli
                     // Minute to int
                     value.Type == AtomicType.NullableMinute   ? AtomicType.Int :
                     value.Type == AtomicType.Minute           ? AtomicType.Int :
-                    // TODO Remove after ObjectId support
-                    // value.Type == AtomicType.NullableObjectId ? AtomicType.ObjectId :
-                    value.Type == AtomicType.ObjectId         ? AtomicType.String :
-                    value.Type == AtomicType.NullableObjectId ? AtomicType.String :
+                    // TODO Remove after RecordId support
+                    // value.Type == AtomicType.NullableRecordId ? AtomicType.RecordId :
+                    value.Type == AtomicType.RecordId         ? AtomicType.String :
+                    value.Type == AtomicType.NullableRecordId ? AtomicType.String :
                                                                 value.Type;
                 value.Type = legacyType;
             }
@@ -498,9 +498,9 @@ namespace DataCentric.Cli
                     type == typeof(LocalDate?)     ? AtomicType.NullableDate :
                     type == typeof(LocalTime?)     ? AtomicType.NullableTime :
                     type == typeof(LocalMinute?)   ? AtomicType.NullableMinute :
-                    // Mongo's ObjectId
-                    type == typeof(ObjectId)  ? AtomicType.ObjectId :
-                    type == typeof(ObjectId?) ? AtomicType.NullableObjectId :
+                    // Mongo's RecordId
+                    type == typeof(RecordId)  ? AtomicType.RecordId :
+                    type == typeof(RecordId?) ? AtomicType.NullableRecordId :
                                                 throw new ArgumentException($"Unknown value type: {type.FullName}");
             }
             else if (type.IsSubclassOf(typeof(Key)) && type.Name.EndsWith("Key"))

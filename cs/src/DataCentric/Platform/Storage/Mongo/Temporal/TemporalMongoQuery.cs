@@ -35,7 +35,7 @@ namespace DataCentric
         where TRecord : Record
     {
         private readonly TemporalMongoCollection<TRecord> collection_;
-        private readonly ObjectId loadFrom_;
+        private readonly RecordId loadFrom_;
         private readonly IQueryable<TRecord> queryable_;
         private readonly IOrderedQueryable<TRecord> orderedQueryable_;
 
@@ -44,7 +44,7 @@ namespace DataCentric
         /// <summary>
         /// Create query from collection and dataset.
         /// </summary>
-        public TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, ObjectId loadFrom)
+        public TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, RecordId loadFrom)
         {
             collection_ = collection;
             loadFrom_ = loadFrom;
@@ -68,7 +68,7 @@ namespace DataCentric
         /// This constructor is private and is intended for use by the
         /// implementation of this class only.
         /// </summary>
-        private TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, ObjectId loadFrom, IQueryable<TRecord> queryable)
+        private TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, RecordId loadFrom, IQueryable<TRecord> queryable)
         {
             if (queryable == null)
                 throw new Exception(
@@ -86,7 +86,7 @@ namespace DataCentric
         /// This constructor is private and is intended for use by the
         /// implementation of this class only.
         /// </summary>
-        private TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, ObjectId loadFrom, IOrderedQueryable<TRecord> orderedQueryable)
+        private TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, RecordId loadFrom, IOrderedQueryable<TRecord> orderedQueryable)
         {
             if (orderedQueryable == null)
                 throw new Exception(
@@ -240,8 +240,8 @@ namespace DataCentric
                     // by the user specified query and sort order
                     int batchIndex = 0;
                     var batchKeysHashSet = new HashSet<string>();
-                    var batchIdsHashSet = new HashSet<ObjectId>();
-                    var batchIdsList = new List<ObjectId>();
+                    var batchIdsHashSet = new HashSet<RecordId>();
+                    var batchIdsList = new List<RecordId>();
                     while (true)
                     {
                         // Advance cursor and check if there are more results left in the query
@@ -252,7 +252,7 @@ namespace DataCentric
                             // If yes, get key from the enumerator
                             RecordInfo recordInfo = stepOneEnumerator.Current;
                             string batchKey = recordInfo.Key;
-                            ObjectId batchId = recordInfo.Id;
+                            RecordId batchId = recordInfo.Id;
 
                             // Add Key and Id to hashsets, increment
                             // batch index only if this is a new key
@@ -296,16 +296,16 @@ namespace DataCentric
                         .Select(p => new RecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
 
                     // Get dataset lookup list in descending order if FreezeImports is specified
-                    List<ObjectId> descendingLookupList = null;
+                    List<RecordId> descendingLookupList = null;
                     if (collection_.DataSource.FreezeImports)
                     {
                         var dataSetLookupEnumerable = collection_.DataSource.GetDataSetLookupList(loadFrom_);
                         descendingLookupList = dataSetLookupEnumerable.OrderByDescending(p => p).ToList();
                     }
 
-                    // Create a list of ObjectIds for the records obtained using
+                    // Create a list of RecordIds for the records obtained using
                     // dataset lookup rules for the keys in the batch
-                    var recIds = new List<ObjectId>();
+                    var recIds = new List<RecordId>();
                     string currentKey = null;
                     foreach (var obj in projectedIdQueryable)
                     {
@@ -331,9 +331,9 @@ namespace DataCentric
                         {
                             if (collection_.DataSource.FreezeImports)
                             {
-                                ObjectId recId = obj.Id;
-                                ObjectId recordDataSet = obj.DataSet;
-                                foreach (ObjectId dataSetId in descendingLookupList)
+                                RecordId recId = obj.Id;
+                                RecordId recordDataSet = obj.DataSet;
+                                foreach (RecordId dataSetId in descendingLookupList)
                                 {
                                     if (dataSetId == recordDataSet)
                                     {
@@ -343,7 +343,7 @@ namespace DataCentric
                                         // in the latest dataset for this key subject to the freeze rule.
 
                                         // Take the first object for a new key, relying on sorting
-                                        // by dataset and then by record's ObjectId in descending
+                                        // by dataset and then by record's RecordId in descending
                                         // order.
                                         currentKey = objKey;
 
@@ -368,14 +368,14 @@ namespace DataCentric
                             else
                             {
                                 // Take the first object for a new key, relying on sorting
-                                // by dataset and then by record's ObjectId in descending
+                                // by dataset and then by record's RecordId in descending
                                 // order.
                                 currentKey = objKey;
 
                                 // Add to dictionary only if found in the list of batch Ids
                                 // Otherwise this is not the latest record in the latest
                                 // dataset and it should be skipped.
-                                ObjectId recId = obj.Id;
+                                RecordId recId = obj.Id;
                                 if (batchIdsHashSet.Contains(recId))
                                 {
                                     recIds.Add(recId);
@@ -394,7 +394,7 @@ namespace DataCentric
                         .Where(p => recIds.Contains(p.Id));
 
                     // Populate a dictionary of records by Id
-                    var recordDict = new Dictionary<ObjectId, TRecord>();
+                    var recordDict = new Dictionary<RecordId, TRecord>();
                     foreach (var record in recordQueryable)
                     {
                         recordDict.Add(record.Id, record);
@@ -404,7 +404,7 @@ namespace DataCentric
                     // in the same order as the original query
                     foreach(var batchId in batchIdsList)
                     {
-                        // If a record ObjectId is present in batchIds but not
+                        // If a record RecordId is present in batchIds but not
                         // in recordDict, this indicates that the record found
                         // by the query is not the latest and it should be skipped
                         if (recordDict.TryGetValue(batchId, out var result))

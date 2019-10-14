@@ -36,17 +36,17 @@ namespace DataCentric
     /// In addition to being temporal, this data source is also hierarchical; the
     /// records are looked up across a hierarchy of datasets, including the dataset
     /// itself, its direct Imports, Imports of Imports, etc., ordered by dataset's
-    /// ObjectId.
+    /// RecordId.
     ///
     /// When FreezeImports is false, a query retrieves all records with a given key.
-    /// The records are sorted by dataset's ObjectId in descending order first, then
-    /// by record's ObjectId also in descending order. The first record in sort order
+    /// The records are sorted by dataset's RecordId in descending order first, then
+    /// by record's RecordId also in descending order. The first record in sort order
     /// is returned by the query, and all other records are ignored. This rule has
     /// the effect of retrieving the latest record in the latest dataset.
     ///
-    /// When FreezeImports is true, those records whose ObjectId is greater than
-    /// ObjectId of the next dataset in the lookup sequence (when the sequence is
-    /// ordered by dataset's ObjectId) are excluded, after which the rule described
+    /// When FreezeImports is true, those records whose RecordId is greater than
+    /// RecordId of the next dataset in the lookup sequence (when the sequence is
+    /// ordered by dataset's RecordId) are excluded, after which the rule described
     /// in the previous paragraph is applied. This has the effect of freezing the
     /// state of each imported datasets in the import lookup sequence as of the creation
     /// time of the next dataset in the sequence.
@@ -87,18 +87,18 @@ namespace DataCentric
         /// If either SavedByTime or SavedById is specified, the
         /// data source is readonly and its IsReadOnly() method returns true.
         /// </summary>
-        public ObjectId? SavedById { get; set; }
+        public RecordId? SavedById { get; set; }
 
         /// <summary>
         /// When FreezeImports is false, a query retrieves all records with a given key.
-        /// The records are sorted by dataset's ObjectId in descending order first, then
-        /// by record's ObjectId also in descending order. The first record in sort order
+        /// The records are sorted by dataset's RecordId in descending order first, then
+        /// by record's RecordId also in descending order. The first record in sort order
         /// is returned by the query, and all other records are ignored. This rule has
         /// the effect of retrieving the latest record in the latest dataset.
         ///
-        /// When FreezeImports is true, those records whose ObjectId is greater than
-        /// ObjectId of the next dataset in the lookup sequence (when the sequence is
-        /// ordered by dataset's ObjectId) are excluded, after which the rule described
+        /// When FreezeImports is true, those records whose RecordId is greater than
+        /// RecordId of the next dataset in the lookup sequence (when the sequence is
+        /// ordered by dataset's RecordId) are excluded, after which the rule described
         /// in the previous paragraph is applied. This has the effect of freezing the
         /// state of each imported datasets in the import lookup sequence as of the creation
         /// time of the next dataset in the sequence.
@@ -130,13 +130,13 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Load record by its ObjectId.
+        /// Load record by its RecordId.
         ///
-        /// Return null if there is no record for the specified ObjectId;
+        /// Return null if there is no record for the specified RecordId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public override TRecord LoadOrNull<TRecord>(ObjectId id)
+        public override TRecord LoadOrNull<TRecord>(RecordId id)
         {
             var savedBy = GetSavedBy();
             if (savedBy != null)
@@ -165,7 +165,7 @@ namespace DataCentric
                     // of class that is not derived from TRecord, in this case the API
                     // requires error message, not returning null
                     throw new Exception(
-                        $"Stored type {result.GetType().Name} for ObjectId={id} and " +
+                        $"Stored type {result.GetType().Name} for RecordId={id} and " +
                         $"Key={result.Key} is not an instance of the requested type {typeof(TRecord).Name}.");
                 }
 
@@ -183,25 +183,25 @@ namespace DataCentric
         /// <summary>
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
-        /// order of dataset ObjectIds, and then in the descending
-        /// order of record ObjectIds within the first dataset that
-        /// has at least one record. Both dataset and record ObjectIds
+        /// order of dataset RecordIds, and then in the descending
+        /// order of record RecordIds within the first dataset that
+        /// has at least one record. Both dataset and record RecordIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty ObjectId value that is less
-        /// than any other ObjectId value. Accordingly, the root
+        /// The root dataset has empty RecordId value that is less
+        /// than any other RecordId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// The first record in this lookup order is returned, or null
         /// if no records are found or if DeletedRecord is the first
         /// record.
         ///
-        /// Return null if there is no record for the specified ObjectId;
+        /// Return null if there is no record for the specified RecordId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public override TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, ObjectId loadFrom)
+        public override TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId loadFrom)
         {
             // String value of the key in semicolon delimited format for use in the query
             string keyValue = key.ToString();
@@ -254,20 +254,20 @@ namespace DataCentric
         /// Get query for the specified type.
         ///
         /// After applying query parameters, the lookup occurs first in
-        /// descending order of dataset ObjectIds, and then in the descending
-        /// order of record ObjectIds within the first dataset that
-        /// has at least one record. Both dataset and record ObjectIds
+        /// descending order of dataset RecordIds, and then in the descending
+        /// order of record RecordIds within the first dataset that
+        /// has at least one record. Both dataset and record RecordIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty ObjectId value that is less
-        /// than any other ObjectId value. Accordingly, the root
+        /// The root dataset has empty RecordId value that is less
+        /// than any other RecordId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// Generic parameter TRecord is not necessarily the root data type;
         /// it may also be a type derived from the root data type.
         /// </summary>
-        public override IQuery<TRecord> GetQuery<TRecord>(ObjectId loadFrom)
+        public override IQuery<TRecord> GetQuery<TRecord>(RecordId loadFrom)
         {
             // Get or create collection, then create query from collection
             var collection = GetOrCreateCollection<TRecord>();
@@ -284,29 +284,29 @@ namespace DataCentric
         /// The reason for this behavior is that the record may be stored from
         /// a different dataset than the one where it is used.
         ///
-        /// This method guarantees that ObjectIds will be in strictly increasing
+        /// This method guarantees that RecordIds will be in strictly increasing
         /// order for this instance of the data source class always, and across
         /// all processes and machine if they are not created within the same
         /// second.
         /// </summary>
-        public override void Save<TRecord>(TRecord record, ObjectId saveTo)
+        public override void Save<TRecord>(TRecord record, RecordId saveTo)
         {
             CheckNotReadOnly();
 
             var collection = GetOrCreateCollection<TRecord>();
 
-            // This method guarantees that ObjectIds will be in strictly increasing
+            // This method guarantees that RecordIds will be in strictly increasing
             // order for this instance of the data source class always, and across
             // all processes and machine if they are not created within the same
             // second.
-            var objectId = CreateOrderedObjectId();
+            var objectId = CreateOrderedRecordId();
 
-            // ObjectId of the record must be strictly later
-            // than ObjectId of the dataset where it is stored
+            // RecordId of the record must be strictly later
+            // than RecordId of the dataset where it is stored
             if (objectId <= saveTo)
                 throw new Exception(
-                    $"Attempting to save a record with ObjectId={objectId} that is later " +
-                    $"than ObjectId={saveTo} of the dataset where it is being saved.");
+                    $"Attempting to save a record with RecordId={objectId} that is later " +
+                    $"than RecordId={saveTo} of the dataset where it is being saved.");
 
             // Assign ID and DataSet, and only then initialize, because
             // initialization code may use record.ID and record.DataSet
@@ -314,7 +314,7 @@ namespace DataCentric
             record.DataSet = saveTo;
             record.Init(Context);
 
-            // By design, insert will fail if ObjectId is not unique within the collection
+            // By design, insert will fail if RecordId is not unique within the collection
             collection.TypedCollection.InsertOne(record);
         }
 
@@ -327,7 +327,7 @@ namespace DataCentric
         /// To avoid an additional roundtrip to the data store, the delete
         /// marker is written even when the record does not exist.
         /// </summary>
-        public override void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, ObjectId deleteIn)
+        public override void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId deleteIn)
         {
             CheckNotReadOnly();
 
@@ -337,18 +337,18 @@ namespace DataCentric
             // Get collection
             var collection = GetOrCreateCollection<TRecord>();
 
-            // This method guarantees that ObjectIds will be in strictly increasing
+            // This method guarantees that RecordIds will be in strictly increasing
             // order for this instance of the data source class always, and across
             // all processes and machine if they are not created within the same
             // second.
-            var objectId = CreateOrderedObjectId();
+            var objectId = CreateOrderedRecordId();
             record.Id = objectId;
 
             // Assign dataset and then initialize, as the results of
             // initialization may depend on record.DataSet
             record.DataSet = deleteIn;
 
-            // By design, insert will fail if ObjectId is not unique within the collection
+            // By design, insert will fail if RecordId is not unique within the collection
             collection.BaseCollection.InsertOne(record);
         }
 
@@ -361,7 +361,7 @@ namespace DataCentric
         /// This element is set based on either SavedByTime and SavedById
         /// elements that are alternates; only one of them can be specified.
         /// </summary>
-        protected override ObjectId? GetSavedBy()
+        protected override RecordId? GetSavedBy()
         {
             // Set savedBy_ based on either SavedByTime or SavedById element
             if (SavedByTime == null && SavedById == null)
@@ -378,8 +378,8 @@ namespace DataCentric
                 // but we need to check separately that it is not empty
                 SavedByTime.CheckHasValue();
 
-                // Convert to the least value of ObjectId with the specified timestamp
-                return SavedByTime.ToObjectId();
+                // Convert to the least value of RecordId with the specified timestamp
+                return SavedByTime.ToRecordId();
             }
             else if (SavedByTime == null && SavedById != null)
             {

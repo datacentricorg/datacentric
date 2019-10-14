@@ -25,7 +25,7 @@ namespace DataCentric
     ///
     /// The log record serves as the key for querying log entries.
     /// To obtain the entire log, run a query for the Log element of
-    /// the entry record, then sort the entry records by their ObjectId.
+    /// the entry record, then sort the entry records by their RecordId.
     ///
     /// Derive from this class to provide specialized log entry types
     /// that include additional data.
@@ -34,16 +34,16 @@ namespace DataCentric
     public sealed class LogEntryKey : TypedKey<LogEntryKey, LogEntryData>
     {
         /// <summary>
-        /// Defining element Id here includes the record's ObjectId
-        /// in its key. Because ObjectId of the record is specific
+        /// Defining element Id here includes the record's RecordId
+        /// in its key. Because RecordId of the record is specific
         /// to its version, this is equivalent to using an auto-
         /// incrementing column as part of the record's primary key
         /// in a relational database.
         ///
         /// For the record's history to be captured correctly, all
-        /// update operations must assign a new ObjectId with the
+        /// update operations must assign a new RecordId with the
         /// timestamp that matches update time.
         /// </summary>
-        public ObjectId Id { get; set; }
+        public RecordId Id { get; set; }
     }
 }

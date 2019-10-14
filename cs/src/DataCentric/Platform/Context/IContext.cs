@@ -43,7 +43,7 @@ namespace DataCentric
         IDataSource DataSource { get; }
 
         /// <summary>Default dataset of the context.</summary>
-        ObjectId DataSet { get; }
+        RecordId DataSet { get; }
 
         //--- METHODS
 
@@ -60,25 +60,25 @@ namespace DataCentric
     public static class IContextExt
     {
         /// <summary>
-        /// Load record by its ObjectId.
+        /// Load record by its RecordId.
         ///
-        /// Error message if there is no record for the specified ObjectId,
+        /// Error message if there is no record for the specified RecordId,
         /// or if the record exists but is not derived from TRecord.
         /// </summary>
-        public static TRecord Load<TRecord>(this IContext obj, ObjectId id)
+        public static TRecord Load<TRecord>(this IContext obj, RecordId id)
             where TRecord : Record
         {
             return obj.DataSource.Load<TRecord>(id);
         }
 
         /// <summary>
-        /// Load record by its ObjectId.
+        /// Load record by its RecordId.
         ///
-        /// Return null if there is no record for the specified ObjectId;
+        /// Return null if there is no record for the specified RecordId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public static TRecord LoadOrNull<TRecord>(this IContext obj, ObjectId id)
+        public static TRecord LoadOrNull<TRecord>(this IContext obj, RecordId id)
             where TRecord : Record
         {
             return obj.DataSource.LoadOrNull<TRecord>(id);
@@ -134,7 +134,7 @@ namespace DataCentric
         ///
         /// Error message if the record is not found or is a DeletedRecord.
         /// </summary>
-        public static TRecord Load<TKey, TRecord>(this IContext obj, TypedKey<TKey, TRecord> key, ObjectId loadFrom)
+        public static TRecord Load<TKey, TRecord>(this IContext obj, TypedKey<TKey, TRecord> key, RecordId loadFrom)
             where TKey : TypedKey<TKey, TRecord>, new()
             where TRecord : TypedRecord<TKey, TRecord>
         {
@@ -144,25 +144,25 @@ namespace DataCentric
         /// <summary>
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
-        /// order of dataset ObjectIds, and then in the descending
-        /// order of record ObjectIds within the first dataset that
-        /// has at least one record. Both dataset and record ObjectIds
+        /// order of dataset RecordIds, and then in the descending
+        /// order of record RecordIds within the first dataset that
+        /// has at least one record. Both dataset and record RecordIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty ObjectId value that is less
-        /// than any other ObjectId value. Accordingly, the root
+        /// The root dataset has empty RecordId value that is less
+        /// than any other RecordId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// The first record in this lookup order is returned, or null
         /// if no records are found or if DeletedRecord is the first
         /// record.
         ///
-        /// Return null if there is no record for the specified ObjectId;
+        /// Return null if there is no record for the specified RecordId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public static TRecord LoadOrNull<TKey, TRecord>(this IContext obj, TypedKey<TKey, TRecord> key, ObjectId loadFrom)
+        public static TRecord LoadOrNull<TKey, TRecord>(this IContext obj, TypedKey<TKey, TRecord> key, RecordId loadFrom)
             where TKey : TypedKey<TKey, TRecord>, new()
             where TRecord : TypedRecord<TKey, TRecord>
         {
@@ -173,14 +173,14 @@ namespace DataCentric
         /// Get query for the specified type in the dataset of the context.
         ///
         /// After applying query parameters, the lookup occurs first in
-        /// descending order of dataset ObjectIds, and then in the descending
-        /// order of record ObjectIds within the first dataset that
-        /// has at least one record. Both dataset and record ObjectIds
+        /// descending order of dataset RecordIds, and then in the descending
+        /// order of record RecordIds within the first dataset that
+        /// has at least one record. Both dataset and record RecordIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty ObjectId value that is less
-        /// than any other ObjectId value. Accordingly, the root
+        /// The root dataset has empty RecordId value that is less
+        /// than any other RecordId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// Generic parameter TRecord is not necessarily the root data type;
@@ -196,20 +196,20 @@ namespace DataCentric
         /// Get query for the specified type.
         ///
         /// After applying query parameters, the lookup occurs first in
-        /// descending order of dataset ObjectIds, and then in the descending
-        /// order of record ObjectIds within the first dataset that
-        /// has at least one record. Both dataset and record ObjectIds
+        /// descending order of dataset RecordIds, and then in the descending
+        /// order of record RecordIds within the first dataset that
+        /// has at least one record. Both dataset and record RecordIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty ObjectId value that is less
-        /// than any other ObjectId value. Accordingly, the root
+        /// The root dataset has empty RecordId value that is less
+        /// than any other RecordId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// Generic parameter TRecord is not necessarily the root data type;
         /// it may also be a type derived from the root data type.
         /// </summary>
-        public static IQuery<TRecord> GetQuery<TRecord>(this IContext obj, ObjectId loadFrom)
+        public static IQuery<TRecord> GetQuery<TRecord>(this IContext obj, RecordId loadFrom)
             where TRecord : Record
         {
             return obj.DataSource.GetQuery<TRecord>(loadFrom);
@@ -225,7 +225,7 @@ namespace DataCentric
         /// The reason for this behavior is that the record may be stored from
         /// a different dataset than the one where it is used.
         ///
-        /// This method guarantees that ObjectIds will be in strictly increasing
+        /// This method guarantees that RecordIds will be in strictly increasing
         /// order for this instance of the data source class always, and across
         /// all processes and machine if they are not created within the same
         /// second.
@@ -251,12 +251,12 @@ namespace DataCentric
         /// The reason for this behavior is that the record may be stored from
         /// a different dataset than the one where it is used.
         ///
-        /// This method guarantees that ObjectIds will be in strictly increasing
+        /// This method guarantees that RecordIds will be in strictly increasing
         /// order for this instance of the data source class always, and across
         /// all processes and machine if they are not created within the same
         /// second.
         /// </summary>
-        public static void Save<TRecord>(this IContext obj, TRecord record, ObjectId saveTo)
+        public static void Save<TRecord>(this IContext obj, TRecord record, RecordId saveTo)
             where TRecord : Record
         {
             obj.DataSource.Save(record, saveTo);
@@ -288,7 +288,7 @@ namespace DataCentric
         /// To avoid an additional roundtrip to the data store, the delete
         /// marker is written even when the record does not exist.
         /// </summary>
-        public static void Delete<TKey, TRecord>(this IContext obj, TypedKey<TKey, TRecord> key, ObjectId deleteIn)
+        public static void Delete<TKey, TRecord>(this IContext obj, TypedKey<TKey, TRecord> key, RecordId deleteIn)
             where TKey : TypedKey<TKey, TRecord>, new()
             where TRecord : TypedRecord<TKey, TRecord>
         {
@@ -312,17 +312,17 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Return ObjectId of the latest Common dataset.
+        /// Return RecordId of the latest Common dataset.
         ///
         /// Common dataset is always stored in root dataset.
         /// </summary>
-        public static ObjectId GetCommon(this IContext obj)
+        public static RecordId GetCommon(this IContext obj)
         {
             return obj.DataSource.GetCommon();
         }
 
         /// <summary>
-        /// Get ObjectId of the dataset with the specified name.
+        /// Get RecordId of the dataset with the specified name.
         ///
         /// This overload of the GetDataSetOrNull method does not
         /// specify the loadFrom parameter explicitly and instead
@@ -335,13 +335,13 @@ namespace DataCentric
         ///
         /// Error message if not found.
         /// </summary>
-        public static ObjectId GetDataSet(this IContext obj, string dataSetName)
+        public static RecordId GetDataSet(this IContext obj, string dataSetName)
         {
             return obj.DataSource.GetDataSet(dataSetName, obj.DataSet);
         }
 
         /// <summary>
-        /// Get ObjectId of the dataset with the specified name.
+        /// Get RecordId of the dataset with the specified name.
         ///
         /// All of the previously requested dataSetIds are cached by
         /// the data source. To load the latest version of the dataset
@@ -350,13 +350,13 @@ namespace DataCentric
         ///
         /// Error message if not found.
         /// </summary>
-        public static ObjectId GetDataSet(this IContext obj, string dataSetName, ObjectId loadFrom)
+        public static RecordId GetDataSet(this IContext obj, string dataSetName, RecordId loadFrom)
         {
             return obj.DataSource.GetDataSet(dataSetName, loadFrom);
         }
 
         /// <summary>
-        /// Get ObjectId of the dataset with the specified name.
+        /// Get RecordId of the dataset with the specified name.
         ///
         /// This overload of the GetDataSetOrNull method does not
         /// specify the loadFrom parameter explicitly and instead
@@ -369,13 +369,13 @@ namespace DataCentric
         ///
         /// Returns null if not found.
         /// </summary>
-        public static ObjectId? GetDataSetOrNull(this IContext obj, string dataSetName)
+        public static RecordId? GetDataSetOrNull(this IContext obj, string dataSetName)
         {
             return obj.DataSource.GetDataSetOrNull(dataSetName, obj.DataSet);
         }
 
         /// <summary>
-        /// Get ObjectId of the dataset with the specified name.
+        /// Get RecordId of the dataset with the specified name.
         ///
         /// All of the previously requested dataSetIds are cached by
         /// the data source. To load the latest version of the dataset
@@ -384,7 +384,7 @@ namespace DataCentric
         ///
         /// Returns null if not found.
         /// </summary>
-        public static ObjectId? GetDataSetOrNull(this IContext obj, string dataSetName, ObjectId loadFrom)
+        public static RecordId? GetDataSetOrNull(this IContext obj, string dataSetName, RecordId loadFrom)
         {
             return obj.DataSource.GetDataSetOrNull(dataSetName, loadFrom);
         }
@@ -401,7 +401,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateCommon(this IContext obj)
+        public static RecordId CreateCommon(this IContext obj)
         {
             return obj.DataSource.CreateCommon();
         }
@@ -424,7 +424,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateCommon(this IContext obj, DataSetFlags flags)
+        public static RecordId CreateCommon(this IContext obj, DataSetFlags flags)
         {
             return obj.DataSource.CreateCommon(flags);
         }
@@ -436,7 +436,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetName)
+        public static RecordId CreateDataSet(this IContext obj, string dataSetName)
         {
             return obj.DataSource.CreateDataSet(dataSetName, obj.DataSet);
         }
@@ -448,7 +448,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, ObjectId parentDataSet)
+        public static RecordId CreateDataSet(this IContext obj, string dataSetName, RecordId parentDataSet)
         {
             return obj.DataSource.CreateDataSet(dataSetName, parentDataSet);
         }
@@ -460,7 +460,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, IEnumerable<ObjectId> imports)
+        public static RecordId CreateDataSet(this IContext obj, string dataSetName, IEnumerable<RecordId> imports)
         {
             return obj.DataSource.CreateDataSet(dataSetName, imports, obj.DataSet);
         }
@@ -472,7 +472,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, IEnumerable<ObjectId> imports, ObjectId parentDataSet)
+        public static RecordId CreateDataSet(this IContext obj, string dataSetName, IEnumerable<RecordId> imports, RecordId parentDataSet)
         {
             return obj.DataSource.CreateDataSet(dataSetName, imports, parentDataSet);
         }
@@ -490,7 +490,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, DataSetFlags flags)
+        public static RecordId CreateDataSet(this IContext obj, string dataSetName, DataSetFlags flags)
         {
             return obj.DataSource.CreateDataSet(dataSetName, flags, obj.DataSet);
         }
@@ -508,7 +508,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, DataSetFlags flags, ObjectId parentDataSet)
+        public static RecordId CreateDataSet(this IContext obj, string dataSetName, DataSetFlags flags, RecordId parentDataSet)
         {
             return obj.DataSource.CreateDataSet(dataSetName, flags, parentDataSet);
         }
@@ -526,7 +526,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, IEnumerable<ObjectId> imports, DataSetFlags flags)
+        public static RecordId CreateDataSet(this IContext obj, string dataSetName, IEnumerable<RecordId> imports, DataSetFlags flags)
         {
             return obj.DataSource.CreateDataSet(dataSetName, imports, flags, obj.DataSet);
         }
@@ -544,7 +544,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static ObjectId CreateDataSet(this IContext obj, string dataSetName, IEnumerable<ObjectId> imports, DataSetFlags flags, ObjectId parentDataSet)
+        public static RecordId CreateDataSet(this IContext obj, string dataSetName, IEnumerable<RecordId> imports, DataSetFlags flags, RecordId parentDataSet)
         {
             return obj.DataSource.CreateDataSet(dataSetName, imports, flags, parentDataSet);
         }
@@ -566,7 +566,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the saved dataset.
         /// </summary>
-        public static void SaveDataSet(this IContext obj, DataSetData dataSetData, ObjectId parentDataSet)
+        public static void SaveDataSet(this IContext obj, DataSetData dataSetData, RecordId parentDataSet)
         {
             obj.DataSource.SaveDataSet(dataSetData, parentDataSet);
         }

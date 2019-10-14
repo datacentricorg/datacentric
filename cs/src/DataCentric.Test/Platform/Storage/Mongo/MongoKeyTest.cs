@@ -159,7 +159,7 @@ namespace DataCentric.Test
                 context.KeepTestData = true;
 
                 var rec = new IdBasedKeySampleData();
-                rec.Id = new ObjectId(123456789, 0, 0, 0);
+                rec.Id = new RecordId(123456789, 0, 0, 0);
                 rec.StringElement = "abc";
 
                 // Verify key serialization

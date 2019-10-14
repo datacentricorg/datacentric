@@ -69,8 +69,8 @@ namespace DataCentric.Cli
                 atomicType == AtomicType.NullableDate     ? "dot::nullable<dot::local_date>" :
                 atomicType == AtomicType.NullableTime     ? "dot::nullable<dot::local_time>" :
                 atomicType == AtomicType.NullableMinute   ? "dot::nullable<dot::local_minute>" :
-                atomicType == AtomicType.ObjectId         ? "dot::object_id" :
-                atomicType == AtomicType.NullableObjectId ? "dot::nullable<dot::object_id>" :
+                atomicType == AtomicType.RecordId         ? "dot::object_id" :
+                atomicType == AtomicType.NullableRecordId ? "dot::nullable<dot::object_id>" :
                                                             throw new
                                                                 ArgumentException($"Unknown value type: {atomicType.ToString()}");
         }

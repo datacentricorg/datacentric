@@ -21,39 +21,39 @@ using NodaTime.Extensions;
 
 namespace DataCentric
 {
-    /// <summary>Extension methods for MongoDB.Bson.ObjectId.</summary>
-    public static class ObjectIdExt
+    /// <summary>Extension methods for MongoDB.Bson.RecordId.</summary>
+    public static class RecordIdExt
     {
         /// <summary>Return false if equal to the default constructed value.</summary>
-        public static bool HasValue(this ObjectId value)
+        public static bool HasValue(this RecordId value)
         {
             return value != default;
         }
 
         /// <summary>Return false if null or equal to the default constructed value.</summary>
-        public static bool HasValue(this ObjectId? value)
+        public static bool HasValue(this RecordId? value)
         {
             return value.HasValue && value.HasValue();
         }
 
         /// <summary>Error message if equal to the default constructed value.</summary>
-        public static void CheckHasValue(this ObjectId value)
+        public static void CheckHasValue(this RecordId value)
         {
-            if (!value.HasValue()) throw new Exception("Required ObjectId value is not set.");
+            if (!value.HasValue()) throw new Exception("Required RecordId value is not set.");
         }
 
         /// <summary>Error message if null or equal to the default constructed value.</summary>
-        public static void CheckHasValue(this ObjectId? value)
+        public static void CheckHasValue(this RecordId? value)
         {
-            if (!value.HasValue()) throw new Exception("Required ObjectId value is not set.");
+            if (!value.HasValue()) throw new Exception("Required RecordId value is not set.");
         }
 
         /// <summary>
-        /// Convert ObjectId to its creation time. This method has one second resolution.
+        /// Convert RecordId to its creation time. This method has one second resolution.
         ///
         /// Error message if equal to the default constructed value.
         /// </summary>
-        public static LocalDateTime ToLocalDateTime(this ObjectId value)
+        public static LocalDateTime ToLocalDateTime(this RecordId value)
         {
             value.CheckHasValue();
 
@@ -62,11 +62,11 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Convert ObjectId to its creation time. This method has one second resolution.
+        /// Convert RecordId to its creation time. This method has one second resolution.
         ///
         /// Return null if equal to the default constructed value.
         /// </summary>
-        public static LocalDateTime? ToLocalDateTime(this ObjectId? value)
+        public static LocalDateTime? ToLocalDateTime(this RecordId? value)
         {
             if (value.HasValue) return value.Value.ToLocalDateTime();
             else return null;

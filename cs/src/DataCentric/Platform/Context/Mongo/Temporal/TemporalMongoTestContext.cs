@@ -27,7 +27,7 @@ namespace DataCentric
     /// It extends UnitTestContext by creating an empty test
     /// database specific to the test method, and deleting
     /// it after the test exits. The context creates Common
-    /// dataset in the database and assigns its ObjectId to
+    /// dataset in the database and assigns its RecordId to
     /// the DataSet property of the context.
     ///
     /// If the test sets KeepTestData = true, the data is retained

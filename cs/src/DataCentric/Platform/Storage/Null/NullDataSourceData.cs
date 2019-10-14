@@ -48,30 +48,30 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// The returned ObjectIds have the following order guarantees:
+        /// The returned RecordIds have the following order guarantees:
         ///
         /// * For this data source instance, to arbitrary resolution; and
         /// * Across all processes and machines, to one second resolution
         ///
-        /// One second resolution means that two ObjectIds created within
+        /// One second resolution means that two RecordIds created within
         /// the same second by different instances of the data source
         /// class may not be ordered chronologically unless they are at
         /// least one second apart.
         /// </summary>
-        public override ObjectId CreateOrderedObjectId()
+        public override RecordId CreateOrderedRecordId()
         {
             ErrorMessage();
-            return ObjectId.Empty;
+            return RecordId.Empty;
         }
 
         /// <summary>
-        /// Load record by its ObjectId.
+        /// Load record by its RecordId.
         ///
-        /// Return null if there is no record for the specified ObjectId;
+        /// Return null if there is no record for the specified RecordId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public override TRecord LoadOrNull<TRecord>(ObjectId id)
+        public override TRecord LoadOrNull<TRecord>(RecordId id)
         {
             ErrorMessage();
             return null;
@@ -80,25 +80,25 @@ namespace DataCentric
         /// <summary>
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
-        /// order of dataset ObjectIds, and then in the descending
-        /// order of record ObjectIds within the first dataset that
-        /// has at least one record. Both dataset and record ObjectIds
+        /// order of dataset RecordIds, and then in the descending
+        /// order of record RecordIds within the first dataset that
+        /// has at least one record. Both dataset and record RecordIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty ObjectId value that is less
-        /// than any other ObjectId value. Accordingly, the root
+        /// The root dataset has empty RecordId value that is less
+        /// than any other RecordId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// The first record in this lookup order is returned, or null
         /// if no records are found or if DeletedRecord is the first
         /// record.
         ///
-        /// Return null if there is no record for the specified ObjectId;
+        /// Return null if there is no record for the specified RecordId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public override TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, ObjectId loadFrom)
+        public override TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId loadFrom)
         {
             ErrorMessage();
             return null;
@@ -108,20 +108,20 @@ namespace DataCentric
         /// Get query for the specified type.
         ///
         /// After applying query parameters, the lookup occurs first in
-        /// descending order of dataset ObjectIds, and then in the descending
-        /// order of record ObjectIds within the first dataset that
-        /// has at least one record. Both dataset and record ObjectIds
+        /// descending order of dataset RecordIds, and then in the descending
+        /// order of record RecordIds within the first dataset that
+        /// has at least one record. Both dataset and record RecordIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty ObjectId value that is less
-        /// than any other ObjectId value. Accordingly, the root
+        /// The root dataset has empty RecordId value that is less
+        /// than any other RecordId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// Generic parameter TRecord is not necessarily the root data type;
         /// it may also be a type derived from the root data type.
         /// </summary>
-        public override IQuery<TRecord> GetQuery<TRecord>(ObjectId loadFrom)
+        public override IQuery<TRecord> GetQuery<TRecord>(RecordId loadFrom)
         {
             ErrorMessage();
             return null;
@@ -137,12 +137,12 @@ namespace DataCentric
         /// The reason for this behavior is that the record may be stored from
         /// a different dataset than the one where it is used.
         ///
-        /// This method guarantees that ObjectIds will be in strictly increasing
+        /// This method guarantees that RecordIds will be in strictly increasing
         /// order for this instance of the data source class always, and across
         /// all processes and machine if they are not created within the same
         /// second.
         /// </summary>
-        public override void Save<TRecord>(TRecord record, ObjectId saveTo)
+        public override void Save<TRecord>(TRecord record, RecordId saveTo)
         {
             ErrorMessage();
         }
@@ -156,7 +156,7 @@ namespace DataCentric
         /// To avoid an additional roundtrip to the data store, the delete
         /// marker is written even when the record does not exist.
         /// </summary>
-        public override void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, ObjectId deleteIn)
+        public override void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId deleteIn)
         {
             ErrorMessage();
         }
@@ -183,7 +183,7 @@ namespace DataCentric
         /// SavedBy flags are defined only for temporal data sources. Accordingly,
         /// for this current data source the method should always return null.
         /// </summary>
-        protected override ObjectId? GetSavedBy()
+        protected override RecordId? GetSavedBy()
         {
             ErrorMessage();
             return null;

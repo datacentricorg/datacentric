@@ -30,7 +30,7 @@ namespace DataCentric
     /// Datasets can be stored in other datasets. The dataset where dataset
     /// record is stored is called parent dataset.
     ///
-    /// Dataset has an Imports array which provides the list of ObjectIds of
+    /// Dataset has an Imports array which provides the list of RecordIds of
     /// datasets where records are looked up if they are not found in the
     /// current dataset. The specific lookup rules are specific to the data
     /// source type and described in detail in the data source documentation.
@@ -39,7 +39,7 @@ namespace DataCentric
     /// source is used with a dataset where Imports array is not empty,
     /// an error will be raised.
     ///
-    /// The root dataset uses ObjectId.Empty and does not have versions
+    /// The root dataset uses RecordId.Empty and does not have versions
     /// or its own DataSetData record. It is always last in the dataset
     /// lookup sequence. The root dataset cannot have Imports.
     /// </summary>
@@ -59,8 +59,8 @@ namespace DataCentric
         /// For the data stored in datasets where NonTemporal == false, a
         /// temporal data source keeps permanent history of changes to each
         /// record within the dataset, and provides the ability to access
-        /// the record as of the specified ObjectId, where ObjectId serves
-        /// as a timeline (records created later have greater ObjectId than
+        /// the record as of the specified RecordId, where RecordId serves
+        /// as a timeline (records created later have greater RecordId than
         /// records created earlier).
         ///
         /// For the data stored in datasets where NonTemporal == true, the
@@ -88,7 +88,7 @@ namespace DataCentric
         /// default and must be included in the list of Imports explicitly.
         /// </summary>
         [BsonElement("Parents")] // TODO - remove when client code is updated
-        public List<ObjectId> Imports { get; set; }
+        public List<RecordId> Imports { get; set; }
 
         //--- METHODS
 
@@ -112,7 +112,7 @@ namespace DataCentric
                     $"DataSetName must be set before Init(context) " +
                     $"method of the dataset is called.");
 
-            if (DataSetName == DataSetKey.Common.DataSetName && DataSet != ObjectId.Empty)
+            if (DataSetName == DataSetKey.Common.DataSetName && DataSet != RecordId.Empty)
                 throw new Exception(
                     $"By convention, Common dataset must be stored in root dataset. " +
                     $"Other datasets may be stored inside any dataset including " +
@@ -127,15 +127,15 @@ namespace DataCentric
                         if (Id == importDataSet)
                         {
                             throw new Exception(
-                                $"Dataset {DataSetName} has an import with the same ObjectId={importDataSet} " +
-                                $"as its own ObjectId. Each ObjectId must be unique.");
+                                $"Dataset {DataSetName} has an import with the same RecordId={importDataSet} " +
+                                $"as its own RecordId. Each RecordId must be unique.");
                         }
                         else
                         {
                             throw new Exception(
-                                $"Dataset {DataSetName} has an import whose ObjectId={importDataSet} is greater " +
-                                $"than its own ObjectId={Id}. The ObjectId of each import must be strictly " +
-                                $"less than the ObjectId of the dataset itself.");
+                                $"Dataset {DataSetName} has an import whose RecordId={importDataSet} is greater " +
+                                $"than its own RecordId={Id}. The RecordId of each import must be strictly " +
+                                $"less than the RecordId of the dataset itself.");
                         }
                     }
                 }

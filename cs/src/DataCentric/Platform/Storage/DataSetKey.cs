@@ -27,7 +27,7 @@ namespace DataCentric
     /// Datasets can be stored in other datasets. The dataset where dataset
     /// record is stored is called parent dataset.
     ///
-    /// Dataset has an Imports array which provides the list of ObjectIds of
+    /// Dataset has an Imports array which provides the list of RecordIds of
     /// datasets where records are looked up if they are not found in the
     /// current dataset. The specific lookup rules are specific to the data
     /// source type and described in detail in the data source documentation.
@@ -36,7 +36,7 @@ namespace DataCentric
     /// source is used with a dataset where Imports array is not empty,
     /// an error will be raised.
     ///
-    /// The root dataset uses ObjectId.Empty and does not have versions
+    /// The root dataset uses RecordId.Empty and does not have versions
     /// or its own DataSetData record. It is always last in the dataset
     /// lookup sequence. The root dataset cannot have Imports.
     /// </summary>
@@ -62,7 +62,7 @@ namespace DataCentric
         /// Records that should be stored in a non-versioned dataset, such
         /// as the dataset records themselves, the data source records,
         /// and a few other record types, should set DataSet property to
-        /// ObjectId.Empty (root dataset).
+        /// RecordId.Empty (root dataset).
         /// </summary>
         public static DataSetKey Common { get; } = new DataSetKey() {DataSetName = "Common"};
     }

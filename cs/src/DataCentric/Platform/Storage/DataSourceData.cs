@@ -37,8 +37,8 @@ namespace DataCentric
     /// </summary>
     public abstract class DataSourceData : RootRecord<DataSourceKey, DataSourceData>, IDataSource
     {
-        private Dictionary<string, ObjectId> dataSetDict_ { get; } = new Dictionary<string, ObjectId>();
-        private Dictionary<ObjectId, HashSet<ObjectId>> importDict_ { get; } = new Dictionary<ObjectId, HashSet<ObjectId>>();
+        private Dictionary<string, RecordId> dataSetDict_ { get; } = new Dictionary<string, RecordId>();
+        private Dictionary<RecordId, HashSet<RecordId>> importDict_ { get; } = new Dictionary<RecordId, HashSet<RecordId>>();
 
         //--- ELEMENTS
 
@@ -99,50 +99,50 @@ namespace DataCentric
         public abstract bool IsReadOnly();
 
         /// <summary>
-        /// The returned ObjectIds have the following order guarantees:
+        /// The returned RecordIds have the following order guarantees:
         ///
         /// * For this data source instance, to arbitrary resolution; and
         /// * Across all processes and machines, to one second resolution
         ///
-        /// One second resolution means that two ObjectIds created within
+        /// One second resolution means that two RecordIds created within
         /// the same second by different instances of the data source
         /// class may not be ordered chronologically unless they are at
         /// least one second apart.
         /// </summary>
-        public abstract ObjectId CreateOrderedObjectId();
+        public abstract RecordId CreateOrderedRecordId();
 
         /// <summary>
-        /// Load record by its ObjectId.
+        /// Load record by its RecordId.
         ///
-        /// Return null if there is no record for the specified ObjectId;
+        /// Return null if there is no record for the specified RecordId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public abstract TRecord LoadOrNull<TRecord>(ObjectId id)
+        public abstract TRecord LoadOrNull<TRecord>(RecordId id)
             where TRecord : Record;
 
         /// <summary>
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
-        /// order of dataset ObjectIds, and then in the descending
-        /// order of record ObjectIds within the first dataset that
-        /// has at least one record. Both dataset and record ObjectIds
+        /// order of dataset RecordIds, and then in the descending
+        /// order of record RecordIds within the first dataset that
+        /// has at least one record. Both dataset and record RecordIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty ObjectId value that is less
-        /// than any other ObjectId value. Accordingly, the root
+        /// The root dataset has empty RecordId value that is less
+        /// than any other RecordId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// The first record in this lookup order is returned, or null
         /// if no records are found or if DeletedRecord is the first
         /// record.
         ///
-        /// Return null if there is no record for the specified ObjectId;
+        /// Return null if there is no record for the specified RecordId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public abstract TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, ObjectId loadFrom)
+        public abstract TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId loadFrom)
             where TKey : TypedKey<TKey, TRecord>, new()
             where TRecord : TypedRecord<TKey, TRecord>;
 
@@ -150,20 +150,20 @@ namespace DataCentric
         /// Get query for the specified type.
         ///
         /// After applying query parameters, the lookup occurs first in
-        /// descending order of dataset ObjectIds, and then in the descending
-        /// order of record ObjectIds within the first dataset that
-        /// has at least one record. Both dataset and record ObjectIds
+        /// descending order of dataset RecordIds, and then in the descending
+        /// order of record RecordIds within the first dataset that
+        /// has at least one record. Both dataset and record RecordIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty ObjectId value that is less
-        /// than any other ObjectId value. Accordingly, the root
+        /// The root dataset has empty RecordId value that is less
+        /// than any other RecordId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// Generic parameter TRecord is not necessarily the root data type;
         /// it may also be a type derived from the root data type.
         /// </summary>
-        public abstract IQuery<TRecord> GetQuery<TRecord>(ObjectId loadFrom)
+        public abstract IQuery<TRecord> GetQuery<TRecord>(RecordId loadFrom)
             where TRecord : Record;
 
         /// <summary>
@@ -176,12 +176,12 @@ namespace DataCentric
         /// The reason for this behavior is that the record may be stored from
         /// a different dataset than the one where it is used.
         ///
-        /// This method guarantees that ObjectIds will be in strictly increasing
+        /// This method guarantees that RecordIds will be in strictly increasing
         /// order for this instance of the data source class always, and across
         /// all processes and machine if they are not created within the same
         /// second.
         /// </summary>
-        public abstract void Save<TRecord>(TRecord record, ObjectId saveTo)
+        public abstract void Save<TRecord>(TRecord record, RecordId saveTo)
             where TRecord : Record;
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace DataCentric
         /// To avoid an additional roundtrip to the data store, the delete
         /// marker is written even when the record does not exist.
         /// </summary>
-        public abstract void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, ObjectId deleteIn)
+        public abstract void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId deleteIn)
             where TKey : TypedKey<TKey, TRecord>, new()
             where TRecord : TypedRecord<TKey, TRecord>;
 
@@ -229,7 +229,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Get ObjectId of the dataset with the specified name.
+        /// Get RecordId of the dataset with the specified name.
         ///
         /// All of the previously requested dataSetIds are cached by
         /// the data source. To load the latest version of the dataset
@@ -238,9 +238,9 @@ namespace DataCentric
         ///
         /// Returns null if not found.
         /// </summary>
-        public ObjectId? GetDataSetOrNull(string dataSetName, ObjectId loadFrom)
+        public RecordId? GetDataSetOrNull(string dataSetName, RecordId loadFrom)
         {
-            if (dataSetDict_.TryGetValue(dataSetName, out ObjectId result))
+            if (dataSetDict_.TryGetValue(dataSetName, out RecordId result))
             {
                 // Check if already cached, return if found
                 return result;
@@ -251,14 +251,14 @@ namespace DataCentric
                 DataSetKey dataSetKey = new DataSetKey() { DataSetName = dataSetName };
                 DataSetData dataSetData = this.LoadOrNull(dataSetKey, loadFrom);
 
-                // If not found, return ObjectId.Empty
+                // If not found, return RecordId.Empty
                 if (dataSetData == null) return null;
 
-                // If found, cache result in ObjectId dictionary
+                // If found, cache result in RecordId dictionary
                 dataSetDict_[dataSetName] = dataSetData.Id;
 
                 // Build and cache dataset lookup list if not found
-                if (!importDict_.TryGetValue(dataSetData.Id, out HashSet<ObjectId> importSet))
+                if (!importDict_.TryGetValue(dataSetData.Id, out HashSet<RecordId> importSet))
                 {
                     importSet = BuildDataSetLookupList(dataSetData);
                     importDict_.Add(dataSetData.Id, importSet);
@@ -272,15 +272,15 @@ namespace DataCentric
         /// Save new version of the dataset.
         ///
         /// This method sets Id element of the argument to be the
-        /// new ObjectId assigned to the record when it is saved.
-        /// The timestamp of the new ObjectId is the current time.
+        /// new RecordId assigned to the record when it is saved.
+        /// The timestamp of the new RecordId is the current time.
         ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
-        public void SaveDataSet(DataSetData dataSetData, ObjectId saveTo)
+        public void SaveDataSet(DataSetData dataSetData, RecordId saveTo)
         {
             // Save dataset to storage. This updates its Id
-            // to the new ObjectId created during save
+            // to the new RecordId created during save
             Save<DataSetData>(dataSetData, saveTo);
 
             // Update dataset dictionary with the new Id
@@ -300,18 +300,18 @@ namespace DataCentric
         /// SavedByTime/SavedById if specified, or their imports (including
         /// even those imports that are earlier than the constraint).
         /// </summary>
-        public IEnumerable<ObjectId> GetDataSetLookupList(ObjectId loadFrom)
+        public IEnumerable<RecordId> GetDataSetLookupList(RecordId loadFrom)
         {
             // Root dataset has no imports (there is not even a record
             // where these imports can be specified).
             //
-            // Return list containing only the root dataset (ObjectId.Empty) and exit
-            if (loadFrom == ObjectId.Empty)
+            // Return list containing only the root dataset (RecordId.Empty) and exit
+            if (loadFrom == RecordId.Empty)
             {
-                return new ObjectId[] {ObjectId.Empty};
+                return new RecordId[] {RecordId.Empty};
             }
 
-            if (importDict_.TryGetValue(loadFrom, out HashSet<ObjectId> result))
+            if (importDict_.TryGetValue(loadFrom, out HashSet<RecordId> result))
             {
                 // Check if the lookup list is already cached, return if yes
                 return result;
@@ -321,8 +321,8 @@ namespace DataCentric
                 // Otherwise load from storage (returns null if not found)
                 DataSetData dataSetData = LoadOrNull<DataSetData>(loadFrom);
 
-                if (dataSetData == null) throw new Exception($"Dataset with ObjectId={loadFrom} is not found.");
-                if (dataSetData.DataSet != ObjectId.Empty) throw new Exception($"Dataset with ObjectId={loadFrom} is not stored in root dataset.");
+                if (dataSetData == null) throw new Exception($"Dataset with RecordId={loadFrom} is not found.");
+                if (dataSetData.DataSet != RecordId.Empty) throw new Exception($"Dataset with RecordId={loadFrom} is not stored in root dataset.");
 
                 // Build the lookup list
                 result = BuildDataSetLookupList(dataSetData);
@@ -342,7 +342,7 @@ namespace DataCentric
         /// This element is set based on either SavedByTime and SavedById
         /// elements that are alternates; only one of them can be specified.
         /// </summary>
-        protected abstract ObjectId? GetSavedBy();
+        protected abstract RecordId? GetSavedBy();
 
         //--- PRIVATE
 
@@ -361,10 +361,10 @@ namespace DataCentric
         /// This private helper method should not be used directly.
         /// It provides functionality for the public API of this class.
         /// </summary>
-        private HashSet<ObjectId> BuildDataSetLookupList(DataSetData dataSetData)
+        private HashSet<RecordId> BuildDataSetLookupList(DataSetData dataSetData)
         {
             // Delegate to the second overload
-            var result = new HashSet<ObjectId>();
+            var result = new HashSet<RecordId>();
             BuildDataSetLookupList(dataSetData, result);
             return result;
         }
@@ -384,7 +384,7 @@ namespace DataCentric
         /// This private helper method should not be used directly.
         /// It provides functionality for the public API of this class.
         /// </summary>
-        private void BuildDataSetLookupList(DataSetData dataSetData, HashSet<ObjectId> result)
+        private void BuildDataSetLookupList(DataSetData dataSetData, HashSet<RecordId> result)
         {
             // Return if the dataset is null or has no imports
             if (dataSetData == null) return;
@@ -413,7 +413,7 @@ namespace DataCentric
                     // Dataset cannot include itself as its import
                     if (dataSetData.Id == dataSetId)
                         throw new Exception(
-                            $"Dataset {dataSetData.Key} with ObjectId={dataSetData.Id} includes itself in the list of its imports.");
+                            $"Dataset {dataSetData.Key} with RecordId={dataSetData.Id} includes itself in the list of its imports.");
 
                     // The Add method returns true if the argument is not yet present in the hashset
                     if (result.Add(dataSetId))

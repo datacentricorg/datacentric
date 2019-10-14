@@ -26,7 +26,7 @@ namespace DataCentric
     /// mongo server and picking specified database.
     ///
     /// The context loads an existing Common dataset from data source
-    /// and assigns its ObjectId to the DataSet property of the context.
+    /// and assigns its RecordId to the DataSet property of the context.
     /// </summary>
     public class ExternalMongoTestContext : UnitTestContext
     {

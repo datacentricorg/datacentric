@@ -40,7 +40,7 @@ namespace DataCentric
         private InstanceType instanceType_;
         private string dbName_;
         private IMongoClient client_;
-        private ObjectId prevObjectId_ = ObjectId.Empty;
+        private RecordId prevRecordId_ = RecordId.Empty;
 
         //--- ELEMENTS
 
@@ -150,44 +150,44 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// The returned ObjectIds have the following order guarantees:
+        /// The returned RecordIds have the following order guarantees:
         ///
         /// * For this data source instance, to arbitrary resolution; and
         /// * Across all processes and machines, to one second resolution
         ///
-        /// One second resolution means that two ObjectIds created within
+        /// One second resolution means that two RecordIds created within
         /// the same second by different instances of the data source
         /// class may not be ordered chronologically unless they are at
         /// least one second apart.
         /// </summary>
-        public override ObjectId CreateOrderedObjectId()
+        public override RecordId CreateOrderedRecordId()
         {
             CheckNotReadOnly();
 
-            // Generate ObjectId and check that it is later
-            // than the previous generated ObjectId
-            ObjectId result = ObjectId.GenerateNewId();
+            // Generate RecordId and check that it is later
+            // than the previous generated RecordId
+            RecordId result = RecordId.GenerateNewId();
             int retryCounter = 0;
-            while (result <= prevObjectId_)
+            while (result <= prevRecordId_)
             {
                 // Getting inside the while loop will be very rare as this would
                 // require the increment to roll from max int to min int within
                 // the same second, therefore it is a good idea to log the event
-                if (retryCounter++ == 0) Context.Log.Warning("MongoDB generated ObjectId not in increasing order, retrying.");
+                if (retryCounter++ == 0) Context.Log.Warning("MongoDB generated RecordId not in increasing order, retrying.");
 
-                // If new ObjectId is not strictly greater than the previous one,
-                // keep generating new ObjectIds until it changes
-                result = ObjectId.GenerateNewId();
+                // If new RecordId is not strictly greater than the previous one,
+                // keep generating new RecordIds until it changes
+                result = RecordId.GenerateNewId();
             }
 
             // Report the number of retries
             if (retryCounter != 0)
             {
-                Context.Log.Warning($"Generated ObjectId in increasing order after {retryCounter} retries.");
+                Context.Log.Warning($"Generated RecordId in increasing order after {retryCounter} retries.");
             }
 
-            // Update previous ObjectId and return
-            prevObjectId_ = result;
+            // Update previous RecordId and return
+            prevRecordId_ = result;
             return result;
         }
 
@@ -197,7 +197,7 @@ namespace DataCentric
         /// * The constraint on dataset lookup list, restricted by SavedBy (if not null)
         /// * The constraint on ID being strictly less than SavedBy (if not null)
         /// </summary>
-        public IQueryable<TRecord> ApplyFinalConstraints<TRecord>(IQueryable<TRecord> queryable, ObjectId loadFrom)
+        public IQueryable<TRecord> ApplyFinalConstraints<TRecord>(IQueryable<TRecord> queryable, RecordId loadFrom)
             where TRecord : Record
         {
             // Get lookup list by expanding the list of imports to arbitrary
@@ -206,7 +206,7 @@ namespace DataCentric
             // The list will not include datasets that are after the value of
             // SavedByTime/SavedById if specified, or their imports (including
             // even those imports that are earlier than the constraint).
-            IEnumerable<ObjectId> dataSetLookupList = GetDataSetLookupList(loadFrom);
+            IEnumerable<RecordId> dataSetLookupList = GetDataSetLookupList(loadFrom);
 
             // Apply constraint that the value is _dataset is
             // one of the elements of dataSetLookupList_

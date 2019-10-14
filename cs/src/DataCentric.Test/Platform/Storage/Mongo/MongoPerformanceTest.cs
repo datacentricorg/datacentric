@@ -48,8 +48,8 @@ namespace DataCentric.Test
         public class B
         {
             [BsonId]
-            public ObjectId Id { get; set; }
-            public ObjectId DataSet { get; set; }
+            public RecordId Id { get; set; }
+            public RecordId DataSet { get; set; }
             public string KeyElement { get; set; }
             public string StringElement1 { get; set; }
             public string StringElement2 { get; set; }
@@ -62,7 +62,7 @@ namespace DataCentric.Test
         public class Cursor
         {
             [BsonId]
-            public ObjectId Id { get; set; }
+            public RecordId Id { get; set; }
             public string KeyElement { get; set; }
         }
 
@@ -144,13 +144,13 @@ namespace DataCentric.Test
             List<B> records = new List<B>();
             for (int dataSetIndex = 0; dataSetIndex < dataSetCount_; ++dataSetIndex)
             {
-                ObjectId dataSet = ObjectId.GenerateNewId();
+                RecordId dataSet = RecordId.GenerateNewId();
                 for (int versionIndex = 0; versionIndex < versionCount_; ++versionIndex)
                 {
                     for (int recordIndex = 0; recordIndex < recordCount_; ++recordIndex)
                     {
                         var rec = new B();
-                        rec.Id = ObjectId.GenerateNewId();
+                        rec.Id = RecordId.GenerateNewId();
                         rec.DataSet = dataSet;
                         rec.KeyElement = String.Concat("KeyPrefix", recordIndex);
                         rec.StringElement1 = (recordIndex % 2).ToString();
@@ -344,10 +344,10 @@ namespace DataCentric.Test
                     .ThenByDescending(p => p.Id)
                     .Select(p => new Cursor {Id = p.Id, KeyElement = p.KeyElement});
 
-                // Get ObjectIds of the query results
+                // Get RecordIds of the query results
                 int objectIdCount = 0;
                 HashSet<string> keys = new HashSet<string>();
-                List<ObjectId> objectIds = new List<ObjectId>();
+                List<RecordId> objectIds = new List<RecordId>();
                 foreach (var obj in query)
                 {
                     if (keys.Add(obj.KeyElement))
@@ -357,7 +357,7 @@ namespace DataCentric.Test
                     }
                 }
 
-                // Iterate over ObjectIds
+                // Iterate over RecordIds
                 int recordCount = 0;
                 var recordQuery = collection.AsQueryable()
                     .Where(p => objectIds.Contains(p.Id));
@@ -367,7 +367,7 @@ namespace DataCentric.Test
                     recordCount++;
                 }
 
-                context.Log.Verify($"Query returned {recordCount} records from {objectIdCount} ObjectIds.");
+                context.Log.Verify($"Query returned {recordCount} records from {objectIdCount} RecordIds.");
                 context.Log.Verify($"Sum(DoubleElement)={sum}");
             }
         }

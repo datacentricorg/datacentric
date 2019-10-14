@@ -33,12 +33,12 @@ namespace DataCentric.Test
     public sealed class IdBasedKeySampleKey : TypedKey<IdBasedKeySampleKey, IdBasedKeySampleData>
     {
         /// <summary>
-        /// ObjectId of the record is specific to its version.
+        /// RecordId of the record is specific to its version.
         ///
         /// For the record's history to be captured correctly, all
-        /// update operations must assign a new ObjectId with the
+        /// update operations must assign a new RecordId with the
         /// timestamp that matches update time.
         /// </summary>
-        public ObjectId Id { get; set; }
+        public RecordId Id { get; set; }
     }
 }

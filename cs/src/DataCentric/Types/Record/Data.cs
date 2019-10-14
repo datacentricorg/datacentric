@@ -78,7 +78,7 @@ namespace DataCentric
                             writer.WriteEndElement(innerElementName);
                         }
                         break;
-                    case ObjectId idElement:
+                    case RecordId idElement:
                         // Do not serialize
                         break;
                     default:
@@ -201,7 +201,7 @@ namespace DataCentric
                                 dataElement.DeserializeFrom(dataNodes);
                             }
                             break;
-                        case ObjectId idElement:
+                        case RecordId idElement:
                             // Do not serialize
                             break;
                         default:

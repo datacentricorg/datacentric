@@ -28,7 +28,7 @@ namespace DataCentric
     ///
     /// The log record serves as the key for querying log entries.
     /// To obtain the entire log, run a query for the Log element of
-    /// the entry record, then sort the entry records by their ObjectId.
+    /// the entry record, then sort the entry records by their RecordId.
     ///
     /// Derive from this class to provide specialized log entry types
     /// that include additional data.
@@ -39,7 +39,7 @@ namespace DataCentric
         /// Log for which the entry is recorded.
         ///
         /// To obtain the entire log, run a query for the Log element of
-        /// the entry record, then sort the entry records by their ObjectId.
+        /// the entry record, then sort the entry records by their RecordId.
         /// </summary>
         [BsonRequired]
         public LogKey Log { get; set; }

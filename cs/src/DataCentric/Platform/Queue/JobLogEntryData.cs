@@ -28,7 +28,7 @@ namespace DataCentric
     ///
     /// To obtain the entire log, use a query to match Job element of
     /// the log entry record to the job and sort the records in the
-    /// order of their ObjectId.
+    /// order of their RecordId.
     /// </summary>
     public sealed class JobLogEntryData : TypedRecord<JobLogEntryKey, JobLogEntryData>
     {
@@ -42,7 +42,7 @@ namespace DataCentric
         ///
         /// To obtain the entire log, use a query to match Job element of
         /// the log entry record to the job and sort the records in the
-        /// order of their ObjectId.
+        /// order of their RecordId.
         /// </summary>
         [BsonRequired]
         public LogVerbosityEnum? EntryType { get; set; }
@@ -52,7 +52,7 @@ namespace DataCentric
         ///
         /// To obtain the entire log, use a query to match Job element of
         /// the log entry record to the job and sort the records in the
-        /// order of their ObjectId.
+        /// order of their RecordId.
         /// </summary>
         public string Message { get; set; }
     }

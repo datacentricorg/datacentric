@@ -90,7 +90,7 @@ namespace DataCentric.Test
                 SaveMinimalRecord(context, "DataSet0", "B", 3, 2);
 
                 // Same in DataSet1
-                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
+                var dataSet1 = context.CreateDataSet("DataSet1", new RecordId[] { dataSet0 }, context.DataSet);
 
                 // Create initial version of the records
                 SaveMinimalRecord(context, "DataSet1", "A", 4, 0);
@@ -105,12 +105,12 @@ namespace DataCentric.Test
                 SaveMinimalRecord(context, "DataSet1", "B", 7, 1);
 
                 // Next in DataSet2
-                var dataSet2 = context.CreateDataSet("DataSet2", new ObjectId[] { dataSet0 }, context.DataSet);
+                var dataSet2 = context.CreateDataSet("DataSet2", new RecordId[] { dataSet0 }, context.DataSet);
                 SaveMinimalRecord(context, "DataSet2", "A", 8, 0);
                 SaveMinimalRecord(context, "DataSet2", "B", 9, 0);
 
                 // Next in DataSet3
-                var dataSet3 = context.CreateDataSet("DataSet3", new ObjectId[] { dataSet0, dataSet1, dataSet2 }, context.DataSet);
+                var dataSet3 = context.CreateDataSet("DataSet3", new RecordId[] { dataSet0, dataSet1, dataSet2 }, context.DataSet);
                 SaveMinimalRecord(context, "DataSet3", "A", 10, 0);
                 SaveMinimalRecord(context, "DataSet3", "B", 11, 0);
 
@@ -129,16 +129,16 @@ namespace DataCentric.Test
             }
         }
 
-        /// <summary>Test of CreateOrderedObjectId method.</summary>
+        /// <summary>Test of CreateOrderedRecordId method.</summary>
         [Fact]
-        public void CreateOrderedObjectId()
+        public void CreateOrderedRecordId()
         {
             using (var context = new TemporalMongoTestContext(this))
             {
                 for (int i = 0; i < 10_000; ++i)
                 {
-                    // Invoke 10,000 times to ensure there is no log report of non-increasing ObjectId
-                    context.DataSource.CreateOrderedObjectId();
+                    // Invoke 10,000 times to ensure there is no log report of non-increasing RecordId
+                    context.DataSource.CreateOrderedRecordId();
                 }
 
                 // Confirm no log output indicating non-increasing id from inside the for loop
@@ -233,7 +233,7 @@ namespace DataCentric.Test
                 var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
                 SaveDerivedRecord(context, "DataSet0", "A", 0);
 
-                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
+                var dataSet1 = context.CreateDataSet("DataSet1", new RecordId[] { dataSet0 }, context.DataSet);
                 SaveDerivedFromDerivedRecord(context, "DataSet1", "B", 0);
 
                 // Create keys
@@ -428,30 +428,30 @@ namespace DataCentric.Test
             {
                 // Create two versions in DataSet0
                 var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
-                ObjectId objA0 = SaveMinimalRecord(context, "DataSet0", "A", 0, 0);
-                ObjectId objA1 = SaveMinimalRecord(context, "DataSet0", "A", 0, 1);
+                RecordId objA0 = SaveMinimalRecord(context, "DataSet0", "A", 0, 0);
+                RecordId objA1 = SaveMinimalRecord(context, "DataSet0", "A", 0, 1);
 
                 // Create two versions in DataSet1
-                var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
-                ObjectId objB0 = SaveMinimalRecord(context, "DataSet1", "B", 0, 0);
-                ObjectId objB1 = SaveMinimalRecord(context, "DataSet1", "B", 0, 1);
+                var dataSet1 = context.CreateDataSet("DataSet1", new RecordId[] { dataSet0 }, context.DataSet);
+                RecordId objB0 = SaveMinimalRecord(context, "DataSet1", "B", 0, 0);
+                RecordId objB1 = SaveMinimalRecord(context, "DataSet1", "B", 0, 1);
 
-                ObjectId cutoffObjectId = context.DataSource.CreateOrderedObjectId();
+                RecordId cutoffRecordId = context.DataSource.CreateOrderedRecordId();
 
                 // Create third version of the records
-                ObjectId objA2 = SaveMinimalRecord(context, "DataSet0", "A", 0, 2);
-                ObjectId objB2 = SaveMinimalRecord(context, "DataSet1", "B", 0, 2);
+                RecordId objA2 = SaveMinimalRecord(context, "DataSet0", "A", 0, 2);
+                RecordId objB2 = SaveMinimalRecord(context, "DataSet1", "B", 0, 2);
 
                 // Create new records that did not exist before
-                ObjectId objC0 = SaveMinimalRecord(context, "DataSet0", "C", 0, 0);
-                ObjectId objD0 = SaveMinimalRecord(context, "DataSet1", "D", 0, 0);
+                RecordId objC0 = SaveMinimalRecord(context, "DataSet0", "C", 0, 0);
+                RecordId objD0 = SaveMinimalRecord(context, "DataSet1", "D", 0, 0);
 
-                // Load each record by ObjectId
-                context.Log.Verify("Load records by ObjectId without constraint");
-                context.Log.Verify($"Found for ObjectId(A0)={context.LoadOrNull<BaseSampleData>(objA0) != null}");
-                context.Log.Verify($"Found for ObjectId(A1)={context.LoadOrNull<BaseSampleData>(objA1) != null}");
-                context.Log.Verify($"Found for ObjectId(A2)={context.LoadOrNull<BaseSampleData>(objA2) != null}");
-                context.Log.Verify($"Found for ObjectId(C0)={context.LoadOrNull<BaseSampleData>(objC0) != null}");
+                // Load each record by RecordId
+                context.Log.Verify("Load records by RecordId without constraint");
+                context.Log.Verify($"Found for RecordId(A0)={context.LoadOrNull<BaseSampleData>(objA0) != null}");
+                context.Log.Verify($"Found for RecordId(A1)={context.LoadOrNull<BaseSampleData>(objA1) != null}");
+                context.Log.Verify($"Found for RecordId(A2)={context.LoadOrNull<BaseSampleData>(objA2) != null}");
+                context.Log.Verify($"Found for RecordId(C0)={context.LoadOrNull<BaseSampleData>(objC0) != null}");
 
                 // Load each record by string key
                 if (true)
@@ -481,14 +481,14 @@ namespace DataCentric.Test
                 }
 
                 // Set revision time constraint
-                context.DataSource.CastTo<TemporalMongoDataSourceData>().SavedById = cutoffObjectId;
+                context.DataSource.CastTo<TemporalMongoDataSourceData>().SavedById = cutoffRecordId;
 
-                // Get each record by ObjectId
-                context.Log.Verify("Load records by ObjectId with SavedById constraint");
-                context.Log.Verify($"Found for ObjectId(A0)={context.LoadOrNull<BaseSampleData>(objA0) != null}");
-                context.Log.Verify($"Found for ObjectId(A1)={context.LoadOrNull<BaseSampleData>(objA1) != null}");
-                context.Log.Verify($"Found for ObjectId(A2)={context.LoadOrNull<BaseSampleData>(objA2) != null}");
-                context.Log.Verify($"Found for ObjectId(C0)={context.LoadOrNull<BaseSampleData>(objC0) != null}");
+                // Get each record by RecordId
+                context.Log.Verify("Load records by RecordId with SavedById constraint");
+                context.Log.Verify($"Found for RecordId(A0)={context.LoadOrNull<BaseSampleData>(objA0) != null}");
+                context.Log.Verify($"Found for RecordId(A1)={context.LoadOrNull<BaseSampleData>(objA1) != null}");
+                context.Log.Verify($"Found for RecordId(A2)={context.LoadOrNull<BaseSampleData>(objA2) != null}");
+                context.Log.Verify($"Found for RecordId(C0)={context.LoadOrNull<BaseSampleData>(objC0) != null}");
 
                 // Load each record by string key
                 if (true)
@@ -647,7 +647,7 @@ namespace DataCentric.Test
             SaveBaseRecord(context, "DataSet0", "A", 0);
 
             // Create second dataset and record, first record will be visible in both
-            var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] {dataSet0}, context.DataSet);
+            var dataSet1 = context.CreateDataSet("DataSet1", new RecordId[] {dataSet0}, context.DataSet);
             SaveDerivedRecord(context, "DataSet1", "B", 0);
         }
 
@@ -662,19 +662,19 @@ namespace DataCentric.Test
             SaveBaseRecord(context, "DataSet0", "A", 2);
             SaveBaseRecord(context, "DataSet0", "A", 3);
 
-            var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] { dataSet0 }, context.DataSet);
+            var dataSet1 = context.CreateDataSet("DataSet1", new RecordId[] { dataSet0 }, context.DataSet);
             SaveDerivedRecord(context, "DataSet1", "B", 0);
             SaveDerivedRecord(context, "DataSet1", "B", 1);
             SaveDerivedRecord(context, "DataSet1", "B", 2);
             SaveDerivedRecord(context, "DataSet1", "B", 3);
 
-            var dataSet2 = context.CreateDataSet("DataSet2", new ObjectId[] { dataSet0 }, context.DataSet);
+            var dataSet2 = context.CreateDataSet("DataSet2", new RecordId[] { dataSet0 }, context.DataSet);
             SaveOtherDerivedRecord(context, "DataSet2", "C", 0);
             SaveOtherDerivedRecord(context, "DataSet2", "C", 1);
             SaveOtherDerivedRecord(context, "DataSet2", "C", 2);
             SaveOtherDerivedRecord(context, "DataSet2", "C", 3);
 
-            var dataSet3 = context.CreateDataSet("DataSet3", new ObjectId[] { dataSet0, dataSet1, dataSet2 }, context.DataSet);
+            var dataSet3 = context.CreateDataSet("DataSet3", new RecordId[] { dataSet0, dataSet1, dataSet2 }, context.DataSet);
             SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 0);
             SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 1);
             SaveDerivedFromDerivedRecord(context, "DataSet3", "D", 2);
@@ -686,9 +686,9 @@ namespace DataCentric.Test
         {
             // Create datasets
             var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
-            var dataSet1 = context.CreateDataSet("DataSet1", new ObjectId[] {dataSet0}, context.DataSet);
-            var dataSet2 = context.CreateDataSet("DataSet2", new ObjectId[] {dataSet0}, context.DataSet);
-            var dataSet3 = context.CreateDataSet("DataSet3", new ObjectId[] {dataSet0, dataSet1, dataSet2}, context.DataSet);
+            var dataSet1 = context.CreateDataSet("DataSet1", new RecordId[] {dataSet0}, context.DataSet);
+            var dataSet2 = context.CreateDataSet("DataSet2", new RecordId[] {dataSet0}, context.DataSet);
+            var dataSet3 = context.CreateDataSet("DataSet3", new RecordId[] {dataSet0, dataSet1, dataSet2}, context.DataSet);
 
             // Create records
             SaveMinimalRecord(context, "DataSet0", "A", 0);
@@ -702,7 +702,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Save record with minimal data for testing how the records are found. </summary>
-        private ObjectId SaveMinimalRecord(IContext context, string dataSetName, string recordName, int recordIndex, int? version = null)
+        private RecordId SaveMinimalRecord(IContext context, string dataSetName, string recordName, int recordIndex, int? version = null)
         {
             var rec = new BaseSampleData();
             rec.RecordName = recordName;
@@ -716,7 +716,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Save base record</summary>
-        private ObjectId SaveBaseRecord(IContext context, string dataSetName, string recordName, int recordIndex)
+        private RecordId SaveBaseRecord(IContext context, string dataSetName, string recordName, int recordIndex)
         {
             var rec = new BaseSampleData();
             rec.RecordName = recordName;
@@ -734,7 +734,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Save derived record</summary>
-        private ObjectId SaveDerivedRecord(IContext context, string dataSetName, string recordName, int recordIndex)
+        private RecordId SaveDerivedRecord(IContext context, string dataSetName, string recordName, int recordIndex)
         {
             var rec = new DerivedSampleData();
             rec.RecordName = recordName;
@@ -797,7 +797,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Save other derived record.</summary>
-        private ObjectId SaveOtherDerivedRecord(IContext context, string dataSetName, string recordName, int recordIndex)
+        private RecordId SaveOtherDerivedRecord(IContext context, string dataSetName, string recordName, int recordIndex)
         {
             var rec = new OtherDerivedSampleData();
             rec.RecordName = recordName;
@@ -816,7 +816,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Save record that is derived from derived.</summary>
-        private ObjectId SaveDerivedFromDerivedRecord(IContext context, string dataSetName, string recordName, int recordIndex)
+        private RecordId SaveDerivedFromDerivedRecord(IContext context, string dataSetName, string recordName, int recordIndex)
         {
             var rec = new DerivedFromDerivedSampleData();
             rec.RecordName = recordName;

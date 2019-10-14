@@ -23,12 +23,12 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>
-    /// Serializes RecordId by converting it to ObjectId.
+    /// Serializes RecordId by converting it to RecordId.
     /// </summary>
     public class BsonRecordIdSerializer : SerializerBase<RecordId>
     {
         /// <summary>
-        /// Deserialize RecordId by creating it from ObjectId.
+        /// Deserialize RecordId by creating it from RecordId.
         ///
         /// The serializer accepts empty value.
         /// </summary>
@@ -41,7 +41,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Serialize RecordId by converting it to ObjectId.
+        /// Serialize RecordId by converting it to RecordId.
         ///
         /// The serializer accepts empty value.
         /// </summary>

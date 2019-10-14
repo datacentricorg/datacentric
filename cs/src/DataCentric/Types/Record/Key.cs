@@ -127,7 +127,7 @@ namespace DataCentric
                 case bool boolValue:
                 case int intValue:
                 case long longValue:
-                case ObjectId objectIdValue:
+                case RecordId objectIdValue:
                 case Enum enumValue:
                 case Key keyValue:
                     // Use AsString() for all remaining types including the key
@@ -143,7 +143,7 @@ namespace DataCentric
                     throw new Exception(
                         $"Key element {elementInfo.Name} of type {obj.GetType().Name} has type {element.GetType()}" +
                         $"that is not one of the supported key element types. Available key element types are " +
-                        $"string, double, bool, int, long, LocalDate, LocalTime, LocalMinute, LocalDateTime, LocalMinute, ObjectId, or Enum.");
+                        $"string, double, bool, int, long, LocalDate, LocalTime, LocalMinute, LocalDateTime, LocalMinute, RecordId, or Enum.");
             }
 
             return result;
@@ -367,12 +367,12 @@ namespace DataCentric
                     LocalDateTime tokenValue = LocalDateTimeImpl.ParseIsoLong(isoLong);
                     elementInfo.SetValue(this, tokenValue);
                 }
-                else if (elementType == typeof(ObjectId) || elementType == typeof(ObjectId?))
+                else if (elementType == typeof(RecordId) || elementType == typeof(RecordId?))
                 {
                     CheckTokenNotEmpty(tokens, tokenIndex);
 
                     string token = tokens[tokenIndex++];
-                    ObjectId tokenValue = ObjectId.Parse(token);
+                    RecordId tokenValue = RecordId.Parse(token);
                     elementInfo.SetValue(this, tokenValue);
                 }
                 else if (elementType.BaseType == typeof(Enum)) // TODO Support nullable Enum in key

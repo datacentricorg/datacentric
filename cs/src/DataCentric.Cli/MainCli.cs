@@ -155,7 +155,7 @@ namespace DataCentric.Cli
             }
         }
 
-        private static void ProcessDirectory(IContext context, string path, ObjectId parentDataset)
+        private static void ProcessDirectory(IContext context, string path, RecordId parentDataset)
         {
             var dirName = Path.GetFileName(path);
 
@@ -183,7 +183,7 @@ namespace DataCentric.Cli
             }
         }
 
-        private static void ConvertCsvToMongo<T>(IContext context, ObjectId dataset, string csvFile) where T : Record
+        private static void ConvertCsvToMongo<T>(IContext context, RecordId dataset, string csvFile) where T : Record
         {
             string fileContent = File.ReadAllText(csvFile);
             var records = CsvRecordsSerializer<T>.Deserialize(fileContent);
@@ -202,7 +202,7 @@ namespace DataCentric.Cli
             TKey key = Activator.CreateInstance<TKey>();
             key.PopulateFrom(options.Key);
 
-            ObjectId dataSet = context.GetDataSet(options.Dataset, context.DataSet);
+            RecordId dataSet = context.GetDataSet(options.Dataset, context.DataSet);
             TRecord record = (TRecord) context.LoadOrNull(key, dataSet);
 
             record.Init(context);
