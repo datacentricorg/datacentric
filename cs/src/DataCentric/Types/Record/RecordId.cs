@@ -21,6 +21,7 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Threading;
 using MongoDB.Bson;
+using NodaTime;
 
 namespace DataCentric
 {
@@ -585,6 +586,58 @@ namespace DataCentric
             c[22] = BsonUtils.ToHexChar((_c >> 4) & 0x0f);
             c[23] = BsonUtils.ToHexChar(_c & 0x0f);
             return new string(c);
+        }
+    }
+
+    /// <summary>Extension methods for RecordId.</summary>
+    public static class RecordIdExt
+    {
+        /// <summary>Return false if equal to the default constructed value.</summary>
+        public static bool HasValue(this RecordId value)
+        {
+            return value != default;
+        }
+
+        /// <summary>Return false if null or equal to the default constructed value.</summary>
+        public static bool HasValue(this RecordId? value)
+        {
+            return value.HasValue && value.HasValue();
+        }
+
+        /// <summary>Error message if equal to the default constructed value.</summary>
+        public static void CheckHasValue(this RecordId value)
+        {
+            if (!value.HasValue()) throw new Exception("Required RecordId value is not set.");
+        }
+
+        /// <summary>Error message if null or equal to the default constructed value.</summary>
+        public static void CheckHasValue(this RecordId? value)
+        {
+            if (!value.HasValue()) throw new Exception("Required RecordId value is not set.");
+        }
+
+        /// <summary>
+        /// Convert RecordId to its creation time. This method has one second resolution.
+        ///
+        /// Error message if equal to the default constructed value.
+        /// </summary>
+        public static LocalDateTime ToLocalDateTime(this RecordId value)
+        {
+            value.CheckHasValue();
+
+            var result = value.CreationTime.ToLocalDateTime();
+            return result;
+        }
+
+        /// <summary>
+        /// Convert RecordId to its creation time. This method has one second resolution.
+        ///
+        /// Return null if equal to the default constructed value.
+        /// </summary>
+        public static LocalDateTime? ToLocalDateTime(this RecordId? value)
+        {
+            if (value.HasValue) return value.Value.ToLocalDateTime();
+            else return null;
         }
     }
 }
