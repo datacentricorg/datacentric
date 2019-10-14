@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -79,8 +80,20 @@ namespace DataCentric.Cli
         public string GetTypeLocation(System.Type type)
         {
             string projectDir = Path.GetDirectoryName(Location);
-            string typeLocation = Directory.GetFiles(projectDir, $"{type.Name}.cs", SearchOption.AllDirectories)
-                                           .SingleOrDefault();
+            string typeLocation;
+            try
+            {
+                typeLocation = Directory.GetFiles(projectDir, $"{type.Name}.cs", SearchOption.AllDirectories)
+                                               .SingleOrDefault();
+            }
+            catch (InvalidOperationException)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"More than one {type.Name}.cs file found");
+                Console.ResetColor();
+                typeLocation = null;
+            }
+
             if (typeLocation == null)
                 return null;
 
