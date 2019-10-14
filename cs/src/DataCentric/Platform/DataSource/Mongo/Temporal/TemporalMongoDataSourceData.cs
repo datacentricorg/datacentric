@@ -415,7 +415,7 @@ namespace DataCentric
         /// loading by key and the other by query.
         ///
         /// Additional indices may be created using class attribute
-        /// [Index] for further performance optimization.
+        /// [IndexElements] for further performance optimization.
         /// </summary>
         protected TemporalMongoCollection<TRecord> GetOrCreateCollection<TRecord>()
             where TRecord : Record
