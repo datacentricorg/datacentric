@@ -92,7 +92,7 @@ namespace DataCentric.Cli
 
             decl.Name = type.Name;
             decl.Comment = type.GetCommentFromAttribute() ?? navigator?.GetXmlComment(type);
-            decl.Category = projNavigator.GetTypeLocation(type);
+            decl.Category = projNavigator?.GetTypeLocation(type);
             decl.Module = new ModuleKey { ModuleName = type.Namespace };
             decl.Label = type.GetLabelFromAttribute() ?? type.Name;
 
@@ -138,7 +138,6 @@ namespace DataCentric.Cli
                 // Overriden methods are marked with ovveride
                 else if(method.GetBaseDefinition() != method)
                 {
-                    //declares.Add(ToDeclare(method, navigator));
                     implements.Add(ToImplement(method));
                 }
                 // Case for methods without modifiers
