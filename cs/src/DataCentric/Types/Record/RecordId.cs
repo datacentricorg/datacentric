@@ -20,19 +20,20 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Threading;
+using MongoDB.Bson;
 
 namespace DataCentric
 {
     /// <summary>
-    /// Represents an ObjectId (see also BsonObjectId).
+    /// Represents an RecordId (see also BsonObjectId).
     /// </summary>
 #if NET452
     [Serializable]
 #endif
-    public struct ObjectId : IComparable<ObjectId>, IEquatable<ObjectId>, IConvertible
+    public struct RecordId : IComparable<RecordId>, IEquatable<RecordId>, IConvertible
     {
         // private static fields
-        private static readonly ObjectId __emptyInstance = default(ObjectId);
+        private static readonly RecordId __emptyInstance = default(RecordId);
         private static readonly int __staticMachine = (GetMachineHash() + GetAppDomainId()) & 0x00ffffff;
         private static readonly short __staticPid = GetPid();
         private static int __staticIncrement = (new Random()).Next();
@@ -44,10 +45,10 @@ namespace DataCentric
 
         // constructors
         /// <summary>
-        /// Initializes a new instance of the ObjectId class.
+        /// Initializes a new instance of the RecordId class.
         /// </summary>
         /// <param name="bytes">The bytes.</param>
-        public ObjectId(byte[] bytes)
+        public RecordId(byte[] bytes)
         {
             if (bytes == null)
             {
@@ -62,35 +63,35 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Initializes a new instance of the ObjectId class.
+        /// Initializes a new instance of the RecordId class.
         /// </summary>
         /// <param name="bytes">The bytes.</param>
-        /// <param name="index">The index into the byte array where the ObjectId starts.</param>
-        internal ObjectId(byte[] bytes, int index)
+        /// <param name="index">The index into the byte array where the RecordId starts.</param>
+        internal RecordId(byte[] bytes, int index)
         {
             FromByteArray(bytes, index, out _a, out _b, out _c);
         }
 
         /// <summary>
-        /// Initializes a new instance of the ObjectId class.
+        /// Initializes a new instance of the RecordId class.
         /// </summary>
         /// <param name="timestamp">The timestamp (expressed as a DateTime).</param>
         /// <param name="machine">The machine hash.</param>
         /// <param name="pid">The PID.</param>
         /// <param name="increment">The increment.</param>
-        public ObjectId(DateTime timestamp, int machine, short pid, int increment)
+        public RecordId(DateTime timestamp, int machine, short pid, int increment)
             : this(GetTimestampFromDateTime(timestamp), machine, pid, increment)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the ObjectId class.
+        /// Initializes a new instance of the RecordId class.
         /// </summary>
         /// <param name="timestamp">The timestamp.</param>
         /// <param name="machine">The machine hash.</param>
         /// <param name="pid">The PID.</param>
         /// <param name="increment">The increment.</param>
-        public ObjectId(int timestamp, int machine, short pid, int increment)
+        public RecordId(int timestamp, int machine, short pid, int increment)
         {
             if ((machine & 0xff000000) != 0)
             {
@@ -107,10 +108,10 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Initializes a new instance of the ObjectId class.
+        /// Initializes a new instance of the RecordId class.
         /// </summary>
         /// <param name="value">The value.</param>
-        public ObjectId(string value)
+        public RecordId(string value)
         {
             if (value == null)
             {
@@ -123,9 +124,9 @@ namespace DataCentric
 
         // public static properties
         /// <summary>
-        /// Gets an instance of ObjectId where the value is empty.
+        /// Gets an instance of RecordId where the value is empty.
         /// </summary>
-        public static ObjectId Empty
+        public static RecordId Empty
         {
             get { return __emptyInstance; }
         }
@@ -173,104 +174,104 @@ namespace DataCentric
 
         // public operators
         /// <summary>
-        /// Compares two ObjectIds.
+        /// Compares two RecordIds.
         /// </summary>
-        /// <param name="lhs">The first ObjectId.</param>
-        /// <param name="rhs">The other ObjectId</param>
-        /// <returns>True if the first ObjectId is less than the second ObjectId.</returns>
-        public static bool operator <(ObjectId lhs, ObjectId rhs)
+        /// <param name="lhs">The first RecordId.</param>
+        /// <param name="rhs">The other RecordId</param>
+        /// <returns>True if the first RecordId is less than the second RecordId.</returns>
+        public static bool operator <(RecordId lhs, RecordId rhs)
         {
             return lhs.CompareTo(rhs) < 0;
         }
 
         /// <summary>
-        /// Compares two ObjectIds.
+        /// Compares two RecordIds.
         /// </summary>
-        /// <param name="lhs">The first ObjectId.</param>
-        /// <param name="rhs">The other ObjectId</param>
-        /// <returns>True if the first ObjectId is less than or equal to the second ObjectId.</returns>
-        public static bool operator <=(ObjectId lhs, ObjectId rhs)
+        /// <param name="lhs">The first RecordId.</param>
+        /// <param name="rhs">The other RecordId</param>
+        /// <returns>True if the first RecordId is less than or equal to the second RecordId.</returns>
+        public static bool operator <=(RecordId lhs, RecordId rhs)
         {
             return lhs.CompareTo(rhs) <= 0;
         }
 
         /// <summary>
-        /// Compares two ObjectIds.
+        /// Compares two RecordIds.
         /// </summary>
-        /// <param name="lhs">The first ObjectId.</param>
-        /// <param name="rhs">The other ObjectId.</param>
-        /// <returns>True if the two ObjectIds are equal.</returns>
-        public static bool operator ==(ObjectId lhs, ObjectId rhs)
+        /// <param name="lhs">The first RecordId.</param>
+        /// <param name="rhs">The other RecordId.</param>
+        /// <returns>True if the two RecordIds are equal.</returns>
+        public static bool operator ==(RecordId lhs, RecordId rhs)
         {
             return lhs.Equals(rhs);
         }
 
         /// <summary>
-        /// Compares two ObjectIds.
+        /// Compares two RecordIds.
         /// </summary>
-        /// <param name="lhs">The first ObjectId.</param>
-        /// <param name="rhs">The other ObjectId.</param>
-        /// <returns>True if the two ObjectIds are not equal.</returns>
-        public static bool operator !=(ObjectId lhs, ObjectId rhs)
+        /// <param name="lhs">The first RecordId.</param>
+        /// <param name="rhs">The other RecordId.</param>
+        /// <returns>True if the two RecordIds are not equal.</returns>
+        public static bool operator !=(RecordId lhs, RecordId rhs)
         {
             return !(lhs == rhs);
         }
 
         /// <summary>
-        /// Compares two ObjectIds.
+        /// Compares two RecordIds.
         /// </summary>
-        /// <param name="lhs">The first ObjectId.</param>
-        /// <param name="rhs">The other ObjectId</param>
-        /// <returns>True if the first ObjectId is greather than or equal to the second ObjectId.</returns>
-        public static bool operator >=(ObjectId lhs, ObjectId rhs)
+        /// <param name="lhs">The first RecordId.</param>
+        /// <param name="rhs">The other RecordId</param>
+        /// <returns>True if the first RecordId is greather than or equal to the second RecordId.</returns>
+        public static bool operator >=(RecordId lhs, RecordId rhs)
         {
             return lhs.CompareTo(rhs) >= 0;
         }
 
         /// <summary>
-        /// Compares two ObjectIds.
+        /// Compares two RecordIds.
         /// </summary>
-        /// <param name="lhs">The first ObjectId.</param>
-        /// <param name="rhs">The other ObjectId</param>
-        /// <returns>True if the first ObjectId is greather than the second ObjectId.</returns>
-        public static bool operator >(ObjectId lhs, ObjectId rhs)
+        /// <param name="lhs">The first RecordId.</param>
+        /// <param name="rhs">The other RecordId</param>
+        /// <returns>True if the first RecordId is greather than the second RecordId.</returns>
+        public static bool operator >(RecordId lhs, RecordId rhs)
         {
             return lhs.CompareTo(rhs) > 0;
         }
 
         // public static methods
         /// <summary>
-        /// Generates a new ObjectId with a unique value.
+        /// Generates a new RecordId with a unique value.
         /// </summary>
-        /// <returns>An ObjectId.</returns>
-        public static ObjectId GenerateNewId()
+        /// <returns>An RecordId.</returns>
+        public static RecordId GenerateNewId()
         {
             return GenerateNewId(GetTimestampFromDateTime(DateTime.UtcNow));
         }
 
         /// <summary>
-        /// Generates a new ObjectId with a unique value (with the timestamp component based on a given DateTime).
+        /// Generates a new RecordId with a unique value (with the timestamp component based on a given DateTime).
         /// </summary>
         /// <param name="timestamp">The timestamp component (expressed as a DateTime).</param>
-        /// <returns>An ObjectId.</returns>
-        public static ObjectId GenerateNewId(DateTime timestamp)
+        /// <returns>An RecordId.</returns>
+        public static RecordId GenerateNewId(DateTime timestamp)
         {
             return GenerateNewId(GetTimestampFromDateTime(timestamp));
         }
 
         /// <summary>
-        /// Generates a new ObjectId with a unique value (with the given timestamp).
+        /// Generates a new RecordId with a unique value (with the given timestamp).
         /// </summary>
         /// <param name="timestamp">The timestamp component.</param>
-        /// <returns>An ObjectId.</returns>
-        public static ObjectId GenerateNewId(int timestamp)
+        /// <returns>An RecordId.</returns>
+        public static RecordId GenerateNewId(int timestamp)
         {
             int increment = Interlocked.Increment(ref __staticIncrement) & 0x00ffffff; // only use low order 3 bytes
-            return new ObjectId(timestamp, __staticMachine, __staticPid, increment);
+            return new RecordId(timestamp, __staticMachine, __staticPid, increment);
         }
 
         /// <summary>
-        /// Packs the components of an ObjectId into a byte array.
+        /// Packs the components of an RecordId into a byte array.
         /// </summary>
         /// <param name="timestamp">The timestamp.</param>
         /// <param name="machine">The machine hash.</param>
@@ -305,18 +306,18 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Parses a string and creates a new ObjectId.
+        /// Parses a string and creates a new RecordId.
         /// </summary>
         /// <param name="s">The string value.</param>
-        /// <returns>A ObjectId.</returns>
-        public static ObjectId Parse(string s)
+        /// <returns>A RecordId.</returns>
+        public static RecordId Parse(string s)
         {
             if (s == null)
             {
                 throw new ArgumentNullException("s");
             }
 
-            ObjectId objectId;
+            RecordId objectId;
             if (TryParse(s, out objectId))
             {
                 return objectId;
@@ -329,12 +330,12 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Tries to parse a string and create a new ObjectId.
+        /// Tries to parse a string and create a new RecordId.
         /// </summary>
         /// <param name="s">The string value.</param>
-        /// <param name="objectId">The new ObjectId.</param>
+        /// <param name="objectId">The new RecordId.</param>
         /// <returns>True if the string was parsed successfully.</returns>
-        public static bool TryParse(string s, out ObjectId objectId)
+        public static bool TryParse(string s, out RecordId objectId)
         {
             // don't throw ArgumentNullException if s is null
             if (s != null && s.Length == 24)
@@ -342,17 +343,17 @@ namespace DataCentric
                 byte[] bytes;
                 if (BsonUtils.TryParseHexString(s, out bytes))
                 {
-                    objectId = new ObjectId(bytes);
+                    objectId = new RecordId(bytes);
                     return true;
                 }
             }
 
-            objectId = default(ObjectId);
+            objectId = default(RecordId);
             return false;
         }
 
         /// <summary>
-        /// Unpacks a byte array into the components of an ObjectId.
+        /// Unpacks a byte array into the components of an RecordId.
         /// </summary>
         /// <param name="bytes">A byte array.</param>
         /// <param name="timestamp">The timestamp.</param>
@@ -440,11 +441,11 @@ namespace DataCentric
 
         // public methods
         /// <summary>
-        /// Compares this ObjectId to another ObjectId.
+        /// Compares this RecordId to another RecordId.
         /// </summary>
-        /// <param name="other">The other ObjectId.</param>
-        /// <returns>A 32-bit signed integer that indicates whether this ObjectId is less than, equal to, or greather than the other.</returns>
-        public int CompareTo(ObjectId other)
+        /// <param name="other">The other RecordId.</param>
+        /// <returns>A 32-bit signed integer that indicates whether this RecordId is less than, equal to, or greather than the other.</returns>
+        public int CompareTo(RecordId other)
         {
             int result = ((uint)_a).CompareTo((uint)other._a);
             if (result != 0) { return result; }
@@ -454,11 +455,11 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Compares this ObjectId to another ObjectId.
+        /// Compares this RecordId to another RecordId.
         /// </summary>
-        /// <param name="rhs">The other ObjectId.</param>
-        /// <returns>True if the two ObjectIds are equal.</returns>
-        public bool Equals(ObjectId rhs)
+        /// <param name="rhs">The other RecordId.</param>
+        /// <returns>True if the two RecordIds are equal.</returns>
+        public bool Equals(RecordId rhs)
         {
             return
                 _a == rhs._a &&
@@ -467,15 +468,15 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Compares this ObjectId to another object.
+        /// Compares this RecordId to another object.
         /// </summary>
         /// <param name="obj">The other object.</param>
-        /// <returns>True if the other object is an ObjectId and equal to this one.</returns>
+        /// <returns>True if the other object is an RecordId and equal to this one.</returns>
         public override bool Equals(object obj)
         {
-            if (obj is ObjectId)
+            if (obj is RecordId)
             {
-                return Equals((ObjectId)obj);
+                return Equals((RecordId)obj);
             }
             else
             {
@@ -497,7 +498,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Converts the ObjectId to a byte array.
+        /// Converts the RecordId to a byte array.
         /// </summary>
         /// <returns>A byte array.</returns>
         public byte[] ToByteArray()
@@ -508,7 +509,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Converts the ObjectId to a byte array.
+        /// Converts the RecordId to a byte array.
         /// </summary>
         /// <param name="destination">The destination.</param>
         /// <param name="offset">The offset.</param>
@@ -644,17 +645,9 @@ namespace DataCentric
                 case TypeCode.String:
                     return ((IConvertible)this).ToString(provider);
                 case TypeCode.Object:
-                    if (conversionType == typeof(object) || conversionType == typeof(ObjectId))
+                    if (conversionType == typeof(object) || conversionType == typeof(RecordId))
                     {
                         return this;
-                    }
-                    if (conversionType == typeof(BsonObjectId))
-                    {
-                        return new BsonObjectId(this);
-                    }
-                    if (conversionType == typeof(BsonString))
-                    {
-                        return new BsonString(((IConvertible)this).ToString(provider));
                     }
                     break;
             }
