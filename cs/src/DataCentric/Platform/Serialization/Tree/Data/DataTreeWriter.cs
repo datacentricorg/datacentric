@@ -65,7 +65,7 @@ namespace DataCentric
                     $"A call to WriteStartDocument(...) must be the first call to the tree writer.");
 
             // Get root XML element name using mapped final type of the object
-            string rootName = ClassInfo.GetOrCreate(currentDict_).MappedClassName;
+            string rootName = currentDict_.GetType().Name;
 
             // Check that the name matches
             if (rootElementName != rootName) throw new Exception(
@@ -170,9 +170,9 @@ namespace DataCentric
             object createdDictObj = Activator.CreateInstance(createdDictType);
             if (!(createdDictObj is Data)) // TODO Also support native dictionaries
             {
-                string mappedClassName = ClassInfo.GetOrCreate(currentElementInfo_.PropertyType).MappedClassName;
+                string className = currentElementInfo_.PropertyType.Name;
                 throw new Exception(
-                    $"Element {currentElementInfo_.Name} of type {mappedClassName} does not implement Data.");
+                    $"Element {currentElementInfo_.Name} of type {className} does not implement Data.");
             }
 
             var createdDict = (Data) createdDictObj;
@@ -250,9 +250,9 @@ namespace DataCentric
                 currentDictElements_ = null;
             }
             else {
-                string mappedClassName = ClassInfo.GetOrCreate(currentElementInfo_.PropertyType).MappedClassName;
+                string className = currentElementInfo_.PropertyType.Name;
                 throw new Exception(
-                    $"Element {currentElementInfo_.Name} of type {mappedClassName} does not implement ICollection.");
+                    $"Element {currentElementInfo_.Name} of type {className} does not implement ICollection.");
             }
         }
 

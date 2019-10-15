@@ -449,7 +449,7 @@ namespace DataCentric
 
             // Collection name is root class name of the record without prefix
             Type rootType = DataTypeInfo.GetOrCreate(typeof(TRecord)).RootType;
-            string collectionName = ClassInfo.GetOrCreate(rootType).MappedClassName;
+            string collectionName = rootType.Name;
 
             // Get interfaces to base and typed collections for the same name
             var baseCollection = Db.GetCollection<Record>(collectionName);

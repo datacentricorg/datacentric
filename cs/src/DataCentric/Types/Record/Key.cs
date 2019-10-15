@@ -424,7 +424,7 @@ namespace DataCentric
             ITreeReader reader = new XmlTreeReader(xmlString);
 
             // Root node of serialized XML must be the same as mapped class name without namespace
-            var mappedFullName = ClassInfo.GetOrCreate(obj).MappedClassName;
+            var mappedFullName = obj.GetType().Name;
             ITreeReader recordNodes = reader.ReadElement(mappedFullName);
 
             // Deserialize from XML nodes inside the root node
@@ -438,7 +438,7 @@ namespace DataCentric
         public static string ToXml(this Key obj)
         {
             // Get root XML element name using mapped final type of the object
-            string rootName = ClassInfo.GetOrCreate(obj).MappedClassName;
+            string rootName = obj.GetType().Name;
 
             // Serialize to XML
             ITreeWriter writer = new XmlTreeWriter();

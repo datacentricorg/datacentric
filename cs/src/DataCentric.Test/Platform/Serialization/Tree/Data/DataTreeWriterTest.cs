@@ -35,14 +35,14 @@ namespace DataCentric.Test
                 obj.DoubleElement = 1.0;
 
                 string xmlString = obj.ToXml();
-                string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;
+                string className = obj.GetType().Name;
                 context.Log.Verify("Original", xmlString);
 
                 var copy = new BaseTypeSampleData();
                 var copyWriter = new DataTreeWriter(copy);
-                copyWriter.WriteStartDocument(mappedClassName);
+                copyWriter.WriteStartDocument(className);
                 ((ITreeSerializable) obj).SerializeTo(copyWriter);
-                copyWriter.WriteEndDocument(mappedClassName);
+                copyWriter.WriteEndDocument(className);
 
                 string copyString = copy.ToXml();
                 context.Log.Verify("Copy", copyString);
@@ -98,13 +98,13 @@ namespace DataCentric.Test
                 dataListItem2.DoubleElement = 4.0;
                 obj.DataList.Add(dataListItem2);
 
-                string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;
+                string className = obj.GetType().Name;
 
                 var copy = new DerivedTypeSampleData();
                 var copyWriter = new DataTreeWriter(copy);
-                copyWriter.WriteStartDocument(mappedClassName);
+                copyWriter.WriteStartDocument(className);
                 ((ITreeSerializable) obj).SerializeTo(copyWriter);
-                copyWriter.WriteEndDocument(mappedClassName);
+                copyWriter.WriteEndDocument(className);
 
                 string xmlString = obj.ToXml();
                 context.Log.Verify("Original", xmlString);

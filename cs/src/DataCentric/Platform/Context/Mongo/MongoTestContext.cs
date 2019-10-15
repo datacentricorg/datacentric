@@ -72,7 +72,7 @@ namespace DataCentric
             //
             // This does not create the database until the data source
             // is actually used to access data.
-            string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;
+            string className = obj.GetType().Name;
 
             // Create data source specified as generic argument
             DataSource = new TDataSource()
@@ -80,7 +80,7 @@ namespace DataCentric
                 DbName = new DbNameKey()
                 {
                     InstanceType = InstanceType.TEST,
-                    InstanceName = mappedClassName,
+                    InstanceName = className,
                     EnvName = methodName
                 },
                 MongoServer = mongoServerKey

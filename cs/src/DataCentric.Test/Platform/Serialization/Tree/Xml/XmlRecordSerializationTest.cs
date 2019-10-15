@@ -35,7 +35,7 @@ namespace DataCentric.Test
                 obj.DoubleElement = 1.0;
 
                 string xmlString = obj.ToXml();
-                string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;
+                string className = obj.GetType().Name;
                 context.Log.Verify("Original", xmlString);
 
                 var deserialized = new BaseTypeSampleData();
@@ -95,7 +95,7 @@ namespace DataCentric.Test
                 obj.DataList.Add(dataListItem2);
 
                 string xmlString = obj.ToXml();
-                string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;
+                string className = obj.GetType().Name;
                 context.Log.Verify("Original", xmlString);
 
                 var deserialized = new DerivedTypeSampleData();
