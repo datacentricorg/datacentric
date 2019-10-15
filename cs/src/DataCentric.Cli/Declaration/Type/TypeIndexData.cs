@@ -14,15 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+using System.Xml.Serialization;
+
 namespace DataCentric.Cli
 {
-    /// <summary>Type element index declaration.</summary>
-    public class TypeElementIndexData
+    /// <summary>
+    /// Specifies database index for the type.
+    /// </summary>
+    public class TypeIndexData
     {
-        /// <summary>Element name.</summary>
-        public string Name { get; set; }
+        /// <summary>Element index definition.</summary>
+        [XmlElement]
+        public List<TypeElementIndexData> Element { get; set; }
 
-        /// <summary>Index direction.</summary>
-        public TypeElementIndexDirection? Direction { get; set; }
+        /// <summary>Index name.</summary>
+        public string Name { get; set; }
     }
 }

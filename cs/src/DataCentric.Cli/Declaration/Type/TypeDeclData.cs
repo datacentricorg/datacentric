@@ -81,6 +81,10 @@ namespace DataCentric.Cli
         [XmlElement]
         public List<string> Keys { get; set; }
 
+        /// <summary>Array of index definitions.</summary>
+        [XmlElement]
+        public List<TypeIndexData> Index { get; set; }
+
         /// <summary>Immutable flag.</summary>
         public YesNo? Immutable { get; set; }
 

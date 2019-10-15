@@ -47,10 +47,6 @@ namespace DataCentric.Cli
         /// <summary>Flag indicating filterable element.</summary>
         public YesNo? Filterable { get; set; }
 
-        /// <summary>Indicates the element will participate in index building.</summary>
-        [XmlElement]
-        public List<TypeElementIndexData> Indices { get; set; }
-
         /// <summary>Flag indicating readonly element.</summary>
         public YesNo? ReadOnly { get; set; }
 
