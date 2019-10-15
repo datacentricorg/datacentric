@@ -280,12 +280,15 @@ namespace DataCentric
 
             // Concatenate and the first two tokens with T separator and then try to
             // parse them as LocalDateTime using strict format yyyy-mm-ddThh:mm:ss
-            DateTime creationDateTime;
+            DateTime d;
             string dateTimeString = string.Join("T", tokens[0], tokens[1]);
-            if (!DateTime.TryParse(dateTimeString, null, DateTimeStyles.RoundtripKind, out creationDateTime))
+            if (!DateTime.TryParse(dateTimeString, null, DateTimeStyles.RoundtripKind, out d))
             {
                 return false;
             }
+
+            // Create DateTime in UTC
+            DateTime creationTime = new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second, DateTimeKind.Utc);
 
             // Try to parse the third token to a byte array
             byte[] bytes;
@@ -293,7 +296,7 @@ namespace DataCentric
 
             // Populate the first integer from timestamp
             // and the two remaining integers from the byte array
-            recId = new RecordId(creationDateTime, bytes);
+            recId = new RecordId(creationTime, bytes);
             return true;
         }
 
