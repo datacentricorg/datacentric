@@ -56,9 +56,9 @@ namespace DataCentric
                 case LocalDateTime dateTimeValue:
                     // Special value of LocalDateTime treated as empty
                     return dateTimeValue == LocalDateTimeImpl.Empty;
-                case RecordId objectIdValue:
+                case RecordId recIdValue:
                     // Empty RecordId
-                    return objectIdValue == RecordId.Empty;
+                    return recIdValue == RecordId.Empty;
                 case Enum enumValue:
                     // Enum is never empty; all of its values are valid
                     return false;

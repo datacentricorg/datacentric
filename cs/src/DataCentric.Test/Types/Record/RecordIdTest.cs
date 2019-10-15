@@ -31,8 +31,8 @@ namespace DataCentric.Test
         public void TestDateTimeConstructorAtEdgeOfRange(int secondsSinceEpoch)
         {
             var timestamp = BsonConstants.UnixEpoch.AddSeconds(secondsSinceEpoch);
-            var objectId = new RecordId(timestamp, 0, 0, 0);
-            Assert.Equal(timestamp, objectId.CreationTime);
+            var recId = new RecordId(timestamp, 0, 0, 0);
+            Assert.Equal(timestamp, recId.CreationTime);
         }
 
         [Theory]
@@ -47,165 +47,165 @@ namespace DataCentric.Test
         [Fact]
         public void TestIComparable()
         {
-            var objectId1 = RecordId.GenerateNewId();
-            var objectId2 = RecordId.GenerateNewId();
-            Assert.Equal(0, objectId1.CompareTo(objectId1));
-            Assert.Equal(-1, objectId1.CompareTo(objectId2));
-            Assert.Equal(1, objectId2.CompareTo(objectId1));
-            Assert.Equal(0, objectId2.CompareTo(objectId2));
+            var recId1 = RecordId.GenerateNewId();
+            var recId2 = RecordId.GenerateNewId();
+            Assert.Equal(0, recId1.CompareTo(recId1));
+            Assert.Equal(-1, recId1.CompareTo(recId2));
+            Assert.Equal(1, recId2.CompareTo(recId1));
+            Assert.Equal(0, recId2.CompareTo(recId2));
         }
 
         [Fact]
         public void TestCompareEqualGeneratedIds()
         {
-            var objectId1 = RecordId.GenerateNewId();
-            var objectId2 = objectId1;
-            Assert.False(objectId1 < objectId2);
-            Assert.True(objectId1 <= objectId2);
-            Assert.False(objectId1 != objectId2);
-            Assert.True(objectId1 == objectId2);
-            Assert.False(objectId1 > objectId2);
-            Assert.True(objectId1 >= objectId2);
+            var recId1 = RecordId.GenerateNewId();
+            var recId2 = recId1;
+            Assert.False(recId1 < recId2);
+            Assert.True(recId1 <= recId2);
+            Assert.False(recId1 != recId2);
+            Assert.True(recId1 == recId2);
+            Assert.False(recId1 > recId2);
+            Assert.True(recId1 >= recId2);
         }
 
         [Fact]
         public void TestCompareSmallerTimestamp()
         {
-            var objectId1 = new RecordId("0102030405060708090a0b0c");
-            var objectId2 = new RecordId("0102030505060708090a0b0c");
-            Assert.True(objectId1 < objectId2);
-            Assert.True(objectId1 <= objectId2);
-            Assert.True(objectId1 != objectId2);
-            Assert.False(objectId1 == objectId2);
-            Assert.False(objectId1 > objectId2);
-            Assert.False(objectId1 >= objectId2);
+            var recId1 = new RecordId("0102030405060708090a0b0c");
+            var recId2 = new RecordId("0102030505060708090a0b0c");
+            Assert.True(recId1 < recId2);
+            Assert.True(recId1 <= recId2);
+            Assert.True(recId1 != recId2);
+            Assert.False(recId1 == recId2);
+            Assert.False(recId1 > recId2);
+            Assert.False(recId1 >= recId2);
         }
 
         [Fact]
         public void TestCompareSmallerMachine()
         {
-            var objectId1 = new RecordId("0102030405060708090a0b0c");
-            var objectId2 = new RecordId("0102030405060808090a0b0c");
-            Assert.True(objectId1 < objectId2);
-            Assert.True(objectId1 <= objectId2);
-            Assert.True(objectId1 != objectId2);
-            Assert.False(objectId1 == objectId2);
-            Assert.False(objectId1 > objectId2);
-            Assert.False(objectId1 >= objectId2);
+            var recId1 = new RecordId("0102030405060708090a0b0c");
+            var recId2 = new RecordId("0102030405060808090a0b0c");
+            Assert.True(recId1 < recId2);
+            Assert.True(recId1 <= recId2);
+            Assert.True(recId1 != recId2);
+            Assert.False(recId1 == recId2);
+            Assert.False(recId1 > recId2);
+            Assert.False(recId1 >= recId2);
         }
 
         [Fact]
         public void TestCompareSmallerPid()
         {
-            var objectId1 = new RecordId("0102030405060708090a0b0c");
-            var objectId2 = new RecordId("01020304050607080a0a0b0c");
-            Assert.True(objectId1 < objectId2);
-            Assert.True(objectId1 <= objectId2);
-            Assert.True(objectId1 != objectId2);
-            Assert.False(objectId1 == objectId2);
-            Assert.False(objectId1 > objectId2);
-            Assert.False(objectId1 >= objectId2);
+            var recId1 = new RecordId("0102030405060708090a0b0c");
+            var recId2 = new RecordId("01020304050607080a0a0b0c");
+            Assert.True(recId1 < recId2);
+            Assert.True(recId1 <= recId2);
+            Assert.True(recId1 != recId2);
+            Assert.False(recId1 == recId2);
+            Assert.False(recId1 > recId2);
+            Assert.False(recId1 >= recId2);
         }
 
         [Fact]
         public void TestCompareSmallerIncrement()
         {
-            var objectId1 = new RecordId("0102030405060708090a0b0c");
-            var objectId2 = new RecordId("0102030405060708090a0b0d");
-            Assert.True(objectId1 < objectId2);
-            Assert.True(objectId1 <= objectId2);
-            Assert.True(objectId1 != objectId2);
-            Assert.False(objectId1 == objectId2);
-            Assert.False(objectId1 > objectId2);
-            Assert.False(objectId1 >= objectId2);
+            var recId1 = new RecordId("0102030405060708090a0b0c");
+            var recId2 = new RecordId("0102030405060708090a0b0d");
+            Assert.True(recId1 < recId2);
+            Assert.True(recId1 <= recId2);
+            Assert.True(recId1 != recId2);
+            Assert.False(recId1 == recId2);
+            Assert.False(recId1 > recId2);
+            Assert.False(recId1 >= recId2);
         }
 
         [Fact]
         public void TestCompareSmallerGeneratedId()
         {
-            var objectId1 = RecordId.GenerateNewId();
-            var objectId2 = RecordId.GenerateNewId();
-            Assert.True(objectId1 < objectId2);
-            Assert.True(objectId1 <= objectId2);
-            Assert.True(objectId1 != objectId2);
-            Assert.False(objectId1 == objectId2);
-            Assert.False(objectId1 > objectId2);
-            Assert.False(objectId1 >= objectId2);
+            var recId1 = RecordId.GenerateNewId();
+            var recId2 = RecordId.GenerateNewId();
+            Assert.True(recId1 < recId2);
+            Assert.True(recId1 <= recId2);
+            Assert.True(recId1 != recId2);
+            Assert.False(recId1 == recId2);
+            Assert.False(recId1 > recId2);
+            Assert.False(recId1 >= recId2);
         }
 
         [Fact]
         public void TestCompareLargerTimestamp()
         {
-            var objectId1 = new RecordId("0102030405060708090a0b0c");
-            var objectId2 = new RecordId("0102030305060708090a0b0c");
-            Assert.False(objectId1 < objectId2);
-            Assert.False(objectId1 <= objectId2);
-            Assert.True(objectId1 != objectId2);
-            Assert.False(objectId1 == objectId2);
-            Assert.True(objectId1 > objectId2);
-            Assert.True(objectId1 >= objectId2);
+            var recId1 = new RecordId("0102030405060708090a0b0c");
+            var recId2 = new RecordId("0102030305060708090a0b0c");
+            Assert.False(recId1 < recId2);
+            Assert.False(recId1 <= recId2);
+            Assert.True(recId1 != recId2);
+            Assert.False(recId1 == recId2);
+            Assert.True(recId1 > recId2);
+            Assert.True(recId1 >= recId2);
         }
 
         [Fact]
         public void TestCompareLargerMachine()
         {
-            var objectId1 = new RecordId("0102030405060808090a0b0c");
-            var objectId2 = new RecordId("0102030405060708090a0b0c");
-            Assert.False(objectId1 < objectId2);
-            Assert.False(objectId1 <= objectId2);
-            Assert.True(objectId1 != objectId2);
-            Assert.False(objectId1 == objectId2);
-            Assert.True(objectId1 > objectId2);
-            Assert.True(objectId1 >= objectId2);
+            var recId1 = new RecordId("0102030405060808090a0b0c");
+            var recId2 = new RecordId("0102030405060708090a0b0c");
+            Assert.False(recId1 < recId2);
+            Assert.False(recId1 <= recId2);
+            Assert.True(recId1 != recId2);
+            Assert.False(recId1 == recId2);
+            Assert.True(recId1 > recId2);
+            Assert.True(recId1 >= recId2);
         }
 
         [Fact]
         public void TestCompareLargerPid()
         {
-            var objectId1 = new RecordId("01020304050607080a0a0b0c");
-            var objectId2 = new RecordId("0102030405060708090a0b0c");
-            Assert.False(objectId1 < objectId2);
-            Assert.False(objectId1 <= objectId2);
-            Assert.True(objectId1 != objectId2);
-            Assert.False(objectId1 == objectId2);
-            Assert.True(objectId1 > objectId2);
-            Assert.True(objectId1 >= objectId2);
+            var recId1 = new RecordId("01020304050607080a0a0b0c");
+            var recId2 = new RecordId("0102030405060708090a0b0c");
+            Assert.False(recId1 < recId2);
+            Assert.False(recId1 <= recId2);
+            Assert.True(recId1 != recId2);
+            Assert.False(recId1 == recId2);
+            Assert.True(recId1 > recId2);
+            Assert.True(recId1 >= recId2);
         }
 
         [Fact]
         public void TestCompareLargerIncrement()
         {
-            var objectId1 = new RecordId("0102030405060708090a0b0d");
-            var objectId2 = new RecordId("0102030405060708090a0b0c");
-            Assert.False(objectId1 < objectId2);
-            Assert.False(objectId1 <= objectId2);
-            Assert.True(objectId1 != objectId2);
-            Assert.False(objectId1 == objectId2);
-            Assert.True(objectId1 > objectId2);
-            Assert.True(objectId1 >= objectId2);
+            var recId1 = new RecordId("0102030405060708090a0b0d");
+            var recId2 = new RecordId("0102030405060708090a0b0c");
+            Assert.False(recId1 < recId2);
+            Assert.False(recId1 <= recId2);
+            Assert.True(recId1 != recId2);
+            Assert.False(recId1 == recId2);
+            Assert.True(recId1 > recId2);
+            Assert.True(recId1 >= recId2);
         }
 
         [Fact]
         public void TestCompareLargerGeneratedId()
         {
-            var objectId2 = RecordId.GenerateNewId(); // generate before objectId2
-            var objectId1 = RecordId.GenerateNewId();
-            Assert.False(objectId1 < objectId2);
-            Assert.False(objectId1 <= objectId2);
-            Assert.True(objectId1 != objectId2);
-            Assert.False(objectId1 == objectId2);
-            Assert.True(objectId1 > objectId2);
-            Assert.True(objectId1 >= objectId2);
+            var recId2 = RecordId.GenerateNewId(); // generate before recId2
+            var recId1 = RecordId.GenerateNewId();
+            Assert.False(recId1 < recId2);
+            Assert.False(recId1 <= recId2);
+            Assert.True(recId1 != recId2);
+            Assert.False(recId1 == recId2);
+            Assert.True(recId1 > recId2);
+            Assert.True(recId1 >= recId2);
         }
 
         [Fact]
         public void TestParse()
         {
-            var objectId1 = RecordId.Parse("0102030405060708090a0b0c"); // lower case
-            var objectId2 = RecordId.Parse("0102030405060708090A0B0C"); // upper case
-            Assert.True(objectId1.ToByteArray().SequenceEqual(objectId2.ToByteArray()));
-            Assert.True(objectId1.ToString() == "0102030405060708090a0b0c"); // ToString returns lower case
-            Assert.True(objectId1.ToString() == objectId2.ToString());
+            var recId1 = RecordId.Parse("0102030405060708090a0b0c"); // lower case
+            var recId2 = RecordId.Parse("0102030405060708090A0B0C"); // upper case
+            Assert.True(recId1.ToByteArray().SequenceEqual(recId2.ToByteArray()));
+            Assert.True(recId1.ToString() == "0102030405060708090a0b0c"); // ToString returns lower case
+            Assert.True(recId1.ToString() == recId2.ToString());
             Assert.Throws<FormatException>(() => RecordId.Parse("102030405060708090a0b0c")); // too short
             Assert.Throws<FormatException>(() => RecordId.Parse("x102030405060708090a0b0c")); // invalid character
             Assert.Throws<FormatException>(() => RecordId.Parse("00102030405060708090a0b0c")); // too long
@@ -214,16 +214,16 @@ namespace DataCentric.Test
         [Fact]
         public void TestTryParse()
         {
-            RecordId objectId1, objectId2;
-            Assert.True(RecordId.TryParse("0102030405060708090a0b0c", out objectId1)); // lower case
-            Assert.True(RecordId.TryParse("0102030405060708090A0B0C", out objectId2)); // upper case
-            Assert.True(objectId1.ToByteArray().SequenceEqual(objectId2.ToByteArray()));
-            Assert.True(objectId1.ToString() == "0102030405060708090a0b0c"); // ToString returns lower case
-            Assert.True(objectId1.ToString() == objectId2.ToString());
-            Assert.False(RecordId.TryParse("102030405060708090a0b0c", out objectId1)); // too short
-            Assert.False(RecordId.TryParse("x102030405060708090a0b0c", out objectId1)); // invalid character
-            Assert.False(RecordId.TryParse("00102030405060708090a0b0c", out objectId1)); // too long
-            Assert.False(RecordId.TryParse(null, out objectId1)); // should return false not throw ArgumentNullException
+            RecordId recId1, recId2;
+            Assert.True(RecordId.TryParse("0102030405060708090a0b0c", out recId1)); // lower case
+            Assert.True(RecordId.TryParse("0102030405060708090A0B0C", out recId2)); // upper case
+            Assert.True(recId1.ToByteArray().SequenceEqual(recId2.ToByteArray()));
+            Assert.True(recId1.ToString() == "0102030405060708090a0b0c"); // ToString returns lower case
+            Assert.True(recId1.ToString() == recId2.ToString());
+            Assert.False(RecordId.TryParse("102030405060708090a0b0c", out recId1)); // too short
+            Assert.False(RecordId.TryParse("x102030405060708090a0b0c", out recId1)); // invalid character
+            Assert.False(RecordId.TryParse("00102030405060708090a0b0c", out recId1)); // too long
+            Assert.False(RecordId.TryParse(null, out recId1)); // should return false not throw ArgumentNullException
         }
 
         [Fact]

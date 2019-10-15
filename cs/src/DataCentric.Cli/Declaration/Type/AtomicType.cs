@@ -88,7 +88,7 @@ namespace DataCentric.Cli
         /// <summary>Object Id.</summary>
         RecordId,
 
-        /// <summary>Nullable objectId.</summary>
+        /// <summary>Nullable recId.</summary>
         NullableRecordId,
 
         /// <summary>Minute.</summary>

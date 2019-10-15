@@ -248,10 +248,10 @@ namespace DataCentric
                 throw new ArgumentNullException("s");
             }
 
-            RecordId objectId;
-            if (TryParse(s, out objectId))
+            RecordId recId;
+            if (TryParse(s, out recId))
             {
-                return objectId;
+                return recId;
             }
             else
             {
@@ -264,9 +264,9 @@ namespace DataCentric
         /// Tries to parse a string and create a new RecordId.
         /// </summary>
         /// <param name="s">The string value.</param>
-        /// <param name="objectId">The new RecordId.</param>
+        /// <param name="recId">The new RecordId.</param>
         /// <returns>True if the string was parsed successfully.</returns>
-        public static bool TryParse(string s, out RecordId objectId)
+        public static bool TryParse(string s, out RecordId recId)
         {
             // don't throw ArgumentNullException if s is null
             if (s != null && s.Length == 24)
@@ -274,12 +274,12 @@ namespace DataCentric
                 byte[] bytes;
                 if (BsonUtils.TryParseHexString(s, out bytes))
                 {
-                    objectId = new RecordId(bytes);
+                    recId = new RecordId(bytes);
                     return true;
                 }
             }
 
-            objectId = default(RecordId);
+            recId = default(RecordId);
             return false;
         }
 
