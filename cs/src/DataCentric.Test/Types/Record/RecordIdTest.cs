@@ -45,56 +45,6 @@ namespace DataCentric.Test
         }
 
         [Fact]
-        public void TestIComparable()
-        {
-            var recId1 = RecordId.GenerateNewId();
-            var recId2 = RecordId.GenerateNewId();
-            Assert.Equal(0, recId1.CompareTo(recId1));
-            Assert.Equal(-1, recId1.CompareTo(recId2));
-            Assert.Equal(1, recId2.CompareTo(recId1));
-            Assert.Equal(0, recId2.CompareTo(recId2));
-        }
-
-        [Fact]
-        public void TestCompareEqualGeneratedIds()
-        {
-            var recId1 = RecordId.GenerateNewId();
-            var recId2 = recId1;
-            Assert.False(recId1 < recId2);
-            Assert.True(recId1 <= recId2);
-            Assert.False(recId1 != recId2);
-            Assert.True(recId1 == recId2);
-            Assert.False(recId1 > recId2);
-            Assert.True(recId1 >= recId2);
-        }
-
-        [Fact]
-        public void TestCompareSmallerGeneratedId()
-        {
-            var recId1 = RecordId.GenerateNewId();
-            var recId2 = RecordId.GenerateNewId();
-            Assert.True(recId1 < recId2);
-            Assert.True(recId1 <= recId2);
-            Assert.True(recId1 != recId2);
-            Assert.False(recId1 == recId2);
-            Assert.False(recId1 > recId2);
-            Assert.False(recId1 >= recId2);
-        }
-
-        [Fact]
-        public void TestCompareLargerGeneratedId()
-        {
-            var recId2 = RecordId.GenerateNewId(); // generate before recId2
-            var recId1 = RecordId.GenerateNewId();
-            Assert.False(recId1 < recId2);
-            Assert.False(recId1 <= recId2);
-            Assert.True(recId1 != recId2);
-            Assert.False(recId1 == recId2);
-            Assert.True(recId1 > recId2);
-            Assert.True(recId1 >= recId2);
-        }
-
-        [Fact]
         public void TestParse()
         {
             var recId1 = RecordId.Parse("0102030405060708090a0b0c"); // lower case
@@ -102,9 +52,6 @@ namespace DataCentric.Test
             Assert.True(recId1.ToByteArray().SequenceEqual(recId2.ToByteArray()));
             Assert.True(recId1.ToString() == "0102030405060708090a0b0c"); // ToString returns lower case
             Assert.True(recId1.ToString() == recId2.ToString());
-            Assert.Throws<FormatException>(() => RecordId.Parse("102030405060708090a0b0c")); // too short
-            Assert.Throws<FormatException>(() => RecordId.Parse("x102030405060708090a0b0c")); // invalid character
-            Assert.Throws<FormatException>(() => RecordId.Parse("00102030405060708090a0b0c")); // too long
         }
 
         [Fact]
@@ -116,20 +63,6 @@ namespace DataCentric.Test
             Assert.True(recId1.ToByteArray().SequenceEqual(recId2.ToByteArray()));
             Assert.True(recId1.ToString() == "0102030405060708090a0b0c"); // ToString returns lower case
             Assert.True(recId1.ToString() == recId2.ToString());
-            Assert.False(RecordId.TryParse("102030405060708090a0b0c", out recId1)); // too short
-            Assert.False(RecordId.TryParse("x102030405060708090a0b0c", out recId1)); // invalid character
-            Assert.False(RecordId.TryParse("00102030405060708090a0b0c", out recId1)); // too long
-            Assert.False(RecordId.TryParse(null, out recId1)); // should return false not throw ArgumentNullException
-        }
-
-        [Fact]
-        public void TestConvertRecordIdToRecordId()
-        {
-            var oid = RecordId.GenerateNewId();
-
-            var oidConverted = Convert.ChangeType(oid, typeof(RecordId));
-
-            Assert.Equal(oid, oidConverted);
         }
     }
 }

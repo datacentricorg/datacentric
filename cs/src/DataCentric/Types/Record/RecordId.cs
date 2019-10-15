@@ -57,10 +57,6 @@ namespace DataCentric
     /// </summary>
     public struct RecordId : IComparable<RecordId>, IEquatable<RecordId>
     {
-        private static readonly int __staticMachine = (GetMachineHash() + GetAppDomainId()) & 0x00ffffff;
-        private static readonly short __staticPid = GetPid();
-        private static int __staticIncrement = (new Random()).Next();
-
         private readonly int _a;
         private readonly int _b;
         private readonly int _c;
@@ -233,16 +229,6 @@ namespace DataCentric
 
         //--- STATIC
 
-        /// <summary>Generates a new RecordId with a unique value.</summary>
-        public static RecordId GenerateNewId()
-        {
-            int timestamp = GetTimestampFromDateTime(DateTime.UtcNow);
-
-            // Only use low order 3 bytes
-            int increment = Interlocked.Increment(ref __staticIncrement) & 0x00ffffff;
-            return new RecordId(timestamp, __staticMachine, __staticPid, increment);
-        }
-
         /// <summary>
         /// Parses a string and creates a new RecordId.
         ///
@@ -364,47 +350,6 @@ namespace DataCentric
 
         //--- PRIVATE
 
-        // private static methods
-        private static int GetAppDomainId()
-        {
-#if NETSTANDARD1_5 || NETSTANDARD1_6
-            return 1;
-#else
-            return AppDomain.CurrentDomain.Id;
-#endif
-        }
-
-        /// <summary>
-        /// Gets the current process id.  This method exists because of how CAS operates on the call stack, checking
-        /// for permissions before executing the method.  Hence, if we inlined this call, the calling method would not execute
-        /// before throwing an exception requiring the try/catch at an even higher level that we don't necessarily control.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static int GetCurrentProcessId()
-        {
-            return Process.GetCurrentProcess().Id;
-        }
-
-        private static int GetMachineHash()
-        {
-            // Use instead of Dns.HostName so it will work offline.
-            // Use first 3 bytes of hash.
-            return 0x00ffffff & Environment.MachineName.GetHashCode(); 
-        }
-
-        private static short GetPid()
-        {
-            try
-            {
-                // Use low order two bytes only
-                return (short)GetCurrentProcessId();
-            }
-            catch (SecurityException)
-            {
-                return 0;
-            }
-        }
-
         private static int GetTimestampFromDateTime(DateTime timestamp)
         {
             var secondsSinceEpoch = (long)Math.Floor((BsonUtils.ToUniversalTime(timestamp) - BsonConstants.UnixEpoch).TotalSeconds);
@@ -413,13 +358,6 @@ namespace DataCentric
                 throw new ArgumentOutOfRangeException("timestamp");
             }
             return (int)secondsSinceEpoch;
-        }
-
-        private static void FromByteArray(byte[] bytes, int offset, out int a, out int b, out int c)
-        {
-            a = (bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3];
-            b = (bytes[offset + 4] << 24) | (bytes[offset + 5] << 16) | (bytes[offset + 6] << 8) | bytes[offset + 7];
-            c = (bytes[offset + 8] << 24) | (bytes[offset + 9] << 16) | (bytes[offset + 10] << 8) | bytes[offset + 11];
         }
     }
 
