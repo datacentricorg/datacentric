@@ -119,6 +119,7 @@ namespace DataCentric.Cli
             decl.Inherit = IsRoot(type.BaseType)
                                ? null
                                : CreateTypeDeclKey(type.BaseType.Namespace, type.BaseType.Name.TrimEnd("Data"));
+            decl.Index = type.GetIndexesFromAttributes();
 
             // Skip special (property getters, setters, etc) and inherited methods
             List<MethodInfo> handlers = type.GetMethods(PublicInstanceDeclaredFlags)
@@ -336,6 +337,54 @@ namespace DataCentric.Cli
         }
 
         /// <summary>
+        /// Extract type index info and add to declaration.
+        /// </summary>
+        private static List<TypeIndexData> GetIndexesFromAttributes(this Type type)
+        {
+            var attributes = type.GetCustomAttributes<IndexElementsAttribute>().ToList();
+
+            // Type does not have index info - skip
+            if (!attributes.Any())
+                return null;
+
+            var result = new List<TypeIndexData>();
+
+            // Process each attribute
+            foreach (var attribute in attributes)
+            {
+                TypeIndexData typeIndexData = new TypeIndexData
+                {
+                    Element = new List<TypeElementIndexData>(), Name = attribute.Name
+                };
+
+                // Decompose string index definition "A, -B" to ordered list of tuples (ElementName,SortOrder): [("A",1), ("B",-1)]
+                MethodInfo parseDefinitionMethod = typeof(IndexElementsAttribute)
+                                                  .GetMethod(nameof(IndexElementsAttribute.ParseDefinition),
+                                                             BindingFlags.Static | BindingFlags.Public)
+                                                 ?.MakeGenericMethod(type);
+                var definition = (List<(string, int)>) parseDefinitionMethod?.Invoke(null, new object[] {attribute.Definition});
+
+                // Convert decomposed definition to declarations format
+                foreach ((string, int) tuple in definition)
+                {
+                    TypeElementIndexData elementIndex = new TypeElementIndexData
+                    {
+                        Name = tuple.Item1,
+                        Direction = tuple.Item2 == -1
+                                        ? TypeElementIndexDirection.Descending
+                                        : TypeElementIndexDirection.Ascending
+                    };
+
+                    typeIndexData.Element.Add(elementIndex);
+                }
+
+                result.Add(typeIndexData);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Tries to get comment from DisplayName or Display attributes.
         /// </summary>
         private static string GetCommentFromAttribute(this MemberInfo member)
@@ -421,26 +470,9 @@ namespace DataCentric.Cli
             element.Optional = property.GetCustomAttribute<RequiredAttribute>() == null ? YesNo.Y : (YesNo?) null;
             element.BsonIgnore = property.GetCustomAttribute<BsonIgnoreAttribute>() != null ? YesNo.Y : (YesNo?) null;
             element.Hidden = property.IsHidden();
-            // TODO -update, IndexedAttribute has been replaced by IndexAttribute
-            // element.Indices = Attribute.IsDefined(property, typeof(IndexedAttribute))
-            //                    ? property.GetCustomAttributes<IndexedAttribute>().Select(ToIndex).ToList()
-            //                    : null;
 
             return element;
         }
-
-        /// <summary>
-        /// Handles index attribute conversion.
-        /// </summary>
-        // TODO -update, IndexedAttribute has been replaced by IndexAttribute
-        // private static TypeElementIndexData ToIndex(IndexedAttribute attribute){
-        //     TypeElementIndexData indexData = new TypeElementIndexData
-        //     {
-        //         Name = attribute.Index != string.Empty ? attribute.Index : null,
-        //         Order = attribute.Order != IntUtils.Empty ? attribute.Order : (int?) null
-        //     };
-        //     return indexData;
-        // }
 
         /// <summary>
         /// Converts to enum item declaration.
