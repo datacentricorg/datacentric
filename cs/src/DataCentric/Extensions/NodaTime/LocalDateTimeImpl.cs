@@ -29,13 +29,29 @@ namespace DataCentric
         /// <summary>Strict ISO 8601 datetime pattern yyyy-mm-ddThh:mm::ss.fff.</summary>
         public static LocalDateTimePattern Pattern { get; } = LocalDateTimePattern.CreateWithInvariantCulture("uuuu'-'MM'-'dd' 'HH':'mm':'ss.FFF");
 
-        /// <summary>Parse string using standard ISO 8601 date pattern yyyy-mm-ddThh:mm::ss.fff, throw if invalid format.
+        /// <summary>
+        /// Parse string using standard ISO 8601 date pattern yyyy-mm-ddThh:mm::ss.fff, throw if invalid format.
+        /// 
         /// No variations from the standard format are accepted and no delimiters can be changed or omitted.
-        /// Specifically, ISO int-like string using yyyymmddhhmmssfff format without delimiters is not accepted.</summary>
+        /// Specifically, ISO int-like string using yyyymmddhhmmssfff format without delimiters is not accepted.
+        /// </summary>
         public static LocalDateTime Parse(string value)
         {
             var parseResult = Pattern.Parse(value);
             var result = parseResult.GetValueOrThrow();
+            return result;
+        }
+
+        /// <summary>
+        /// Try parsing string using standard ISO 8601 date pattern yyyy-mm-ddThh:mm::ss.fff, throw if invalid format.
+        /// 
+        /// No variations from the standard format are accepted and no delimiters can be changed or omitted.
+        /// Specifically, ISO int-like string using yyyymmddhhmmssfff format without delimiters is not accepted.
+        /// </summary>
+        public static bool TryParse(string value, out LocalDateTime dateTime)
+        {
+            var parseResult = Pattern.Parse(value);
+            var result = parseResult.TryGetValue(LocalDateTimeImpl.Empty, out dateTime);
             return result;
         }
 
