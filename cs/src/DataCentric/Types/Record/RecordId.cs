@@ -88,7 +88,7 @@ namespace DataCentric
         /// <summary>Create from datetime in UTC and the remaining bytes.</summary>
         public RecordId(DateTime creationTime, byte[] remainingBytes)
         {
-            if (remainingBytes == null || remainingBytes.Length != 12)
+            if (remainingBytes == null || remainingBytes.Length != 8)
                 throw new Exception($"Remaining bytes array passed to RecordId ctor must be 8 bytes long.");
 
             _a = GetTimestampFromDateTime(creationTime);

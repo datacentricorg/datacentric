@@ -156,8 +156,10 @@ namespace DataCentric.Test
             {
                 context.KeepTestData = true;
 
+                // Create from timestamp
+                var timeStamp = new DateTime(2003, 5, 1, 10, 15, 0, DateTimeKind.Utc);
                 var rec = new IdBasedKeySampleData();
-                rec.Id = new RecordId(123456789, 0, 0, 0);
+                rec.Id = new RecordId(timeStamp, 0, 0, 0);
                 rec.StringElement = "abc";
 
                 // Verify key serialization

@@ -25,25 +25,6 @@ namespace DataCentric.Test
 {
     public class RecordIdTest
     {
-        [Theory]
-        [InlineData(int.MinValue)]
-        [InlineData(int.MaxValue)]
-        public void TestDateTimeConstructorAtEdgeOfRange(int secondsSinceEpoch)
-        {
-            var timestamp = BsonConstants.UnixEpoch.AddSeconds(secondsSinceEpoch);
-            var recId = new RecordId(timestamp, 0, 0, 0);
-            Assert.Equal(timestamp, recId.CreationTime);
-        }
-
-        [Theory]
-        [InlineData((long)int.MinValue - 1)]
-        [InlineData((long)int.MaxValue + 1)]
-        public void TestDateTimeConstructorArgumentOutOfRangeException(long secondsSinceEpoch)
-        {
-            var timestamp = BsonConstants.UnixEpoch.AddSeconds(secondsSinceEpoch);
-            Assert.Throws<ArgumentOutOfRangeException>(() => new RecordId(timestamp, 0, 0, 0));
-        }
-
         [Fact]
         public void TestParse()
         {
