@@ -20,7 +20,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Threading;
-using MongoDB.Bson;
+using MongoDB.Bson; // TODO - remove the remaining use of MongoDB so RecordId is fully portable
 using NodaTime;
 
 namespace DataCentric
@@ -79,16 +79,6 @@ namespace DataCentric
             }
 
             FromByteArray(bytes, 0, out _a, out _b, out _c);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the RecordId class.
-        /// </summary>
-        /// <param name="bytes">The bytes.</param>
-        /// <param name="index">The index into the byte array where the RecordId starts.</param>
-        internal RecordId(byte[] bytes, int index)
-        {
-            FromByteArray(bytes, index, out _a, out _b, out _c);
         }
 
         /// <summary>
@@ -157,30 +147,6 @@ namespace DataCentric
         public int Timestamp
         {
             get { return _a; }
-        }
-
-        /// <summary>
-        /// Gets the machine.
-        /// </summary>
-        public int Machine
-        {
-            get { return (_b >> 8) & 0xffffff; }
-        }
-
-        /// <summary>
-        /// Gets the PID.
-        /// </summary>
-        public short Pid
-        {
-            get { return (short)(((_b << 8) & 0xff00) | ((_c >> 24) & 0x00ff)); }
-        }
-
-        /// <summary>
-        /// Gets the increment.
-        /// </summary>
-        public int Increment
-        {
-            get { return _c & 0xffffff; }
         }
 
         /// <summary>
@@ -265,63 +231,9 @@ namespace DataCentric
         /// <returns>An RecordId.</returns>
         public static RecordId GenerateNewId()
         {
-            return GenerateNewId(GetTimestampFromDateTime(DateTime.UtcNow));
-        }
-
-        /// <summary>
-        /// Generates a new RecordId with a unique value (with the timestamp component based on a given DateTime).
-        /// </summary>
-        /// <param name="timestamp">The timestamp component (expressed as a DateTime).</param>
-        /// <returns>An RecordId.</returns>
-        public static RecordId GenerateNewId(DateTime timestamp)
-        {
-            return GenerateNewId(GetTimestampFromDateTime(timestamp));
-        }
-
-        /// <summary>
-        /// Generates a new RecordId with a unique value (with the given timestamp).
-        /// </summary>
-        /// <param name="timestamp">The timestamp component.</param>
-        /// <returns>An RecordId.</returns>
-        public static RecordId GenerateNewId(int timestamp)
-        {
+            int timestamp = GetTimestampFromDateTime(DateTime.UtcNow);
             int increment = Interlocked.Increment(ref __staticIncrement) & 0x00ffffff; // only use low order 3 bytes
             return new RecordId(timestamp, __staticMachine, __staticPid, increment);
-        }
-
-        /// <summary>
-        /// Packs the components of an RecordId into a byte array.
-        /// </summary>
-        /// <param name="timestamp">The timestamp.</param>
-        /// <param name="machine">The machine hash.</param>
-        /// <param name="pid">The PID.</param>
-        /// <param name="increment">The increment.</param>
-        /// <returns>A byte array.</returns>
-        public static byte[] Pack(int timestamp, int machine, short pid, int increment)
-        {
-            if ((machine & 0xff000000) != 0)
-            {
-                throw new ArgumentOutOfRangeException("machine", "The machine value must be between 0 and 16777215 (it must fit in 3 bytes).");
-            }
-            if ((increment & 0xff000000) != 0)
-            {
-                throw new ArgumentOutOfRangeException("increment", "The increment value must be between 0 and 16777215 (it must fit in 3 bytes).");
-            }
-
-            byte[] bytes = new byte[12];
-            bytes[0] = (byte)(timestamp >> 24);
-            bytes[1] = (byte)(timestamp >> 16);
-            bytes[2] = (byte)(timestamp >> 8);
-            bytes[3] = (byte)(timestamp);
-            bytes[4] = (byte)(machine >> 16);
-            bytes[5] = (byte)(machine >> 8);
-            bytes[6] = (byte)(machine);
-            bytes[7] = (byte)(pid >> 8);
-            bytes[8] = (byte)(pid);
-            bytes[9] = (byte)(increment >> 16);
-            bytes[10] = (byte)(increment >> 8);
-            bytes[11] = (byte)(increment);
-            return bytes;
         }
 
         /// <summary>
@@ -369,31 +281,6 @@ namespace DataCentric
 
             objectId = default(RecordId);
             return false;
-        }
-
-        /// <summary>
-        /// Unpacks a byte array into the components of an RecordId.
-        /// </summary>
-        /// <param name="bytes">A byte array.</param>
-        /// <param name="timestamp">The timestamp.</param>
-        /// <param name="machine">The machine hash.</param>
-        /// <param name="pid">The PID.</param>
-        /// <param name="increment">The increment.</param>
-        public static void Unpack(byte[] bytes, out int timestamp, out int machine, out short pid, out int increment)
-        {
-            if (bytes == null)
-            {
-                throw new ArgumentNullException("bytes");
-            }
-            if (bytes.Length != 12)
-            {
-                throw new ArgumentOutOfRangeException("bytes", "Byte array must be 12 bytes long.");
-            }
-
-            timestamp = (bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + bytes[3];
-            machine = (bytes[4] << 16) + (bytes[5] << 8) + bytes[6];
-            pid = (short)((bytes[7] << 8) + bytes[8]);
-            increment = (bytes[9] << 16) + (bytes[10] << 8) + bytes[11];
         }
 
         // private static methods
