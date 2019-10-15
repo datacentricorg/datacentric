@@ -69,58 +69,6 @@ namespace DataCentric.Test
         }
 
         [Fact]
-        public void TestCompareSmallerTimestamp()
-        {
-            var recId1 = new RecordId("0102030405060708090a0b0c");
-            var recId2 = new RecordId("0102030505060708090a0b0c");
-            Assert.True(recId1 < recId2);
-            Assert.True(recId1 <= recId2);
-            Assert.True(recId1 != recId2);
-            Assert.False(recId1 == recId2);
-            Assert.False(recId1 > recId2);
-            Assert.False(recId1 >= recId2);
-        }
-
-        [Fact]
-        public void TestCompareSmallerMachine()
-        {
-            var recId1 = new RecordId("0102030405060708090a0b0c");
-            var recId2 = new RecordId("0102030405060808090a0b0c");
-            Assert.True(recId1 < recId2);
-            Assert.True(recId1 <= recId2);
-            Assert.True(recId1 != recId2);
-            Assert.False(recId1 == recId2);
-            Assert.False(recId1 > recId2);
-            Assert.False(recId1 >= recId2);
-        }
-
-        [Fact]
-        public void TestCompareSmallerPid()
-        {
-            var recId1 = new RecordId("0102030405060708090a0b0c");
-            var recId2 = new RecordId("01020304050607080a0a0b0c");
-            Assert.True(recId1 < recId2);
-            Assert.True(recId1 <= recId2);
-            Assert.True(recId1 != recId2);
-            Assert.False(recId1 == recId2);
-            Assert.False(recId1 > recId2);
-            Assert.False(recId1 >= recId2);
-        }
-
-        [Fact]
-        public void TestCompareSmallerIncrement()
-        {
-            var recId1 = new RecordId("0102030405060708090a0b0c");
-            var recId2 = new RecordId("0102030405060708090a0b0d");
-            Assert.True(recId1 < recId2);
-            Assert.True(recId1 <= recId2);
-            Assert.True(recId1 != recId2);
-            Assert.False(recId1 == recId2);
-            Assert.False(recId1 > recId2);
-            Assert.False(recId1 >= recId2);
-        }
-
-        [Fact]
         public void TestCompareSmallerGeneratedId()
         {
             var recId1 = RecordId.GenerateNewId();
@@ -131,58 +79,6 @@ namespace DataCentric.Test
             Assert.False(recId1 == recId2);
             Assert.False(recId1 > recId2);
             Assert.False(recId1 >= recId2);
-        }
-
-        [Fact]
-        public void TestCompareLargerTimestamp()
-        {
-            var recId1 = new RecordId("0102030405060708090a0b0c");
-            var recId2 = new RecordId("0102030305060708090a0b0c");
-            Assert.False(recId1 < recId2);
-            Assert.False(recId1 <= recId2);
-            Assert.True(recId1 != recId2);
-            Assert.False(recId1 == recId2);
-            Assert.True(recId1 > recId2);
-            Assert.True(recId1 >= recId2);
-        }
-
-        [Fact]
-        public void TestCompareLargerMachine()
-        {
-            var recId1 = new RecordId("0102030405060808090a0b0c");
-            var recId2 = new RecordId("0102030405060708090a0b0c");
-            Assert.False(recId1 < recId2);
-            Assert.False(recId1 <= recId2);
-            Assert.True(recId1 != recId2);
-            Assert.False(recId1 == recId2);
-            Assert.True(recId1 > recId2);
-            Assert.True(recId1 >= recId2);
-        }
-
-        [Fact]
-        public void TestCompareLargerPid()
-        {
-            var recId1 = new RecordId("01020304050607080a0a0b0c");
-            var recId2 = new RecordId("0102030405060708090a0b0c");
-            Assert.False(recId1 < recId2);
-            Assert.False(recId1 <= recId2);
-            Assert.True(recId1 != recId2);
-            Assert.False(recId1 == recId2);
-            Assert.True(recId1 > recId2);
-            Assert.True(recId1 >= recId2);
-        }
-
-        [Fact]
-        public void TestCompareLargerIncrement()
-        {
-            var recId1 = new RecordId("0102030405060708090a0b0d");
-            var recId2 = new RecordId("0102030405060708090a0b0c");
-            Assert.False(recId1 < recId2);
-            Assert.False(recId1 <= recId2);
-            Assert.True(recId1 != recId2);
-            Assert.False(recId1 == recId2);
-            Assert.True(recId1 > recId2);
-            Assert.True(recId1 >= recId2);
         }
 
         [Fact]

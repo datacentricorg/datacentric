@@ -69,32 +69,23 @@ namespace DataCentric
         /// <summary>Create from a byte array of size 12.</summary>
         public RecordId(byte[] bytes)
         {
-            if (bytes == null)
-            {
-                throw new ArgumentNullException("bytes");
-            }
-            if (bytes.Length != 12)
-            {
-                throw new ArgumentException("Byte array must be 12 bytes long", "bytes");
-            }
+            if (bytes == null || bytes.Length != 12)
+                throw new Exception($"Bytes array passed to RecordId ctor must be 12 bytes long.");
 
-            FromByteArray(bytes, 0, out _a, out _b, out _c);
+            _a = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
+            _b = (bytes[4] << 24) | (bytes[5] << 16) | (bytes[6] << 8) | bytes[7];
+            _c = (bytes[8] << 24) | (bytes[9] << 16) | (bytes[10] << 8) | bytes[11];
         }
 
         /// <summary>Create from datetime in UTC and the remaining bytes.</summary>
-        public RecordId(DateTime creationTime, byte[] bytes)
+        public RecordId(DateTime creationTime, byte[] remainingBytes)
         {
-            if (bytes == null)
-            {
-                throw new ArgumentNullException("bytes");
-            }
-            if (bytes.Length != 8)
-            {
-                throw new ArgumentException("Byte array must be 8 bytes long", "bytes");
-            }
+            if (remainingBytes == null || remainingBytes.Length != 12)
+                throw new Exception($"Remaining bytes array passed to RecordId ctor must be 8 bytes long.");
 
             _a = GetTimestampFromDateTime(creationTime);
-            FromRemainingByteArray(bytes, 0, out _b, out _c);
+            _b = (remainingBytes[0] << 24) | (remainingBytes[1] << 16) | (remainingBytes[2] << 8) | remainingBytes[3];
+            _c = (remainingBytes[4] << 24) | (remainingBytes[5] << 16) | (remainingBytes[6] << 8) | remainingBytes[7];
         }
 
         /// <summary>
@@ -133,22 +124,6 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Initializes a new instance of the RecordId class.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        public RecordId(string value)
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
-
-            var bytes = BsonUtils.ParseHexString(value);
-            FromByteArray(bytes, 0, out _a, out _b, out _c);
-        }
-
-        // public static properties
-        /// <summary>
         /// Gets an instance of RecordId where the value is empty.
         /// </summary>
         public static RecordId Empty
@@ -156,99 +131,59 @@ namespace DataCentric
             get { return __emptyInstance; }
         }
 
-        // public properties
-        /// <summary>
-        /// Gets the timestamp.
-        /// </summary>
-        public int Timestamp
-        {
-            get { return _a; }
-        }
-
         /// <summary>
         /// Gets the creation time (derived from the timestamp).
         /// </summary>
         public DateTime CreationTime
         {
-            get { return BsonConstants.UnixEpoch.AddSeconds(Timestamp); }
+            get { return BsonConstants.UnixEpoch.AddSeconds(_a); }
         }
 
-        // public operators
-        /// <summary>
-        /// Compares two RecordIds.
-        /// </summary>
-        /// <param name="lhs">The first RecordId.</param>
-        /// <param name="rhs">The other RecordId</param>
-        /// <returns>True if the first RecordId is less than the second RecordId.</returns>
+        /// <summary>True if the first RecordId is less than the second RecordId.</summary>
         public static bool operator <(RecordId lhs, RecordId rhs)
         {
             return lhs.CompareTo(rhs) < 0;
         }
 
-        /// <summary>
-        /// Compares two RecordIds.
-        /// </summary>
-        /// <param name="lhs">The first RecordId.</param>
-        /// <param name="rhs">The other RecordId</param>
-        /// <returns>True if the first RecordId is less than or equal to the second RecordId.</returns>
+        /// <summary>True if the first RecordId is less than or equal to the second RecordId.</summary>
         public static bool operator <=(RecordId lhs, RecordId rhs)
         {
             return lhs.CompareTo(rhs) <= 0;
         }
 
-        /// <summary>
-        /// Compares two RecordIds.
-        /// </summary>
-        /// <param name="lhs">The first RecordId.</param>
-        /// <param name="rhs">The other RecordId.</param>
-        /// <returns>True if the two RecordIds are equal.</returns>
+        /// <summary>True if the two RecordIds are equal.</summary>
         public static bool operator ==(RecordId lhs, RecordId rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        /// <summary>
-        /// Compares two RecordIds.
-        /// </summary>
-        /// <param name="lhs">The first RecordId.</param>
-        /// <param name="rhs">The other RecordId.</param>
-        /// <returns>True if the two RecordIds are not equal.</returns>
+        /// <summary>True if the two RecordIds are not equal.</summary>
         public static bool operator !=(RecordId lhs, RecordId rhs)
         {
             return !(lhs == rhs);
         }
 
-        /// <summary>
-        /// Compares two RecordIds.
-        /// </summary>
-        /// <param name="lhs">The first RecordId.</param>
-        /// <param name="rhs">The other RecordId</param>
-        /// <returns>True if the first RecordId is greather than or equal to the second RecordId.</returns>
+        /// <summary>True if the first RecordId is greather than or equal to the second RecordId.</summary>
         public static bool operator >=(RecordId lhs, RecordId rhs)
         {
             return lhs.CompareTo(rhs) >= 0;
         }
 
-        /// <summary>
-        /// Compares two RecordIds.
-        /// </summary>
-        /// <param name="lhs">The first RecordId.</param>
-        /// <param name="rhs">The other RecordId</param>
-        /// <returns>True if the first RecordId is greather than the second RecordId.</returns>
+        /// <summary>True if the first RecordId is greather than the second RecordId.</summary>
         public static bool operator >(RecordId lhs, RecordId rhs)
         {
             return lhs.CompareTo(rhs) > 0;
         }
 
-        // public static methods
-        /// <summary>
-        /// Generates a new RecordId with a unique value.
-        /// </summary>
-        /// <returns>An RecordId.</returns>
+        //--- STATIC
+
+        /// <summary>Generates a new RecordId with a unique value.</summary>
         public static RecordId GenerateNewId()
         {
             int timestamp = GetTimestampFromDateTime(DateTime.UtcNow);
-            int increment = Interlocked.Increment(ref __staticIncrement) & 0x00ffffff; // only use low order 3 bytes
+
+            // Only use low order 3 bytes
+            int increment = Interlocked.Increment(ref __staticIncrement) & 0x00ffffff; 
             return new RecordId(timestamp, __staticMachine, __staticPid, increment);
         }
 
@@ -320,6 +255,8 @@ namespace DataCentric
             return true;
         }
 
+        //--- PRIVATE
+
         // private static methods
         private static int GetAppDomainId()
         {
@@ -343,21 +280,17 @@ namespace DataCentric
 
         private static int GetMachineHash()
         {
-            // use instead of Dns.HostName so it will work offline
-            var machineName = GetMachineName();
-            return 0x00ffffff & machineName.GetHashCode(); // use first 3 bytes of hash
-        }
-
-        private static string GetMachineName()
-        {
-            return Environment.MachineName;
+            // Use instead of Dns.HostName so it will work offline.
+            // Use first 3 bytes of hash.
+            return 0x00ffffff & Environment.MachineName.GetHashCode(); 
         }
 
         private static short GetPid()
         {
             try
             {
-                return (short)GetCurrentProcessId(); // use low order two bytes only
+                // Use low order two bytes only
+                return (short)GetCurrentProcessId();
             }
             catch (SecurityException)
             {
@@ -382,18 +315,7 @@ namespace DataCentric
             c = (bytes[offset + 8] << 24) | (bytes[offset + 9] << 16) | (bytes[offset + 10] << 8) | bytes[offset + 11];
         }
 
-        private static void FromRemainingByteArray(byte[] bytes, int offset, out int b, out int c)
-        {
-            b = (bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3];
-            c = (bytes[offset + 4] << 24) | (bytes[offset + 5] << 16) | (bytes[offset + 6] << 8) | bytes[offset + 7];
-        }
-
-        // public methods
-        /// <summary>
-        /// Compares this RecordId to another RecordId.
-        /// </summary>
-        /// <param name="other">The other RecordId.</param>
-        /// <returns>A 32-bit signed integer that indicates whether this RecordId is less than, equal to, or greather than the other.</returns>
+        /// <summary>Compares this RecordId to another RecordId.</summary>
         public int CompareTo(RecordId other)
         {
             int result = ((uint)_a).CompareTo((uint)other._a);
@@ -403,11 +325,7 @@ namespace DataCentric
             return ((uint)_c).CompareTo((uint)other._c);
         }
 
-        /// <summary>
-        /// Compares this RecordId to another RecordId.
-        /// </summary>
-        /// <param name="rhs">The other RecordId.</param>
-        /// <returns>True if the two RecordIds are equal.</returns>
+        /// <summary>True if the two RecordIds are equal.</summary>
         public bool Equals(RecordId rhs)
         {
             return
@@ -416,11 +334,7 @@ namespace DataCentric
                 _c == rhs._c;
         }
 
-        /// <summary>
-        /// Compares this RecordId to another object.
-        /// </summary>
-        /// <param name="obj">The other object.</param>
-        /// <returns>True if the other object is an RecordId and equal to this one.</returns>
+        /// <summary>True if the other object is an RecordId and equal to this one.</summary>
         public override bool Equals(object obj)
         {
             if (obj is RecordId)
@@ -433,10 +347,7 @@ namespace DataCentric
             }
         }
 
-        /// <summary>
-        /// Gets the hash code.
-        /// </summary>
-        /// <returns>The hash code.</returns>
+        /// <summary>Gets the hash code.</summary>
         public override int GetHashCode()
         {
             int hash = 17;
@@ -446,45 +357,23 @@ namespace DataCentric
             return hash;
         }
 
-        /// <summary>
-        /// Converts the RecordId to a byte array.
-        /// </summary>
-        /// <returns>A byte array.</returns>
+        /// <summary>Converts the RecordId to a byte array of length 12.</summary>
         public byte[] ToByteArray()
         {
             var bytes = new byte[12];
-            ToByteArray(bytes, 0);
+            bytes[0] = (byte)(_a >> 24);
+            bytes[1] = (byte)(_a >> 16);
+            bytes[2] = (byte)(_a >> 8);
+            bytes[3] = (byte)(_a);
+            bytes[4] = (byte)(_b >> 24);
+            bytes[5] = (byte)(_b >> 16);
+            bytes[6] = (byte)(_b >> 8);
+            bytes[7] = (byte)(_b);
+            bytes[8] = (byte)(_c >> 24);
+            bytes[9] = (byte)(_c >> 16);
+            bytes[10] = (byte)(_c >> 8);
+            bytes[11] = (byte)(_c);
             return bytes;
-        }
-
-        /// <summary>
-        /// Converts the RecordId to a byte array.
-        /// </summary>
-        /// <param name="destination">The destination.</param>
-        /// <param name="offset">The offset.</param>
-        public void ToByteArray(byte[] destination, int offset)
-        {
-            if (destination == null)
-            {
-                throw new ArgumentNullException("destination");
-            }
-            if (offset + 12 > destination.Length)
-            {
-                throw new ArgumentException("Not enough room in destination buffer.", "offset");
-            }
-
-            destination[offset + 0] = (byte)(_a >> 24);
-            destination[offset + 1] = (byte)(_a >> 16);
-            destination[offset + 2] = (byte)(_a >> 8);
-            destination[offset + 3] = (byte)(_a);
-            destination[offset + 4] = (byte)(_b >> 24);
-            destination[offset + 5] = (byte)(_b >> 16);
-            destination[offset + 6] = (byte)(_b >> 8);
-            destination[offset + 7] = (byte)(_b);
-            destination[offset + 8] = (byte)(_c >> 24);
-            destination[offset + 9] = (byte)(_c >> 16);
-            destination[offset + 10] = (byte)(_c >> 8);
-            destination[offset + 11] = (byte)(_c);
         }
 
         /// <summary>
@@ -521,6 +410,8 @@ namespace DataCentric
             string result = string.Join(" ", creationTimeString, hex);
             return result;
         }
+
+        //--- OPERATORS
 
         /// <summary>
         /// Converts UTC datetime to the smallest possible value of RecordId
