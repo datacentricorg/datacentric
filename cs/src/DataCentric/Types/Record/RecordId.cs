@@ -474,6 +474,19 @@ namespace DataCentric
             c[23] = BsonUtils.ToHexChar(_c & 0x0f);
             return new string(c);
         }
+
+        /// <summary>
+        /// Converts UTC datetime to the smallest possible value of RecordId
+        /// generated within the same second as the timestamp.
+        ///
+        /// By convention, all datetime values are assumed to be in UTC timezone.
+        /// </summary>
+        public static implicit operator RecordId(LocalDateTime rhs)
+        {
+            var utcDateTime = rhs.ToUtcDateTime();
+            var result = new RecordId(utcDateTime, 0, 0, 0);
+            return result;
+        }
     }
 
     /// <summary>Extension methods for RecordId.</summary>
@@ -504,7 +517,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Convert RecordId to its creation time. This method has one second resolution.
+        /// Convert RecordId to its creation time in UTC. This method has one second resolution.
         ///
         /// Error message if equal to the default constructed value.
         /// </summary>
