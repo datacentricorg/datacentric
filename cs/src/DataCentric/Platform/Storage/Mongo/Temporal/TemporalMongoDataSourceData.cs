@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -57,7 +58,7 @@ namespace DataCentric
     public class TemporalMongoDataSourceData : MongoDataSourceData
     {
         /// <summary>Dictionary of collections indexed by type T.</summary>
-        private Dictionary<Type, object> collectionDict_ = new Dictionary<Type, object>();
+        private ConcurrentDictionary<Type, object> collectionDict_ = new ConcurrentDictionary<Type, object>();
 
         //--- ELEMENTS
 
@@ -522,7 +523,7 @@ namespace DataCentric
             TemporalMongoCollection<TRecord> result = new TemporalMongoCollection<TRecord>(this, baseCollection, typedCollection);
 
             // Add the result to the collection dictionary and return
-            collectionDict_.Add(typeof(TRecord), result);
+            collectionDict_.TryAdd(typeof(TRecord), result);
             return result;
         }
     }
