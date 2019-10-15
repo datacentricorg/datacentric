@@ -17,6 +17,7 @@ limitations under the License.
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Threading;
@@ -26,8 +27,9 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>
-    /// A portable, GUID-like, ordered 16-byte record identifier which has the
-    /// following properties irrespective of the database type:
+    /// A portable, ordered 12-byte record identifier that begins from
+    /// timestamp with one second resolution and has the following
+    /// properties irrespective of the database type:
     /// 
     /// * Unique within each database table
     /// * Can be generated in strictly increasing order in a single thread
@@ -40,20 +42,18 @@ namespace DataCentric
     /// unique, semi-ordered identifier that can be used not only with MongoDB
     /// but also with relational databases and other storage.
     ///
-    /// RecordId is converted to the database-specific ordered or auto
-    /// incrementing identifier in the data source implementation. 
-    ///
     /// Because RecordId does not require strict ordering across multiple
     /// threads or servers, it can be used with distributed, web scale
     /// databases where getting a strictly increasing auto-incremented
     /// identifier would cause a performance hit.
     ///
-    /// For MongoDB, RecordId maps to ObjectID with trailing 0s, and its
-    /// implementation and the algorithm for unique generation is based on
-    /// modified code for RecordId in MongoDB driver.
+    /// For MongoDB, RecordId maps to ObjectID, and its implementation and
+    /// the algorithm for unique generation is the same as ObjectId in MongoDB
+    /// driver.
     ///
-    /// For relational databases, RecordId may use the same algorithm or
-    /// an auto incremented field, if available. 
+    /// For relational databases, RecordId may use the same algorithm or use
+    /// mapping to a combination of timestamp and an auto incremented field,
+    /// if available. 
     /// </summary>
     public struct RecordId : IComparable<RecordId>, IEquatable<RecordId>
     {
@@ -79,6 +79,22 @@ namespace DataCentric
             }
 
             FromByteArray(bytes, 0, out _a, out _b, out _c);
+        }
+
+        /// <summary>Create from datetime in UTC and the remaining bytes.</summary>
+        public RecordId(DateTime creationTime, byte[] bytes)
+        {
+            if (bytes == null)
+            {
+                throw new ArgumentNullException("bytes");
+            }
+            if (bytes.Length != 8)
+            {
+                throw new ArgumentException("Byte array must be 8 bytes long", "bytes");
+            }
+
+            _a = GetTimestampFromDateTime(creationTime);
+            FromRemainingByteArray(bytes, 0, out _b, out _c);
         }
 
         /// <summary>
@@ -238,9 +254,12 @@ namespace DataCentric
 
         /// <summary>
         /// Parses a string and creates a new RecordId.
+        ///
+        /// The string representation of RecordId has
+        /// the following format:
+        ///
+        /// yyyy-mm-dd hh:mm:ss bytes[16]
         /// </summary>
-        /// <param name="s">The string value.</param>
-        /// <returns>A RecordId.</returns>
         public static RecordId Parse(string s)
         {
             if (s == null)
@@ -262,25 +281,43 @@ namespace DataCentric
 
         /// <summary>
         /// Tries to parse a string and create a new RecordId.
+        ///
+        /// The string representation of RecordId has
+        /// the following format:
+        ///
+        /// yyyy-mm-dd hh:mm:ss bytes[16]
         /// </summary>
-        /// <param name="s">The string value.</param>
-        /// <param name="recId">The new RecordId.</param>
-        /// <returns>True if the string was parsed successfully.</returns>
         public static bool TryParse(string s, out RecordId recId)
         {
-            // don't throw ArgumentNullException if s is null
-            if (s != null && s.Length == 24)
+            // Set to empty value in case the method exits early
+            recId = default(RecordId);
+
+            // RecordId is serialized using the following format yyyy-mm-dd hh:mm:ss 0000000000000000
+            // Exit if the string length is not 36
+            if (string.IsNullOrEmpty(s) || s.Length != 36) return false;
+
+            // The next step is to tokenize the input string.
+            // Exit unless the string has three tokens.
+            string[] tokens = s.Split(' ');
+            if (tokens.Length != 3) return false;
+
+            // Concatenate and the first two tokens with T separator and then try to
+            // parse them as LocalDateTime using strict format yyyy-mm-ddThh:mm:ss
+            DateTime creationDateTime;
+            string dateTimeString = string.Join("T", tokens[0], tokens[1]);
+            if (!DateTime.TryParse(dateTimeString, null, DateTimeStyles.RoundtripKind, out creationDateTime))
             {
-                byte[] bytes;
-                if (BsonUtils.TryParseHexString(s, out bytes))
-                {
-                    recId = new RecordId(bytes);
-                    return true;
-                }
+                return false;
             }
 
-            recId = default(RecordId);
-            return false;
+            // Try to parse the third token to a byte array
+            byte[] bytes;
+            if (!BsonUtils.TryParseHexString(tokens[2], out bytes)) return false;
+
+            // Populate the first integer from timestamp
+            // and the two remaining integers from the byte array
+            recId = new RecordId(creationDateTime, bytes);
+            return true;
         }
 
         // private static methods
@@ -343,6 +380,12 @@ namespace DataCentric
             a = (bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3];
             b = (bytes[offset + 4] << 24) | (bytes[offset + 5] << 16) | (bytes[offset + 6] << 8) | bytes[offset + 7];
             c = (bytes[offset + 8] << 24) | (bytes[offset + 9] << 16) | (bytes[offset + 10] << 8) | bytes[offset + 11];
+        }
+
+        private static void FromRemainingByteArray(byte[] bytes, int offset, out int b, out int c)
+        {
+            b = (bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3];
+            c = (bytes[offset + 4] << 24) | (bytes[offset + 5] << 16) | (bytes[offset + 6] << 8) | bytes[offset + 7];
         }
 
         // public methods
@@ -444,35 +487,39 @@ namespace DataCentric
             destination[offset + 11] = (byte)(_c);
         }
 
-        /// <summary>Returns a string representation of the value.</summary>
+        /// <summary>
+        /// Returns a string representation of the value using the following format:
+        ///
+        /// yyyy-mm-dd hh:mm:ss bytes[16]
+        /// </summary>
         public override string ToString()
         {
-            var c = new char[24];
-            c[0] = BsonUtils.ToHexChar((_a >> 28) & 0x0f);
-            c[1] = BsonUtils.ToHexChar((_a >> 24) & 0x0f);
-            c[2] = BsonUtils.ToHexChar((_a >> 20) & 0x0f);
-            c[3] = BsonUtils.ToHexChar((_a >> 16) & 0x0f);
-            c[4] = BsonUtils.ToHexChar((_a >> 12) & 0x0f);
-            c[5] = BsonUtils.ToHexChar((_a >> 8) & 0x0f);
-            c[6] = BsonUtils.ToHexChar((_a >> 4) & 0x0f);
-            c[7] = BsonUtils.ToHexChar(_a & 0x0f);
-            c[8] = BsonUtils.ToHexChar((_b >> 28) & 0x0f);
-            c[9] = BsonUtils.ToHexChar((_b >> 24) & 0x0f);
-            c[10] = BsonUtils.ToHexChar((_b >> 20) & 0x0f);
-            c[11] = BsonUtils.ToHexChar((_b >> 16) & 0x0f);
-            c[12] = BsonUtils.ToHexChar((_b >> 12) & 0x0f);
-            c[13] = BsonUtils.ToHexChar((_b >> 8) & 0x0f);
-            c[14] = BsonUtils.ToHexChar((_b >> 4) & 0x0f);
-            c[15] = BsonUtils.ToHexChar(_b & 0x0f);
-            c[16] = BsonUtils.ToHexChar((_c >> 28) & 0x0f);
-            c[17] = BsonUtils.ToHexChar((_c >> 24) & 0x0f);
-            c[18] = BsonUtils.ToHexChar((_c >> 20) & 0x0f);
-            c[19] = BsonUtils.ToHexChar((_c >> 16) & 0x0f);
-            c[20] = BsonUtils.ToHexChar((_c >> 12) & 0x0f);
-            c[21] = BsonUtils.ToHexChar((_c >> 8) & 0x0f);
-            c[22] = BsonUtils.ToHexChar((_c >> 4) & 0x0f);
-            c[23] = BsonUtils.ToHexChar(_c & 0x0f);
-            return new string(c);
+            // First part of the serialized value is the timestamp
+            string creationTimeString = this.ToLocalDateTime().AsString();
+
+            // Second part of the serialized value is 16 byte hexadecimal string
+            var c = new char[16];
+            c[0] = BsonUtils.ToHexChar((_b >> 28) & 0x0f);
+            c[1] = BsonUtils.ToHexChar((_b >> 24) & 0x0f);
+            c[2] = BsonUtils.ToHexChar((_b >> 20) & 0x0f);
+            c[3] = BsonUtils.ToHexChar((_b >> 16) & 0x0f);
+            c[4] = BsonUtils.ToHexChar((_b >> 12) & 0x0f);
+            c[5] = BsonUtils.ToHexChar((_b >> 8) & 0x0f);
+            c[6] = BsonUtils.ToHexChar((_b >> 4) & 0x0f);
+            c[7] = BsonUtils.ToHexChar(_b & 0x0f);
+            c[8] = BsonUtils.ToHexChar((_c >> 28) & 0x0f);
+            c[9] = BsonUtils.ToHexChar((_c >> 24) & 0x0f);
+            c[10] = BsonUtils.ToHexChar((_c >> 20) & 0x0f);
+            c[11] = BsonUtils.ToHexChar((_c >> 16) & 0x0f);
+            c[12] = BsonUtils.ToHexChar((_c >> 12) & 0x0f);
+            c[13] = BsonUtils.ToHexChar((_c >> 8) & 0x0f);
+            c[14] = BsonUtils.ToHexChar((_c >> 4) & 0x0f);
+            c[15] = BsonUtils.ToHexChar(_c & 0x0f);
+            string hex = new string(c);
+
+            // Serialized RecordId has the following format: yyyy-mm-dd hh:mm:ss bytes[16]
+            string result = string.Join(" ", creationTimeString, hex);
+            return result;
         }
 
         /// <summary>
