@@ -1,13 +1,13 @@
 Verify: Original
     <?xml version="1.0" encoding="utf-8"?>
-    <BaseTypeSample>
+    <BaseTypeSampleData>
       <SampleName>ABC</SampleName>
       <DoubleElement>1</DoubleElement>
-    </BaseTypeSample>
+    </BaseTypeSampleData>
 Verify: Copy
     <?xml version="1.0" encoding="utf-8"?>
-    <BaseTypeSample>
+    <BaseTypeSampleData>
       <SampleName>ABC</SampleName>
       <DoubleElement>1</DoubleElement>
-    </BaseTypeSample>
+    </BaseTypeSampleData>
 Verify: Serialization roundtrip assert.

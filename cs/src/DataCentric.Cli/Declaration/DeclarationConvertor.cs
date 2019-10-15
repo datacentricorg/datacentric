@@ -76,7 +76,7 @@ namespace DataCentric.Cli
             if (type.IsSubclassOf(typeof(Data)))
                 return TypeToDecl(type, navigator, projNavigator);
 
-            throw new ArgumentException($"{type.FullName} is not subclass of Enum or ClData", nameof(type));
+            throw new ArgumentException($"{type.FullName} is not subclass of Enum or Data", nameof(type));
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 Verify: Original
     <?xml version="1.0" encoding="utf-8"?>
-    <DerivedTypeSample>
+    <DerivedTypeSampleData>
       <SampleName>AAA</SampleName>
       <DoubleElement>1</DoubleElement>
       <IntElement>1</IntElement>
@@ -26,10 +26,10 @@ Verify: Original
         <SampleName>DDD</SampleName>
         <DoubleElement>4</DoubleElement>
       </DataList>
-    </DerivedTypeSample>
+    </DerivedTypeSampleData>
 Verify: Copy
     <?xml version="1.0" encoding="utf-8"?>
-    <DerivedTypeSample>
+    <DerivedTypeSampleData>
       <SampleName>AAA</SampleName>
       <DoubleElement>1</DoubleElement>
       <IntElement>1</IntElement>
@@ -55,5 +55,5 @@ Verify: Copy
         <SampleName>DDD</SampleName>
         <DoubleElement>4</DoubleElement>
       </DataList>
-    </DerivedTypeSample>
+    </DerivedTypeSampleData>
 Verify: Serialization roundtrip assert.

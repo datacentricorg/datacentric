@@ -163,13 +163,14 @@ namespace DataCentric
                                 throw new Exception($"Deserialization is not supported for element {elementName} " +
                                                     $"which is collection containing another collection.");
                             case Data dataItem:
-                                if (dataItem.GetType().Name.EndsWith("Key"))
+                                var keyItem = dataItem as Key;
+                                if (keyItem != null)
                                 {
                                     string token = selectedXmlNode.ReadValue();
                                     if (!string.IsNullOrEmpty(token))
                                     {
                                         // Parse semicolon delimited token to populate key item
-                                        ((Key)dataItem).PopulateFrom(token);
+                                        keyItem.PopulateFrom(token);
                                         obj.Add(item);
                                     }
                                     else obj.Add(null);

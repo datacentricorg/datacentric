@@ -63,7 +63,7 @@ namespace DataCentric
                         enumerableElement.SerializeTo(innerElementName, writer);
                         break;
                     case Data dataElement:
-                        if (dataElement.GetType().Name.EndsWith("Key"))
+                        if (dataElement is Key)
                         {
                             // Embedded as string key
                             writer.WriteValueElement(innerElementName, innterElementValue);
@@ -185,13 +185,14 @@ namespace DataCentric
                             listElement.DeserializeFrom(elementName, reader);
                             break;
                         case Data dataElement:
-                            if (dataElement.GetType().Name.EndsWith("Key"))
+                            var keyElement = dataElement as Key;
+                            if (keyElement != null)
                             {
                                 // Deserialize key from value node containing semicolon delimited string
                                 ITreeReader keyNodeValue = reader.ReadElement(elementName);
                                 string token = keyNodeValue.ReadValue();
                                 // Parse semicolon delimited string to populate key elements
-                                ((Key)dataElement).PopulateFrom(token);
+                                keyElement.PopulateFrom(token);
                             }
                             else
                             {
