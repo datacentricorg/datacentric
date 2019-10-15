@@ -57,7 +57,6 @@ namespace DataCentric
     /// </summary>
     public struct RecordId : IComparable<RecordId>, IEquatable<RecordId>
     {
-        private static readonly RecordId __emptyInstance = default(RecordId);
         private static readonly int __staticMachine = (GetMachineHash() + GetAppDomainId()) & 0x00ffffff;
         private static readonly short __staticPid = GetPid();
         private static int __staticIncrement = (new Random()).Next();
@@ -65,6 +64,19 @@ namespace DataCentric
         private readonly int _a;
         private readonly int _b;
         private readonly int _c;
+
+        //--- PROPERTIES
+
+        /// <summary>Empty value.</summary>
+        public static RecordId Empty { get; } = default(RecordId);
+
+        /// <summar>Timestamp for which RecordId was created.</summary>
+        public DateTime CreationTime
+        {
+            get { return BsonConstants.UnixEpoch.AddSeconds(_a); }
+        }
+
+        //--- CONSTRUCTORS
 
         /// <summary>Create from a byte array of size 12.</summary>
         public RecordId(byte[] bytes)
@@ -121,198 +133,6 @@ namespace DataCentric
             _a = timestamp;
             _b = (machine << 8) | (((int)pid >> 8) & 0xff);
             _c = ((int)pid << 24) | increment;
-        }
-
-        /// <summary>
-        /// Gets an instance of RecordId where the value is empty.
-        /// </summary>
-        public static RecordId Empty
-        {
-            get { return __emptyInstance; }
-        }
-
-        /// <summary>
-        /// Gets the creation time (derived from the timestamp).
-        /// </summary>
-        public DateTime CreationTime
-        {
-            get { return BsonConstants.UnixEpoch.AddSeconds(_a); }
-        }
-
-        /// <summary>True if the first RecordId is less than the second RecordId.</summary>
-        public static bool operator <(RecordId lhs, RecordId rhs)
-        {
-            return lhs.CompareTo(rhs) < 0;
-        }
-
-        /// <summary>True if the first RecordId is less than or equal to the second RecordId.</summary>
-        public static bool operator <=(RecordId lhs, RecordId rhs)
-        {
-            return lhs.CompareTo(rhs) <= 0;
-        }
-
-        /// <summary>True if the two RecordIds are equal.</summary>
-        public static bool operator ==(RecordId lhs, RecordId rhs)
-        {
-            return lhs.Equals(rhs);
-        }
-
-        /// <summary>True if the two RecordIds are not equal.</summary>
-        public static bool operator !=(RecordId lhs, RecordId rhs)
-        {
-            return !(lhs == rhs);
-        }
-
-        /// <summary>True if the first RecordId is greather than or equal to the second RecordId.</summary>
-        public static bool operator >=(RecordId lhs, RecordId rhs)
-        {
-            return lhs.CompareTo(rhs) >= 0;
-        }
-
-        /// <summary>True if the first RecordId is greather than the second RecordId.</summary>
-        public static bool operator >(RecordId lhs, RecordId rhs)
-        {
-            return lhs.CompareTo(rhs) > 0;
-        }
-
-        //--- STATIC
-
-        /// <summary>Generates a new RecordId with a unique value.</summary>
-        public static RecordId GenerateNewId()
-        {
-            int timestamp = GetTimestampFromDateTime(DateTime.UtcNow);
-
-            // Only use low order 3 bytes
-            int increment = Interlocked.Increment(ref __staticIncrement) & 0x00ffffff; 
-            return new RecordId(timestamp, __staticMachine, __staticPid, increment);
-        }
-
-        /// <summary>
-        /// Parses a string and creates a new RecordId.
-        ///
-        /// The string representation of RecordId has
-        /// the following format:
-        ///
-        /// yyyy-mm-dd hh:mm:ss bytes[16]
-        /// </summary>
-        public static RecordId Parse(string s)
-        {
-            if (s == null)
-            {
-                throw new ArgumentNullException("s");
-            }
-
-            RecordId recId;
-            if (TryParse(s, out recId))
-            {
-                return recId;
-            }
-            else
-            {
-                var message = string.Format("'{0}' is not a valid 24 digit hex string.", s);
-                throw new FormatException(message);
-            }
-        }
-
-        /// <summary>
-        /// Tries to parse a string and create a new RecordId.
-        ///
-        /// The string representation of RecordId has
-        /// the following format:
-        ///
-        /// yyyy-mm-dd hh:mm:ss bytes[16]
-        /// </summary>
-        public static bool TryParse(string s, out RecordId recId)
-        {
-            // Set to empty value in case the method exits early
-            recId = default(RecordId);
-
-            // RecordId is serialized using the following format yyyy-mm-dd hh:mm:ss 0000000000000000
-            // Exit if the string length is not 36
-            if (string.IsNullOrEmpty(s) || s.Length != 36) return false;
-
-            // The next step is to tokenize the input string.
-            // Exit unless the string has three tokens.
-            string[] tokens = s.Split(' ');
-            if (tokens.Length != 3) return false;
-
-            // Concatenate and the first two tokens with T separator and then try to
-            // parse them as LocalDateTime using strict format yyyy-mm-ddThh:mm:ss
-            DateTime creationDateTime;
-            string dateTimeString = string.Join("T", tokens[0], tokens[1]);
-            if (!DateTime.TryParse(dateTimeString, null, DateTimeStyles.RoundtripKind, out creationDateTime))
-            {
-                return false;
-            }
-
-            // Try to parse the third token to a byte array
-            byte[] bytes;
-            if (!BsonUtils.TryParseHexString(tokens[2], out bytes)) return false;
-
-            // Populate the first integer from timestamp
-            // and the two remaining integers from the byte array
-            recId = new RecordId(creationDateTime, bytes);
-            return true;
-        }
-
-        //--- PRIVATE
-
-        // private static methods
-        private static int GetAppDomainId()
-        {
-#if NETSTANDARD1_5 || NETSTANDARD1_6
-            return 1;
-#else
-            return AppDomain.CurrentDomain.Id;
-#endif
-        }
-
-        /// <summary>
-        /// Gets the current process id.  This method exists because of how CAS operates on the call stack, checking
-        /// for permissions before executing the method.  Hence, if we inlined this call, the calling method would not execute
-        /// before throwing an exception requiring the try/catch at an even higher level that we don't necessarily control.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static int GetCurrentProcessId()
-        {
-            return Process.GetCurrentProcess().Id;
-        }
-
-        private static int GetMachineHash()
-        {
-            // Use instead of Dns.HostName so it will work offline.
-            // Use first 3 bytes of hash.
-            return 0x00ffffff & Environment.MachineName.GetHashCode(); 
-        }
-
-        private static short GetPid()
-        {
-            try
-            {
-                // Use low order two bytes only
-                return (short)GetCurrentProcessId();
-            }
-            catch (SecurityException)
-            {
-                return 0;
-            }
-        }
-
-        private static int GetTimestampFromDateTime(DateTime timestamp)
-        {
-            var secondsSinceEpoch = (long)Math.Floor((BsonUtils.ToUniversalTime(timestamp) - BsonConstants.UnixEpoch).TotalSeconds);
-            if (secondsSinceEpoch < int.MinValue || secondsSinceEpoch > int.MaxValue)
-            {
-                throw new ArgumentOutOfRangeException("timestamp");
-            }
-            return (int)secondsSinceEpoch;
-        }
-
-        private static void FromByteArray(byte[] bytes, int offset, out int a, out int b, out int c)
-        {
-            a = (bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3];
-            b = (bytes[offset + 4] << 24) | (bytes[offset + 5] << 16) | (bytes[offset + 6] << 8) | bytes[offset + 7];
-            c = (bytes[offset + 8] << 24) | (bytes[offset + 9] << 16) | (bytes[offset + 10] << 8) | bytes[offset + 11];
         }
 
         /// <summary>Compares this RecordId to another RecordId.</summary>
@@ -411,6 +231,86 @@ namespace DataCentric
             return result;
         }
 
+        //--- STATIC
+
+        /// <summary>Generates a new RecordId with a unique value.</summary>
+        public static RecordId GenerateNewId()
+        {
+            int timestamp = GetTimestampFromDateTime(DateTime.UtcNow);
+
+            // Only use low order 3 bytes
+            int increment = Interlocked.Increment(ref __staticIncrement) & 0x00ffffff;
+            return new RecordId(timestamp, __staticMachine, __staticPid, increment);
+        }
+
+        /// <summary>
+        /// Parses a string and creates a new RecordId.
+        ///
+        /// The string representation of RecordId has
+        /// the following format:
+        ///
+        /// yyyy-mm-dd hh:mm:ss bytes[16]
+        /// </summary>
+        public static RecordId Parse(string s)
+        {
+            if (s == null)
+            {
+                throw new ArgumentNullException("s");
+            }
+
+            RecordId recId;
+            if (TryParse(s, out recId))
+            {
+                return recId;
+            }
+            else
+            {
+                var message = string.Format("'{0}' is not a valid 24 digit hex string.", s);
+                throw new FormatException(message);
+            }
+        }
+
+        /// <summary>
+        /// Tries to parse a string and create a new RecordId.
+        ///
+        /// The string representation of RecordId has
+        /// the following format:
+        ///
+        /// yyyy-mm-dd hh:mm:ss bytes[16]
+        /// </summary>
+        public static bool TryParse(string s, out RecordId recId)
+        {
+            // Set to empty value in case the method exits early
+            recId = default(RecordId);
+
+            // RecordId is serialized using the following format yyyy-mm-dd hh:mm:ss 0000000000000000
+            // Exit if the string length is not 36
+            if (string.IsNullOrEmpty(s) || s.Length != 36) return false;
+
+            // The next step is to tokenize the input string.
+            // Exit unless the string has three tokens.
+            string[] tokens = s.Split(' ');
+            if (tokens.Length != 3) return false;
+
+            // Concatenate and the first two tokens with T separator and then try to
+            // parse them as LocalDateTime using strict format yyyy-mm-ddThh:mm:ss
+            DateTime creationDateTime;
+            string dateTimeString = string.Join("T", tokens[0], tokens[1]);
+            if (!DateTime.TryParse(dateTimeString, null, DateTimeStyles.RoundtripKind, out creationDateTime))
+            {
+                return false;
+            }
+
+            // Try to parse the third token to a byte array
+            byte[] bytes;
+            if (!BsonUtils.TryParseHexString(tokens[2], out bytes)) return false;
+
+            // Populate the first integer from timestamp
+            // and the two remaining integers from the byte array
+            recId = new RecordId(creationDateTime, bytes);
+            return true;
+        }
+
         //--- OPERATORS
 
         /// <summary>
@@ -424,6 +324,102 @@ namespace DataCentric
             var utcDateTime = rhs.ToUtcDateTime();
             var result = new RecordId(utcDateTime, 0, 0, 0);
             return result;
+        }
+
+        /// <summary>True if the first RecordId is less than the second RecordId.</summary>
+        public static bool operator <(RecordId lhs, RecordId rhs)
+        {
+            return lhs.CompareTo(rhs) < 0;
+        }
+
+        /// <summary>True if the first RecordId is less than or equal to the second RecordId.</summary>
+        public static bool operator <=(RecordId lhs, RecordId rhs)
+        {
+            return lhs.CompareTo(rhs) <= 0;
+        }
+
+        /// <summary>True if the two RecordIds are equal.</summary>
+        public static bool operator ==(RecordId lhs, RecordId rhs)
+        {
+            return lhs.Equals(rhs);
+        }
+
+        /// <summary>True if the two RecordIds are not equal.</summary>
+        public static bool operator !=(RecordId lhs, RecordId rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        /// <summary>True if the first RecordId is greather than or equal to the second RecordId.</summary>
+        public static bool operator >=(RecordId lhs, RecordId rhs)
+        {
+            return lhs.CompareTo(rhs) >= 0;
+        }
+
+        /// <summary>True if the first RecordId is greather than the second RecordId.</summary>
+        public static bool operator >(RecordId lhs, RecordId rhs)
+        {
+            return lhs.CompareTo(rhs) > 0;
+        }
+
+        //--- PRIVATE
+
+        // private static methods
+        private static int GetAppDomainId()
+        {
+#if NETSTANDARD1_5 || NETSTANDARD1_6
+            return 1;
+#else
+            return AppDomain.CurrentDomain.Id;
+#endif
+        }
+
+        /// <summary>
+        /// Gets the current process id.  This method exists because of how CAS operates on the call stack, checking
+        /// for permissions before executing the method.  Hence, if we inlined this call, the calling method would not execute
+        /// before throwing an exception requiring the try/catch at an even higher level that we don't necessarily control.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static int GetCurrentProcessId()
+        {
+            return Process.GetCurrentProcess().Id;
+        }
+
+        private static int GetMachineHash()
+        {
+            // Use instead of Dns.HostName so it will work offline.
+            // Use first 3 bytes of hash.
+            return 0x00ffffff & Environment.MachineName.GetHashCode(); 
+        }
+
+        private static short GetPid()
+        {
+            try
+            {
+                // Use low order two bytes only
+                return (short)GetCurrentProcessId();
+            }
+            catch (SecurityException)
+            {
+                return 0;
+            }
+        }
+
+        private static int GetTimestampFromDateTime(DateTime timestamp)
+        {
+            var secondsSinceEpoch = (long)Math.Floor((BsonUtils.ToUniversalTime(timestamp) - BsonConstants.UnixEpoch).TotalSeconds);
+            if (secondsSinceEpoch < int.MinValue || secondsSinceEpoch > int.MaxValue)
+            {
+                throw new ArgumentOutOfRangeException("timestamp");
+            }
+            return (int)secondsSinceEpoch;
+        }
+
+        private static void FromByteArray(byte[] bytes, int offset, out int a, out int b, out int c)
+        {
+            a = (bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3];
+            b = (bytes[offset + 4] << 24) | (bytes[offset + 5] << 16) | (bytes[offset + 6] << 8) | bytes[offset + 7];
+            c = (bytes[offset + 8] << 24) | (bytes[offset + 9] << 16) | (bytes[offset + 10] << 8) | bytes[offset + 11];
         }
     }
 
