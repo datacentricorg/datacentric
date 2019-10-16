@@ -32,7 +32,7 @@ namespace DataCentric
         public static int ToIsoInt(this LocalDate value)
         {
             // If default constructed date is passed, error message
-            if (value == LocalDateImpl.Empty) throw new Exception(
+            if (value == LocalDateUtil.Empty) throw new Exception(
                 $"Default constructed (empty) LocalDate {value} has been passed to ToIsoInt() method.");
 
             int result = value.Year * 10_000 + value.Month * 100 + value.Day;
@@ -43,11 +43,11 @@ namespace DataCentric
         public static string ToIsoString(this LocalDate value)
         {
             // If default constructed date is passed, error message
-            if (value == LocalDateImpl.Empty) throw new Exception(
+            if (value == LocalDateUtil.Empty) throw new Exception(
                 $"Default constructed (empty) LocalDate {value} has been passed to ToIsoString() method.");
 
             // LocalTime is serialized to ISO 8601 string in yyyy-mm-dd format.
-            string result = LocalDateImpl.Pattern.Format(value);
+            string result = LocalDateUtil.Pattern.Format(value);
             return result;
         }
 

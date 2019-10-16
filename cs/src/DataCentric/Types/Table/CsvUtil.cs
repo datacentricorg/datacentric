@@ -36,7 +36,7 @@ namespace DataCentric
             List<string> result = new List<string>();
 
             // Check if a single line is provided
-            if (csvLine.Contains(StringImpl.Eol)) throw new Exception($"Multi-line string encountered in CSV file: {csvLine}");
+            if (csvLine.Contains(StringUtil.Eol)) throw new Exception($"Multi-line string encountered in CSV file: {csvLine}");
 
             char separator = LocaleSettings.ListSeparator;
             char quote =  LocaleSettings.QuoteSymbol;
@@ -110,7 +110,7 @@ namespace DataCentric
             string repeatedQuoteString = quoteString + quoteString;
 
             // Check that there is no newline
-            if (token.Contains(StringImpl.Eol)) throw new Exception($"Multi-line string encountered in CSV file: {token}");
+            if (token.Contains(StringUtil.Eol)) throw new Exception($"Multi-line string encountered in CSV file: {token}");
 
             // Count quote (") symbols in string, error message if not an even number
             int quoteCount = token.Count(p => p == quoteSymbol);
@@ -163,7 +163,7 @@ namespace DataCentric
                 if (tokenCount++ > 0) result.Append( LocaleSettings.ListSeparator);
 
                 // Check that there is no newline
-                if (token.Contains(StringImpl.Eol)) throw new Exception($"Multi-line string encountered in CSV file: {token}");
+                if (token.Contains(StringUtil.Eol)) throw new Exception($"Multi-line string encountered in CSV file: {token}");
 
                 // If there is a CSV separator, escape with quotes
                 if (token.Contains(listSeparator))

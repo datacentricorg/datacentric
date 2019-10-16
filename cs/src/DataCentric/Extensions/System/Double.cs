@@ -25,7 +25,7 @@ namespace DataCentric
         /// <summary>Return false if equal to Double.Empty.</summary>
         public static bool HasValue(this double value)
         {
-            return value != DoubleImpl.Empty;
+            return value != DoubleUtil.Empty;
         }
 
         /// <summary>Return true if the value is within roundoff tolerance from a 32 bit integer.</summary>
@@ -33,7 +33,7 @@ namespace DataCentric
         {
             double rounded = Math.Round(obj);
             if (rounded > Int32.MaxValue || rounded < Int32.MinValue) throw new Exception($"Double value {obj} is too large for conversion to 32 bit integer");
-            bool result = rounded <= obj + DoubleImpl.Tolerance && rounded >= obj - DoubleImpl.Tolerance;
+            bool result = rounded <= obj + DoubleUtil.Tolerance && rounded >= obj - DoubleUtil.Tolerance;
             return result;
         }
 
@@ -46,7 +46,7 @@ namespace DataCentric
             double rounded = Math.Round(obj);
             if (rounded > Int32.MaxValue || rounded < Int32.MinValue)
                 throw new Exception($"Double value {obj} is too large for conversion to 32 bit integer");
-            if (rounded > obj + DoubleImpl.Tolerance || rounded < obj - DoubleImpl.Tolerance)
+            if (rounded > obj + DoubleUtil.Tolerance || rounded < obj - DoubleUtil.Tolerance)
                 throw new Exception($"Double value {obj} is more than roundoff tolerance away from a 32 bit integer");
 
             return (int) rounded;
@@ -61,7 +61,7 @@ namespace DataCentric
             double rounded = Math.Round(obj);
             if (rounded > Int64.MaxValue || rounded < Int64.MinValue)
                 throw new Exception($"Double value {obj} is too large for conversion to 64 bit integer");
-            if (rounded > obj + DoubleImpl.Tolerance || rounded < obj - DoubleImpl.Tolerance)
+            if (rounded > obj + DoubleUtil.Tolerance || rounded < obj - DoubleUtil.Tolerance)
                 throw new Exception($"Double value {obj} is more than roundoff tolerance away from a 64 bit integer");
 
             return (long) rounded;
@@ -76,8 +76,8 @@ namespace DataCentric
             double absValue = Math.Abs(value);
             var cultureInfo = CultureInfo.InvariantCulture;
             string result = null;
-            if (DoubleImpl.Less(absValue, 1.0)) result = String.Format(cultureInfo, "{0:0.######}", value);
-            else if (DoubleImpl.Less(absValue, 100.0)) result = String.Format(cultureInfo, "{0:0.####}", value);
+            if (DoubleUtil.Less(absValue, 1.0)) result = String.Format(cultureInfo, "{0:0.######}", value);
+            else if (DoubleUtil.Less(absValue, 100.0)) result = String.Format(cultureInfo, "{0:0.####}", value);
             else result = String.Format(cultureInfo, "{0:0.##}", value);
 
             return result;

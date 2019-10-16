@@ -46,12 +46,12 @@ namespace DataCentric.Test
 
             // Verify string serialization roundtrip
             string stringValue = value.AsString();
-            LocalDateTime parsedStringValue = LocalDateTimeImpl.Parse(stringValue);
+            LocalDateTime parsedStringValue = LocalDateTimeUtil.Parse(stringValue);
             context.Log.Assert(value == parsedStringValue, $"String roundtrip for {nameAsString} assert.");
 
             // Verify long serialization roundtrip
             long longValue = value.ToIsoLong();
-            LocalDateTime parsedLongValue = LocalDateTimeImpl.ParseIsoLong(longValue);
+            LocalDateTime parsedLongValue = LocalDateTimeUtil.ParseIsoLong(longValue);
             context.Log.Assert(value == parsedLongValue, $"Long roundtrip for {nameAsString} assert.");
         }
     }

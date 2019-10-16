@@ -54,7 +54,7 @@ namespace DataCentric
         public static long ToIsoLong(this LocalDateTime value)
         {
             // If default constructed datetime is passed, error message
-            if (value == LocalDateTimeImpl.Empty) throw new Exception(
+            if (value == LocalDateTimeUtil.Empty) throw new Exception(
                 $"Default constructed (empty) LocalDateTime {value} has been passed to ToIsoLong() method.");
 
             // LocalDateTime is serialized as readable ISO int64 in yyyymmddhhmmsssss format
@@ -83,11 +83,11 @@ namespace DataCentric
         public static string ToIsoString(this LocalDateTime value)
         {
             // If default constructed datetime is passed, error message
-            if (value == LocalDateTimeImpl.Empty) throw new Exception(
+            if (value == LocalDateTimeUtil.Empty) throw new Exception(
                 $"Default constructed (empty) LocalDateTime {value} has been passed to ToIsoString() method.");
 
             // LocalDateTime is serialized to ISO 8601 string in yyyy-mm-ddThh:mm::ss.fff format.
-            string result = LocalDateTimeImpl.Pattern.Format(value);
+            string result = LocalDateTimeUtil.Pattern.Format(value);
             return result;
         }
 

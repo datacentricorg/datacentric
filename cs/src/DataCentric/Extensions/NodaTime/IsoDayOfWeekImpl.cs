@@ -20,8 +20,8 @@ using NodaTime;
 
 namespace DataCentric
 {
-    /// <summary>Static helper methods for NodaTime.IsoDayOfWeek.</summary>
-    public static class IsoDayOfWeekImpl
+    /// <summary>Static helper class for NodaTime.IsoDayOfWeek.</summary>
+    public static class IsoDayOfWeekUtil
     {
         /// <summary>
         /// Converts the short (three-letter) string representation

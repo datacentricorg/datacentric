@@ -25,7 +25,7 @@ namespace DataCentric
         /// <summary>Return false if equal to Long.Empty.</summary>
         public static bool HasValue(this long value)
         {
-            return value != LongImpl.Empty;
+            return value != LongUtil.Empty;
         }
 
         /// <summary>Convert long to variant.</summary>

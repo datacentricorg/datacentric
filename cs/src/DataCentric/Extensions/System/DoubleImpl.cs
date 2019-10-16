@@ -19,7 +19,7 @@ using System;
 namespace DataCentric
 {
     /// <summary>Static helper class for Double.</summary>
-    public static class DoubleImpl
+    public static class DoubleUtil
     {
         /// <summary>Constant representing the empty value in non-nullable variables.</summary>
         public static double Empty { get { return -1.0e100; } }
@@ -53,8 +53,8 @@ namespace DataCentric
         /// Treats values that differ by less than Double.Tolerance as equal.</summary>
         public static int Compare(double x, double y)
         {
-            if (x > y + DoubleImpl.Tolerance) return 1;
-            else if (x < y - DoubleImpl.Tolerance) return -1;
+            if (x > y + DoubleUtil.Tolerance) return 1;
+            else if (x < y - DoubleUtil.Tolerance) return -1;
             else return 0;
         }
     }

@@ -38,7 +38,7 @@ namespace DataCentric
             int isoTime = context.Reader.ReadInt32();
 
             // Create LocalTime object by parsing readable int
-            var result = LocalTimeImpl.ParseIsoInt(isoTime);
+            var result = LocalTimeUtil.ParseIsoInt(isoTime);
             return result;
         }
 

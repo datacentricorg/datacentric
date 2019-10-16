@@ -27,7 +27,7 @@ namespace DataCentric
     /// has no special value that can be treated as Empty.
     /// Its default constructed value is 00:00 (midnight).
     /// </summary>
-    public static class LocalTimeImpl
+    public static class LocalTimeUtil
     {
         /// <summary>Strict ISO 8601 time pattern with fractional seconds to millisecond precision.</summary>
         public static LocalTimePattern Pattern { get; } = LocalTimePattern.CreateWithInvariantCulture("HH':'mm':'ss.FFF");

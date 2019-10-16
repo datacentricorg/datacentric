@@ -21,7 +21,7 @@ using NodaTime.Text;
 namespace DataCentric
 {
     /// <summary>Static helper class for LocalDateTime.</summary>
-    public static class LocalDateTimeImpl
+    public static class LocalDateTimeUtil
     {
         /// <summary>Default constructed LocalDateTime is treated as empty.</summary>
         public static LocalDateTime Empty { get; } = default;
@@ -51,7 +51,7 @@ namespace DataCentric
         public static bool TryParse(string value, out LocalDateTime dateTime)
         {
             var parseResult = Pattern.Parse(value);
-            var result = parseResult.TryGetValue(LocalDateTimeImpl.Empty, out dateTime);
+            var result = parseResult.TryGetValue(LocalDateTimeUtil.Empty, out dateTime);
             return result;
         }
 

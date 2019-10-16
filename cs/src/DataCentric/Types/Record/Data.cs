@@ -143,28 +143,28 @@ namespace DataCentric
                 {
                     ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
-                    var value = LocalDateImpl.Parse(token);
+                    var value = LocalDateUtil.Parse(token);
                     elementInfo.SetValue(this, value);
                 }
                 else if (elementType == typeof(LocalTime) || elementType == typeof(LocalTime?))
                 {
                     ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
-                    var value = LocalTimeImpl.Parse(token);
+                    var value = LocalTimeUtil.Parse(token);
                     elementInfo.SetValue(this, value);
                 }
                 else if (elementType == typeof(LocalMinute) || elementType == typeof(LocalMinute?))
                 {
                     ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
-                    var value = LocalMinuteImpl.Parse(token);
+                    var value = LocalMinuteUtil.Parse(token);
                     elementInfo.SetValue(this, value);
                 }
                 else if (elementType == typeof(LocalDateTime) || elementType == typeof(LocalDateTime?))
                 {
                     ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
-                    var value = LocalDateTimeImpl.Parse(token);
+                    var value = LocalDateTimeUtil.Parse(token);
                     elementInfo.SetValue(this, value);
                 }
                 else if (elementType.IsSubclassOf(typeof(Enum)))

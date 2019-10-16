@@ -31,7 +31,7 @@ namespace DataCentric
             foreach (string line in lines)
             {
                 result.Append(line);
-                result.Append(StringImpl.Eols(2));
+                result.Append(StringUtil.Eols(2));
             }
             return result.ToString();
         }

@@ -107,7 +107,7 @@ namespace DataCentric
                         string token = selectedXmlNode.ReadValue();
                         if (!string.IsNullOrEmpty(token))
                         {
-                            var value = LocalDateImpl.Parse(token);
+                            var value = LocalDateUtil.Parse(token);
                             obj.Add(value);
                         }
                         else obj.Add(null);
@@ -117,7 +117,7 @@ namespace DataCentric
                         string token = selectedXmlNode.ReadValue();
                         if (!string.IsNullOrEmpty(token))
                         {
-                            var value = LocalTimeImpl.Parse(token);
+                            var value = LocalTimeUtil.Parse(token);
                             obj.Add(value);
                         }
                         else obj.Add(null);
@@ -127,7 +127,7 @@ namespace DataCentric
                         string token = selectedXmlNode.ReadValue();
                         if (!string.IsNullOrEmpty(token))
                         {
-                            var value = LocalMinuteImpl.Parse(token);
+                            var value = LocalMinuteUtil.Parse(token);
                             obj.Add(value);
                         }
                         else obj.Add(null);
@@ -137,7 +137,7 @@ namespace DataCentric
                         string token = selectedXmlNode.ReadValue();
                         if (!string.IsNullOrEmpty(token))
                         {
-                            var value = LocalDateTimeImpl.Parse(token);
+                            var value = LocalDateTimeUtil.Parse(token);
                             obj.Add(value);
                         }
                         else obj.Add(null);

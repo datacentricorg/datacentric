@@ -21,7 +21,7 @@ using NodaTime.Text;
 namespace DataCentric
 {
     /// <summary>Static helper class for LocalDate.</summary>
-    public static class LocalDateImpl
+    public static class LocalDateUtil
     {
         /// <summary>Default constructed LocalDate is treated as empty.</summary>
         public static LocalDate Empty { get; } = default;

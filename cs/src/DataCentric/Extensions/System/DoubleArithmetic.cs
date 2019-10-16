@@ -207,7 +207,7 @@ namespace DataCentric
         /// <summary>Returns the result of addition of object and double.</summary>
         public static T operator +(DoubleArithmetic<T> lhs, double rhs)
         {
-            if (lhs == null && DoubleImpl.Equal(rhs, 0.0)) return (T)lhs;
+            if (lhs == null && DoubleUtil.Equal(rhs, 0.0)) return (T)lhs;
             else if (lhs == null) throw new Exception("Cannot accept null argument as it contains no information to create the result.");
             return lhs.Add(rhs);
         }
@@ -215,7 +215,7 @@ namespace DataCentric
         /// <summary>Returns the result of subtraction of object and double.</summary>
         public static T operator -(DoubleArithmetic<T> lhs, double rhs)
         {
-            if (lhs == null && DoubleImpl.Equal(rhs, 0.0)) return (T)lhs;
+            if (lhs == null && DoubleUtil.Equal(rhs, 0.0)) return (T)lhs;
             else if (lhs == null) throw new Exception("Cannot accept null argument as it contains no information to create the result.");
             return lhs.Subtract(rhs);
         }
@@ -230,7 +230,7 @@ namespace DataCentric
         /// <summary>Returns the result of division of object and double.</summary>
         public static T operator /(DoubleArithmetic<T> lhs, double rhs)
         {
-            if (DoubleImpl.Equal(rhs, 0.0)) throw new Exception("Division of array by zero.");
+            if (DoubleUtil.Equal(rhs, 0.0)) throw new Exception("Division of array by zero.");
             else if (lhs == null) return null;
             return lhs.DivideBy(rhs);
         }
@@ -238,7 +238,7 @@ namespace DataCentric
         /// <summary>Returns the result of addition of double and object.</summary>
         public static T operator +(double lhs, DoubleArithmetic<T> rhs)
         {
-            if (rhs == null && DoubleImpl.Equal(lhs, 0.0)) return (T)rhs;
+            if (rhs == null && DoubleUtil.Equal(lhs, 0.0)) return (T)rhs;
             else if (rhs == null) throw new Exception("Cannot accept null argument as it contains no information to create the result.");
             return rhs.Apply(lhs, (x, y) => x + y);
         }
@@ -246,7 +246,7 @@ namespace DataCentric
         /// <summary>Returns the result of subtraction of double and object.</summary>
         public static T operator -(double lhs, DoubleArithmetic<T> rhs)
         {
-            if (rhs == null && DoubleImpl.Equal(lhs, 0.0)) return rhs.MultiplyBy(-1.0);
+            if (rhs == null && DoubleUtil.Equal(lhs, 0.0)) return rhs.MultiplyBy(-1.0);
             else if (rhs == null) throw new Exception("Cannot accept null argument as it contains no information to create the result.");
             return rhs.Apply(lhs, (x, y) => x - y);
         }
@@ -261,7 +261,7 @@ namespace DataCentric
         /// <summary>Returns the result of division of double and object.</summary>
         public static T operator /(double lhs, DoubleArithmetic<T> rhs)
         {
-            if (rhs == null && DoubleImpl.Equal(lhs, 0.0)) return null;
+            if (rhs == null && DoubleUtil.Equal(lhs, 0.0)) return null;
             else if (rhs == null) throw new Exception("Cannot accept null argument as it contains no information to create the result.");
             return rhs.Apply(lhs, (x, y) => x / y);
         }

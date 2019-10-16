@@ -39,7 +39,7 @@ namespace DataCentric
                     value_ = value;
                     break;
                 case LocalDate dateValue:
-                    if (dateValue == LocalDateImpl.Empty) throw new Exception(
+                    if (dateValue == LocalDateUtil.Empty) throw new Exception(
                         $"Default constructed (empty) LocalDate {dateValue} has been passed to Variant(date) constructor.");
                     value_ = value;
                     break;
@@ -50,7 +50,7 @@ namespace DataCentric
                     value_ = value;
                     break;
                 case LocalDateTime dateTimeValue:
-                    if (dateTimeValue == LocalDateTimeImpl.Empty) throw new Exception(
+                    if (dateTimeValue == LocalDateTimeUtil.Empty) throw new Exception(
                         $"Default constructed (empty) LocalDate {dateTimeValue} has been passed to Variant(date) constructor.");
                     value_ = value;
                     break;
@@ -141,16 +141,16 @@ namespace DataCentric
                         long longResult = long.Parse(value);
                         return new Variant(longResult);
                     case AtomicType.LocalDate:
-                        LocalDate dateResult = LocalDateImpl.Parse(value);
+                        LocalDate dateResult = LocalDateUtil.Parse(value);
                         return new Variant(dateResult);
                     case AtomicType.LocalTime:
-                        LocalTime timeResult = LocalTimeImpl.Parse(value);
+                        LocalTime timeResult = LocalTimeUtil.Parse(value);
                         return new Variant(timeResult);
                     case AtomicType.LocalMinute:
-                        LocalMinute minuteResult = LocalMinuteImpl.Parse(value);
+                        LocalMinute minuteResult = LocalMinuteUtil.Parse(value);
                         return new Variant(minuteResult);
                     case AtomicType.LocalDateTime:
-                        LocalDateTime dateTimeResult = LocalDateTimeImpl.Parse(value);
+                        LocalDateTime dateTimeResult = LocalDateTimeUtil.Parse(value);
                         return new Variant(dateTimeResult);
                     case AtomicType.Enum:
                         throw new Exception("Variant cannot be created as enum without specifying enum typename.");
@@ -189,16 +189,16 @@ namespace DataCentric
                         long longResult = long.Parse(value);
                         return new Variant(longResult);
                     case LocalDate dateValue:
-                        LocalDate dateResult = LocalDateImpl.Parse(value);
+                        LocalDate dateResult = LocalDateUtil.Parse(value);
                         return new Variant(dateResult);
                     case LocalTime timeValue:
-                        LocalTime timeResult = LocalTimeImpl.Parse(value);
+                        LocalTime timeResult = LocalTimeUtil.Parse(value);
                         return new Variant(timeResult);
                     case LocalMinute minuteValue:
-                        LocalMinute minuteResult = LocalMinuteImpl.Parse(value);
+                        LocalMinute minuteResult = LocalMinuteUtil.Parse(value);
                         return new Variant(minuteResult);
                     case LocalDateTime dateTimeValue:
-                        LocalDateTime dateTimeResult = LocalDateTimeImpl.Parse(value);
+                        LocalDateTime dateTimeResult = LocalDateTimeUtil.Parse(value);
                         return new Variant(dateTimeResult);
                     case Enum enumValue:
                         object enumResult = Enum.Parse(typeof(T), value);
@@ -228,7 +228,7 @@ namespace DataCentric
                 case string stringValue: return other.value_ is string && stringValue == (string) other.value_;
                 case double doubleValue:
                     // Perform comparison of doubles by function that uses numerical tolerance
-                    return other.value_ is double && DoubleImpl.Equal(doubleValue, (double) other.value_);
+                    return other.value_ is double && DoubleUtil.Equal(doubleValue, (double) other.value_);
                 case bool boolValue: return other.value_ is bool && boolValue == (bool) other.value_;
                 case int intValue: return other.value_ is int && intValue == (int) other.value_;
                 case long longValue: return other.value_ is long && longValue == (long) other.value_;

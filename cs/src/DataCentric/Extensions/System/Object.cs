@@ -32,17 +32,17 @@ namespace DataCentric
                 case string stringValue:
                     return string.IsNullOrEmpty(stringValue);
                 case double doubleValue:
-                    return doubleValue == DoubleImpl.Empty;
+                    return doubleValue == DoubleUtil.Empty;
                 case bool boolValue:
                     // Non-nullable bool has no empty value
                     return false;
                 case int intValue:
-                    return intValue == IntImpl.Empty;
+                    return intValue == IntUtil.Empty;
                 case long longValue:
-                    return longValue == LongImpl.Empty;
+                    return longValue == LongUtil.Empty;
                 case LocalDate dateValue:
                     // Special value of LocalDate treated as empty
-                    return dateValue == LocalDateImpl.Empty;
+                    return dateValue == LocalDateUtil.Empty;
                 case LocalTime timeValue:
                     // Unlike LocalDate and LocalDateTime, the LocalTime class
                     // has no special value that can be treated as Empty.
@@ -55,7 +55,7 @@ namespace DataCentric
                     return false;
                 case LocalDateTime dateTimeValue:
                     // Special value of LocalDateTime treated as empty
-                    return dateTimeValue == LocalDateTimeImpl.Empty;
+                    return dateTimeValue == LocalDateTimeUtil.Empty;
                 case RecordId recIdValue:
                     // Empty RecordId
                     return recIdValue == RecordId.Empty;

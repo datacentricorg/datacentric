@@ -306,7 +306,7 @@ namespace DataCentric
                             $"that cannot be converted to readable int in non-delimited yyyymmdd format.");
                     }
 
-                    LocalDate tokenValue = LocalDateImpl.ParseIsoInt(isoInt);
+                    LocalDate tokenValue = LocalDateUtil.ParseIsoInt(isoInt);
                     elementInfo.SetValue(this, tokenValue);
                 }
                 else if (elementType == typeof(LocalTime) || elementType == typeof(LocalTime?))
@@ -325,7 +325,7 @@ namespace DataCentric
                             $"that cannot be converted to readable int in non-delimited hhmmssfff format.");
                     }
 
-                    LocalTime tokenValue = LocalTimeImpl.ParseIsoInt(isoInt);
+                    LocalTime tokenValue = LocalTimeUtil.ParseIsoInt(isoInt);
                     elementInfo.SetValue(this, tokenValue);
                 }
                 else if (elementType == typeof(LocalMinute) || elementType == typeof(LocalMinute?))
@@ -344,7 +344,7 @@ namespace DataCentric
                             $"that cannot be converted to readable int in non-delimited hhmm format.");
                     }
 
-                    LocalMinute tokenValue = LocalMinuteImpl.ParseIsoInt(isoInt);
+                    LocalMinute tokenValue = LocalMinuteUtil.ParseIsoInt(isoInt);
                     elementInfo.SetValue(this, tokenValue);
                 }
                 else if (elementType == typeof(LocalDateTime) || elementType == typeof(LocalDateTime?))
@@ -363,7 +363,7 @@ namespace DataCentric
                             $"that cannot be converted to readable long in non-delimited yyyymmddhhmmssfff format.");
                     }
 
-                    LocalDateTime tokenValue = LocalDateTimeImpl.ParseIsoLong(isoLong);
+                    LocalDateTime tokenValue = LocalDateTimeUtil.ParseIsoLong(isoLong);
                     elementInfo.SetValue(this, tokenValue);
                 }
                 else if (elementType == typeof(RecordId) || elementType == typeof(RecordId?))

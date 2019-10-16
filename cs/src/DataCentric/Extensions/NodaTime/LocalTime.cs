@@ -40,7 +40,7 @@ namespace DataCentric
         public static string ToIsoString(this LocalTime value)
         {
             // LocalTime is serialized to ISO 8601 string in hh:mm:ss.fff format
-            string result = LocalTimeImpl.Pattern.Format(value);
+            string result = LocalTimeUtil.Pattern.Format(value);
             return result;
         }
 
