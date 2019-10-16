@@ -62,9 +62,6 @@ namespace DataCentric
                 case Enum enumValue:
                     // Enum is never empty; all of its values are valid
                     return false;
-                case Key keyValue:
-                    // Return true if key is null or equals to its default (empty) value
-                    return keyValue == null || keyValue.Equals(default);
                 default:
                     // Error message for any other type
                     throw new Exception(
