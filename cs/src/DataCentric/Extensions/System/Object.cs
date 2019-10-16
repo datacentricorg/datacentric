@@ -75,8 +75,8 @@ namespace DataCentric
         /// <summary>
         /// Use in place of ToString() for alternate serialization of certain types.
         ///
-        /// This method returns null when the argument is null or equal to a special
-        /// value treated as empty.
+        /// This method returns String.Empty when the argument is null or equal to
+        /// a special value treated as empty.
         /// </summary>
         public static string AsString(this object obj)
         {
@@ -131,8 +131,9 @@ namespace DataCentric
             }
             else
             {
-                // Return null when the argument is null or equal to a special value treated as empty
-                return null;
+                // Return String.Empty when the argument is null or
+                // equal to a special value treated as empty
+                return String.Empty;
             }
         }
 
