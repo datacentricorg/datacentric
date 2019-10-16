@@ -68,6 +68,31 @@ namespace DataCentric.Test
     /// <summary>Unit test for Query.</summary>
     public class EnumTest
     {
+        /// <summary>
+        /// Test that empty value is recognized by IsEmpty() method.
+        ///
+        /// One of the tests is for an enum with HasValue() defined,
+        /// another for enum without HasValue().
+        /// </summary>
+        [Fact]
+        public void EmptyValue()
+        {
+            using (var context = new UnitTestContext(this))
+            {
+                // HasValue() is defined, access via base class Enum
+                object none = IsoDayOfWeek.None;
+                context.Log.Assert(none.IsEmpty() == true, "None.IsEmpty() == true");
+
+                // HasValue() is defined, access via base class Enum
+                object mon = IsoDayOfWeek.Monday;
+                context.Log.Assert(mon.IsEmpty() == false, "Monday.IsEmpty() == false");
+
+                // HasValue() is not defined, access via base class Enum
+                object value1 = EnumTestSampleType.EnumValue1;
+                context.Log.Assert(value1.IsEmpty() == false, "EnumValue1.IsEmpty() == false");
+            }
+        }
+
         /// <summary>>Key class that has all of the permitted non-nullable key elements included.</summary>
         [Fact]
         public void CompleteNonNullableQuery()
