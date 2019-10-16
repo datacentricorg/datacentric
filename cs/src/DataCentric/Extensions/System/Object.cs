@@ -110,8 +110,20 @@ namespace DataCentric
                         // Return to ISO 8601 string in yyyy-mm-ddThh:mm::ss.fff format
                         return dateTimeValue.ToIsoString();
                     case IsoDayOfWeek isoDayOfWeekValue:
-                        // Use three letter day of week format
-                        return isoDayOfWeekValue.ToShortDayOfWeek().ToString();
+                        // Use short three-letter format for the day of week
+                        switch (isoDayOfWeekValue)
+                        {
+                            // The value of IsoDayOfWeek.None is converted to empty string
+                            case IsoDayOfWeek.None: return String.Empty;
+                            case IsoDayOfWeek.Monday: return "Mon";
+                            case IsoDayOfWeek.Tuesday: return "Tue";
+                            case IsoDayOfWeek.Wednesday: return "Wed";
+                            case IsoDayOfWeek.Thursday: return "Thu";
+                            case IsoDayOfWeek.Friday: return "Fri";
+                            case IsoDayOfWeek.Saturday: return "Sat";
+                            case IsoDayOfWeek.Sunday: return "Sun";
+                            default: throw new Exception($"Unknown value {isoDayOfWeekValue} for NodaTime.IsoDayOfWeek enum.");
+                        }
                     default:
                         // In all other cases, return ToString()
                         return obj.ToString();

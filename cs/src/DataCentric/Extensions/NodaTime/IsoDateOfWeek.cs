@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System;
-using System.Runtime.InteropServices.ComTypes;
 using NodaTime;
 
 namespace DataCentric
@@ -45,19 +44,6 @@ namespace DataCentric
         public static void CheckHasValue(this IsoDayOfWeek? value)
         {
             if (!value.HasValue()) throw new Exception("Required IsoDayOfWeek value is not set.");
-        }
-
-        /// <summary>Convert to ShortDayOfWeek enum that uses three-letter abbreviation.</summary>
-        public static ShortDayOfWeek ToShortDayOfWeek(this IsoDayOfWeek value)
-        {
-            return (ShortDayOfWeek) value;
-        }
-
-        /// <summary>Convert to ShortDayOfWeek enum that uses three-letter abbreviation.</summary>
-        public static ShortDayOfWeek? ToShortDayOfWeek(this IsoDayOfWeek? value)
-        {
-            if (value != null) return (ShortDayOfWeek) value;
-            else return null;
         }
     }
 }

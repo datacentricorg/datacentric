@@ -24,48 +24,67 @@ namespace DataCentric
     public static class IsoDayOfWeekUtil
     {
         /// <summary>
-        /// Converts the short (three-letter) string representation
-        /// of the day of week to the original NodaTime enum value.
-        /// This relies on the enums ShortDayOfWeek and IsoDayOfWeek
-        /// sharing the same int representation.
+        /// Converts the short three-letter string representation
+        /// of the day of week to NodaTime.IsoDayOfWeek enum value.
         ///
-        /// Sets result to default enum value (None) and returns
+        /// This parser accepts only short three-letter abbreviations
+        /// (e.g. Mon), not the full name (e.g. Monday).
+        ///
+        /// Set result to default enum value (None) and return
         /// false if the conversion fails.
         /// </summary>
         public static bool TryParse(string s, out IsoDayOfWeek result)
         {
-            if (Enum.TryParse(s, out ShortDayOfWeek shortResult))
+            switch (s)
             {
-                // Conversion succeeded, cast the result to the original
-                // NodaTime.IsoDayOfWeek enum and return true.
-                //
-                // This relies on the enums ShortDayOfWeek and IsoDayOfWeek
-                // sharing the same int representation.
-                result = (IsoDayOfWeek) shortResult;
-                return true;
-            }
-            else
-            {
-                // Conversion failed, set result to default value
-                // for this enum type and return null. This is the
-                // same behavior as the native Enum.Parse(s,result).
-                result = default;
-                return false;
+                // Empty string is converted to IsoDayOfWeek.None
+                case "":
+                    result = IsoDayOfWeek.None;
+                    return true;
+                case "Mon":
+                    result = IsoDayOfWeek.Monday;
+                    return true;
+                case "Tue":
+                    result = IsoDayOfWeek.Tuesday;
+                    return true;
+                case "Wed":
+                    result = IsoDayOfWeek.Wednesday;
+                    return true;
+                case "Thu":
+                    result = IsoDayOfWeek.Thursday;
+                    return true;
+                case "Fri":
+                    result = IsoDayOfWeek.Friday;
+                    return true;
+                case "Sat":
+                    result = IsoDayOfWeek.Saturday;
+                    return true;
+                case "Sun":
+                    result = IsoDayOfWeek.Sunday;
+                    return true;
+                default:
+                    // Conversion failed, return false and set the
+                    // result to the default value of None
+                    result = IsoDayOfWeek.None;
+                    return false;
             }
         }
 
         /// <summary>
-        /// Converts the short (three-letter) string representation
-        /// of the day of week to the original NodaTime enum value.
+        /// Converts the short three-letter string representation
+        /// of the day of week to NodaTime.IsoDayOfWeek enum value.
+        ///
+        /// This parser accepts only short three-letter abbreviations
+        /// (e.g. Mon), not the full name (e.g. Monday).
         ///
         /// Error message if the conversion fails.
         /// </summary>
         public static IsoDayOfWeek Parse(string s)
         {
             if (!TryParse(s, out IsoDayOfWeek result))
-                throw new Exception($"String {s} cannot be converted to IsoDayOfWeek. The enum " +
-                                    $"IsoDayOfWeek represents days of week using their full names, " +
-                                    $"not three-letter abbreviations.");
+                throw new Exception($"String {s} cannot be converted to IsoDayOfWeek. This parser " +
+                                    $"accepts only short three-letter abbreviations (e.g. Mon), not" +
+                                    $"the full name (e.g. Monday).");
             return result;
         }
     }
