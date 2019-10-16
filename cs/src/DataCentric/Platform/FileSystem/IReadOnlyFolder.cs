@@ -66,7 +66,7 @@ namespace DataCentric
     }
 
     /// <summary>Extension methods for IReadOnlyFolder.</summary>
-    public static class IReadOnlyFolderExt
+    public static class IReadOnlyFolderExtensions
     {
     }
 }

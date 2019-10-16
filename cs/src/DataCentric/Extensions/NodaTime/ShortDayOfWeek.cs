@@ -59,7 +59,7 @@ namespace DataCentric
     }
 
     /// <summary>Static and extension methods for ShortDayOfWeek.</summary>
-    public static class ShortDayOfWeekExt
+    public static class ShortDayOfWeekExtensions
     {
         /// <summary>Return false if equal to the default constructed value.</summary>
         public static bool HasValue(this ShortDayOfWeek value)

@@ -56,7 +56,7 @@ namespace DataCentric
     /// This class permits the methods of IDataSource to be called for
     /// IContext by forwarding the implementation to IContext.DataSource.
     /// </summary>
-    public static class IContextExt
+    public static class IContextExtensions
     {
         /// <summary>
         /// Load record by its RecordId.

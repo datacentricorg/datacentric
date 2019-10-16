@@ -20,7 +20,7 @@ using System.Globalization;
 namespace DataCentric
 {
     /// <summary>Extension methods for System.Double.</summary>
-    public static class DoubleExt
+    public static class DoubleExtensions
     {
         /// <summary>Return false if equal to Double.Empty.</summary>
         public static bool HasValue(this double value)

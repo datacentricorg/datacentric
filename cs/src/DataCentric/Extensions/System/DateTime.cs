@@ -20,7 +20,7 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>Extension methods for System.DateTime.</summary>
-    public static class DateTimeExt
+    public static class DateTimeExtensions
     {
         /// <summary>Return false if equal to the default constructed value.</summary>
         public static bool HasValue(this DateTime value)

@@ -20,7 +20,7 @@ using System.Globalization;
 namespace DataCentric
 {
     /// <summary>Extension methods for long (System.Int64).</summary>
-    public static class LongExt
+    public static class LongExtensions
     {
         /// <summary>Return false if equal to Long.Empty.</summary>
         public static bool HasValue(this long value)

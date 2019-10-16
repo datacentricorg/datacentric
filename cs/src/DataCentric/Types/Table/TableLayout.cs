@@ -38,7 +38,7 @@ namespace DataCentric
     }
 
     /// <summary>Extension methods for TableLayout.</summary>
-    public static class TableLayoutExt
+    public static class TableLayoutExtensions
     {
         /// <summary>Indicates that table has a corner header.</summary>
         public static bool HasCornerHeader(this TableLayout obj)

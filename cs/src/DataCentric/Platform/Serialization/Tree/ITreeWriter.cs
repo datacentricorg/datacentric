@@ -108,7 +108,7 @@ namespace DataCentric
     }
 
     /// <summary>Extension methods for ITreeWriter.</summary>
-    public static class ITreeWriterExt
+    public static class ITreeWriterExtensions
     {
         /// <summary>WriteStartElement(...) followed by WriteStartDict().</summary>
         public static void WriteStartDictElement(this ITreeWriter obj, string elementName)

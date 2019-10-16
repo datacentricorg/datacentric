@@ -20,7 +20,7 @@ using System.Collections;
 namespace DataCentric
 {
     /// <summary>Extension methods for IEnumerable.</summary>
-    public static class IEnumerableExt
+    public static class IEnumerableExtensions
     {
         /// <summary>Creates array at current writer level.</summary>
         public static void SerializeTo(this IEnumerable obj, string elementName, ITreeWriter writer)

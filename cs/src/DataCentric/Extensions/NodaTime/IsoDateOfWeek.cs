@@ -21,7 +21,7 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>Extension methods for NodaTime.IsoDayOfWeek.</summary>
-    public static class IsoDayOfWeekExt
+    public static class IsoDayOfWeekExtensions
     {
         /// <summary>Return false if equal to the default constructed value.</summary>
         public static bool HasValue(this IsoDayOfWeek value)

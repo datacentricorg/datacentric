@@ -100,7 +100,7 @@ namespace DataCentric
     }
 
     /// <summary>Extension methods for Record.</summary>
-    public static class RecordExt
+    public static class RecordExtensions
     {
         /// <summary>Deserialize record from XML using short
         /// class name without namespace for the root XML element.</summary>

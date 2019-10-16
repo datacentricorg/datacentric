@@ -19,7 +19,7 @@ using System;
 namespace DataCentric
 {
     /// <summary>Extension methods for System.String.</summary>
-    public static class StringExt
+    public static class StringExtensions
     {
         /// <summary>Return false if null or equal to the default constructed value.</summary>
         public static bool HasValue(this string value)

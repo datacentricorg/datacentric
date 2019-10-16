@@ -413,7 +413,7 @@ namespace DataCentric
     }
 
     /// <summary>Extension methods for Key.</summary>
-    public static class KeyExt
+    public static class KeyExtensions
     {
         /// <summary>
         /// Deserialize record from XML using short class name without namespace

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace DataCentric
 {
     /// <summary>Extension methods for Type.</summary>
-    public static class TypeExt
+    public static class TypeExtensions
     {
         /// <summary>Get generic argument by index.</summary>
         public static Type GetGenericArgument(this Type type, int index)

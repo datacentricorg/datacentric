@@ -365,7 +365,7 @@ namespace DataCentric
     }
 
     /// <summary>Extension methods for RecordId.</summary>
-    public static class RecordIdExt
+    public static class RecordIdExtensions
     {
         /// <summary>Return false if equal to the default constructed value.</summary>
         public static bool HasValue(this RecordId value)

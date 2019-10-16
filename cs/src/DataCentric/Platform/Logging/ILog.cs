@@ -95,7 +95,7 @@ namespace DataCentric
     }
 
     /// <summary>Extension methods for ILog.</summary>
-    public static class ILogExt
+    public static class ILogExtensions
     {
         /// <summary>
         /// Publish a new entry to the log if log verbosity

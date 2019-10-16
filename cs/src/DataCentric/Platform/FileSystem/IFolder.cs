@@ -56,7 +56,7 @@ namespace DataCentric
     }
 
     /// <summary>Extension methods for IFolder.</summary>
-    public static class IFolderExt
+    public static class IFolderExtensions
     {
         /// <summary>Appends text to the specified file, creating it if does not exist.</summary>
         public static void AppendText(this IFolder obj, string filePath, string fileContents)

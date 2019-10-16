@@ -205,7 +205,7 @@ namespace DataCentric
     }
 
     /// <summary>Extension methods for IDataSource.</summary>
-    public static class IDataSourceExt
+    public static class IDataSourceExtensions
     {
         /// <summary>
         /// Load record by its RecordId.

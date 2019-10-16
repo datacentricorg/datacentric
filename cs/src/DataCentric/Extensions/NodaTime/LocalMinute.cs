@@ -173,7 +173,7 @@ namespace DataCentric
     }
 
     /// <summary>Extension methods for NodaTime.LocalMinute.</summary>
-    public static class LocalMinuteExt
+    public static class LocalMinuteExtensions
     {
         /// <summary>Return false if equal to default constructed value.</summary>
         public static bool HasValue(this LocalMinute value)
