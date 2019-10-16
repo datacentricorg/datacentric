@@ -24,6 +24,9 @@ namespace DataCentric
     {
         /// <summary>
         /// Return true unless equal to IsoDayOfWeek.None.
+        ///
+        /// Define this method to override the default implementation
+        /// of Enum.HasValue() that returns true for all values.
         /// </summary>
         public static bool HasValue(this IsoDayOfWeek value)
         {

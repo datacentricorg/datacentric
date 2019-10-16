@@ -24,14 +24,14 @@ namespace DataCentric.Test
     /// <summary>Unit tests for NodaTime.IsoDayOfWeek extensions.</summary>
     public class IsoDayOfWeekTest
     {
-        /// <summary>Test roundtrip serialization.</summary>
+        /// <summary>Test that empty value is recognized by IsEmpty() method.</summary>
         [Fact]
-        public void Smoke()
+        public void EmptyValue()
         {
             using (var context = new UnitTestContext(this))
             {
-                context.Log.Assert(!IsoDayOfWeek.None.HasValue(), "IsoDayOfWeek.None.HasValue must be false");
-                context.Log.Assert(IsoDayOfWeek.Monday.HasValue(), "IsoDayOfWeek.Monday.HasValue must be true");
+                context.Log.Assert(IsoDayOfWeek.None.IsEmpty() == true, "None.IsEmpty() == true");
+                context.Log.Assert(IsoDayOfWeek.Monday.IsEmpty() == false, "Monday.IsEmpty() == false");
             }
         }
     }
