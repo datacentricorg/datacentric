@@ -79,17 +79,13 @@ namespace DataCentric.Test
         {
             using (var context = new UnitTestContext(this))
             {
-                // HasValue() is defined, access via base class Enum
+                // Shows that we cannot detect special enum values such as None or Empty
                 object none = IsoDayOfWeek.None;
-                context.Log.Assert(none.IsEmpty() == true, "None.IsEmpty() == true");
+                context.Log.Assert(none.IsEmpty() == false, "None.IsEmpty() == false");
 
-                // HasValue() is defined, access via base class Enum
+                // Regular values are also not empty
                 object mon = IsoDayOfWeek.Monday;
                 context.Log.Assert(mon.IsEmpty() == false, "Monday.IsEmpty() == false");
-
-                // HasValue() is not defined, access via base class Enum
-                object value1 = EnumTestSampleType.EnumValue1;
-                context.Log.Assert(value1.IsEmpty() == false, "EnumValue1.IsEmpty() == false");
             }
         }
 

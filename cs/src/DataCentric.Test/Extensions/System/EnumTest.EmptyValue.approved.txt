@@ -1,0 +1,2 @@
+Verify: None.IsEmpty() == false
+Verify: Monday.IsEmpty() == false

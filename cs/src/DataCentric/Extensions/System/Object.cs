@@ -25,11 +25,17 @@ namespace DataCentric
         /// <summary>
         /// Return true is the object is:
         ///
-        /// (a) Null; or
-        /// (b) Equal to a known special value treated as empty
+        /// * Null; or
+        /// * For certain atomic value types, equal to a known
+        ///   special value treated as empty
         ///
-        /// Return false in all other cases, including for  all
-        /// non-null references to unknown types.
+        /// Return false in all other cases, including for all
+        /// non-null references to classes, structs, or enums.
+        ///
+        /// This method cannot detect string patterns inside
+        /// Enum such as None or Empty and will treat these values
+        /// as not empty. Use nullable enums to store optional
+        /// enum values.
         /// </summary>
         public static bool IsEmpty(this object obj)
         {
@@ -58,11 +64,6 @@ namespace DataCentric
                     return !dateTimeValue.HasValue();
                 case RecordId recIdValue:
                     return !recIdValue.HasValue();
-                case Enum enumValue:
-                    // For Enum base, this is defined as empty and all of the values are valid
-                    // Specific enum classes may provide their own extension method HasValue()
-                    // which will return false for the value designated as empty. 
-                    return !enumValue.HasValue();
                 default:
                     // If not null and does not have a known HasValue method,
                     // treat as object that is not empty
