@@ -100,76 +100,70 @@ namespace DataCentric
             var elementInfoList = DataTypeInfo.GetOrCreate(GetType()).DataElements;
             foreach (var elementInfo in elementInfoList)
             {
-                // Get element name and value
+                // Get element name and type
                 string elementName = elementInfo.Name;
                 Type elementType = elementInfo.PropertyType;
+
+                // Get inner XML node, continue with next element if null
+                ITreeReader innerXmlNode = reader.ReadElement(elementName);
+                if (innerXmlNode == null) continue; 
 
                 // First check for each of the supported value types
                 if (elementType == typeof(string))
                 {
-                    ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
                     elementInfo.SetValue(this, token);
                 }
                 else if (elementType == typeof(double) || elementType == typeof(double?))
                 {
-                    ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
                     var value = double.Parse(token);
                     elementInfo.SetValue(this, value);
                 }
                 else if (elementType == typeof(bool) || elementType == typeof(bool?))
                 {
-                    ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
                     var value = bool.Parse(token);
                     elementInfo.SetValue(this, value);
                 }
                 else if (elementType == typeof(int) || elementType == typeof(int?))
                 {
-                    ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
                     var value = int.Parse(token);
                     elementInfo.SetValue(this, value);
                 }
                 else if (elementType == typeof(long) || elementType == typeof(long?))
                 {
-                    ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
                     var value = long.Parse(token);
                     elementInfo.SetValue(this, value);
                 }
                 else if (elementType == typeof(LocalDate) || elementType == typeof(LocalDate?))
                 {
-                    ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
                     var value = LocalDateUtil.Parse(token);
                     elementInfo.SetValue(this, value);
                 }
                 else if (elementType == typeof(LocalTime) || elementType == typeof(LocalTime?))
                 {
-                    ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
                     var value = LocalTimeUtil.Parse(token);
                     elementInfo.SetValue(this, value);
                 }
                 else if (elementType == typeof(LocalMinute) || elementType == typeof(LocalMinute?))
                 {
-                    ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
                     var value = LocalMinuteUtil.Parse(token);
                     elementInfo.SetValue(this, value);
                 }
                 else if (elementType == typeof(LocalDateTime) || elementType == typeof(LocalDateTime?))
                 {
-                    ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
                     var value = LocalDateTimeUtil.Parse(token);
                     elementInfo.SetValue(this, value);
                 }
                 else if (elementType.IsSubclassOf(typeof(Enum)))
                 {
-                    ITreeReader innerXmlNode = reader.ReadElement(elementName);
                     string token = innerXmlNode.ReadValue();
                     var value = Enum.Parse(elementType, token);
                     elementInfo.SetValue(this, value);
@@ -189,16 +183,14 @@ namespace DataCentric
                             if (keyElement != null)
                             {
                                 // Deserialize key from value node containing semicolon delimited string
-                                ITreeReader keyNodeValue = reader.ReadElement(elementName);
-                                string token = keyNodeValue.ReadValue();
+                                string token = innerXmlNode.ReadValue();
                                 // Parse semicolon delimited string to populate key elements
                                 keyElement.PopulateFrom(token);
                             }
                             else
                             {
-                                // Deserialize embedded data object from the list of nodes
-                                ITreeReader dataNodes = reader.ReadElement(elementName);
-                                dataElement.DeserializeFrom(dataNodes);
+                                // Deserialize embedded data object from the contents of inner XML node
+                                dataElement.DeserializeFrom(innerXmlNode);
                             }
                             break;
                         case RecordId idElement:
