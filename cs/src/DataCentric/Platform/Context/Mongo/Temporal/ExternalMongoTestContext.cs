@@ -65,8 +65,8 @@ namespace DataCentric
 
             DataSource = dataSource;
 
-            // Common dataset should already exist in data source.
-            DataSet = dataSource.GetCommon();
+            // Common dataset should already exist in data source, if not then create.
+            DataSet = dataSource.GetDataSetOrNull("Common", RecordId.Empty) ?? dataSource.CreateCommon();
         }
     }
 }
