@@ -65,8 +65,8 @@ namespace DataCentric
                     return !enumValue.HasValue();
                 default:
                     // If not null and does not have a known HasValue method,
-                    // treat as object with value
-                    return true;
+                    // treat as object that is not empty
+                    return false;
             }
         }
 
