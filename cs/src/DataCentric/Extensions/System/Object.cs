@@ -22,50 +22,51 @@ namespace DataCentric
     /// <summary>Extension methods for System.Object.</summary>
     public static class ObjectExtensions
     {
-        /// <summary>Checks if the value is null or has special value treated as empty.</summary>
+        /// <summary>
+        /// Return true is the object is:
+        ///
+        /// (a) Null; or
+        /// (b) Equal to a known special value treated as empty
+        ///
+        /// Return false in all other cases, including for  all
+        /// non-null references to unknown types.
+        /// </summary>
         public static bool IsEmpty(this object obj)
         {
             switch(obj)
             {
                 case null:
+                    // Null never has value
                     return true;
                 case string stringValue:
-                    return string.IsNullOrEmpty(stringValue);
+                    return !stringValue.HasValue();
                 case double doubleValue:
-                    return doubleValue == DoubleUtil.Empty;
+                    return !doubleValue.HasValue();
                 case bool boolValue:
-                    // Non-nullable bool has no empty value
-                    return false;
+                    return !boolValue.HasValue();
                 case int intValue:
-                    return intValue == IntUtil.Empty;
+                    return !intValue.HasValue();
                 case long longValue:
-                    return longValue == LongUtil.Empty;
+                    return !longValue.HasValue();
                 case LocalDate dateValue:
-                    // Special value of LocalDate treated as empty
-                    return dateValue == LocalDateUtil.Empty;
+                    return !dateValue.HasValue();
                 case LocalTime timeValue:
-                    // Unlike LocalDate and LocalDateTime, the LocalTime class
-                    // has no special value that can be treated as Empty.
-                    // Its default constructed value is 00:00 (midnight).
-                    return false;
+                    return !timeValue.HasValue();
                 case LocalMinute minuteValue:
-                    // Unlike LocalDate and LocalDateTime, the LocalMinute class
-                    // has no special value that can be treated as Empty.
-                    // Its default constructed value is 00:00 (midnight).
-                    return false;
+                    return !minuteValue.HasValue();
                 case LocalDateTime dateTimeValue:
-                    // Special value of LocalDateTime treated as empty
-                    return dateTimeValue == LocalDateTimeUtil.Empty;
+                    return !dateTimeValue.HasValue();
                 case RecordId recIdValue:
-                    // Empty RecordId
-                    return recIdValue == RecordId.Empty;
+                    return !recIdValue.HasValue();
                 case Enum enumValue:
-                    // Enum is never empty; all of its values are valid
-                    return false;
+                    // For Enum base, this is defined as empty and all of the values are valid
+                    // Specific enum classes may provide their own extension method HasValue()
+                    // which will return false for the value designated as empty. 
+                    return !enumValue.HasValue();
                 default:
-                    // Error message for any other type
-                    throw new Exception(
-                        $"Method value.IsEmpty() is not supported for type {obj.GetType().Name}");
+                    // If not null and does not have a known HasValue method,
+                    // treat as object with value
+                    return true;
             }
         }
 
@@ -77,60 +78,59 @@ namespace DataCentric
         /// </summary>
         public static string AsString(this object obj)
         {
-            if (!obj.IsEmpty())
+            switch (obj)
             {
-                switch (obj)
-                {
-                    case string stringValue:
-                        return stringValue;
-                    case double doubleValue:
-                        return doubleValue.ToString();
-                    case bool boolValue:
-                        // Uses lowercase true and false as per JSON convention, rather
-                        // than True and False return by the standard C# ToString()
-                        if (boolValue) return "true";
-                        else return "false";
-                    case int intValue:
-                        return intValue.ToString();
-                    case long longValue:
-                        return longValue.ToString();
-                    case LocalDate dateValue:
-                        // Return ISO 8601 string in yyyy-mm-dd format
-                        return dateValue.ToIsoString();
-                    case LocalTime timeValue:
-                        // Return ISO 8601 string in hh:mm:ss.fff format
-                        return timeValue.ToIsoString();
-                    case LocalMinute minuteValue:
-                        // Return ISO 8601 string in hh:mm format
-                        return minuteValue.ToIsoString();
-                    case LocalDateTime dateTimeValue:
-                        // Return to ISO 8601 string in yyyy-mm-ddThh:mm::ss.fff format
-                        return dateTimeValue.ToIsoString();
-                    case IsoDayOfWeek isoDayOfWeekValue:
-                        // Use short three-letter format for the day of week
-                        switch (isoDayOfWeekValue)
-                        {
-                            // The value of IsoDayOfWeek.None is converted to empty string
-                            case IsoDayOfWeek.None: return String.Empty;
-                            case IsoDayOfWeek.Monday: return "Mon";
-                            case IsoDayOfWeek.Tuesday: return "Tue";
-                            case IsoDayOfWeek.Wednesday: return "Wed";
-                            case IsoDayOfWeek.Thursday: return "Thu";
-                            case IsoDayOfWeek.Friday: return "Fri";
-                            case IsoDayOfWeek.Saturday: return "Sat";
-                            case IsoDayOfWeek.Sunday: return "Sun";
-                            default: throw new Exception($"Unknown value {isoDayOfWeekValue} for NodaTime.IsoDayOfWeek enum.");
-                        }
-                    default:
-                        // In all other cases, return ToString()
-                        return obj.ToString();
-                }
-            }
-            else
-            {
-                // Return String.Empty when the argument is null or
-                // equal to a special value treated as empty
-                return String.Empty;
+                case null:
+                    // Return String.Empty when the argument is null
+                    return String.Empty;
+                case string stringValue:
+                    // Return the value itself
+                    return stringValue;
+                case double doubleValue:
+                    // Standard formatting for double
+                    return doubleValue.ToString();
+                case bool boolValue:
+                    // Uses lowercase true and false as per JSON convention, rather
+                    // than True and False return by the standard C# ToString()
+                    if (boolValue) return "true";
+                    else return "false";
+                case int intValue:
+                    // Standard formatting for int
+                    return intValue.ToString();
+                case long longValue:
+                    // Standard formatting for long
+                    return longValue.ToString();
+                case LocalDate dateValue:
+                    // Return ISO 8601 string in yyyy-mm-dd format
+                    return dateValue.ToIsoString();
+                case LocalTime timeValue:
+                    // Return ISO 8601 string in hh:mm:ss.fff format
+                    return timeValue.ToIsoString();
+                case LocalMinute minuteValue:
+                    // Return ISO 8601 string in hh:mm format
+                    return minuteValue.ToIsoString();
+                case LocalDateTime dateTimeValue:
+                    // Return to ISO 8601 string in yyyy-mm-ddThh:mm::ss.fff format
+                    return dateTimeValue.ToIsoString();
+                case IsoDayOfWeek isoDayOfWeekValue:
+                    // Use short three-letter format for the day of week
+                    switch (isoDayOfWeekValue)
+                    {
+                        // The value of IsoDayOfWeek.None is converted to empty string
+                        case IsoDayOfWeek.None: return String.Empty;
+                        case IsoDayOfWeek.Monday: return "Mon";
+                        case IsoDayOfWeek.Tuesday: return "Tue";
+                        case IsoDayOfWeek.Wednesday: return "Wed";
+                        case IsoDayOfWeek.Thursday: return "Thu";
+                        case IsoDayOfWeek.Friday: return "Fri";
+                        case IsoDayOfWeek.Saturday: return "Sat";
+                        case IsoDayOfWeek.Sunday: return "Sun";
+                        default:
+                            throw new Exception($"Unknown value {isoDayOfWeekValue} for NodaTime.IsoDayOfWeek enum.");
+                    }
+                default:
+                    // In all other cases, return ToString()
+                    return obj.ToString();
             }
         }
 

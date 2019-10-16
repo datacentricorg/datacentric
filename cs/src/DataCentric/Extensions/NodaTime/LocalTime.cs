@@ -22,6 +22,16 @@ namespace DataCentric
     /// <summary>Extension methods for NodaTime.LocalTime.</summary>
     public static class LocalTimeExtensions
     {
+        /// <summary>
+        /// Unlike LocalDate and LocalDateTime, the LocalTime class
+        /// has no special value that can be treated as Empty.
+        /// Its default constructed value is 00:00 (midnight).
+        /// </summary>
+        public static bool HasValue(this LocalTime value)
+        {
+            return true;
+        }
+
         /// <summary>Return false if equal to default constructed value.</summary>
         public static bool HasValue(this LocalTime? value)
         {

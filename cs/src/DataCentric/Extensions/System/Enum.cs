@@ -21,10 +21,17 @@ namespace DataCentric
     /// <summary>Static helper class for System.Enum.</summary>
     public static class EnumExtensions
     {
-        /// <summary>Return true if not null and not equal to the default constructed value.</summary>
+        /// <summary>
+        /// Always return true because we treat unknown enum as having
+        /// no special empty value.
+        ///
+        /// To define a special empty value for an enum, create a
+        /// type-specific extension method that will take precedence
+        /// over this base class method.
+        /// </summary>
         public static bool HasValue(this Enum value)
         {
-            return value != null;
+            return true;
         }
 
         /// <summary>Error message if equal to the default constructed value.</summary>

@@ -21,6 +21,12 @@ namespace DataCentric
     /// <summary>Extension methods for System.Boolean.</summary>
     public static class BooleanExtensions
     {
+        /// <summary>Always return true as both true and false values are not empty.</summary>
+        public static bool HasValue(this bool value)
+        {
+            return true;
+        }
+
         /// <summary>Convert bool to variant.</summary>
         public static Variant ToVariant(this bool value)
         {

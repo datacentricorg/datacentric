@@ -22,10 +22,12 @@ namespace DataCentric
     /// <summary>Extension methods for NodaTime.IsoDayOfWeek.</summary>
     public static class IsoDayOfWeekExtensions
     {
-        /// <summary>Return false if equal to the default constructed value.</summary>
+        /// <summary>
+        /// Return true unless equal to IsoDayOfWeek.None.
+        /// </summary>
         public static bool HasValue(this IsoDayOfWeek value)
         {
-            return value != default;
+            return value != IsoDayOfWeek.None;
         }
 
         /// <summary>Return false if null or equal to the default constructed value.</summary>

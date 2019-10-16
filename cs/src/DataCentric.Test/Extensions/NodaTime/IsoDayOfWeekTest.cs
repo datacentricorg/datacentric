@@ -15,22 +15,24 @@ limitations under the License.
 */
 
 using System;
+using Xunit;
+using NodaTime;
+using DataCentric;
 
-namespace DataCentric
+namespace DataCentric.Test
 {
-    /// <summary>Extension methods for System.String.</summary>
-    public static class StringExtensions
+    /// <summary>Unit tests for NodaTime.IsoDayOfWeek extensions.</summary>
+    public class IsoDayOfWeekTest
     {
-        /// <summary>Return true unless null or empty.</summary>
-        public static bool HasValue(this string value)
+        /// <summary>Test roundtrip serialization.</summary>
+        [Fact]
+        public void Smoke()
         {
-            return !string.IsNullOrEmpty(value);
-        }
-
-        /// <summary>Error message if null or equal to the default constructed value.</summary>
-        public static void CheckHasValue(this string value)
-        {
-            if (string.IsNullOrEmpty(value)) throw new Exception("Required string value is not set.");
+            using (var context = new UnitTestContext(this))
+            {
+                context.Log.Assert(!IsoDayOfWeek.None.HasValue(), "IsoDayOfWeek.None.HasValue must be false");
+                context.Log.Assert(IsoDayOfWeek.Monday.HasValue(), "IsoDayOfWeek.Monday.HasValue must be true");
+            }
         }
     }
 }

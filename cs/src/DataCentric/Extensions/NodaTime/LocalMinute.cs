@@ -175,10 +175,14 @@ namespace DataCentric
     /// <summary>Extension methods for NodaTime.LocalMinute.</summary>
     public static class LocalMinuteExtensions
     {
-        /// <summary>Return false if equal to default constructed value.</summary>
+        /// <summary>
+        /// Unlike LocalDate and LocalDateTime, the LocalMinute class
+        /// has no special value that can be treated as Empty.
+        /// Its default constructed value is 00:00 (midnight).
+        /// </summary>
         public static bool HasValue(this LocalMinute value)
         {
-            return value != default;
+            return true;
         }
 
         /// <summary>Convert LocalMinute to ISO 8601 4 digit int hhmm format.</summary>

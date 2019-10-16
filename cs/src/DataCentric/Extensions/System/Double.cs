@@ -22,7 +22,7 @@ namespace DataCentric
     /// <summary>Extension methods for System.Double.</summary>
     public static class DoubleExtensions
     {
-        /// <summary>Return false if equal to Double.Empty.</summary>
+        /// <summary>Return true unless equal to Double.Empty.</summary>
         public static bool HasValue(this double value)
         {
             return value != DoubleUtil.Empty;

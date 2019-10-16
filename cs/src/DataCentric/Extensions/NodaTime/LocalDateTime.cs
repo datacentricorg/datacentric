@@ -22,7 +22,11 @@ namespace DataCentric
     /// <summary>Extension methods for NodaTime.LocalDateTime.</summary>
     public static class LocalDateTimeExtensions
     {
-        /// <summary>Return false if equal to the default constructed value.</summary>
+        /// <summary>
+        /// Return true unless equal to the default constructed value.
+        ///
+        /// Default constructed value is not a valid value for this type.
+        /// </summary>
         public static bool HasValue(this LocalDateTime value)
         {
             return value != default;
