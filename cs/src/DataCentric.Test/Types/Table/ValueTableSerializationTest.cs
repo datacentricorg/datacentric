@@ -56,7 +56,8 @@ namespace DataCentric.Test
                     AtomicType.LocalDate,
                     AtomicType.LocalTime,
                     AtomicType.LocalMinute,
-                    AtomicType.LocalDateTime
+                    AtomicType.LocalDateTime,
+                    AtomicType.Instant
                 };
 
                 TestSerialization(context, valueTypes, TableLayout.NoHeaders);
@@ -140,6 +141,7 @@ namespace DataCentric.Test
             LocalTime localTimeValue = new LocalTime(10, 15, 30);
             LocalMinute localMinuteValue = new LocalMinute(10, 15);
             LocalDateTime localDateTimeValue = new LocalDateTime(2003, 5, 1,10, 15, 0);
+            Instant instantValue = new LocalDateTime(2003, 5, 1, 10, 15, 0).ToUtcInstant();
 
             int valueTypeCount = valueTypes.Length;
             for (int rowIndex = 0; rowIndex < result.RowCount; rowIndex++)
@@ -181,6 +183,10 @@ namespace DataCentric.Test
                         case AtomicType.LocalDateTime:
                             result[rowIndex, colIndex] = localDateTimeValue;
                             localDateTimeValue = localDateTimeValue.PlusDays(2).PlusHours(2);
+                            break;
+                        case AtomicType.Instant:
+                            result[rowIndex, colIndex] = instantValue;
+                            instantValue = instantValue; // TODO Fix, uses previous value
                             break;
                         default: throw new Exception($"Value type {valueType} cannot be stored in ValueTable.");
                     }

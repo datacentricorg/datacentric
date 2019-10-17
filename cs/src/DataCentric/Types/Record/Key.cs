@@ -120,8 +120,14 @@ namespace DataCentric
                     result = minuteValue.ToIsoInt().ToString();
                     break;
                 case LocalDateTime dateTimeValue:
-                    // Serialize as readable long in yyyymmddhhmmssfff format, not in delimited ISO format
+                    // Serialize as readable long in yyyymmddhhmmssfff format, not in delimited ISO string format.
+                    // Using long instead of string format permits sorting and more than/less than queries.
                     result = dateTimeValue.ToIsoLong().ToString();
+                    break;
+                case Instant instantValue:
+                    // Serialize as readable long in yyyymmddhhmmssfff format, not in delimited ISO string format.
+                    // Using long instead of string format permits sorting and more than/less than queries.
+                    result = instantValue.ToIsoLong().ToString();
                     break;
                 case bool boolValue:
                 case int intValue:
@@ -142,7 +148,7 @@ namespace DataCentric
                     throw new Exception(
                         $"Key element {elementInfo.Name} of type {obj.GetType().Name} has type {element.GetType()}" +
                         $"that is not one of the supported key element types. Available key element types are " +
-                        $"string, double, bool, int, long, LocalDate, LocalTime, LocalMinute, LocalDateTime, LocalMinute, RecordId, or Enum.");
+                        $"string, double, bool, int, long, LocalDate, LocalTime, LocalMinute, LocalDateTime, Instant, RecordId, or Enum.");
             }
 
             return result;
@@ -366,6 +372,25 @@ namespace DataCentric
                     LocalDateTime tokenValue = LocalDateTimeUtil.FromIsoLong(isoLong);
                     elementInfo.SetValue(this, tokenValue);
                 }
+                else if (elementType == typeof(Instant) || elementType == typeof(Instant?))
+                {
+                    CheckTokenNotEmpty(tokens, tokenIndex);
+
+                    // Inside the key, Instant is represented as readable long in
+                    // non-delimited yyyymmddhhmmssfff format, not as delimited ISO string.
+                    //
+                    // First parse the string to long, then convert int to Instant.
+                    string token = tokens[tokenIndex++];
+                    if (!Int64.TryParse(token, out long isoLong))
+                    {
+                        throw new Exception(
+                            $"Element {elementInfo.Name} of key type {GetType().Name} has type Instant and value {token} " +
+                            $"that cannot be converted to readable long in non-delimited yyyymmddhhmmssfff format.");
+                    }
+
+                    Instant tokenValue = InstantUtil.FromIsoLong(isoLong);
+                    elementInfo.SetValue(this, tokenValue);
+                }
                 else if (elementType == typeof(RecordId) || elementType == typeof(RecordId?))
                 {
                     CheckTokenNotEmpty(tokens, tokenIndex);
@@ -394,7 +419,7 @@ namespace DataCentric
                     throw new Exception(
                         $"Element {elementInfo.Name} of key type {GetType().Name} has type {elementType} that " +
                         $"is not one of the supported key element types. Available key element types are " +
-                        $"string, bool, int, long, LocalDate, LocalTime, LocalMinute, LocalDateTime, Enum, or Key.");
+                        $"string, bool, int, long, LocalDate, LocalTime, LocalMinute, LocalDateTime, Instant, Enum, or Key.");
                 }
             }
 

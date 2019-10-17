@@ -39,17 +39,20 @@ namespace DataCentric
         /// <summary>64-bit long value.</summary>
         Long,
 
-        /// <summary>Date without the time component (does not specify timezone).</summary>
+        /// <summary>LOcal date without the time component (does not specify timezone).</summary>
         LocalDate,
 
-        /// <summary>Time without the date component (does not specify timezone).</summary>
+        /// <summary>Local time without the date component to one millisecond resolution (does not specify timezone).</summary>
         LocalTime,
 
-        /// <summary>Time without the date component to one minute resolution (does not specify timezone).</summary>
+        /// <summary>Local time without the date component to one minute resolution (does not specify timezone).</summary>
         LocalMinute,
 
-        /// <summary>Datetime (does not specify timezone).</summary>
+        /// <summary>Local datetime to one millisecond resolution (does not specify timezone).</summary>
         LocalDateTime,
+
+        /// <summary>Local datetime to one millisecond resolution in UTC timezone.</summary>
+        Instant,
 
         /// <summary>Enumeration.</summary>
         Enum

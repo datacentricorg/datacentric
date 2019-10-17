@@ -53,6 +53,9 @@ namespace DataCentric.Test
         public LocalDateTime? LocalDateTimeElement { get; set; }
 
         /// <summary>Sample element.</summary>
+        public Instant? InstantElement { get; set; }
+
+        /// <summary>Sample element.</summary>
         public SampleEnum EnumValue { get; set; }
 
         /// <summary>Sample element.</summary>

@@ -22,20 +22,17 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>
-    /// Serializes LocalDateTime in ISO 8601 format:
+    /// Serializes Instant in ISO 8601 format in UTC:
     ///
     /// 2003-04-21T11:10:00.000Z
-    ///
-    /// LocalDateTime values are assumed to be in UTC (Z) timezone
-    /// when serialized and deserialized to/from BSON.
     ///
     /// This serializer is used for both the type itself
     /// and for its nullable counterpart.
     /// </summary>
-    public class BsonLocalDateTimeSerializer : SerializerBase<LocalDateTime>
+    public class BsonInstantSerializer : SerializerBase<Instant>
     {
         /// <summary>
-        /// Deserialize LocalDateTime from readable long in ISO 8601 format:
+        /// Deserialize Instant from readable long in ISO 8601 format:
         ///
         /// 2003-04-21T11:10:00.000Z
         ///
@@ -44,20 +41,18 @@ namespace DataCentric
         ///
         /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
         /// </summary>
-        public override LocalDateTime Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+        public override Instant Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
             // Milliseconds since the Unix epoch
             long unixEpochMillis = context.Reader.ReadDateTime();
 
-            // Create LocalDateTime object by converting to DateTimeOffset and then to DateTime
-            DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(unixEpochMillis);
-            DateTime utcDateTime = dateTimeOffset.UtcDateTime;
-            var result = LocalDateTime.FromDateTime(utcDateTime);
+            // Create Instant object from milliseconds since the Unix epoch
+            var result = Instant.FromUnixTimeMilliseconds(unixEpochMillis);
             return result;
         }
 
         /// <summary>
-        /// Serialize LocalDateTime to readable long in ISO 8601 format:
+        /// Serialize Instant to readable long in ISO 8601 format:
         ///
         /// 2003-04-21T11:10:00.000Z
         ///
@@ -66,14 +61,10 @@ namespace DataCentric
         ///
         /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
         /// </summary>
-        public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, LocalDateTime value)
+        public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, Instant value)
         {
             // Convert to milliseconds since the Unix epoch
-            DateTime utcDateTime = value.ToUtcDateTime();
-            DateTimeOffset dateTimeOffset = new DateTimeOffset(utcDateTime);
-            long unixEpochMillis = dateTimeOffset.ToUnixTimeMilliseconds();
-
-            // Write milliseconds since the Unix epoch to BSON
+            long unixEpochMillis = value.ToUnixTimeMilliseconds();
             context.Writer.WriteDateTime(unixEpochMillis);
         }
     }

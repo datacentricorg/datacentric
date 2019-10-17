@@ -40,7 +40,7 @@ namespace DataCentric
                     break;
                 case LocalDate dateValue:
                     if (dateValue == LocalDateUtil.Empty) throw new Exception(
-                        $"Default constructed (empty) LocalDate {dateValue} has been passed to Variant(date) constructor.");
+                        $"Default constructed (empty) LocalDate {dateValue} has been passed to Variant(date) constructor."); // TODO - set to empty value instead of an error
                     value_ = value;
                     break;
                 case LocalTime timeValue:
@@ -51,7 +51,12 @@ namespace DataCentric
                     break;
                 case LocalDateTime dateTimeValue:
                     if (dateTimeValue == LocalDateTimeUtil.Empty) throw new Exception(
-                        $"Default constructed (empty) LocalDate {dateTimeValue} has been passed to Variant(date) constructor.");
+                        $"Default constructed (empty) LocalDateTime {dateTimeValue} has been passed to Variant(date) constructor."); // TODO - set to empty value instead of an error
+                    value_ = value;
+                    break;
+                case Instant instantValue:
+                    if (instantValue == InstantUtil.Empty) throw new Exception(
+                        $"Default constructed (empty) Instant {instantValue} has been passed to Variant(date) constructor."); // TODO - set to empty value instead of an error
                     value_ = value;
                     break;
                 case Enum enumValue:
@@ -81,6 +86,7 @@ namespace DataCentric
                     case LocalTime timeValue: return AtomicType.LocalTime;
                     case LocalMinute minuteValue: return AtomicType.LocalMinute;
                     case LocalDateTime dateTimeValue: return AtomicType.LocalDateTime;
+                    case Instant instantValue: return AtomicType.Instant;
                     case Enum enumValue: return AtomicType.Enum;
                     default:
                         // Error message if any other type, should normally not get to here
@@ -152,6 +158,9 @@ namespace DataCentric
                     case AtomicType.LocalDateTime:
                         LocalDateTime dateTimeResult = LocalDateTimeUtil.Parse(value);
                         return new Variant(dateTimeResult);
+                    case AtomicType.Instant:
+                        Instant instantResult = InstantUtil.Parse(value);
+                        return new Variant(instantResult);
                     case AtomicType.Enum:
                         throw new Exception("Variant cannot be created as enum without specifying enum typename.");
                     default:
@@ -200,6 +209,9 @@ namespace DataCentric
                     case LocalDateTime dateTimeValue:
                         LocalDateTime dateTimeResult = LocalDateTimeUtil.Parse(value);
                         return new Variant(dateTimeResult);
+                    case Instant instantValue:
+                        Instant instantResult = InstantUtil.Parse(value);
+                        return new Variant(instantResult);
                     case Enum enumValue:
                         object enumResult = Enum.Parse(typeof(T), value);
                         return new Variant(enumResult);
@@ -236,6 +248,7 @@ namespace DataCentric
                 case LocalTime timeValue: return other.value_ is LocalTime && timeValue == (LocalTime) other.value_;
                 case LocalMinute minuteValue: return other.value_ is LocalMinute && minuteValue == (LocalMinute) other.value_;
                 case LocalDateTime dateTimeValue: return other.value_ is LocalDateTime && dateTimeValue == (LocalDateTime) other.value_;
+                case Instant instantValue: return other.value_ is Instant && instantValue == (Instant)other.value_;
                 case Enum enumValue:
                     // Use Equals(other) to avoid unintended reference comparison
                     return other.value_ is Enum && enumValue.Equals(other.value_);
@@ -267,7 +280,7 @@ namespace DataCentric
         {
             return string.Format(
                 "Variant cannot hold {0} type. Available types are " +
-                "string, double, bool, int, long, LocalDate, LocalTime, LocalMinute, LocalDateTime, or Enum.",
+                "string, double, bool, int, long, LocalDate, LocalTime, LocalMinute, LocalDateTime, Instant, or Enum.",
                 value.GetType());
         }
     }

@@ -47,6 +47,7 @@ namespace DataCentric.Test
                     record.LocalTimeToken = new LocalTime(10, 15, 30).PlusMinutes(recordIndexMod4);
                     record.LocalMinuteToken = new LocalMinute(10, recordIndexMod4);
                     record.LocalDateTimeToken = new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(recordIndexMod4);
+                    record.InstantToken = new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(recordIndexMod4).ToUtcInstant();
                     record.EnumToken = (SampleEnum)(recordIndexMod2 + 1);
 
                     context.Save(record, context.DataSet);
@@ -81,6 +82,7 @@ namespace DataCentric.Test
                         .Where(p => p.LocalTimeToken == new LocalTime(10, 15, 30).PlusMinutes(1))
                         .Where(p => p.LocalMinuteToken == new LocalMinute(10, 1))
                         .Where(p => p.LocalDateTimeToken == new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(1))
+                        .Where(p => p.InstantToken == new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(1).ToUtcInstant())
                         .Where(p => p.EnumToken == (SampleEnum)2);
 
                     context.Log.Verify("Constrained query");
@@ -114,6 +116,7 @@ namespace DataCentric.Test
                     record.LocalTimeToken = new LocalTime(10, 15, 30).PlusMinutes(recordIndexMod4);
                     record.LocalMinuteToken = new LocalMinute(10, recordIndexMod4);
                     record.LocalDateTimeToken = new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(recordIndexMod4);
+                    record.InstantToken = new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(recordIndexMod4).ToUtcInstant();
                     record.EnumToken = (SampleEnum) (recordIndexMod2 + 1);
 
                     context.Save(record, context.DataSet);

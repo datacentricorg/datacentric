@@ -332,8 +332,13 @@ namespace DataCentric
                     break;
                 case LocalDateTime dateTimeValue:
                     // Serialize LocalDateTime as ISO long in yyyymmddhhmmssfff format
-                    long isoLong = dateTimeValue.ToIsoLong();
-                    bsonWriter_.WriteInt64(isoLong);
+                    long isoDateTimeLong = dateTimeValue.ToIsoLong();
+                    bsonWriter_.WriteInt64(isoDateTimeLong);
+                    break;
+                case Instant instantValue:
+                    // Serialize Instant as ISO long in yyyymmddhhmmssfff format
+                    long isoInstantLong = instantValue.ToIsoLong();
+                    bsonWriter_.WriteInt64(isoInstantLong);
                     break;
                 case Enum enumValue:
                     // Serialize enum as string

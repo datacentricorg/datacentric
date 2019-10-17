@@ -54,6 +54,7 @@ namespace DataCentric
                     case LocalTime timeValue:
                     case LocalMinute minuteValue:
                     case LocalDateTime dateTimeValue:
+                    case Instant instantValue:
                     case Enum enumValue:
                         // Embedded as string value
                         writer.WriteValueElement(innerElementName, innterElementValue);
@@ -160,6 +161,12 @@ namespace DataCentric
                 {
                     string token = innerXmlNode.ReadValue();
                     var value = LocalDateTimeUtil.Parse(token);
+                    elementInfo.SetValue(this, value);
+                }
+                else if (elementType == typeof(Instant) || elementType == typeof(Instant?))
+                {
+                    string token = innerXmlNode.ReadValue();
+                    var value = InstantUtil.Parse(token);
                     elementInfo.SetValue(this, value);
                 }
                 else if (elementType.IsSubclassOf(typeof(Enum)))

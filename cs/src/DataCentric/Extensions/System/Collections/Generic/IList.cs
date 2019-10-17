@@ -142,6 +142,16 @@ namespace DataCentric
                         }
                         else obj.Add(null);
                     }
+                    else if (itemType == typeof(Instant) || itemType == typeof(Instant?))
+                    {
+                        string token = selectedXmlNode.ReadValue();
+                        if (!string.IsNullOrEmpty(token))
+                        {
+                            var value = InstantUtil.Parse(token);
+                            obj.Add(value);
+                        }
+                        else obj.Add(null);
+                    }
                     else if (itemType.IsSubclassOf(typeof(Enum)))
                     {
                         string token = selectedXmlNode.ReadValue();

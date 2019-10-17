@@ -301,6 +301,8 @@ namespace DataCentric
             else if (currentArrayItemType_ == typeof(LocalMinute?)) addedItem = null;
             else if (currentArrayItemType_ == typeof(LocalDateTime)) addedItem = default(LocalDateTime);
             else if (currentArrayItemType_ == typeof(LocalDateTime?)) addedItem = null;
+            else if (currentArrayItemType_ == typeof(Instant)) addedItem = default(Instant);
+            else if (currentArrayItemType_ == typeof(Instant?)) addedItem = null;
             else if (currentArrayItemType_.IsClass) addedItem = null;
             else throw new Exception($"Value type {currentArrayItemType_.Name} is not supported for serialization.");
 
@@ -459,6 +461,22 @@ namespace DataCentric
                 // Add to array or dictionary, depending on what we are inside of
                 if (currentArray_ != null) currentArray_[currentArray_.Count-1] = dateTimeValue;
                 else if (currentDict_ != null) currentElementInfo_.SetValue(currentDict_, dateTimeValue);
+                else throw new Exception($"Value can only be added to a dictionary or array.");
+            }
+            else if (elementType == typeof(Instant) || elementType == typeof(Instant?))
+            {
+                // Check type match
+                if (valueType != typeof(long))
+                    throw new Exception(
+                        $"Attempting to deserialize value of type {valueType.Name} " +
+                        $"into Instant; type should be int64.");
+
+                // Deserialize Instant as ISO long in yyyymmddhhmmssfff format
+                Instant instantValue = InstantUtil.FromIsoLong((long)value);
+
+                // Add to array or dictionary, depending on what we are inside of
+                if (currentArray_ != null) currentArray_[currentArray_.Count - 1] = instantValue;
+                else if (currentDict_ != null) currentElementInfo_.SetValue(currentDict_, instantValue);
                 else throw new Exception($"Value can only be added to a dictionary or array.");
             }
             else if (elementType.IsEnum)
