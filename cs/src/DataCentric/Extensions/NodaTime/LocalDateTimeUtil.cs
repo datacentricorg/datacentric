@@ -88,7 +88,7 @@ namespace DataCentric
         ///
         /// Error message if the long does not match format.
         /// </summary>
-        public static LocalDateTime ParseIsoLong(long value)
+        public static LocalDateTime FromIsoLong(long value)
         {
             // Split into date and time using int64 arithmetic
             long isoDateLong = value/100_00_00_000;

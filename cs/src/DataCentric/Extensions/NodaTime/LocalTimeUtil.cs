@@ -81,7 +81,7 @@ namespace DataCentric
         }
 
         /// <summary>Parse ISO 8601 9 digit int in hhmmssfff format, throw if invalid format.</summary>
-        public static LocalTime ParseIsoInt(int value)
+        public static LocalTime FromIsoInt(int value)
         {
             // Extract hour, minute, second, and millisecond
             int hour = value / 100_00_000;

@@ -62,7 +62,7 @@ namespace DataCentric.Test
 
             // Verify int serialization roundtrip
             int intValue = value.ToIsoInt();
-            LocalDate parsedIntValue = LocalDateUtil.ParseIsoInt(intValue);
+            LocalDate parsedIntValue = LocalDateUtil.FromIsoInt(intValue);
             Assert.Equal(value, parsedIntValue);
             context.Log.Verify($"Readable int format: {intValue}");
         }

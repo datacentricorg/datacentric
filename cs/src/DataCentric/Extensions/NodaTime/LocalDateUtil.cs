@@ -84,7 +84,7 @@ namespace DataCentric
         /// 
         /// Error message if the int does not match format.
         /// </summary>
-        public static LocalDate ParseIsoInt(int value)
+        public static LocalDate FromIsoInt(int value)
         {
             // Extract year, month, day
             int year = value / 100_00;

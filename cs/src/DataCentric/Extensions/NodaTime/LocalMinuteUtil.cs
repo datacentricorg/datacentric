@@ -41,7 +41,7 @@ namespace DataCentric
         }
 
         /// <summary>Parse ISO 8601 4 digit int in hhmm format, throw if invalid format.</summary>
-        public static LocalMinute ParseIsoInt(int value)
+        public static LocalMinute FromIsoInt(int value)
         {
             // Extract
             int hour = value / 100;

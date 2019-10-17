@@ -94,10 +94,10 @@ namespace DataCentric
         ///
         /// Error message if the long does not match format.
         /// </summary>
-        public static Instant ParseIsoLong(long value)
+        public static Instant FromIsoLong(long value)
         {
             // Parse to LocalDateTime first, them convert to UTC instant.
-            LocalDateTime localDateTime = LocalDateTimeUtil.ParseIsoLong(value);
+            LocalDateTime localDateTime = LocalDateTimeUtil.FromIsoLong(value);
             Instant result = localDateTime.ToUtcInstant();
             return result;
         }

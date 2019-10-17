@@ -53,7 +53,7 @@ namespace DataCentric.Test
 
             // Verify int serialization roundtrip
             int intValue = value.ToIsoInt();
-            LocalTime parsedIntValue = LocalTimeUtil.ParseIsoInt(intValue);
+            LocalTime parsedIntValue = LocalTimeUtil.FromIsoInt(intValue);
             context.Log.Assert(value == parsedIntValue, $"Int roundtrip for {nameAsString} assert.");
         }
     }

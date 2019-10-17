@@ -406,7 +406,7 @@ namespace DataCentric
                         $"into LocalDate; type should be int32.");
 
                 // Deserialize LocalDate as ISO int in yyyymmdd format
-                LocalDate dateValue = LocalDateUtil.ParseIsoInt((int)value);
+                LocalDate dateValue = LocalDateUtil.FromIsoInt((int)value);
 
                 // Add to array or dictionary, depending on what we are inside of
                 if (currentArray_ != null) currentArray_[currentArray_.Count-1] = dateValue;
@@ -422,7 +422,7 @@ namespace DataCentric
                         $"into LocalTime; type should be int32.");
 
                 // Deserialize LocalTime as ISO int in hhmmssfff format
-                LocalTime timeValue = LocalTimeUtil.ParseIsoInt((int)value);
+                LocalTime timeValue = LocalTimeUtil.FromIsoInt((int)value);
 
                 // Add to array or dictionary, depending on what we are inside of
                 if (currentArray_ != null) currentArray_[currentArray_.Count-1] = timeValue;
@@ -438,7 +438,7 @@ namespace DataCentric
                         $"into LocalMinute; type should be int32.");
 
                 // Deserialize LocalTime as ISO int in hhmmssfff format
-                LocalMinute minuteValue = LocalMinuteUtil.ParseIsoInt((int)value);
+                LocalMinute minuteValue = LocalMinuteUtil.FromIsoInt((int)value);
 
                 // Add to array or dictionary, depending on what we are inside of
                 if (currentArray_ != null) currentArray_[currentArray_.Count - 1] = minuteValue;
@@ -454,7 +454,7 @@ namespace DataCentric
                         $"into LocalDateTime; type should be int64.");
 
                 // Deserialize LocalDateTime as ISO long in yyyymmddhhmmssfff format
-                LocalDateTime dateTimeValue = LocalDateTimeUtil.ParseIsoLong((long)value);
+                LocalDateTime dateTimeValue = LocalDateTimeUtil.FromIsoLong((long)value);
 
                 // Add to array or dictionary, depending on what we are inside of
                 if (currentArray_ != null) currentArray_[currentArray_.Count-1] = dateTimeValue;
