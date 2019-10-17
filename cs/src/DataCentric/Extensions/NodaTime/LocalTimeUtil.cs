@@ -32,14 +32,52 @@ namespace DataCentric
         /// <summary>Strict ISO 8601 time pattern with fractional seconds to millisecond precision.</summary>
         public static LocalTimePattern Pattern { get; } = LocalTimePattern.CreateWithInvariantCulture("HH':'mm':'ss.FFF");
 
-        /// <summary>Parse string using standard ISO 8601 time pattern hh:mm:ss.fff, throw if invalid format.
+        /// <summary>
+        /// Parse strict ISO 8601 time pattern to millisecond precision without timezone:
+        ///
+        /// hh:mm::ss.fff
+        ///
+        /// Error message if the string does not match format.
+        /// 
         /// No variations from the standard format are accepted and no delimiters can be changed or omitted.
-        /// Specifically, ISO int-like string using hhmmssfff format without delimiters is not accepted.</summary>
+        /// Specifically, ISO int-like string in hhmmssfff format without delimiters is not accepted.
+        /// </summary>
         public static LocalTime Parse(string value)
         {
+            if (TryParse(value, out LocalTime result))
+            {
+                return result;
+            }
+            else
+                throw new Exception(
+                    $"Cannot parse serialized LocalTime {value} because it does not have " +
+                    $"strict ISO 8601 time pattern to millisecond precision without timezone: " +
+                    $"hh:mm::ss.fff");
+        }
+
+        /// <summary>
+        /// Try parsing strict ISO 8601 time pattern to millisecond precision without timezone:
+        ///
+        /// hh:mm::ss.fff
+        ///
+        /// * If parsing succeeds. populate the result and return true
+        /// * If parsing fails, set result to LocalTimeUtil.Empty and return false
+        /// 
+        /// No variations from the standard format are accepted and no delimiters can be changed or omitted.
+        /// Specifically, ISO int-like string in hhmmssfff format without delimiters is not accepted.
+        /// </summary>
+        public static bool TryParse(string value, out LocalTime result)
+        {
             var parseResult = Pattern.Parse(value);
-            var result = parseResult.GetValueOrThrow();
-            return result;
+            if (parseResult.TryGetValue(default, out result))
+            {
+                return true;
+            }
+            else
+            {
+                result = default;
+                return false;
+            }
         }
 
         /// <summary>Parse ISO 8601 9 digit int in hhmmssfff format, throw if invalid format.</summary>

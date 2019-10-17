@@ -29,24 +29,59 @@ namespace DataCentric
         /// <summary>Strict ISO 8601 date pattern yyyy-mm-dd.</summary>
         public static LocalDatePattern Pattern { get; } = LocalDatePattern.CreateWithInvariantCulture("uuuu'-'MM'-'dd");
 
-        /// <summary>Parse string using standard ISO 8601 date pattern yyyy-mm-dd, throw if invalid format.
+        /// <summary>
+        /// Parse strict ISO 8601 date format:
+        ///
+        /// yyyy-mm-dd
+        ///
+        /// Error message if the string does not match format.
+        /// 
         /// No variations from the standard format are accepted and no delimiters can be changed or omitted.
-        /// Specifically, ISO int-like string using yyyymmdd format without delimiters is not accepted.</summary>
+        /// Specifically, ISO int-like string in yyyymmdd format without delimiters is not accepted.
+        /// </summary>
         public static LocalDate Parse(string value)
         {
-            // Parse using ISO 8601 pattern
-            var parseResult = Pattern.Parse(value);
-            var result = parseResult.GetValueOrThrow();
-
-            // If default constructed date is passed, error message
-            if (result == default) throw new Exception(
-                $"String representation of default constructed date {value} " +
-                $"passed to LocalDate.Parse(date) method.");
-
-            return result;
+            if (TryParse(value, out LocalDate result))
+            {
+                return result;
+            }
+            else
+                throw new Exception(
+                    $"Cannot parse serialized LocalDate {value} because it does not have " +
+                    $"strict ISO 8601 date pattern: yyyy-mm-dd");
         }
 
-        /// <summary>Parse ISO 8601 8 digit int in yyyymmdd format, throw if invalid format.</summary>
+        /// <summary>
+        /// Try parsing strict ISO 8601 date format:
+        ///
+        /// yyyy-mm-dd
+        ///
+        /// * If parsing succeeds. populate the result and return true
+        /// * If parsing fails, set result to LocalDateUtil.Empty and return false
+        /// 
+        /// No variations from the standard format are accepted and no delimiters can be changed or omitted.
+        /// Specifically, ISO int-like string in yyyymmdd format without delimiters is not accepted.
+        /// </summary>
+        public static bool TryParse(string value, out LocalDate result)
+        {
+            var parseResult = Pattern.Parse(value);
+            if (parseResult.TryGetValue(LocalDateUtil.Empty, out result))
+            {
+                // Serialization of default constructed date is accepted.
+                // In this case LocalDateUtil.Empty will be returned.
+                return true;
+            }
+            else
+            {
+                result = LocalDateUtil.Empty;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Parse ISO 8601 8 digit int in yyyymmdd format, throw if invalid format.
+        ///
+        /// </summary>
         public static LocalDate ParseIsoInt(int value)
         {
             // Extract year, month, day

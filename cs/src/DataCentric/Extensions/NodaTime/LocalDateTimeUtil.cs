@@ -26,36 +26,66 @@ namespace DataCentric
         /// <summary>Default constructed LocalDateTime is treated as empty.</summary>
         public static LocalDateTime Empty { get; } = default;
 
-        /// <summary>Strict ISO 8601 datetime pattern yyyy-mm-ddThh:mm::ss.fff.</summary>
+        /// <summary>
+        /// Strict ISO 8601 datetime pattern to millisecond precision without timezone:
+        ///
+        /// yyyy-mm-ddThh:mm::ss.fff
+        /// </summary>
         public static LocalDateTimePattern Pattern { get; } = LocalDateTimePattern.CreateWithInvariantCulture("uuuu'-'MM'-'dd' 'HH':'mm':'ss.FFF");
 
         /// <summary>
-        /// Parse string using standard ISO 8601 date pattern yyyy-mm-ddThh:mm::ss.fff, throw if invalid format.
+        /// Parse strict ISO 8601 datetime pattern to millisecond precision without timezone:
+        ///
+        /// yyyy-mm-ddThh:mm::ss.fff
+        ///
+        /// Error message if the string does not match format.
         /// 
         /// No variations from the standard format are accepted and no delimiters can be changed or omitted.
-        /// Specifically, ISO int-like string using yyyymmddhhmmssfff format without delimiters is not accepted.
+        /// Specifically, ISO int-like string in yyyymmddhhmmssfff format without delimiters is not accepted.
         /// </summary>
         public static LocalDateTime Parse(string value)
         {
-            var parseResult = Pattern.Parse(value);
-            var result = parseResult.GetValueOrThrow();
-            return result;
+            if (TryParse(value, out LocalDateTime result))
+            {
+                return result;
+            }
+            else
+                throw new Exception(
+                    $"Cannot parse serialized LocalDateTime {value} because it does not have " +
+                    $"strict ISO 8601 datetime pattern to millisecond precision without timezone: " +
+                    $"yyyy-mm-ddThh:mm::ss.fff");
         }
 
         /// <summary>
-        /// Try parsing string using standard ISO 8601 date pattern yyyy-mm-ddThh:mm::ss.fff, throw if invalid format.
+        /// Try parsing strict ISO 8601 datetime pattern to millisecond precision without timezone:
+        ///
+        /// yyyy-mm-ddThh:mm::ss.fff
+        ///
+        /// * If parsing succeeds. populate the result and return true
+        /// * If parsing fails, set result to LocalDateTimeUtil.Empty and return false
         /// 
         /// No variations from the standard format are accepted and no delimiters can be changed or omitted.
-        /// Specifically, ISO int-like string using yyyymmddhhmmssfff format without delimiters is not accepted.
+        /// Specifically, ISO int-like string in yyyymmddhhmmssfff format without delimiters is not accepted.
         /// </summary>
-        public static bool TryParse(string value, out LocalDateTime dateTime)
+        public static bool TryParse(string value, out LocalDateTime result)
         {
             var parseResult = Pattern.Parse(value);
-            var result = parseResult.TryGetValue(LocalDateTimeUtil.Empty, out dateTime);
-            return result;
+            if (parseResult.TryGetValue(LocalDateTimeUtil.Empty, out result))
+            {
+                // Serialization of default constructed datetime is accepted.
+                // In this case LocalDateTimeUtil.Empty will be returned.
+                return true;
+            }
+            else
+            {
+                result = LocalDateTimeUtil.Empty;
+                return false;
+            }
         }
 
-        /// <summary>Parse ISO 8601 17 digit long in yyyymmddhhmmssfff format, throw if invalid format.</summary>
+        /// <summary>
+        /// Parse ISO 8601 17 digit long in yyyymmddhhmmssfff format, throw if invalid format.
+        /// </summary>
         public static LocalDateTime ParseIsoLong(long value)
         {
             // Split into date and time using int64 arithmetic
