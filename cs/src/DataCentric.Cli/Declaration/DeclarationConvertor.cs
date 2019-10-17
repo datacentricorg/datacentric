@@ -112,13 +112,13 @@ namespace DataCentric.Cli
             TypeDeclData decl = new TypeDeclData();
             decl.Module = new ModuleKey { ModuleName = type.Namespace };
             decl.Category = projNavigator?.GetTypeLocation(type);
-            decl.Name = type.Name.TrimEnd("Data");
-            decl.Label = type.GetLabelFromAttribute() ?? type.Name.TrimEnd("Data");
+            decl.Name = type.Name;
+            decl.Label = type.GetLabelFromAttribute() ?? type.Name;
             decl.Comment = type.GetCommentFromAttribute() ?? navigator?.GetXmlComment(type);
             decl.Kind = type.GetKind();
             decl.Inherit = IsRoot(type.BaseType)
                                ? null
-                               : CreateTypeDeclKey(type.BaseType.Namespace, type.BaseType.Name.TrimEnd("Data"));
+                               : CreateTypeDeclKey(type.BaseType.Namespace, type.BaseType.Name);
             decl.Index = type.GetIndexesFromAttributes();
 
             // Skip special (property getters, setters, etc) and inherited methods
@@ -312,10 +312,10 @@ namespace DataCentric.Cli
         private static TypeKind? GetKind(this Type type)
         {
             // Kind
-            return type.IsAbstract                        ? TypeKind.Abstract :
-                   type.IsSealed                          ? TypeKind.Final :
+            return type.IsAbstract                    ? TypeKind.Abstract :
+                   type.IsSealed                      ? TypeKind.Final :
                    !type.IsSubclassOf(typeof(Record)) ? TypeKind.Element :
-                                                            (TypeKind?) null;
+                                                        (TypeKind?) null;
         }
 
         /// <summary>
@@ -423,12 +423,6 @@ namespace DataCentric.Cli
             };
         }
 
-        private static HandlerImplementDeclData WithOverride(this HandlerImplementDeclData impl)
-        {
-            impl.Override = YesNo.Y;
-            return impl;
-        }
-
         /// <summary>
         /// Converts method parameter into corresponding handler parameter declaration section.
         /// </summary>
@@ -529,18 +523,22 @@ namespace DataCentric.Cli
                     type == typeof(LocalDate?)     ? AtomicType.NullableDate :
                     type == typeof(LocalTime?)     ? AtomicType.NullableTime :
                     type == typeof(LocalMinute?)   ? AtomicType.NullableMinute :
-                    // Mongo's RecordId
+                    // RecordId
                     type == typeof(RecordId)  ? AtomicType.RecordId :
                     type == typeof(RecordId?) ? AtomicType.NullableRecordId :
                                                 throw new ArgumentException($"Unknown value type: {type.FullName}");
             }
-            else if (type.IsSubclassOf(typeof(Key)) && type.Name.EndsWith("Key"))
+            else if (type.IsSubclassOf(typeof(Key)))
             {
-                typeDecl.Key = CreateTypeDeclKey(type.Namespace, type.Name.TrimEnd("Key"));
+                // Extract TRecord type from key base class TypedKey[TKey, TRecord]
+                Type recordParameter = type.BaseType.GenericTypeArguments[1];
+                if (!recordParameter.IsSubclassOf(typeof(Record)))
+                    throw new ArgumentException($"Wrong generic argument of {type.Name} key.");
+                typeDecl.Key = CreateTypeDeclKey(type.Namespace, recordParameter.Name);
             }
-            else if (type.IsSubclassOf(typeof(Data)) && type.Name.EndsWith("Data"))
+            else if (type.IsSubclassOf(typeof(Data)))
             {
-                typeDecl.Data = CreateTypeDeclKey(type.Namespace, type.Name.TrimEnd("Data"));
+                typeDecl.Data = CreateTypeDeclKey(type.Namespace, type.Name);
             }
             else
                 throw new ArgumentException($"Unknown type: {type.FullName}");
