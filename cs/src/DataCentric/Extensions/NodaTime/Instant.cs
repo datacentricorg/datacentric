@@ -116,6 +116,25 @@ namespace DataCentric
         }
 
         /// <summary>
+        /// Convert Instant to LocalDateTime in UTC timezone.
+        /// </summary>
+        public static LocalDateTime ToLocalDateTime(this Instant value)
+        {
+            return value.InUtc().LocalDateTime;
+        }
+
+        /// <summary>
+        /// Convert Instant to LocalDateTime in UTC timezone.
+        ///
+        /// Return null if argument is null.
+        /// </summary>
+        public static LocalDateTime? ToInstant(this Instant? value)
+        {
+            if (value.HasValue) return value.Value.ToLocalDateTime();
+            else return null;
+        }
+
+        /// <summary>
         /// Convert to System.DateTime with Kind=Utc.
         ///
         /// Error message if equal to the default constructed value.

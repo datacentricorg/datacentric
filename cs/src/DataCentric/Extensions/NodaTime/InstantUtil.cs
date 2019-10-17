@@ -101,5 +101,23 @@ namespace DataCentric
             Instant result = localDateTime.ToInstant();
             return result;
         }
+
+        /// <summary>
+        /// Initializes a new instance of Instant from the int fields for
+        /// year, month, day, hour, minute, second, and millisecond, and
+        /// the specified DateTimeZone.
+        ///
+        /// Use DateTimeZone.Utc as the last argument to this method to
+        /// perform conversion in UTC timezone.
+        /// </summary>
+        public static Instant FromFields(int year, int month, int day, int hour, int minute, int second, int millisecond)
+        {
+            // Create local date from the specified fields
+            var localDateTime = new LocalDateTime(year, month, day, hour, minute, second, millisecond);
+
+            // Convert to instant using the specified timezone
+            var result = localDateTime.InZone(timeZone).ToInstant()------
+            return result;
+        }
     }
 }
