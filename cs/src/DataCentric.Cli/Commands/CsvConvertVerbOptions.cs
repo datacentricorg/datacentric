@@ -22,7 +22,7 @@ using CommandLine;
 namespace DataCentric.Cli
 {
     [Verb("csv2mongo", HelpText = "Test runner.")]
-    public class CsvConvertOptions
+    public class CsvConvertCommand
     {
         [Option('p', "path", HelpText = "Pattern to filter tests.", Required = true)]
         public string CsvPath { get; set; }
@@ -69,7 +69,7 @@ namespace DataCentric.Cli
                 Type recordType = ActivatorUtil.ResolveType(type, ActivatorSettings.Assemblies)
                                   ?? throw new ArgumentException($"Type '{type}' not found");
 
-                MethodInfo convertToMongo = typeof(CsvConvertOptions)
+                MethodInfo convertToMongo = typeof(CsvConvertCommand)
                                            .GetMethod(nameof(ConvertCsvToMongo), BindingFlags.Static | BindingFlags.NonPublic)
                                           ?.MakeGenericMethod(recordType);
 

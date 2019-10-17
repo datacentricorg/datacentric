@@ -25,7 +25,7 @@ using MongoDB.Driver;
 namespace DataCentric.Cli
 {
     [Verb("run", HelpText = "Execute handler.")]
-    public class RunOptions
+    public class RunCommand
     {
         [Option('s', "source", Required = true, HelpText = "Source environment - folder for file storage and connection string for DB.")]
         public string Source { get; set; }
@@ -68,7 +68,7 @@ namespace DataCentric.Cli
 
             (Type keyType, Type baseRecordType) = GetRecordTypeArguments(recordType);
 
-            MethodInfo createHandlerMethod = typeof(RunOptions)
+            MethodInfo createHandlerMethod = typeof(RunCommand)
                                             .GetMethod(nameof(CreateHandler), BindingFlags.Static | BindingFlags.NonPublic)
                                             .MakeGenericMethod(keyType, baseRecordType, recordType);
 
@@ -112,15 +112,15 @@ namespace DataCentric.Cli
         /// <summary>
         /// Helper method to create and init instance of handler class.
         /// </summary>
-        private static TRecord CreateHandler<TKey, TBaseRecord, TRecord>(IContext context, RunOptions options)
+        private static TRecord CreateHandler<TKey, TBaseRecord, TRecord>(IContext context, RunCommand command)
             where TKey : TypedKey<TKey, TBaseRecord>, new()
             where TRecord : TBaseRecord
             where TBaseRecord : TypedRecord<TKey, TBaseRecord>
         {
             TKey key = Activator.CreateInstance<TKey>();
-            key.PopulateFrom(options.Key);
+            key.PopulateFrom(command.Key);
 
-            RecordId dataSet = context.GetDataSet(options.Dataset, context.DataSet);
+            RecordId dataSet = context.GetDataSet(command.Dataset, context.DataSet);
             TRecord record = (TRecord) context.LoadOrNull(key, dataSet);
 
             record.Init(context);

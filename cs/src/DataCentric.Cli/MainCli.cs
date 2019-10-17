@@ -36,37 +36,37 @@ namespace DataCentric.Cli
                 {
                     Console.Write("$ ");
                     args = Console.ReadLine()?.Split(' ');
-                    ParserResult<object> parseInteractiveResult = Parser.Default.ParseArguments<RunOptions,
-                        ExtractOptions,
-                        TestOptions,
-                        GenerateOptions,
-                        HeadersOptions,
-                        CsvConvertOptions,
-                        ExitOptions>(args);
+                    ParserResult<object> parseInteractiveResult = Parser.Default.ParseArguments<RunCommand,
+                        ExtractCommand,
+                        TestCommand,
+                        GenerateCommand,
+                        HeadersCommand,
+                        CsvConvertCommand,
+                        ExitCommand>(args);
 
                     if (parseInteractiveResult is Parsed<object> parsedInteractive)
                     {
                         switch (parsedInteractive.Value)
                         {
-                            case RunOptions runOptions:
+                            case RunCommand runOptions:
                                 runOptions.Execute();
                                 break;
-                            case ExtractOptions extractOptions:
+                            case ExtractCommand extractOptions:
                                 extractOptions.Execute();
                                 break;
-                            case TestOptions testOptions:
+                            case TestCommand testOptions:
                                 testOptions.Execute();
                                 break;
-                            case GenerateOptions generateOptions:
+                            case GenerateCommand generateOptions:
                                 generateOptions.Execute();
                                 break;
-                            case HeadersOptions headersOptions:
+                            case HeadersCommand headersOptions:
                                 headersOptions.Execute();
                                 break;
-                            case CsvConvertOptions convertOptions:
+                            case CsvConvertCommand convertOptions:
                                 convertOptions.Execute();
                                 break;
-                            case ExitOptions _:
+                            case ExitCommand _:
                                 return 0;
                             default:
                                 return -1;
@@ -81,37 +81,37 @@ namespace DataCentric.Cli
             }
 
             // Single command mode
-            ParserResult<object> parseResult = Parser.Default.ParseArguments<RunOptions,
-                ExtractOptions,
-                TestOptions,
-                GenerateOptions,
-                HeadersOptions,
-                CsvConvertOptions,
-                ExitOptions>(args);
+            ParserResult<object> parseResult = Parser.Default.ParseArguments<RunCommand,
+                ExtractCommand,
+                TestCommand,
+                GenerateCommand,
+                HeadersCommand,
+                CsvConvertCommand,
+                ExitCommand>(args);
 
             if (parseResult is Parsed<object> parsed)
             {
                 switch (parsed.Value)
                 {
-                    case RunOptions runOptions:
+                    case RunCommand runOptions:
                         runOptions.Execute();
                         break;
-                    case ExtractOptions extractOptions:
+                    case ExtractCommand extractOptions:
                         extractOptions.Execute();
                         break;
-                    case TestOptions testOptions:
+                    case TestCommand testOptions:
                         testOptions.Execute();
                         break;
-                    case GenerateOptions generateOptions:
+                    case GenerateCommand generateOptions:
                         generateOptions.Execute();
                         break;
-                    case HeadersOptions headersOptions:
+                    case HeadersCommand headersOptions:
                         headersOptions.Execute();
                         break;
-                    case CsvConvertOptions convertOptions:
+                    case CsvConvertCommand convertOptions:
                         convertOptions.Execute();
                         break;
-                    case ExitOptions _:
+                    case ExitCommand _:
                         return 0;
                 }
             }

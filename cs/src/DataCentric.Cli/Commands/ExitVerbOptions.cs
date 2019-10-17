@@ -19,7 +19,7 @@ using CommandLine;
 namespace DataCentric.Cli
 {
     [Verb("exit", HelpText = "Exits from interactive shell.")]
-    public class ExitOptions
+    public class ExitCommand
     {
     }
 }
