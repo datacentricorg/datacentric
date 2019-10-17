@@ -98,7 +98,7 @@ namespace DataCentric
         {
             // Parse to LocalDateTime first, them convert to UTC instant.
             LocalDateTime localDateTime = LocalDateTimeUtil.FromIsoLong(value);
-            Instant result = localDateTime.ToUtcInstant();
+            Instant result = localDateTime.ToInstant();
             return result;
         }
     }

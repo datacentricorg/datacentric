@@ -44,8 +44,8 @@ namespace DataCentric.Test
         {
             using (var context = new UnitTestContext(this))
             {
-                VerifyRoundtrip(context, new LocalDateTime(2003, 5, 1, 10, 15, 30).ToUtcInstant());
-                VerifyRoundtrip(context, new LocalDateTime(2003, 5, 1, 10, 15, 30, 5).ToUtcInstant());
+                VerifyRoundtrip(context, new LocalDateTime(2003, 5, 1, 10, 15, 30).ToInstant());
+                VerifyRoundtrip(context, new LocalDateTime(2003, 5, 1, 10, 15, 30, 5).ToInstant());
             }
         }
 

@@ -51,21 +51,21 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Convert LocalDateTime in UTC timezone to Instant.
+        /// Convert LocalDateTime to Instant assuming it is in UTC timezone.
         /// </summary>
-        public static Instant ToUtcInstant(this LocalDateTime value)
+        public static Instant ToInstant(this LocalDateTime value)
         {
             return value.InUtc().ToInstant();
         }
 
         /// <summary>
-        /// Convert nullable LocalDateTime in UTC timezone to Instant.
+        /// Convert LocalDateTime to Instant assuming it is in UTC timezone.
         ///
         /// Return null if argument is null.
         /// </summary>
-        public static Instant? ToUtcInstant(this LocalDateTime? value)
+        public static Instant? ToInstant(this LocalDateTime? value)
         {
-            if (value.HasValue) return value.Value.ToUtcInstant();
+            if (value.HasValue) return value.Value.ToInstant();
             else return null;
         }
 
