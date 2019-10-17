@@ -66,7 +66,7 @@ namespace DataCentric
         /// <summary>Empty value.</summary>
         public static RecordId Empty { get; } = default(RecordId);
 
-        /// <summar>Timestamp for which RecordId was created.</summary>
+        /// <summary>Timestamp for which RecordId was created.</summary>
         public DateTime CreationTime
         {
             get { return BsonConstants.UnixEpoch.AddSeconds(_a); }

@@ -15,7 +15,7 @@
     <Copyright>The DataCentric Authors</Copyright>
     <AssemblyName>DataCentric.Cli.Cs</AssemblyName>
     <RootNamespace>DataCentric.Cli</RootNamespace>
-    <PackageLicenseUrl>https://licenses.nuget.org/Apache-2.0</PackageLicenseUrl>
+    <PackageLicense>https://licenses.nuget.org/Apache-2.0</PackageLicense>
     <PackageProjectUrl>www.datacentric.org</PackageProjectUrl>
     <RepositoryUrl>https://github.com/datacentricorg/datacentric-cs</RepositoryUrl>
     <PackageTags>data-centric, mongodb</PackageTags>
