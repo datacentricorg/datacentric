@@ -25,20 +25,30 @@ namespace DataCentric
         /// <summary>
         /// Convert System.DateTime with Kind=Utc to Instant.
         ///
-        /// Error message if equal to the default constructed value
-        /// or if the timezone is not UTC.
+        /// Converts default constructed DateTime to Instant.Empty.
+        ///
+        /// Error message if the timezone is not UTC.
         /// </summary>
         public static Instant ToInstant(this DateTime value)
         {
-            // Error message if equal to the default constructed value
-            // or if the timezone is not UTC.
-            if (value == default) throw new Exception("Default constructed DateTime value is not valid.");
+            // Error message if the timezone is not UTC.
             if (value.Kind != DateTimeKind.Utc) throw new Exception("DateTime can only be converted to Instant when its Kind=UTC.");
 
-            // Convert to millisecond precision using fields
-            return InstantUtil.FromFields(
-                value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second,
-                value.Millisecond, DateTimeZone.Utc);
+            if (value != default)
+            {
+                // If not default constructed value, convert
+                // to millisecond precision using fields
+                return InstantUtil.FromFields(
+                    value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second,
+                    value.Millisecond, DateTimeZone.Utc);
+            }
+            else
+            {
+                // Converts default constructed DateTime
+                // to Instant.Empty
+                return InstantUtil.Empty;
+            }
         }
     }
 }
+

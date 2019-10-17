@@ -147,39 +147,5 @@ namespace DataCentric
             if (value.HasValue) return value.Value.ToIsoString();
             else return null;
         }
-
-        /// <summary>
-        /// Convert to System.DateTime with Kind=Utc.
-        ///
-        /// Error message if equal to the default constructed value.
-        /// </summary>
-        public static DateTime ToUtcDateTime(this LocalDateTime value)
-        {
-            value.CheckHasValue();
-            return value.InUtc().ToDateTimeUtc();
-        }
-
-        /// <summary>
-        /// Convert to System.DateTime with Kind=Utc if set and null otherwise.
-        ///
-        /// Return null if equal to the default constructed value.
-        /// </summary>
-        public static DateTime? ToUtcDateTime(this LocalDateTime? value)
-        {
-            if (value.HasValue) return value.Value.ToUtcDateTime();
-            else return null;
-        }
-
-        /// <summary>
-        /// Convert to the least possible value of \texttt{RecordId}
-        /// with timestamp equal to \texttt{value}.
-        ///
-        /// Error message if equal to the default constructed value.
-        /// </summary>
-        public static RecordId ToRecordId(this LocalDateTime value)
-        {
-            value.CheckHasValue();
-            return new RecordId(value.ToUtcDateTime(), 0, 0, 0);
-        }
     }
 }

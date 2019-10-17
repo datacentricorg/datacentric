@@ -144,25 +144,41 @@ namespace DataCentric
         /// <summary>
         /// Convert to System.DateTime with Kind=Utc.
         ///
-        /// Error message if equal to the default constructed value.
-        ///
-        /// Use timeZone = DateTimeZone.Utc for the UTC timezone.
+        /// Converts Instant.Empty to default constructed DateTime and null to null.
         /// </summary>
-        public static DateTime ToUtcDateTime(this Instant value)
+        public static DateTime? ToDateTime(this Instant? value)
         {
-            value.CheckHasValue();
-            return value.InUtc().ToDateTimeUtc();
+            if (value.HasValue) return value.Value.ToDateTime();
+            else return null;
         }
 
         /// <summary>
-        /// Convert to System.DateTime with Kind=Utc if set and null otherwise.
+        /// Convert to System.DateTime with Kind=Utc.
         ///
-        /// Return null if null or equal to the default constructed value.
+        /// Error message if equal to the default constructed value.
         /// </summary>
-        public static DateTime? ToUtcDateTime(this Instant? value)
+        public static DateTime ToDateTime(this Instant value)
         {
-            if (value.HasValue) return value.Value.ToUtcDateTime();
-            else return null;
+            if (value != default)
+            {
+                // If not default constructed value, convert to DateTime
+                // with millisecond precision and Kind=Utc
+                DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(value.ToUnixTimeMilliseconds());
+                DateTime result = dateTimeOffset.UtcDateTime;
+
+                // Validate that Kind is set
+                if (result.Kind != DateTimeKind.Utc) throw new Exception("DateTime.Kind is not UTC when converted from Instant.");
+
+                return result;
+            }
+            else
+            {
+                // Converts Instant.Empty to default constructed DateTime
+                return new DateTime();
+            }
+
+            value.CheckHasValue();
+            return value.InUtc().ToDateTimeUtc();
         }
 
         /// <summary>
@@ -174,7 +190,7 @@ namespace DataCentric
         public static RecordId ToRecordId(this Instant value)
         {
             value.CheckHasValue();
-            return new RecordId(value.ToUtcDateTime(), 0, 0, 0);
+            return new RecordId((int)value.ToUnixTimeSeconds(), 0, 0, 0); // TODO - make ctor take Instant directly
         }
     }
 }

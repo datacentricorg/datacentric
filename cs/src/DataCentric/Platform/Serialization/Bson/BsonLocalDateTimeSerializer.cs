@@ -18,6 +18,7 @@ using System;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using NodaTime;
+using NodaTime.TimeZones;
 
 namespace DataCentric
 {
@@ -69,9 +70,7 @@ namespace DataCentric
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, LocalDateTime value)
         {
             // Convert to milliseconds since the Unix epoch
-            DateTime utcDateTime = value.ToUtcDateTime();
-            DateTimeOffset dateTimeOffset = new DateTimeOffset(utcDateTime);
-            long unixEpochMillis = dateTimeOffset.ToUnixTimeMilliseconds();
+            long unixEpochMillis = value.ToInstant(DateTimeZone.Utc).ToUnixTimeMilliseconds();
 
             // Write milliseconds since the Unix epoch to BSON
             context.Writer.WriteDateTime(unixEpochMillis);

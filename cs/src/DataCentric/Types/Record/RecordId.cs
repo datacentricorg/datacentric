@@ -301,19 +301,6 @@ namespace DataCentric
 
         //--- OPERATORS
 
-        /// <summary>
-        /// Converts UTC datetime to the smallest possible value of RecordId
-        /// generated within the same second as the timestamp.
-        ///
-        /// By convention, all datetime values are assumed to be in UTC timezone.
-        /// </summary>
-        public static implicit operator RecordId(LocalDateTime rhs)
-        {
-            var utcDateTime = rhs.ToUtcDateTime();
-            var result = new RecordId(utcDateTime, 0, 0, 0);
-            return result;
-        }
-
         /// <summary>True if the first RecordId is less than the second RecordId.</summary>
         public static bool operator <(RecordId lhs, RecordId rhs)
         {

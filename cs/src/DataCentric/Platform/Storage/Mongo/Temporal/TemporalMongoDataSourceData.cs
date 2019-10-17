@@ -379,7 +379,8 @@ namespace DataCentric
                 SavedByTime.CheckHasValue();
 
                 // Convert to the least value of RecordId with the specified timestamp
-                return SavedByTime.Value.ToRecordId();
+                throw new NotImplementedException(); // TODO - replace by a single field
+                return null; // SavedByTime.Value.ToRecordId();
             }
             else if (SavedByTime == null && SavedById != null)
             {
