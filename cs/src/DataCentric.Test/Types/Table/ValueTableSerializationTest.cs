@@ -141,7 +141,7 @@ namespace DataCentric.Test
             LocalTime localTimeValue = new LocalTime(10, 15, 30);
             LocalMinute localMinuteValue = new LocalMinute(10, 15);
             LocalDateTime localDateTimeValue = new LocalDateTime(2003, 5, 1,10, 15, 0);
-            Instant instantValue = new LocalDateTime(2003, 5, 1, 10, 15, 0).ToInstant();
+            Instant instantValue = new LocalDateTime(2003, 5, 1, 10, 15, 0).ToInstant(DateTimeZone.Utc);
 
             int valueTypeCount = valueTypes.Length;
             for (int rowIndex = 0; rowIndex < result.RowCount; rowIndex++)

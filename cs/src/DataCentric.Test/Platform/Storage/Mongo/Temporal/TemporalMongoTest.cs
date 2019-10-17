@@ -313,9 +313,9 @@ namespace DataCentric.Test
                     .Where(p => p.LocalDateTimeElement < new LocalDateTime(2003, 5, 1, 10, 15, 01))
                     .Where(p => p.LocalDateTimeElement > new LocalDateTime(2003, 5, 1, 10, 14, 59))
                     .Where(p => p.LocalDateTimeElement == new LocalDateTime(2003, 5, 1, 10, 15))
-                    .Where(p => p.InstantElement < new LocalDateTime(2003, 5, 1, 10, 15, 01).ToInstant())
-                    .Where(p => p.InstantElement > new LocalDateTime(2003, 5, 1, 10, 14, 59).ToInstant())
-                    .Where(p => p.InstantElement == new LocalDateTime(2003, 5, 1, 10, 15).ToInstant())
+                    .Where(p => p.InstantElement < new LocalDateTime(2003, 5, 1, 10, 15, 01).ToInstant(DateTimeZone.Utc))
+                    .Where(p => p.InstantElement > new LocalDateTime(2003, 5, 1, 10, 14, 59).ToInstant(DateTimeZone.Utc))
+                    .Where(p => p.InstantElement == new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(DateTimeZone.Utc))
                     .Where(p => p.StringElement2 == String.Empty)
                     .Where(p => p.KeyElement == new BaseSampleKey() {RecordName = "BB", RecordIndex = 2})
                     .SortBy(p => p.RecordName);
@@ -727,7 +727,7 @@ namespace DataCentric.Test
             rec.LocalTimeElement = new LocalTime(10, 15, 30); // 10:15:30
             rec.LocalMinuteElement = new LocalMinute(10, 15); // 10:15
             rec.LocalDateTimeElement = new LocalDateTime(2003, 5, 1, 10, 15); // 2003-05-01T10:15:
-            rec.InstantElement = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(); // 2003-05-01T10:15:00
+            rec.InstantElement = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(DateTimeZone.Utc); // 2003-05-01T10:15:00
             rec.EnumValue = SampleEnum.EnumValue2;
 
             var dataSet = context.GetDataSet(dataSetName, context.DataSet);
@@ -746,7 +746,7 @@ namespace DataCentric.Test
             rec.LocalTimeElement = new LocalTime(10, 15, 30); // 10:15:30
             rec.LocalMinuteElement = new LocalMinute(10, 15); // 10:15
             rec.LocalDateTimeElement = new LocalDateTime(2003, 5, 1, 10, 15); // 2003-05-01T10:15:00
-            rec.InstantElement = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(); // 2003-05-01T10:15:00
+            rec.InstantElement = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(DateTimeZone.Utc); // 2003-05-01T10:15:00
             rec.StringElement2 = String.Empty; // Test how empty value is recorded
             rec.DoubleElement2 = 200.0;
 
@@ -810,7 +810,7 @@ namespace DataCentric.Test
             rec.LocalTimeElement = new LocalTime(10, 15, 30); // 10:15:30
             rec.LocalMinuteElement = new LocalMinute(10, 15); // 10:15
             rec.LocalDateTimeElement = new LocalDateTime(2003, 5, 1, 10, 15); // 2003-05-01T10:15:00
-            rec.InstantElement = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(); // 2003-05-01T10:15:00
+            rec.InstantElement = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(DateTimeZone.Utc); // 2003-05-01T10:15:00
             rec.OtherStringElement2 = String.Empty; // Test how empty value is recorded
             rec.OtherDoubleElement2 = 200.0;
 
@@ -830,7 +830,7 @@ namespace DataCentric.Test
             rec.LocalTimeElement = new LocalTime(10, 15, 30); // 10:15:30
             rec.LocalMinuteElement = new LocalMinute(10, 15); // 10:15
             rec.LocalDateTimeElement = new LocalDateTime(2003, 5, 1, 10, 15); // 2003-05-01T10:15:00
-            rec.InstantElement = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(); // 2003-05-01T10:15:00
+            rec.InstantElement = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(DateTimeZone.Utc); // 2003-05-01T10:15:00
             rec.OtherStringElement3 = String.Empty; // Test how empty value is recorded
             rec.OtherDoubleElement3 = 200.0;
 

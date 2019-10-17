@@ -116,21 +116,28 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Convert Instant to LocalDateTime in UTC timezone.
+        /// Convert Instant to LocalDateTime in the specified timezone.
+        ///
+        /// Convert InstantUtil.Empty to LocalDateTimeUtil.Empty.
+        ///
+        /// Use timeZone = DateTimeZone.Utc for the UTC timezone.
         /// </summary>
-        public static LocalDateTime ToLocalDateTime(this Instant value)
+        public static LocalDateTime ToLocalDateTime(this Instant value, DateTimeZone timeZone)
         {
-            return value.InUtc().LocalDateTime;
+            if (value == InstantUtil.Empty) return LocalDateTimeUtil.Empty;
+            else return value.InZone(timeZone).LocalDateTime;
         }
 
         /// <summary>
-        /// Convert Instant to LocalDateTime in UTC timezone.
+        /// Convert Instant to LocalDateTime in the specified timezone.
         ///
-        /// Return null if argument is null.
+        /// Converts InstantUtil.Empty to LocalDateTimeUtil.Empty and null to null.
+        ///
+        /// Use timeZone = DateTimeZone.Utc for the UTC timezone.
         /// </summary>
-        public static LocalDateTime? ToInstant(this Instant? value)
+        public static LocalDateTime? ToLocalDateTime(this Instant? value, DateTimeZone timeZone)
         {
-            if (value.HasValue) return value.Value.ToLocalDateTime();
+            if (value.HasValue) return value.Value.ToLocalDateTime(timeZone);
             else return null;
         }
 
@@ -138,6 +145,8 @@ namespace DataCentric
         /// Convert to System.DateTime with Kind=Utc.
         ///
         /// Error message if equal to the default constructed value.
+        ///
+        /// Use timeZone = DateTimeZone.Utc for the UTC timezone.
         /// </summary>
         public static DateTime ToUtcDateTime(this Instant value)
         {

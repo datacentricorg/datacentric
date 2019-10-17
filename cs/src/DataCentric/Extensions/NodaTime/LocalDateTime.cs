@@ -51,21 +51,38 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Convert LocalDateTime to Instant assuming it is in UTC timezone.
+        /// Convert LocalDateTime in the specified timezone to Instant.
+        ///
+        /// Converts LocalDateTimeUtil.Empty to InstantUtil.Empty.
+        ///
+        /// Use timeZone = DateTimeZone.Utc for the UTC timezone.
         /// </summary>
-        public static Instant ToInstant(this LocalDateTime value)
+        public static Instant ToInstant(this LocalDateTime value, DateTimeZone timeZone)
         {
-            return value.InUtc().ToInstant();
+            if (value == LocalDateTimeUtil.Empty)
+            {
+                return InstantUtil.Empty;
+            }
+            else
+            {
+                // Use lenient conversion to avoid an error when during
+                // the daylight savings time clock change the same local
+                // datetime repeats twice. In this case the earlier of
+                // the alternatives will be used.
+                return value.InZoneLeniently(timeZone).ToInstant();
+            }
         }
 
         /// <summary>
-        /// Convert LocalDateTime to Instant assuming it is in UTC timezone.
+        /// Convert LocalDateTime in the specified timezone to Instant.
         ///
-        /// Return null if argument is null.
+        /// Converts LocalDateTimeUtil.Empty to InstantUtil.Empty and null to null.
+        ///
+        /// Use timeZone = DateTimeZone.Utc for the UTC timezone.
         /// </summary>
-        public static Instant? ToInstant(this LocalDateTime? value)
+        public static Instant? ToInstant(this LocalDateTime? value, DateTimeZone timeZone)
         {
-            if (value.HasValue) return value.Value.ToInstant();
+            if (value.HasValue) return value.Value.ToInstant(timeZone);
             else return null;
         }
 

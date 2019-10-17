@@ -200,7 +200,7 @@ namespace DataCentric
         public override string ToString()
         {
             // First part of the serialized value is the timestamp
-            string creationTimeString = this.ToLocalDateTime().AsString().Replace('T', ' '); // TODO - improve or use T in RecordId serialization
+            string creationTimeString = this.ToInstant().AsString(); // TODO - Refactor ToString()
 
             // Second part of the serialized value is 16 byte hexadecimal string
             var c = new char[16];
@@ -269,20 +269,19 @@ namespace DataCentric
             // Set to empty value in case the method exits early
             recId = default(RecordId);
 
-            // RecordId is serialized using the following format yyyy-mm-dd hh:mm:ss 0000000000000000
-            // Exit if the string length is not 36
-            if (string.IsNullOrEmpty(s) || s.Length != 36) return false;
+            // RecordId is serialized using the following format yyyy-mm-ddThh:mm:ss.fffZ 0000000000000000
+            // Exit if the string length is not 37
+            if (string.IsNullOrEmpty(s) || s.Length != 37) return false;
 
             // The next step is to tokenize the input string.
             // Exit unless the string has three tokens.
             string[] tokens = s.Split(' ');
-            if (tokens.Length != 3) return false;
+            if (tokens.Length != 2) return false;
 
             // Concatenate and the first two tokens with T separator and then try to
             // parse them as LocalDateTime using strict format yyyy-mm-ddThh:mm:ss
             DateTime d;
-            string dateTimeString = string.Join("T", tokens[0], tokens[1]);
-            if (!DateTime.TryParse(dateTimeString, null, DateTimeStyles.RoundtripKind, out d))
+            if (!DateTime.TryParse(tokens[0], null, DateTimeStyles.RoundtripKind, out d))
             {
                 return false;
             }
@@ -292,7 +291,7 @@ namespace DataCentric
 
             // Try to parse the third token to a byte array
             byte[] bytes;
-            if (!BsonUtils.TryParseHexString(tokens[2], out bytes)) return false;
+            if (!BsonUtils.TryParseHexString(tokens[1], out bytes)) return false;
 
             // Populate the first integer from timestamp
             // and the two remaining integers from the byte array
@@ -396,11 +395,11 @@ namespace DataCentric
         ///
         /// Error message if equal to the default constructed value.
         /// </summary>
-        public static LocalDateTime ToLocalDateTime(this RecordId value)
+        public static Instant ToInstant(this RecordId value)
         {
             value.CheckHasValue();
 
-            var result = value.CreationTime.ToLocalDateTime();
+            var result = value.CreationTime.ToInstant();
             return result;
         }
 
@@ -409,9 +408,9 @@ namespace DataCentric
         ///
         /// Return null if equal to the default constructed value.
         /// </summary>
-        public static LocalDateTime? ToLocalDateTime(this RecordId? value)
+        public static Instant? ToInstant(this RecordId? value)
         {
-            if (value.HasValue) return value.Value.ToLocalDateTime();
+            if (value.HasValue) return value.Value.ToInstant();
             else return null;
         }
     }

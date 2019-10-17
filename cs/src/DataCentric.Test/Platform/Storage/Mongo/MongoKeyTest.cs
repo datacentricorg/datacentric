@@ -42,7 +42,7 @@ namespace DataCentric.Test
                 record.LocalTimeToken = new LocalTime(10, 15, 30); // 10:15:30
                 record.LocalMinuteToken = new LocalMinute(10, 15); // 10:15
                 record.LocalDateTimeToken = new LocalDateTime(2003, 5, 1, 10, 15); // 2003-05-01T10:15:00
-                record.InstantToken = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(); // 2003-05-01T10:15:00
+                record.InstantToken = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(DateTimeZone.Utc); // 2003-05-01T10:15:00
                 record.EnumToken = SampleEnum.EnumValue2;
 
                 // Verify key serialization
@@ -77,7 +77,7 @@ namespace DataCentric.Test
                 record.LocalTimeToken = new LocalTime(10, 15, 30); // 10:15:30
                 record.LocalMinuteToken = new LocalMinute(10, 15); // 10:15
                 record.LocalDateTimeToken = new LocalDateTime(2003, 5, 1, 10, 15); // 2003-05-01T10:15:00
-                record.InstantToken = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(); // 2003-05-01T10:15:00
+                record.InstantToken = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(DateTimeZone.Utc); // 2003-05-01T10:15:00
                 record.EnumToken = SampleEnum.EnumValue2;
 
                 // Verify key serialization

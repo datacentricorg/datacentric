@@ -23,59 +23,22 @@ namespace DataCentric
     public static class DateTimeExtensions
     {
         /// <summary>
-        /// Return true unless equal to the default constructed value.
+        /// Convert System.DateTime with Kind=Utc to Instant.
         ///
-        /// Default constructed value is not a valid value for this type.
+        /// Error message if equal to the default constructed value
+        /// or if the timezone is not UTC.
         /// </summary>
-        public static bool HasValue(this DateTime value)
+        public static Instant ToInstant(this DateTime value)
         {
-            return value != default;
-        }
+            // Error message if equal to the default constructed value
+            // or if the timezone is not UTC.
+            if (value == default) throw new Exception("Default constructed DateTime value is not valid.");
+            if (value.Kind != DateTimeKind.Utc) throw new Exception("DateTime can only be converted to Instant when its Kind=UTC.");
 
-        /// <summary>Return false if null or equal to the default constructed value.</summary>
-        public static bool HasValue(this DateTime? value)
-        {
-            return value.HasValue && value.HasValue();
-        }
-
-        /// <summary>
-        /// Error message if equal to the default constructed value or if \texttt{Kind != Utc}.
-        /// </summary>
-        public static void CheckHasValue(this DateTime value)
-        {
-            if (!value.HasValue()) throw new Exception("Required DateTime value is not set.");
-            if (value.Kind != DateTimeKind.Utc) throw new Exception("DateTime.Kind is not UTC.");
-        }
-
-        /// <summary>
-        /// Error message if null or equal to the default constructed value or if \texttt{Kind != Utc}.
-        /// </summary>
-        public static void CheckHasValue(this DateTime? value)
-        {
-            if (!value.HasValue()) throw new Exception("Required DateTime value is not set.");
-            if (value.Value.Kind != DateTimeKind.Utc) throw new Exception("DateTime.Kind is not UTC.");
-        }
-
-        /// <summary>
-        /// Convert System.DateTime with Kind=Utc to LocalDateTime.
-        ///
-        /// Error message if equal to the default constructed value.
-        /// </summary>
-        public static LocalDateTime ToLocalDateTime(this DateTime value)
-        {
-            value.CheckHasValue();
-            return LocalDateTime.FromDateTime(value);
-        }
-
-        /// <summary>
-        /// Convert System.DateTime with Kind=Utc to LocalDateTime if set and null otherwise.
-        ///
-        /// Return null if equal to the default constructed value.
-        /// </summary>
-        public static LocalDateTime? ToLocalDateTime(this DateTime? value)
-        {
-            if (value.HasValue) return value.Value.ToLocalDateTime();
-            else return null;
+            // Convert to millisecond precision using fields
+            return InstantUtil.FromFields(
+                value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second,
+                value.Millisecond, DateTimeZone.Utc);
         }
     }
 }

@@ -98,7 +98,7 @@ namespace DataCentric
         {
             // Parse to LocalDateTime first, them convert to UTC instant.
             LocalDateTime localDateTime = LocalDateTimeUtil.FromIsoLong(value);
-            Instant result = localDateTime.ToInstant();
+            Instant result = localDateTime.ToInstant(DateTimeZone.Utc);
             return result;
         }
 
@@ -107,16 +107,15 @@ namespace DataCentric
         /// year, month, day, hour, minute, second, and millisecond, and
         /// the specified DateTimeZone.
         ///
-        /// Use DateTimeZone.Utc as the last argument to this method to
-        /// perform conversion in UTC timezone.
+        /// Use timeZone = DateTimeZone.Utc for the UTC timezone.
         /// </summary>
-        public static Instant FromFields(int year, int month, int day, int hour, int minute, int second, int millisecond)
+        public static Instant FromFields(int year, int month, int day, int hour, int minute, int second, int millisecond, DateTimeZone timeZone)
         {
             // Create local date from the specified fields
             var localDateTime = new LocalDateTime(year, month, day, hour, minute, second, millisecond);
 
             // Convert to instant using the specified timezone
-            var result = localDateTime.InZone(timeZone).ToInstant()------
+            var result = localDateTime.ToInstant(timeZone);
             return result;
         }
     }

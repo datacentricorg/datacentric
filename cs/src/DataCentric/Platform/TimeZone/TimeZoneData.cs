@@ -80,7 +80,7 @@ namespace DataCentric
         /// example America/New_York.
         /// </summary>
         [BsonRequired]
-        public DateTimeZone TimeZone { get; private set; }
+        public DateTimeZone TimeZone { get; private set; } // TODO - convert to method
 
         /// <summary>
         /// Set Context property and perform validation of the record's data,
