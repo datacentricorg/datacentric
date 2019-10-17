@@ -200,7 +200,7 @@ namespace DataCentric
         public override string ToString()
         {
             // First part of the serialized value is the timestamp
-            string creationTimeString = this.ToLocalDateTime().AsString();
+            string creationTimeString = this.ToLocalDateTime().AsString().Replace('T', ' '); // TODO - improve or use T in RecordId serialization
 
             // Second part of the serialized value is 16 byte hexadecimal string
             var c = new char[16];
@@ -251,7 +251,7 @@ namespace DataCentric
             }
             else
             {
-                var message = string.Format("'{0}' is not a valid 24 digit hex string.", s);
+                var message = string.Format("'{0}' is not a valid RecordId string.", s);
                 throw new FormatException(message);
             }
         }
