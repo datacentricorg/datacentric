@@ -24,6 +24,20 @@ namespace DataCentric.Test
     /// <summary>Unit tests for LocalDate.</summary>
     public class LocalDateTest
     {
+        /// <summary>Test properties of the empty (default constructed) value.</summary>
+        [Fact]
+        public void Empty()
+        {
+            using (var context = new UnitTestContext(this))
+            {
+                var empty = new LocalDate();
+                context.Log.Assert(empty == LocalDateUtil.Empty, "empty == LocalDateUtil.Empty");
+                context.Log.Assert(empty.HasValue() == false, "empty.HasValue() == false");
+                context.Log.Assert(empty.ToIsoString() == String.Empty, "empty.ToIsoString() == String.Empty");
+                context.Log.Assert(empty.AsString() == String.Empty, "empty.AsString() == String.Empty");
+            }
+        }
+
         /// <summary>Test roundtrip serialization.</summary>
         [Fact]
         public void Roundtrip()

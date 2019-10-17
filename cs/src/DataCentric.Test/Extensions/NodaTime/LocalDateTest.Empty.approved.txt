@@ -1,0 +1,4 @@
+Verify: empty == LocalDateUtil.Empty
+Verify: empty.HasValue() == false
+Verify: empty.ToIsoString() == String.Empty
+Verify: empty.AsString() == String.Empty
