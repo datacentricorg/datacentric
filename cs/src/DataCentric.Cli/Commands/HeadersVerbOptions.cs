@@ -4,7 +4,7 @@ using CommandLine;
 namespace DataCentric.Cli
 {
     [Verb("headers", HelpText = "Generate c++ header files c# assemblies.")]
-    public class HeadersVerbOptions
+    public class HeadersOptions
     {
         [Option('a', "assembly", HelpText = "Paths to assemblies to extract types.")]
         public IEnumerable<string> Assemblies { get; set; }

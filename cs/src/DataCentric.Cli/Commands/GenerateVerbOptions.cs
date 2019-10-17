@@ -3,7 +3,7 @@
 namespace DataCentric.Cli
 {
     [Verb("generate", HelpText = "Generate c++ header files from declarations.")]
-    public class GenerateVerbOptions
+    public class GenerateOptions
     {
         [Option('i', "input", Required = true, HelpText = "Path to declarations location.")]
         public string InputFolder { get; set; }

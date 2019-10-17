@@ -4,7 +4,7 @@ using CommandLine;
 namespace DataCentric.Cli
 {
     [Verb("run", HelpText = "Execute handler.")]
-    public class RunVerbOptions
+    public class RunOptions
     {
         [Option('s', "source", Required = true, HelpText = "Source environment - folder for file storage and connection string for DB.")]
         public string Source { get; set; }

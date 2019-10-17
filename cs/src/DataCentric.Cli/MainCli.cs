@@ -44,37 +44,37 @@ namespace DataCentric.Cli
                 {
                     Console.Write("$ ");
                     args = Console.ReadLine()?.Split(' ');
-                    ParserResult<object> parseInteractiveResult = Parser.Default.ParseArguments<RunVerbOptions,
-                        ExtractVerbOptions,
-                        TestVerbOptions,
-                        GenerateVerbOptions,
-                        HeadersVerbOptions,
-                        CsvConvertVerbOptions,
-                        ExitVerbOptions>(args);
+                    ParserResult<object> parseInteractiveResult = Parser.Default.ParseArguments<RunOptions,
+                        ExtractOptions,
+                        TestOptions,
+                        GenerateOptions,
+                        HeadersOptions,
+                        CsvConvertOptions,
+                        ExitOptions>(args);
 
                     if (parseInteractiveResult is Parsed<object> parsedInteractive)
                     {
                         switch (parsedInteractive.Value)
                         {
-                            case RunVerbOptions runOptions:
+                            case RunOptions runOptions:
                                 DoRun(runOptions);
                                 break;
-                            case ExtractVerbOptions extractOptions:
+                            case ExtractOptions extractOptions:
                                 DoExtract(extractOptions);
                                 break;
-                            case TestVerbOptions testOptions:
+                            case TestOptions testOptions:
                                 DoTest(testOptions);
                                 break;
-                            case GenerateVerbOptions generateOptions:
+                            case GenerateOptions generateOptions:
                                 DoGenerate(generateOptions);
                                 break;
-                            case HeadersVerbOptions headersOptions:
+                            case HeadersOptions headersOptions:
                                 DoHeadersGenerate(headersOptions);
                                 break;
-                            case CsvConvertVerbOptions convertOptions:
+                            case CsvConvertOptions convertOptions:
                                 DoCsvConvert(convertOptions);
                                 break;
-                            case ExitVerbOptions _:
+                            case ExitOptions _:
                                 return 0;
                             default:
                                 return -1;
@@ -89,37 +89,37 @@ namespace DataCentric.Cli
             }
 
             // Single command mode
-            ParserResult<object> parseResult = Parser.Default.ParseArguments<RunVerbOptions,
-                ExtractVerbOptions,
-                TestVerbOptions,
-                GenerateVerbOptions,
-                HeadersVerbOptions,
-                CsvConvertVerbOptions,
-                ExitVerbOptions>(args);
+            ParserResult<object> parseResult = Parser.Default.ParseArguments<RunOptions,
+                ExtractOptions,
+                TestOptions,
+                GenerateOptions,
+                HeadersOptions,
+                CsvConvertOptions,
+                ExitOptions>(args);
 
             if (parseResult is Parsed<object> parsed)
             {
                 switch (parsed.Value)
                 {
-                    case RunVerbOptions runOptions:
+                    case RunOptions runOptions:
                         DoRun(runOptions);
                         return 0;
-                    case ExtractVerbOptions extractOptions:
+                    case ExtractOptions extractOptions:
                         DoExtract(extractOptions);
                         return 0;
-                    case TestVerbOptions testOptions:
+                    case TestOptions testOptions:
                         DoTest(testOptions);
                         return 0;
-                    case GenerateVerbOptions generateOptions:
+                    case GenerateOptions generateOptions:
                         DoGenerate(generateOptions);
                         return 0;
-                    case HeadersVerbOptions headersOptions:
+                    case HeadersOptions headersOptions:
                         DoHeadersGenerate(headersOptions);
                         break;
-                    case CsvConvertVerbOptions convertOptions:
+                    case CsvConvertOptions convertOptions:
                         DoCsvConvert(convertOptions);
                         break;
-                    case ExitVerbOptions _:
+                    case ExitOptions _:
                         return 0;
                 }
             }
@@ -130,7 +130,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Convert records stored in csv format to mongo storage.
         /// </summary>
-        private static void DoCsvConvert(CsvConvertVerbOptions convertOptions)
+        private static void DoCsvConvert(CsvConvertOptions convertOptions)
         {
             DbNameKey dbName = new DbNameKey
             {
@@ -193,7 +193,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Helper method to create and init instance of handler class.
         /// </summary>
-        private static TRecord CreateHandler<TKey, TBaseRecord, TRecord>(IContext context, RunVerbOptions options)
+        private static TRecord CreateHandler<TKey, TBaseRecord, TRecord>(IContext context, RunOptions options)
             where TKey : TypedKey<TKey, TBaseRecord>, new()
             where TRecord : TBaseRecord
             where TBaseRecord : TypedRecord<TKey, TBaseRecord>
@@ -228,7 +228,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Corresponds to CLI "run" keyword. Executes handler specified by run options.
         /// </summary>
-        public static void DoRun(RunVerbOptions options)
+        public static void DoRun(RunOptions options)
         {
             Type recordType = ActivatorUtil.ResolveType(options.Type, ActivatorSettings.Assemblies)
                               ?? throw new ArgumentException($"Type '{options.Type}' not found");
@@ -290,7 +290,7 @@ namespace DataCentric.Cli
         /// Corresponds to CLI "extract" keyword. Converts assembly types to declarations.
         /// ExtractVerbOptions.ProjectPath has been introduced to add project structure info to declarations.
         /// </summary>
-        public static void DoExtract(ExtractVerbOptions options)
+        public static void DoExtract(ExtractOptions options)
         {
             AssemblyCache assemblies = new AssemblyCache();
 
@@ -379,7 +379,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Corresponds to CLI "test" keyword. Executes specified test.
         /// </summary>
-        private static void DoTest(TestVerbOptions options)
+        private static void DoTest(TestOptions options)
         {
             AssemblyCache assemblies = new AssemblyCache();
 
@@ -407,7 +407,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Corresponds to CLI "generate" keyword. Converts given declarations to corresponding c++ files.
         /// </summary>
-        public static void DoGenerate(GenerateVerbOptions generateOptions)
+        public static void DoGenerate(GenerateOptions generateOptions)
         {
             var declFiles = DeclConverter.ReadDeclUnits(generateOptions.InputFolder);
 
@@ -449,7 +449,7 @@ namespace DataCentric.Cli
         /// Corresponds to CLI "headers" keyword. Converts given c# assemblies to corresponding c++ files.
         /// Combination of extract and generate keywords.
         /// </summary>
-        private static void DoHeadersGenerate(HeadersVerbOptions options)
+        private static void DoHeadersGenerate(HeadersOptions options)
         {
             AssemblyCache assemblies = new AssemblyCache();
 

@@ -4,7 +4,7 @@ using CommandLine;
 namespace DataCentric.Cli
 {
     [Verb("extract", HelpText = "Extract type info from assemblies and convert to declarations.")]
-    public class ExtractVerbOptions
+    public class ExtractOptions
     {
         [Option('a', "assembly", HelpText = "Paths to assemblies to extract types.")]
         public IEnumerable<string> Assemblies { get; set; }
