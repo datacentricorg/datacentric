@@ -79,8 +79,10 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Parse ISO 8601 8 digit int in yyyymmdd format, throw if invalid format.
+        /// Parse ISO 8601 int using yyyymmdd format.
         ///
+        /// 
+        /// Error message if the int does not match format.
         /// </summary>
         public static LocalDate ParseIsoInt(int value)
         {

@@ -62,6 +62,8 @@ namespace DataCentric
                     return !minuteValue.HasValue();
                 case LocalDateTime dateTimeValue:
                     return !dateTimeValue.HasValue();
+                case Instant instantValue:
+                    return !instantValue.HasValue();
                 case RecordId recIdValue:
                     return !recIdValue.HasValue();
                 default:
@@ -102,17 +104,20 @@ namespace DataCentric
                     // Standard formatting for long
                     return longValue.ToString();
                 case LocalDate dateValue:
-                    // Return ISO 8601 string in yyyy-mm-dd format
+                    // Return ISO 8601 string using yyyy-mm-dd format
                     return dateValue.ToIsoString();
                 case LocalTime timeValue:
-                    // Return ISO 8601 string in hh:mm:ss.fff format
+                    // Return ISO 8601 string using hh:mm:ss.fff format
                     return timeValue.ToIsoString();
                 case LocalMinute minuteValue:
-                    // Return ISO 8601 string in hh:mm format
+                    // Return ISO 8601 string using hh:mm format
                     return minuteValue.ToIsoString();
                 case LocalDateTime dateTimeValue:
-                    // Return to ISO 8601 string in yyyy-mm-ddThh:mm::ss.fff format
+                    // Return to ISO 8601 string using yyyy-mm-ddThh:mm::ss.fff format
                     return dateTimeValue.ToIsoString();
+                case Instant instantValue:
+                    // Return to ISO 8601 string using yyyy-mm-ddThh:mm::ss.fffZ format in UTC
+                    return instantValue.ToIsoString();
                 case IsoDayOfWeek isoDayOfWeekValue:
                     // Use short three-letter format for the day of week
                     switch (isoDayOfWeekValue)

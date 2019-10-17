@@ -19,99 +19,81 @@ using NodaTime;
 
 namespace DataCentric
 {
-    /// <summary>Extension methods for NodaTime.LocalDateTime.</summary>
-    public static class LocalDateTimeExtensions
+    /// <summary>Extension methods for NodaTime.Instant.</summary>
+    public static class InstantExtensions
     {
         /// <summary>
         /// Return true unless equal to the default constructed value.
         ///
         /// Default constructed value is not a valid value for this type.
         /// </summary>
-        public static bool HasValue(this LocalDateTime value)
+        public static bool HasValue(this Instant value)
         {
             return value != default;
         }
 
         /// <summary>Return false if null or equal to the default constructed value.</summary>
-        public static bool HasValue(this LocalDateTime? value)
+        public static bool HasValue(this Instant? value)
         {
             return value.HasValue && value.Value.HasValue();
         }
 
         /// <summary>Error message if equal to the default constructed value.</summary>
-        public static void CheckHasValue(this LocalDateTime value)
+        public static void CheckHasValue(this Instant value)
         {
             if (!value.HasValue()) throw new Exception("Required datetime value is not set.");
         }
 
         /// <summary>Error message if null or equal to the default constructed value.</summary>
-        public static void CheckHasValue(this LocalDateTime? value)
+        public static void CheckHasValue(this Instant? value)
         {
             if (!value.HasValue()) throw new Exception("Required datetime value is not set.");
         }
 
         /// <summary>
-        /// Convert LocalDateTime in UTC timezone to Instant.
-        /// </summary>
-        public static Instant ToUtcInstant(this LocalDateTime value)
-        {
-            return value.InUtc().ToInstant();
-        }
-
-        /// <summary>
-        /// Convert nullable LocalDateTime in UTC timezone to Instant.
-        ///
-        /// Return null if argument is null.
-        /// </summary>
-        public static Instant? ToUtcInstant(this LocalDateTime? value)
-        {
-            if (value.HasValue) return value.Value.ToUtcInstant();
-            else return null;
-        }
-
-        /// <summary>
-        /// Convert LocalDateTime to ISO 8601 long with millisecond precision using yyyymmddhhmmssfff format.
+        /// Convert Instant to ISO 8601 long with millisecond precision using yyyymmddhhmmssfff format in UTC.
         ///
         /// Error message if equal to the default constructed value.
         /// </summary>
-        public static long ToIsoLong(this LocalDateTime value)
+        public static long ToIsoLong(this Instant value)
         {
             // If default constructed datetime is passed, error message
-            if (value == LocalDateTimeUtil.Empty) throw new Exception(
-                $"Default constructed (empty) LocalDateTime {value} has been passed to ToIsoLong() method.");
+            if (value == InstantUtil.Empty) throw new Exception(
+                $"Default constructed (empty) Instant {value} has been passed to ToIsoLong() method.");
 
-            // LocalDateTime is serialized as readable ISO int64 in yyyymmddhhmmsssss format
-            int isoDate = value.Year * 10_000 + value.Month * 100 + value.Day;
-            int isoTime = value.Hour * 100_00_000 + value.Minute * 100_000 + value.Second * 1000 + value.Millisecond;
-            long result = ((long)isoDate) * 100_00_00_000 + (long)isoTime;
+            // Convert to zoned date time in UTC timezone, then take LocalDateTime component of the result
+            var dateTimeInUtc = value.InUtc().LocalDateTime;
+
+            // Convert the result to long
+            long result = dateTimeInUtc.ToIsoLong();
             return result;
         }
 
         /// <summary>
-        /// Convert LocalDateTime to ISO 8601 long with millisecond precision using yyyymmddhhmmssfff format.
+        /// Convert Instant to ISO 8601 long with millisecond precision using yyyymmddhhmmssfff format in UTC.
         ///
         /// Return null if equal to the default constructed value.
         /// </summary>
-        public static long? ToIsoLong(this LocalDateTime? value)
+        public static long? ToIsoLong(this Instant? value)
         {
             if (value.HasValue) return value.Value.ToIsoLong();
             else return null;
         }
 
         /// <summary>
-        /// Use strict ISO 8601 datetime pattern to millisecond precision without timezone:
+        /// Use strict ISO 8601 datetime pattern to millisecond precision in UTC timezone:
         ///
-        /// yyyy-mm-ddThh:mm::ss.fff
+        /// yyyy-mm-ddThh:mm::ss.fffZ
         ///
         /// Return String.Empty for the default constructed value.
         /// </summary>
-        public static string ToIsoString(this LocalDateTime value)
+        public static string ToIsoString(this Instant value)
         {
             // If default constructed datetime is passed, error message
-            if (value != LocalDateTimeUtil.Empty)
+            if (value != InstantUtil.Empty)
             {
                 // Use strict ISO 8601 datetime pattern to millisecond precision without timezone
-                string result = LocalDateTimeUtil.Pattern.Format(value);
+                string result = InstantUtil.Pattern.Format(value);
                 return result;
             }
             else
@@ -121,11 +103,13 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Convert LocalDate to ISO 8601 string in yyyy-mm-ddThh:mm::ss.fff format.
+        /// Use strict ISO 8601 datetime pattern to millisecond precision in UTC timezone:
         ///
-        /// Return null if equal to the default constructed value.
+        /// yyyy-mm-ddThh:mm::ss.fffZ
+        ///
+        /// Return String.Empty for null or the default constructed value.
         /// </summary>
-        public static string ToIsoString(this LocalDateTime? value)
+        public static string ToIsoString(this Instant? value)
         {
             if (value.HasValue) return value.Value.ToIsoString();
             else return null;
@@ -136,7 +120,7 @@ namespace DataCentric
         ///
         /// Error message if equal to the default constructed value.
         /// </summary>
-        public static DateTime ToUtcDateTime(this LocalDateTime value)
+        public static DateTime ToUtcDateTime(this Instant value)
         {
             value.CheckHasValue();
             return value.InUtc().ToDateTimeUtc();
@@ -145,9 +129,9 @@ namespace DataCentric
         /// <summary>
         /// Convert to System.DateTime with Kind=Utc if set and null otherwise.
         ///
-        /// Return null if equal to the default constructed value.
+        /// Return null if null or equal to the default constructed value.
         /// </summary>
-        public static DateTime? ToUtcDateTime(this LocalDateTime? value)
+        public static DateTime? ToUtcDateTime(this Instant? value)
         {
             if (value.HasValue) return value.Value.ToUtcDateTime();
             else return null;
@@ -159,7 +143,7 @@ namespace DataCentric
         ///
         /// Error message if equal to the default constructed value.
         /// </summary>
-        public static RecordId ToRecordId(this LocalDateTime value)
+        public static RecordId ToRecordId(this Instant value)
         {
             value.CheckHasValue();
             return new RecordId(value.ToUtcDateTime(), 0, 0, 0);

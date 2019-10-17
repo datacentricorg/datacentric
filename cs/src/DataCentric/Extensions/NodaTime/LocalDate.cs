@@ -32,7 +32,7 @@ namespace DataCentric
             return value != default;
         }
 
-        /// <summary>Convert LocalDate to to ISO 8601 8 digit int in yyyymmdd format.</summary>
+        /// <summary>Convert LocalDate to ISO 8601 int using yyyymmdd format.</summary>
         public static int ToIsoInt(this LocalDate value)
         {
             // If default constructed date is passed, error message

@@ -84,7 +84,9 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Parse ISO 8601 17 digit long in yyyymmddhhmmssfff format, throw if invalid format.
+        /// Parse ISO 8601 long with millisecond precision using yyyymmddhhmmssfff format.
+        ///
+        /// Error message if the long does not match format.
         /// </summary>
         public static LocalDateTime ParseIsoLong(long value)
         {
