@@ -80,19 +80,25 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Convert LocalDate to ISO 8601 string in yyyy-mm-ddThh:mm::ss.fff format.
+        /// Use strict ISO 8601 datetime pattern to millisecond precision without timezone:
         ///
-        /// Error message if equal to the default constructed value.
+        /// yyyy-mm-ddThh:mm::ss.fff
+        ///
+        /// Return String.Empty for the default constructed value.
         /// </summary>
         public static string ToIsoString(this LocalDateTime value)
         {
             // If default constructed datetime is passed, error message
-            if (value == LocalDateTimeUtil.Empty) throw new Exception(
-                $"Default constructed (empty) LocalDateTime {value} has been passed to ToIsoString() method.");
-
-            // LocalDateTime is serialized to ISO 8601 string in yyyy-mm-ddThh:mm::ss.fff format.
-            string result = LocalDateTimeUtil.Pattern.Format(value);
-            return result;
+            if (value != LocalDateTimeUtil.Empty)
+            {
+                // Use strict ISO 8601 datetime pattern to millisecond precision without timezone
+                string result = LocalDateTimeUtil.Pattern.Format(value);
+                return result;
+            }
+            else
+            {
+                return String.Empty;
+            }
         }
 
         /// <summary>

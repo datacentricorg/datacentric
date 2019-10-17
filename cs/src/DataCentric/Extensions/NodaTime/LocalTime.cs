@@ -46,10 +46,14 @@ namespace DataCentric
             return result;
         }
 
-        /// <summary>Convert LocalTime to ISO 8601 string in hh:mm:ss.fff format.</summary>
+        /// <summary>
+        /// Use strict ISO 8601 time pattern to millisecond precision without timezone:
+        ///
+        /// hh:mm::ss.fff
+        /// </summary>
         public static string ToIsoString(this LocalTime value)
         {
-            // LocalTime is serialized to ISO 8601 string in hh:mm:ss.fff format
+            // Use strict ISO 8601 time pattern to millisecond precision without timezone
             string result = LocalTimeUtil.Pattern.Format(value);
             return result;
         }
