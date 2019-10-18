@@ -127,8 +127,11 @@ namespace DataCentric
             // If default constructed datetime is passed, error message
             if (value != LocalDateTimeUtil.Empty)
             {
-                // Use strict ISO 8601 datetime pattern to millisecond precision without timezone
-                string result = LocalDateTimeUtil.Pattern.Format(value);
+                // To get strict ISO 8601 datetime pattern to millisecond precision
+                // where milliseconds are included even if the time falls on a second,
+                // convert to ISO calendar fields and serialize manually
+                string result = $"{value.Year:D4}-{value.Month:D2}-{value.Day:D2}T{value.Hour:D2}:{value.Minute:D2}:{value.Second:D2}.{value.Millisecond:D3}";
+
                 return result;
             }
             else
