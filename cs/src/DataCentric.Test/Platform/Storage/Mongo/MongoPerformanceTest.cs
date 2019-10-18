@@ -143,13 +143,13 @@ namespace DataCentric.Test
             List<B> records = new List<B>();
             for (int dataSetIndex = 0; dataSetIndex < dataSetCount_; ++dataSetIndex)
             {
-                RecordId dataSet = context.DataSource.As<MongoDataSourceData>().CreateOrderedRecordId();
+                RecordId dataSet = RecordId.GenerateNewId();
                 for (int versionIndex = 0; versionIndex < versionCount_; ++versionIndex)
                 {
                     for (int recordIndex = 0; recordIndex < recordCount_; ++recordIndex)
                     {
                         var rec = new B();
-                        rec.Id = context.DataSource.As<MongoDataSourceData>().CreateOrderedRecordId();
+                        rec.Id = RecordId.GenerateNewId();
                         rec.DataSet = dataSet;
                         rec.KeyElement = String.Concat("KeyPrefix", recordIndex);
                         rec.StringElement1 = (recordIndex % 2).ToString();

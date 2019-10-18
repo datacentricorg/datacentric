@@ -40,7 +40,7 @@ namespace DataCentric
         private InstanceType instanceType_;
         private string dbName_;
         private IMongoClient client_;
-        private ObjectId prevObjectId_ = ObjectId.Empty;
+        private RecordId prevRecordId_ = RecordId.Empty;
 
         //--- ELEMENTS
 
@@ -166,9 +166,9 @@ namespace DataCentric
 
             // Generate RecordId and check that it is later
             // than the previous generated RecordId
-            ObjectId generatedObjectId = ObjectId.GenerateNewId();
+            RecordId result = RecordId.GenerateNewId();
             int retryCounter = 0;
-            while (generatedObjectId <= prevObjectId_)
+            while (result <= prevRecordId_)
             {
                 // Getting inside the while loop will be very rare as this would
                 // require the increment to roll from max int to min int within
@@ -177,7 +177,7 @@ namespace DataCentric
 
                 // If new RecordId is not strictly greater than the previous one,
                 // keep generating new RecordIds until it changes
-                generatedObjectId = ObjectId.GenerateNewId();
+                result = RecordId.GenerateNewId();
             }
 
             // Report the number of retries
@@ -187,8 +187,7 @@ namespace DataCentric
             }
 
             // Update previous RecordId and return
-            prevObjectId_ = generatedObjectId;
-            RecordId result = new RecordId(generatedObjectId.ToByteArray());
+            prevRecordId_ = result;
             return result;
         }
 
