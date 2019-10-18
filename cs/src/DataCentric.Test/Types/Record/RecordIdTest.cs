@@ -29,12 +29,12 @@ namespace DataCentric.Test
         public void TestParse()
         {
             // Lowercase and uppercase
-            var recId1 = RecordId.Parse("2003-05-01T10:15:00Z 0000010002000abc");
-            var recId2 = RecordId.Parse("2003-05-01T10:15:00Z 0000010002000ABC");
+            var recId1 = RecordId.Parse("2003-05-01T10:15:00.000Z0000010002000abc");
+            var recId2 = RecordId.Parse("2003-05-01T10:15:00.000Z0000010002000ABC");
             Assert.True(recId1.ToByteArray().SequenceEqual(recId2.ToByteArray()));
 
             // ToString returns lower case
-            Assert.True(recId1.ToString() == "2003-05-01T10:15:00Z 0000010002000abc");
+            Assert.True(recId1.ToString() == "2003-05-01T10:15:00.000Z0000010002000abc");
             Assert.True(recId1.ToString() == recId2.ToString());
         }
 
@@ -43,12 +43,12 @@ namespace DataCentric.Test
         {
             // Lowercase and uppercase
             RecordId recId1, recId2;
-            Assert.True(RecordId.TryParse("2003-05-01T10:15:00Z 0000010002000abc", out recId1));
-            Assert.True(RecordId.TryParse("2003-05-01T10:15:00Z 0000010002000ABC", out recId2));
+            Assert.True(RecordId.TryParse("2003-05-01T10:15:00.000Z0000010002000abc", out recId1));
+            Assert.True(RecordId.TryParse("2003-05-01T10:15:00.000Z0000010002000ABC", out recId2));
             Assert.True(recId1.ToByteArray().SequenceEqual(recId2.ToByteArray()));
 
             // ToString returns lower case
-            Assert.True(recId1.ToString() == "2003-05-01T10:15:00Z 0000010002000abc");
+            Assert.True(recId1.ToString() == "2003-05-01T10:15:00.000Z0000010002000abc");
             Assert.True(recId1.ToString() == recId2.ToString());
         }
     }

@@ -27,33 +27,30 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>
-    /// A portable, ordered 12-byte record identifier that begins from
-    /// timestamp with one second resolution and has the following
-    /// properties irrespective of the database type:
-    /// 
-    /// * Unique within each database table
-    /// * Can be generated in strictly increasing order in a single thread
-    /// * Can be generated in increasing order across multiple threads
-    ///   or servers, but only up to one second resolution. Namely, two
-    ///   values generated within the same second are not guaranteed to be
-    ///   in an increasing order.
+    /// A 16-byte ordered record identifier that consists of two parts:
     ///
-    /// The purpose of creating a portable version of Object Id is to have a
-    /// unique, semi-ordered identifier that can be used not only with MongoDB
-    /// but also with relational databases and other storage.
+    /// * Int64 representing creation time recorded as the number of
+    ///   Unix ticks since the epoch (1970).
+    /// * Int64 that is randomized using machine-specific information.
     ///
-    /// Because RecordId does not require strict ordering across multiple
-    /// threads or servers, it can be used with distributed, web scale
-    /// databases where getting a strictly increasing auto-incremented
-    /// identifier would cause a performance hit.
+    /// RecordId has the same size as GUID and can be stored in a
+    /// data type designed for GUID.
     ///
-    /// For MongoDB, RecordId maps to ObjectID, and its implementation and
-    /// the algorithm for unique generation is the same as ObjectId in MongoDB
-    /// driver.
+    /// RecordId is unique in the absence of collision for its randomized
+    /// part, which by design has extremely low probability. It has the
+    /// following ordering guarantees:
     ///
-    /// For relational databases, RecordId may use the same algorithm or use
-    /// mapping to a combination of timestamp and an auto incremented field,
-    /// if available. 
+    /// * When generated in the same process, RecordIds are strictly ordered
+    ///   irrespective of how fast they are generated.
+    /// * When generated independently, RecordIds are ordered if generated
+    ///   more than one operating system clock event apart. While the
+    ///   underlying tick data type has 100ns resolution, the operating
+    ///   system clock more typically has one event per 10-20 ms.
+    ///
+    /// Because RecordId does not rely on auto-incremented database field,
+    /// it can be used with distributed, web scale databases where getting
+    /// a strictly increasing auto-incremented identifier would cause a
+    /// performance hit.
     /// </summary>
     public struct RecordId : IComparable<RecordId>, IEquatable<RecordId>
     {
@@ -90,47 +87,34 @@ namespace DataCentric
         }
 
         /// <summary>Create from datetime in UTC and the remaining bytes.</summary>
-        public RecordId(DateTime creationTime, byte[] remainingBytes)
+        public RecordId(Instant creationTime, byte[] remainingBytes)
         {
-            if (remainingBytes == null || remainingBytes.Length != 8)
-                throw new Exception($"Remaining bytes array passed to RecordId ctor must be 8 bytes long.");
+            long secondsSinceEpoch = creationTime.ToUnixTimeSeconds();
+            if (secondsSinceEpoch < int.MinValue || secondsSinceEpoch > int.MaxValue)
+                throw new Exception(
+                    $"CreationTime={creationTime} is out of range that can be represented by RecordId.");
 
-            _a = GetTimestampFromDateTime(creationTime);
+            if (remainingBytes == null || remainingBytes.Length != 8)
+                throw new Exception(
+                    $"Remaining bytes array passed to RecordId ctor must be 8 bytes long.");
+
+            _a = (int) secondsSinceEpoch;
             _b = (remainingBytes[0] << 24) | (remainingBytes[1] << 16) | (remainingBytes[2] << 8) | remainingBytes[3];
             _c = (remainingBytes[4] << 24) | (remainingBytes[5] << 16) | (remainingBytes[6] << 8) | remainingBytes[7];
         }
 
-        /// <summary>
-        /// Initializes a new instance of the RecordId class.
-        /// </summary>
-        /// <param name="timestamp">The timestamp (expressed as a DateTime).</param>
-        /// <param name="machine">The machine hash.</param>
-        /// <param name="pid">The PID.</param>
-        /// <param name="increment">The increment.</param>
-        public RecordId(DateTime timestamp, int machine, short pid, int increment)
-            : this(GetTimestampFromDateTime(timestamp), machine, pid, increment)
+        /// <summary>Create from datetime in UTC and randomization parameters.</summary>
+        public RecordId(Instant creationTime, int machine, short pid, int increment)
         {
-        }
+            long secondsSinceEpoch = creationTime.ToUnixTimeSeconds();
+            if (secondsSinceEpoch < int.MinValue || secondsSinceEpoch > int.MaxValue)
+                throw new Exception(
+                    $"CreationTime={creationTime} is out of range that can be represented by RecordId.");
 
-        /// <summary>
-        /// Initializes a new instance of the RecordId class.
-        /// </summary>
-        /// <param name="timestamp">The timestamp.</param>
-        /// <param name="machine">The machine hash.</param>
-        /// <param name="pid">The PID.</param>
-        /// <param name="increment">The increment.</param>
-        public RecordId(int timestamp, int machine, short pid, int increment)
-        {
-            if ((machine & 0xff000000) != 0)
-            {
-                throw new ArgumentOutOfRangeException("machine", "The machine value must be between 0 and 16777215 (it must fit in 3 bytes).");
-            }
-            if ((increment & 0xff000000) != 0)
-            {
-                throw new ArgumentOutOfRangeException("increment", "The increment value must be between 0 and 16777215 (it must fit in 3 bytes).");
-            }
+            if ((machine & 0xff000000) != 0) throw new Exception($"The machine value {machine} must be between 0 and 16777215 (it must fit in 3 bytes).");
+            if ((increment & 0xff000000) != 0) throw new Exception($"The increment value {increment} must be between 0 and 16777215 (it must fit in 3 bytes).");
 
-            _a = timestamp;
+            _a = (int) secondsSinceEpoch;
             _b = (machine << 8) | (((int)pid >> 8) & 0xff);
             _c = ((int)pid << 24) | increment;
         }
@@ -204,7 +188,7 @@ namespace DataCentric
         public override string ToString()
         {
             // First part of the serialized value is the timestamp
-            string creationTimeString = this.CreationTime.AsString(); // TODO - Refactor ToString()
+            string creationTimeString = this.CreationTime.AsString();
 
             // Second part of the serialized value is 16 byte hexadecimal string
             var c = new char[16];
@@ -226,8 +210,12 @@ namespace DataCentric
             c[15] = BsonUtils.ToHexChar(_c & 0x0f);
             string hex = new string(c);
 
-            // Serialized RecordId has the following format: yyyy-mm-dd hh:mm:ss bytes[16]
-            string result = string.Join(" ", creationTimeString, hex);
+            // RecordId is serialized using the following format:
+            //
+            // yyyy-mm-ddThh:mm:ss.fffZhhhhhhhhhhhhhhhh
+            //
+            // where h represents a hexadecimal digit (total of 16)
+            string result = creationTimeString + hex;
             return result;
         }
 
@@ -236,76 +224,79 @@ namespace DataCentric
         /// <summary>Generates a new RecordId with a unique value.</summary>
         public static RecordId GenerateNewId()
         {
-            int timestamp = GetTimestampFromDateTime(DateTime.UtcNow);
+            Instant creationTime = DateTime.UtcNow.ToInstant();
 
             // Only use low order 3 bytes
             int increment = Interlocked.Increment(ref __staticIncrement) & 0x00ffffff;
-            return new RecordId(timestamp, __staticMachine, __staticPid, increment);
+            return new RecordId(creationTime, __staticMachine, __staticPid, increment);
         }
 
         /// <summary>
         /// Parses a string and creates a new RecordId.
         ///
-        /// The string representation of RecordId has
-        /// the following format:
+        /// RecordId is serialized using the following format:
         ///
-        /// yyyy-mm-dd hh:mm:ss bytes[16]
+        /// yyyy-mm-ddThh:mm:ss.fffZhhhhhhhhhhhhhhhh
+        ///
+        /// where each h represents a hexadecimal digit (total of 16).
         /// </summary>
-        public static RecordId Parse(string s)
+        public static RecordId Parse(string value)
         {
-            if (s == null)
+            RecordId result;
+            if (TryParse(value, out result))
             {
-                throw new ArgumentNullException("s");
-            }
-
-            RecordId recId;
-            if (TryParse(s, out recId))
-            {
-                return recId;
+                return result;
             }
             else
-            {
-                var message = string.Format("'{0}' is not a valid RecordId string.", s);
-                throw new FormatException(message);
+            { 
+                throw new Exception(
+                    $"RecordId={value} does not consist of ISO timestamp in UTC (Z) " +
+                    $"timezone followed by hexadecimal string of length 16.");
             }
         }
 
         /// <summary>
         /// Tries to parse a string and create a new RecordId.
         ///
-        /// The string representation of RecordId has
-        /// the following format:
+        /// RecordId is serialized using the following format:
         ///
-        /// yyyy-mm-dd hh:mm:ss bytes[16]
+        /// yyyy-mm-ddThh:mm:ss.fffZhhhhhhhhhhhhhhhh
+        ///
+        /// where each h represents a hexadecimal digit (total of 16).
         /// </summary>
-        public static bool TryParse(string s, out RecordId recId)
+        public static bool TryParse(string value, out RecordId recId)
         {
+            // Return empty RecordId for null or empty string
+            if (string.IsNullOrEmpty(value))
+            {
+                recId = RecordId.Empty;
+                return true;
+            }
+
             // Set to empty value in case the method exits early
             recId = default(RecordId);
 
-            // RecordId is serialized using the following format yyyy-mm-ddThh:mm:ss.fffZ 0000000000000000
+            // RecordId is serialized using the following format:
+            //
+            // yyyy-mm-ddThh:mm:ss.fffZhhhhhhhhhhhhhhhh
+            //
+            // where each h represents a hexadecimal digit (total of 16)
+            //
             // Exit if the string length is not 37
-            if (string.IsNullOrEmpty(s) || s.Length != 37) return false;
+            if (value.Length != 40) return false;
 
-            // The next step is to tokenize the input string.
-            // Exit unless the string has three tokens.
-            string[] tokens = s.Split(' ');
-            if (tokens.Length != 2) return false;
-
-            // Concatenate and the first two tokens with T separator and then try to
-            // parse them as LocalDateTime using strict format yyyy-mm-ddThh:mm:ss
-            DateTime d;
-            if (!DateTime.TryParse(tokens[0], null, DateTimeStyles.RoundtripKind, out d))
+            // Parse creation time using strict format yyyy-mm-ddThh:mm:ss
+            Instant creationTime;
+            string creationTimeString = value.Substring(0, 24);
+            if (!InstantUtil.TryParse(creationTimeString, out creationTime))
             {
                 return false;
             }
 
-            // Create DateTime in UTC
-            DateTime creationTime = new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second, DateTimeKind.Utc);
-
             // Try to parse the third token to a byte array
             byte[] bytes;
-            if (!BsonUtils.TryParseHexString(tokens[1], out bytes)) return false;
+            string bytesString = value.Substring(24, 16);
+            if (!BsonUtils.TryParseHexString(bytesString, out bytes)) return false;
 
             // Populate the first integer from timestamp
             // and the two remaining integers from the byte array
@@ -392,16 +383,6 @@ namespace DataCentric
             {
                 return 0;
             }
-        }
-
-        private static int GetTimestampFromDateTime(DateTime timestamp)
-        {
-            var secondsSinceEpoch = (long)Math.Floor((BsonUtils.ToUniversalTime(timestamp) - BsonConstants.UnixEpoch).TotalSeconds);
-            if (secondsSinceEpoch < int.MinValue || secondsSinceEpoch > int.MaxValue)
-            {
-                throw new ArgumentOutOfRangeException("timestamp");
-            }
-            return (int)secondsSinceEpoch;
         }
 
         private static void FromByteArray(byte[] bytes, int offset, out int a, out int b, out int c)
