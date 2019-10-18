@@ -22,7 +22,7 @@ namespace DataCentric.Cli
 {
     /// <summary>Enum declaration.</summary>
     [Serializable]
-    [XmlRoot(ElementName = "Cl.Analyst.ClEnumDeclData")]
+    [XmlRoot]
     public class EnumDeclData : IDeclData
     {
 

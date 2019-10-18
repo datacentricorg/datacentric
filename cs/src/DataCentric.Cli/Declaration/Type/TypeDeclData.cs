@@ -23,7 +23,7 @@ namespace DataCentric.Cli
     /// <summary>Defines type declaration. A tag of entity type XML representation corresponds to each element of the type.
     /// The names of type elements and corresponding tags coincide.</summary>
     [Serializable]
-    [XmlRoot(ElementName = "Cl.Analyst.ClTypeDeclData")]
+    [XmlRoot]
     public class TypeDeclData : IDeclData
     {
         /// <summary>Module reference.</summary>

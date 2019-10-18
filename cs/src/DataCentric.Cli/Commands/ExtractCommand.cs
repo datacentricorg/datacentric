@@ -37,9 +37,6 @@ namespace DataCentric.Cli
         [Option('p', "project", HelpText = "Path to search for corresponding project location.")]
         public string ProjectPath { get; set; }
 
-        [Option('l', "legacy", HelpText = "Generates declarations in legacy format.", Default = false)]
-        public bool Legacy { get; set; }
-
         /// <summary>
         /// Corresponds to CLI "extract" keyword. Converts assembly types to declarations.
         /// ExtractVerbOptions.ProjectPath has been introduced to add project structure info to declarations.
@@ -93,9 +90,7 @@ namespace DataCentric.Cli
 
                 foreach (Type type in types)
                 {
-                    TypeDeclData decl = Legacy
-                                            ? DeclarationConvertor.TypeToDecl(type, docNavigator, projNavigator).ToLegacy()
-                                            : DeclarationConvertor.TypeToDecl(type, docNavigator, projNavigator);
+                    TypeDeclData decl = DeclarationConvertor.TypeToDecl(type, docNavigator, projNavigator);
 
                     string outputFolder = Path.Combine(OutputFolder, decl.Module.ModuleName.Replace('.','\\'));
                     Directory.CreateDirectory(outputFolder);
@@ -107,7 +102,7 @@ namespace DataCentric.Cli
                     Console.Write(" => ");
                     Console.WriteLine(outputFile);
 
-                    File.WriteAllText(outputFile, DeclarationSerializer.Serialize(decl, Legacy));
+                    File.WriteAllText(outputFile, DeclarationSerializer.Serialize(decl));
                 }
 
                 List<Type> enums = TypesExtractor.GetEnums(assembly, Types);
@@ -125,7 +120,7 @@ namespace DataCentric.Cli
                     Console.Write(" => ");
                     Console.WriteLine(outputFile);
 
-                    File.WriteAllText(outputFile, DeclarationSerializer.Serialize(decl, Legacy));
+                    File.WriteAllText(outputFile, DeclarationSerializer.Serialize(decl));
                 }
             }
         }

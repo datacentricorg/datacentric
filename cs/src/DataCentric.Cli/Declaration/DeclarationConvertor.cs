@@ -167,45 +167,6 @@ namespace DataCentric.Cli
             return decl;
         }
 
-        public static TypeDeclData ToLegacy(this TypeDeclData decl)
-        {
-            var valueTypes = new List<ValueDeclData>();
-
-            valueTypes.AddRange(decl.Elements?.Where(e => e.Value != null).Select(e => e.Value));
-
-            var handlerParams = decl.Declare?.Handlers?.SelectMany(d=>d.Params);
-            if (handlerParams != null)
-                valueTypes.AddRange(handlerParams.Where(p => p.Value != null).Select(p => p.Value));
-
-            var handlerReturns = decl.Declare?.Handlers?.Where(p => p.Return != null).Where(r => r.Return.Value != null);
-            if (handlerReturns!= null)
-                valueTypes.AddRange(handlerReturns.Select(r => r.Return.Value));
-
-            foreach (ValueDeclData value in valueTypes)
-            {
-                var legacyType =
-                    // Nullable to default
-                    value.Type == AtomicType.NullableBool     ? AtomicType.Bool :
-                    value.Type == AtomicType.NullableDateTime ? AtomicType.DateTime :
-                    value.Type == AtomicType.NullableDouble   ? AtomicType.Double :
-                    value.Type == AtomicType.NullableInt      ? AtomicType.Int :
-                    value.Type == AtomicType.NullableLong     ? AtomicType.Long :
-                    value.Type == AtomicType.NullableDate     ? AtomicType.Date :
-                    value.Type == AtomicType.NullableTime     ? AtomicType.Int :
-                    // Minute to int
-                    value.Type == AtomicType.NullableMinute   ? AtomicType.Int :
-                    value.Type == AtomicType.Minute           ? AtomicType.Int :
-                    // TODO Remove after RecordId support
-                    // value.Type == AtomicType.NullableRecordId ? AtomicType.RecordId :
-                    value.Type == AtomicType.RecordId         ? AtomicType.String :
-                    value.Type == AtomicType.NullableRecordId ? AtomicType.String :
-                                                                value.Type;
-                value.Type = legacyType;
-            }
-
-            return decl;
-        }
-
         /// <summary>
         /// Checks if given type is any of Data, Record&lt;,&gt;, RootRecord&lt;,&gt;
         /// </summary>

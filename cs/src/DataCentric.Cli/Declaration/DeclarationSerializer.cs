@@ -46,7 +46,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Serializes given declaration into UTF8 encoded and formatted string.
         /// </summary>
-        public static string Serialize<T>(T decl, bool isLegacy = false) where T : IDeclData
+        public static string Serialize<T>(T decl) where T : IDeclData
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
@@ -58,9 +58,7 @@ namespace DataCentric.Cli
                     serializer.Serialize(xmlWriter, decl, ns);
 
                 // Remove xml:nil and save to string
-                return isLegacy
-                           ? Encoding.UTF8.GetString(ms.ToArray()).Map(RemoveNilElements).Map(ChangeToLegacy)
-                           : Encoding.UTF8.GetString(ms.ToArray()).Map(RemoveNilElements);
+                return Encoding.UTF8.GetString(ms.ToArray()).Map(RemoveNilElements);
             }
         }
 
@@ -74,23 +72,6 @@ namespace DataCentric.Cli
             // Do not inline! Xml doesn't support remove operations during enumeration of the document.
             List<XElement> nils = document.Descendants().Where(IsNilElement).ToList();
             foreach (var element in nils) element.Remove();
-
-            return string.Join(Environment.NewLine, document.Declaration, document.ToString());
-        }
-
-        private static string ChangeToLegacy(string content)
-        {
-            XDocument document = XDocument.Parse(content);
-
-            List<XElement> moduleNodes = document.Descendants()
-                                                 .Where(x => x.Name == "ModuleName" && x.Parent?.Name == "Module").ToList();
-            foreach (var element in moduleNodes)
-                element.Name = "ModuleID";
-
-            List<XElement> languageNodes = document.Descendants()
-                                                   .Where(x => x.Name == "LanguageName" && x.Parent?.Name == "Language").ToList();
-            foreach (var element in languageNodes)
-                element.Name = "LanguageID";
 
             return string.Join(Environment.NewLine, document.Declaration, document.ToString());
         }
