@@ -103,15 +103,25 @@ namespace DataCentric
         }
 
         /// <summary>
+        /// Creates a new instance of Instant from LocalDateTime in UTC.
+        /// </summary>
+        public static Instant Utc(int year, int month, int day, int hour, int minute)
+        {
+            return Utc(year, month, day, hour, minute, 0, 0);
+        }
+
+        /// <summary>
         /// Creates a new instance of Instant from:
         /// 
         /// Year, Month, Day, Hour, and Minute
         ///
         /// in UTC.
         /// </summary>
-        public static Instant Utc(int year, int month, int day, int hour, int minute)
+        public static Instant Utc(LocalDateTime localDateTime)
         {
-            return Utc(year, month, day, hour, minute, 0, 0);
+            // Convert to Instant in UTC timezone.
+            var result = localDateTime.ToInstant(DateTimeZone.Utc);
+            return result;
         }
 
         /// <summary>
@@ -138,8 +148,8 @@ namespace DataCentric
             // Create local date from the specified fields
             var localDateTime = new LocalDateTime(year, month, day, hour, minute, second, millisecond);
 
-            // Convert to instant using the specified timezone
-            var result = localDateTime.ToInstant(DateTimeZone.Utc);
+            // Convert to Instant in UTC timezone.
+            var result = InstantUtil.Utc(localDateTime);
             return result;
         }
 
@@ -156,11 +166,25 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Creates a new instance of Instant from:
+        /// Create a new instance of Instant from LocalDateTime in the specified timezone.
+        ///
+        /// Use timeZone = DateTimeZone.Utc for the UTC timezone.
+        /// </summary>
+        public static Instant Zoned(LocalDateTime localDateTime, DateTimeZone timeZone)
+        {
+            // Convert to instant using the specified timezone
+            var result = localDateTime.ToInstant(timeZone);
+            return result;
+        }
+
+        /// <summary>
+        /// Create a new instance of Instant from:
         /// 
         /// Year, Month, Day, Hour, Minute, and Second
         ///
         /// in the specified timezone.
+        ///
+        /// Use timeZone = DateTimeZone.Utc for the UTC timezone.
         /// </summary>
         public static Instant Zoned(int year, int month, int day, int hour, int minute, int second, DateTimeZone timeZone)
         {
@@ -168,9 +192,11 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Initializes a new instance of Instant from the int fields for
-        /// year, month, day, hour, minute, second, and millisecond, and
-        /// the specified DateTimeZone.
+        /// Create a new instance of Instant from:
+        /// 
+        /// Year, Month, Day, Hour, Minute, Second, and Millisecond
+        ///
+        /// in the specified timezone.
         ///
         /// Use timeZone = DateTimeZone.Utc for the UTC timezone.
         /// </summary>
@@ -179,8 +205,8 @@ namespace DataCentric
             // Create local date from the specified fields
             var localDateTime = new LocalDateTime(year, month, day, hour, minute, second, millisecond);
 
-            // Convert to instant using the specified timezone
-            var result = localDateTime.ToInstant(timeZone);
+            // Convert to Instant in the specified timezone
+            var result = InstantUtil.Zoned(localDateTime, timeZone);
             return result;
         }
     }
