@@ -307,6 +307,18 @@ namespace DataCentric
             return true;
         }
 
+        /// <summary>
+        /// The smallest value of RecordId possible for
+        /// a given creation time.
+        ///
+        /// Any RecordId with the same creation time will
+        /// be greater than this value.
+        /// </summary>
+        public static RecordId FromCreationTime(Instant creationTime)
+        {
+            return new RecordId(creationTime, 0, 0, 0);
+        }
+
         //--- OPERATORS
 
         /// <summary>True if the first RecordId is less than the second RecordId.</summary>
@@ -333,13 +345,13 @@ namespace DataCentric
             return !(lhs == rhs);
         }
 
-        /// <summary>True if the first RecordId is greather than or equal to the second RecordId.</summary>
+        /// <summary>True if the first RecordId is greater than or equal to the second RecordId.</summary>
         public static bool operator >=(RecordId lhs, RecordId rhs)
         {
             return lhs.CompareTo(rhs) >= 0;
         }
 
-        /// <summary>True if the first RecordId is greather than the second RecordId.</summary>
+        /// <summary>True if the first RecordId is greater than the second RecordId.</summary>
         public static bool operator >(RecordId lhs, RecordId rhs)
         {
             return lhs.CompareTo(rhs) > 0;
