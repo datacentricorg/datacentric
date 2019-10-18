@@ -44,12 +44,12 @@ namespace DataCentric.Test
         {
             using (var context = new UnitTestContext(this))
             {
-                context.Log.Assert(InstantUtil.FromFields(2003, 5, 1, 10, 15, 30, 0, DateTimeZone.Utc).IsMillisecond(), "Whole milliseconds");
-                context.Log.Assert(!InstantUtil.FromFields(2003, 5, 1, 10, 15, 30, 0, DateTimeZone.Utc).PlusNanoseconds(100000).IsMillisecond(), "Fractional milliseconds");
-                context.Log.Assert(InstantUtil.FromFields(2003, 5, 1, 10, 15, 30, 0, DateTimeZone.Utc).IsSecond(), "Whole seconds");
-                context.Log.Assert(!InstantUtil.FromFields(2003, 5, 1, 10, 15, 30, 1, DateTimeZone.Utc).IsSecond(), "Fractional seconds");
-                context.Log.Assert(InstantUtil.FromFields(2003, 5, 1, 10, 15, 0, 0, DateTimeZone.Utc).IsMinute(), "Whole minutes");
-                context.Log.Assert(!InstantUtil.FromFields(2003, 5, 1, 10, 15, 1, 0, DateTimeZone.Utc).IsMinute(), "Fractional minutes");
+                context.Log.Assert(InstantUtil.Utc(2003, 5, 1, 10, 15, 30).IsMillisecond(), "Whole milliseconds");
+                context.Log.Assert(!InstantUtil.Utc(2003, 5, 1, 10, 15, 30).PlusNanoseconds(100000).IsMillisecond(), "Fractional milliseconds");
+                context.Log.Assert(InstantUtil.Utc(2003, 5, 1, 10, 15, 30, 0).IsSecond(), "Whole seconds");
+                context.Log.Assert(!InstantUtil.Utc(2003, 5, 1, 10, 15, 30, 1).IsSecond(), "Fractional seconds");
+                context.Log.Assert(InstantUtil.Utc(2003, 5, 1, 10, 15, 0).IsMinute(), "Whole minutes");
+                context.Log.Assert(!InstantUtil.Utc(2003, 5, 1, 10, 15, 1, 0).IsMinute(), "Fractional minutes");
             }
         }
 

@@ -38,9 +38,8 @@ namespace DataCentric
             {
                 // If not default constructed value, convert
                 // to millisecond precision using fields
-                return InstantUtil.FromFields(
-                    value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second,
-                    value.Millisecond, DateTimeZone.Utc);
+                return InstantUtil.Utc(
+                    value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, value.Millisecond);
             }
             else
             {

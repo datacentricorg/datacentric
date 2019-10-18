@@ -150,9 +150,9 @@ namespace DataCentric
         ///
         /// in the specified timezone.
         /// </summary>
-        public static Instant FromFields(int year, int month, int day, int hour, int minute, DateTimeZone timeZone)
+        public static Instant Zoned(int year, int month, int day, int hour, int minute, DateTimeZone timeZone)
         {
-            return FromFields(year, month, day, hour, minute, 0, 0, timeZone);
+            return Zoned(year, month, day, hour, minute, 0, 0, timeZone);
         }
 
         /// <summary>
@@ -162,9 +162,9 @@ namespace DataCentric
         ///
         /// in the specified timezone.
         /// </summary>
-        public static Instant FromFields(int year, int month, int day, int hour, int minute, int second, DateTimeZone timeZone)
+        public static Instant Zoned(int year, int month, int day, int hour, int minute, int second, DateTimeZone timeZone)
         {
-            return FromFields(year, month, day, hour, minute, second, 0, timeZone);
+            return Zoned(year, month, day, hour, minute, second, 0, timeZone);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace DataCentric
         ///
         /// Use timeZone = DateTimeZone.Utc for the UTC timezone.
         /// </summary>
-        public static Instant FromFields(int year, int month, int day, int hour, int minute, int second, int millisecond, DateTimeZone timeZone)
+        public static Instant Zoned(int year, int month, int day, int hour, int minute, int second, int millisecond, DateTimeZone timeZone)
         {
             // Create local date from the specified fields
             var localDateTime = new LocalDateTime(year, month, day, hour, minute, second, millisecond);
