@@ -51,6 +51,33 @@ namespace DataCentric
         }
 
         /// <summary>
+        /// Return true if the Instant falls precisely on minute start.
+        /// </summary>
+        public static bool IsMinute(this Instant value)
+        {
+            // Check if the value has whole number of ticks per minute 
+            return (value.ToUnixTimeTicks() % TimeSpan.TicksPerMinute) == 0;
+        }
+
+        /// <summary>
+        /// Return true if the Instant falls precisely on second start.
+        /// </summary>
+        public static bool IsSecond(this Instant value)
+        {
+            // Check if the value has whole number of ticks per second 
+            return (value.ToUnixTimeTicks() % TimeSpan.TicksPerSecond) == 0;
+        }
+
+        /// <summary>
+        /// Return true if the Instant falls precisely on millisecond start.
+        /// </summary>
+        public static bool IsMillisecond(this Instant value)
+        {
+            // Check if the value has whole number of ticks per second 
+            return (value.ToUnixTimeTicks() % TimeSpan.TicksPerMillisecond) == 0;
+        }
+
+        /// <summary>
         /// Convert Instant to ISO 8601 long with millisecond precision using yyyymmddhhmmssfff format in UTC.
         ///
         /// Error message if equal to the default constructed value.
