@@ -188,7 +188,10 @@ namespace DataCentric
         public override string ToString()
         {
             // First part of the serialized value is the timestamp
-            string creationTimeString = this.CreationTime.AsString();
+            // serialized using fixed width method to millisecond precision
+            // in UTC timezone, where milliseconds are included even if the
+            // time falls on a second.
+            string creationTimeString = this.CreationTime.ToFixedWidthIsoString();
 
             // Second part of the serialized value is 16 byte hexadecimal string
             var c = new char[16];

@@ -74,19 +74,6 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Convert LocalDateTime in the specified timezone to Instant.
-        ///
-        /// Converts LocalDateTimeUtil.Empty to InstantUtil.Empty and null to null.
-        ///
-        /// Use timeZone = DateTimeZone.Utc for the UTC timezone.
-        /// </summary>
-        public static Instant? ToInstant(this LocalDateTime? value, DateTimeZone timeZone)
-        {
-            if (value.HasValue) return value.Value.ToInstant(timeZone);
-            else return null;
-        }
-
-        /// <summary>
         /// Convert LocalDateTime to ISO 8601 long with millisecond precision using yyyymmddhhmmssfff format.
         ///
         /// Error message if equal to the default constructed value.
@@ -105,17 +92,6 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Convert LocalDateTime to ISO 8601 long with millisecond precision using yyyymmddhhmmssfff format.
-        ///
-        /// Return null if equal to the default constructed value.
-        /// </summary>
-        public static long? ToIsoLong(this LocalDateTime? value)
-        {
-            if (value.HasValue) return value.Value.ToIsoLong();
-            else return null;
-        }
-
-        /// <summary>
         /// Use strict ISO 8601 datetime pattern to millisecond precision without timezone:
         ///
         /// yyyy-mm-ddThh:mm::ss.fff
@@ -123,6 +99,30 @@ namespace DataCentric
         /// Return String.Empty for the default constructed value.
         /// </summary>
         public static string ToIsoString(this LocalDateTime value)
+        {
+            // If default constructed datetime is passed, error message
+            if (value != LocalDateTimeUtil.Empty)
+            {
+                // Use strict ISO 8601 datetime pattern to millisecond precision without timezone
+                string result = LocalDateTimeUtil.Pattern.Format(value);
+                return result;
+            }
+            else
+            {
+                return String.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Use strict ISO 8601 datetime pattern to millisecond precision
+        /// in UTC timezone, where milliseconds are included even if the
+        /// time falls on a second:
+        ///
+        /// yyyy-mm-ddThh:mm::ss.fff
+        ///
+        /// Return String.Empty for the default constructed value.
+        /// </summary>
+        public static string ToFixedWidthIsoString(this LocalDateTime value)
         {
             // If default constructed datetime is passed, error message
             if (value != LocalDateTimeUtil.Empty)
@@ -138,17 +138,6 @@ namespace DataCentric
             {
                 return String.Empty;
             }
-        }
-
-        /// <summary>
-        /// Convert LocalDate to ISO 8601 string in yyyy-mm-ddThh:mm::ss.fff format.
-        ///
-        /// Return null if equal to the default constructed value.
-        /// </summary>
-        public static string ToIsoString(this LocalDateTime? value)
-        {
-            if (value.HasValue) return value.Value.ToIsoString();
-            else return null;
         }
     }
 }

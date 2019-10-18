@@ -78,7 +78,8 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Convert Instant to ISO 8601 long with millisecond precision using yyyymmddhhmmssfff format in UTC.
+        /// Convert Instant to ISO 8601 long with millisecond precision
+        /// using yyyymmddhhmmssfff format in UTC.
         ///
         /// Error message if equal to the default constructed value.
         /// </summary>
@@ -97,24 +98,38 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Convert Instant to ISO 8601 long with millisecond precision using yyyymmddhhmmssfff format in UTC.
-        ///
-        /// Return null if equal to the default constructed value.
-        /// </summary>
-        public static long? ToIsoLong(this Instant? value)
-        {
-            if (value.HasValue) return value.Value.ToIsoLong();
-            else return null;
-        }
-
-        /// <summary>
-        /// Use strict ISO 8601 datetime pattern to millisecond precision in UTC timezone:
+        /// Use strict ISO 8601 datetime pattern to millisecond precision
+        /// in UTC timezone:
         ///
         /// yyyy-mm-ddThh:mm::ss.fffZ
         ///
         /// Return String.Empty for the default constructed value.
         /// </summary>
         public static string ToIsoString(this Instant value)
+        {
+            // If default constructed datetime is passed, error message
+            if (value != InstantUtil.Empty)
+            {
+                // Use strict ISO 8601 datetime pattern to millisecond precision without timezone
+                string result = InstantUtil.Pattern.Format(value);
+                return result;
+            }
+            else
+            {
+                return String.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Use strict ISO 8601 datetime pattern to millisecond precision
+        /// in UTC timezone, where milliseconds are included even if the
+        /// time falls on a second:
+        ///
+        /// yyyy-mm-ddThh:mm::ss.fffZ
+        ///
+        /// Return String.Empty for the default constructed value.
+        /// </summary>
+        public static string ToFixedWidthIsoString(this Instant value)
         {
             // If default constructed datetime is passed, error message
             if (value != InstantUtil.Empty)
@@ -134,19 +149,6 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Use strict ISO 8601 datetime pattern to millisecond precision in UTC timezone:
-        ///
-        /// yyyy-mm-ddThh:mm::ss.fffZ
-        ///
-        /// Return String.Empty for null or the default constructed value.
-        /// </summary>
-        public static string ToIsoString(this Instant? value)
-        {
-            if (value.HasValue) return value.Value.ToIsoString();
-            else return null;
-        }
-
-        /// <summary>
         /// Convert Instant to LocalDateTime in the specified timezone.
         ///
         /// Convert InstantUtil.Empty to LocalDateTimeUtil.Empty.
@@ -159,29 +161,6 @@ namespace DataCentric
             else return value.InZone(timeZone).LocalDateTime;
         }
 
-        /// <summary>
-        /// Convert Instant to LocalDateTime in the specified timezone.
-        ///
-        /// Converts InstantUtil.Empty to LocalDateTimeUtil.Empty and null to null.
-        ///
-        /// Use timeZone = DateTimeZone.Utc for the UTC timezone.
-        /// </summary>
-        public static LocalDateTime? ToLocalDateTime(this Instant? value, DateTimeZone timeZone)
-        {
-            if (value.HasValue) return value.Value.ToLocalDateTime(timeZone);
-            else return null;
-        }
-
-        /// <summary>
-        /// Convert to System.DateTime with Kind=Utc.
-        ///
-        /// Converts Instant.Empty to default constructed DateTime and null to null.
-        /// </summary>
-        public static DateTime? ToDateTime(this Instant? value)
-        {
-            if (value.HasValue) return value.Value.ToDateTime();
-            else return null;
-        }
 
         /// <summary>
         /// Convert to System.DateTime with Kind=Utc.
@@ -207,9 +186,6 @@ namespace DataCentric
                 // Converts Instant.Empty to default constructed DateTime
                 return new DateTime();
             }
-
-            value.CheckHasValue();
-            return value.InUtc().ToDateTimeUtc();
         }
     }
 }
