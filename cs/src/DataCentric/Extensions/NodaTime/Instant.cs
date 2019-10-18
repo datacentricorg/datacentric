@@ -207,17 +207,5 @@ namespace DataCentric
             value.CheckHasValue();
             return value.InUtc().ToDateTimeUtc();
         }
-
-        /// <summary>
-        /// Convert to the least possible value of \texttt{RecordId}
-        /// with timestamp equal to \texttt{value}.
-        ///
-        /// Error message if equal to the default constructed value.
-        /// </summary>
-        public static RecordId ToRecordId(this Instant value)
-        {
-            value.CheckHasValue();
-            return new RecordId((int)value.ToUnixTimeSeconds(), 0, 0, 0); // TODO - make ctor take Instant directly
-        }
     }
 }

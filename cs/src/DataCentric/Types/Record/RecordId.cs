@@ -70,10 +70,10 @@ namespace DataCentric
         /// <summary>Empty value.</summary>
         public static RecordId Empty { get; } = default(RecordId);
 
-        /// <summary>Timestamp for which RecordId was created.</summary>
-        public DateTime CreationTime
+        /// <summary>Creation time of the current object.</summary>
+        public Instant CreationTime
         {
-            get { return BsonConstants.UnixEpoch.AddSeconds(_a); }
+            get => Instant.FromUnixTimeSeconds(_a);
         }
 
         //--- CONSTRUCTORS
@@ -204,7 +204,7 @@ namespace DataCentric
         public override string ToString()
         {
             // First part of the serialized value is the timestamp
-            string creationTimeString = this.ToInstant().AsString(); // TODO - Refactor ToString()
+            string creationTimeString = this.CreationTime.AsString(); // TODO - Refactor ToString()
 
             // Second part of the serialized value is 16 byte hexadecimal string
             var c = new char[16];
@@ -437,30 +437,6 @@ namespace DataCentric
         public static void CheckHasValue(this RecordId? value)
         {
             if (!value.HasValue()) throw new Exception("Required RecordId value is not set.");
-        }
-
-        /// <summary>
-        /// Convert RecordId to its creation time in UTC. This method has one second resolution.
-        ///
-        /// Error message if equal to the default constructed value.
-        /// </summary>
-        public static Instant ToInstant(this RecordId value)
-        {
-            value.CheckHasValue();
-
-            var result = value.CreationTime.ToInstant();
-            return result;
-        }
-
-        /// <summary>
-        /// Convert RecordId to its creation time. This method has one second resolution.
-        ///
-        /// Return null if equal to the default constructed value.
-        /// </summary>
-        public static Instant? ToInstant(this RecordId? value)
-        {
-            if (value.HasValue) return value.Value.ToInstant();
-            else return null;
         }
     }
 }
