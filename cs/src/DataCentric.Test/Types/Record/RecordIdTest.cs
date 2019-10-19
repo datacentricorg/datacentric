@@ -29,27 +29,27 @@ namespace DataCentric.Test
         public void TestParse()
         {
             // Lowercase and uppercase
-            var recId1 = RecordId.Parse("2003-05-01T10:15:00.000Z0000010002000abc");
-            var recId2 = RecordId.Parse("2003-05-01T10:15:00.000Z0000010002000ABC");
-            Assert.True(recId1.ToByteArray().SequenceEqual(recId2.ToByteArray()));
+            var recordId1 = RecordId.Parse("2003-05-01T10:15:00.000Z0000010002000abc");
+            var recordId2 = RecordId.Parse("2003-05-01T10:15:00.000Z0000010002000ABC");
+            Assert.True(recordId1.ToByteArray().SequenceEqual(recordId2.ToByteArray()));
 
             // ToString returns lower case
-            Assert.True(recId1.ToString() == "2003-05-01T10:15:00.000Z0000010002000abc");
-            Assert.True(recId1.ToString() == recId2.ToString());
+            Assert.True(recordId1.ToString() == "2003-05-01T10:15:00.000Z0000010002000abc");
+            Assert.True(recordId1.ToString() == recordId2.ToString());
         }
 
         [Fact]
         public void TestTryParse()
         {
             // Lowercase and uppercase
-            RecordId recId1, recId2;
-            Assert.True(RecordId.TryParse("2003-05-01T10:15:00.000Z0000010002000abc", out recId1));
-            Assert.True(RecordId.TryParse("2003-05-01T10:15:00.000Z0000010002000ABC", out recId2));
-            Assert.True(recId1.ToByteArray().SequenceEqual(recId2.ToByteArray()));
+            RecordId recordId1, recordId2;
+            Assert.True(RecordId.TryParse("2003-05-01T10:15:00.000Z0000010002000abc", out recordId1));
+            Assert.True(RecordId.TryParse("2003-05-01T10:15:00.000Z0000010002000ABC", out recordId2));
+            Assert.True(recordId1.ToByteArray().SequenceEqual(recordId2.ToByteArray()));
 
             // ToString returns lower case
-            Assert.True(recId1.ToString() == "2003-05-01T10:15:00.000Z0000010002000abc");
-            Assert.True(recId1.ToString() == recId2.ToString());
+            Assert.True(recordId1.ToString() == "2003-05-01T10:15:00.000Z0000010002000abc");
+            Assert.True(recordId1.ToString() == recordId2.ToString());
         }
     }
 }

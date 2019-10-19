@@ -267,17 +267,17 @@ namespace DataCentric
         ///
         /// where each h represents a hexadecimal digit (total of 16).
         /// </summary>
-        public static bool TryParse(string value, out RecordId recId)
+        public static bool TryParse(string value, out RecordId recordId)
         {
             // Return empty RecordId for null or empty string
             if (string.IsNullOrEmpty(value))
             {
-                recId = RecordId.Empty;
+                recordId = RecordId.Empty;
                 return true;
             }
 
             // Set to empty value in case the method exits early
-            recId = default(RecordId);
+            recordId = default(RecordId);
 
             // RecordId is serialized using the following format:
             //
@@ -303,7 +303,7 @@ namespace DataCentric
 
             // Populate the first integer from timestamp
             // and the two remaining integers from the byte array
-            recId = new RecordId(creationTime, bytes);
+            recordId = new RecordId(creationTime, bytes);
             return true;
         }
 

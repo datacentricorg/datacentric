@@ -304,7 +304,7 @@ namespace DataCentric
 
                     // Create a list of RecordIds for the records obtained using
                     // dataset lookup rules for the keys in the batch
-                    var recIds = new List<RecordId>();
+                    var recordIds = new List<RecordId>();
                     string currentKey = null;
                     foreach (var obj in projectedIdQueryable)
                     {
@@ -330,7 +330,7 @@ namespace DataCentric
                         {
                             if (collection_.DataSource.FreezeImports)
                             {
-                                RecordId recId = obj.Id;
+                                RecordId recordId = obj.Id;
                                 RecordId recordDataSet = obj.DataSet;
                                 foreach (RecordId dataSetId in descendingLookupList)
                                 {
@@ -349,9 +349,9 @@ namespace DataCentric
                                         // Add to dictionary only if found in the list of batch Ids
                                         // Otherwise this is not the latest record in the latest
                                         // dataset (subject to freeze rule) and it should be skipped.
-                                        if (batchIdsHashSet.Contains(recId))
+                                        if (batchIdsHashSet.Contains(recordId))
                                         {
-                                            recIds.Add(recId);
+                                            recordIds.Add(recordId);
                                         }
                                     }
 
@@ -361,7 +361,7 @@ namespace DataCentric
                                     // is therefore excluded by the freeze rule and we should not
                                     // yet set the new current key and skip the rest of the records
                                     // for this key
-                                    if (dataSetId < recId) break;
+                                    if (dataSetId < recordId) break;
                                 }
                             }
                             else
@@ -374,23 +374,23 @@ namespace DataCentric
                                 // Add to dictionary only if found in the list of batch Ids
                                 // Otherwise this is not the latest record in the latest
                                 // dataset and it should be skipped.
-                                RecordId recId = obj.Id;
-                                if (batchIdsHashSet.Contains(recId))
+                                RecordId recordId = obj.Id;
+                                if (batchIdsHashSet.Contains(recordId))
                                 {
-                                    recIds.Add(recId);
+                                    recordIds.Add(recordId);
                                 }
                             }
                         }
                     }
 
                     // If the list of record Ids is empty, continue
-                    if (recIds.Count == 0) break;
+                    if (recordIds.Count == 0) break;
 
                     // Finally, retrieve the records only for the Ids in the list
                     //
                     // Create a typed queryable
                     IQueryable<TRecord> recordQueryable = collection_.TypedCollection.AsQueryable()
-                        .Where(p => recIds.Contains(p.Id));
+                        .Where(p => recordIds.Contains(p.Id));
 
                     // Populate a dictionary of records by Id
                     var recordDict = new Dictionary<RecordId, TRecord>();

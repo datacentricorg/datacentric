@@ -258,18 +258,18 @@ namespace DataCentric
             // order for this instance of the data source class always, and across
             // all processes and machine if they are not created within the same
             // second.
-            var recId = CreateOrderedRecordId();
+            var recordId = CreateOrderedRecordId();
 
             // RecordId of the record must be strictly later
             // than RecordId of the dataset where it is stored
-            if (recId <= saveTo)
+            if (recordId <= saveTo)
                 throw new Exception(
-                    $"Attempting to save a record with RecordId={recId} that is later " +
+                    $"Attempting to save a record with RecordId={recordId} that is later " +
                     $"than RecordId={saveTo} of the dataset where it is being saved.");
 
             // Assign ID and DataSet, and only then initialize, because
             // initialization code may use record.ID and record.DataSet
-            record.Id = recId;
+            record.Id = recordId;
             record.DataSet = saveTo;
             record.Init(Context);
 
@@ -300,8 +300,8 @@ namespace DataCentric
             // order for this instance of the data source class always, and across
             // all processes and machine if they are not created within the same
             // second.
-            var recId = CreateOrderedRecordId();
-            record.Id = recId;
+            var recordId = CreateOrderedRecordId();
+            record.Id = recordId;
 
             // Assign dataset and then initialize, as the results of
             // initialization may depend on record.DataSet

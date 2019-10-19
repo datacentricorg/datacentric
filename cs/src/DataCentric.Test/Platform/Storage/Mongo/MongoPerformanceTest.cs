@@ -344,29 +344,29 @@ namespace DataCentric.Test
                     .Select(p => new Cursor {Id = p.Id, KeyElement = p.KeyElement});
 
                 // Get RecordIds of the query results
-                int recIdCount = 0;
+                int recordIdCount = 0;
                 HashSet<string> keys = new HashSet<string>();
-                List<RecordId> recIds = new List<RecordId>();
+                List<RecordId> recordIds = new List<RecordId>();
                 foreach (var obj in query)
                 {
                     if (keys.Add(obj.KeyElement))
                     {
-                        recIds.Add(obj.Id);
-                        recIdCount++;
+                        recordIds.Add(obj.Id);
+                        recordIdCount++;
                     }
                 }
 
                 // Iterate over RecordIds
                 int recordCount = 0;
                 var recordQuery = collection.AsQueryable()
-                    .Where(p => recIds.Contains(p.Id));
+                    .Where(p => recordIds.Contains(p.Id));
                 foreach (var record in recordQuery)
                 {
                     sum += record.DoubleElement;
                     recordCount++;
                 }
 
-                context.Log.Verify($"Query returned {recordCount} records from {recIdCount} RecordIds.");
+                context.Log.Verify($"Query returned {recordCount} records from {recordIdCount} RecordIds.");
                 context.Log.Verify($"Sum(DoubleElement)={sum}");
             }
         }
