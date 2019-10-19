@@ -482,7 +482,7 @@ namespace DataCentric.Test
                 }
 
                 // Set revision time constraint
-                context.DataSource.CastTo<DataSourceData>().CutoffTime = cutoffRecordId;
+                context.DataSource.CastTo<TemporalMongoDataSourceData>().CutoffTime = cutoffRecordId;
 
                 // Get each record by RecordId
                 context.Log.Verify("Load records by RecordId with CutoffTime constraint");
@@ -521,7 +521,7 @@ namespace DataCentric.Test
                 // Clear revision time constraint before exiting to avoid an error
                 // about deleting readonly database. The error occurs because
                 // revision time constraint makes the data source readonly.
-                context.DataSource.CastTo<DataSourceData>().CutoffTime = null;
+                context.DataSource.CastTo<TemporalMongoDataSourceData>().CutoffTime = null;
             }
         }
 

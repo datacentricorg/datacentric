@@ -36,11 +36,6 @@ namespace DataCentric
     /// </summary>
     public abstract class DataSourceData : RootRecord<DataSourceKey, DataSourceData>, IDataSource
     {
-        private Dictionary<string, RecordId> dataSetDict_ { get; } = new Dictionary<string, RecordId>();
-        private Dictionary<RecordId, HashSet<RecordId>> importDict_ { get; } = new Dictionary<RecordId, HashSet<RecordId>>();
-
-        //--- ELEMENTS
-
         /// <summary>Unique data source name.</summary>
         [BsonRequired]
         public string DataSourceName { get; set; }
@@ -63,12 +58,6 @@ namespace DataCentric
         /// for a cutoff time cannot modify its view.
         /// </summary>
         public bool? ReadOnly { get; set; }
-
-        /// <summary>
-        /// Records where _id is greater than CutoffTime will be
-        /// ignored by the data source.
-        /// </summary>
-        public RecordId? CutoffTime { get; set; }
 
         //--- METHODS
 
@@ -208,27 +197,6 @@ namespace DataCentric
         //--- METHODS
 
         /// <summary>
-        /// Error message if the data source is readonly.
-        ///
-        /// This method also provides an alert if CutoffTime
-        /// is set but ReadOnly flag is not because  is not
-        /// possible to write to a view of the data as of a
-        /// past point in time.
-        /// </summary>
-        public void CheckNotReadOnly()
-        {
-            if (ReadOnly != null && ReadOnly.Value)
-                throw new Exception(
-                    $"Attempting write operation for readonly data source {DataSourceName}. " +
-                    $"A data source is readonly if either (a) ReadOnly flag is set, or (b) " +
-                    $"CutoffTime is set.");
-            else if (CutoffTime != null)
-                throw new Exception(
-                    $"Data source {DataSourceName} has CutoffTime set, but is not ReadOnly. " +
-                    $"It is not possible to write to a view of the data as of a past point in time.");
-        }
-
-        /// <summary>
         /// Get RecordId of the dataset with the specified name.
         ///
         /// All of the previously requested dataSetIds are cached by
@@ -238,35 +206,7 @@ namespace DataCentric
         ///
         /// Returns null if not found.
         /// </summary>
-        public RecordId? GetDataSetOrNull(string dataSetName, RecordId loadFrom)
-        {
-            if (dataSetDict_.TryGetValue(dataSetName, out RecordId result))
-            {
-                // Check if already cached, return if found
-                return result;
-            }
-            else
-            {
-                // Otherwise load from storage (this also updates the dictionaries)
-                DataSetKey dataSetKey = new DataSetKey() { DataSetName = dataSetName };
-                DataSetData dataSetData = this.LoadOrNull(dataSetKey, loadFrom);
-
-                // If not found, return RecordId.Empty
-                if (dataSetData == null) return null;
-
-                // If found, cache result in RecordId dictionary
-                dataSetDict_[dataSetName] = dataSetData.Id;
-
-                // Build and cache dataset lookup list if not found
-                if (!importDict_.TryGetValue(dataSetData.Id, out HashSet<RecordId> importSet))
-                {
-                    importSet = BuildDataSetLookupList(dataSetData);
-                    importDict_.Add(dataSetData.Id, importSet);
-                }
-
-                return dataSetData.Id;
-            }
-        }
+        public abstract RecordId? GetDataSetOrNull(string dataSetName, RecordId loadFrom);
 
         /// <summary>
         /// Save new version of the dataset.
@@ -277,144 +217,6 @@ namespace DataCentric
         ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
-        public void SaveDataSet(DataSetData dataSetData, RecordId saveTo)
-        {
-            // Save dataset to storage. This updates its Id
-            // to the new RecordId created during save
-            Save<DataSetData>(dataSetData, saveTo);
-
-            // Update dataset dictionary with the new Id
-            dataSetDict_[dataSetData.Key] = dataSetData.Id;
-
-            // Update lookup list dictionary
-            var lookupList = BuildDataSetLookupList(dataSetData);
-            importDict_.Add(dataSetData.Id, lookupList);
-        }
-
-        /// <summary>
-        /// Returns enumeration of import datasets for specified dataset data,
-        /// including imports of imports to unlimited depth with cyclic
-        /// references and duplicates removed.
-        ///
-        /// The list will not include datasets that are after the value of
-        /// CutoffTime if specified, or their imports (including
-        /// even those imports that are earlier than the constraint).
-        /// </summary>
-        public IEnumerable<RecordId> GetDataSetLookupList(RecordId loadFrom)
-        {
-            // Root dataset has no imports (there is not even a record
-            // where these imports can be specified).
-            //
-            // Return list containing only the root dataset (RecordId.Empty) and exit
-            if (loadFrom == RecordId.Empty)
-            {
-                return new RecordId[] {RecordId.Empty};
-            }
-
-            if (importDict_.TryGetValue(loadFrom, out HashSet<RecordId> result))
-            {
-                // Check if the lookup list is already cached, return if yes
-                return result;
-            }
-            else
-            {
-                // Otherwise load from storage (returns null if not found)
-                DataSetData dataSetData = LoadOrNull<DataSetData>(loadFrom);
-
-                if (dataSetData == null) throw new Exception($"Dataset with RecordId={loadFrom} is not found.");
-                if (dataSetData.DataSet != RecordId.Empty) throw new Exception($"Dataset with RecordId={loadFrom} is not stored in root dataset.");
-
-                // Build the lookup list
-                result = BuildDataSetLookupList(dataSetData);
-
-                // Add to dictionary and return
-                importDict_.Add(loadFrom, result);
-                return result;
-            }
-        }
-
-        //--- PRIVATE
-
-        /// <summary>
-        /// Builds hashset of import datasets for specified dataset data,
-        /// including imports of imports to unlimited depth with cyclic
-        /// references and duplicates removed. This method uses cached lookup
-        /// list for the import datasets but not for the argument dataset.
-        ///
-        /// The list will not include datasets that are after the value of
-        /// CutoffTime if specified, or their imports (including
-        /// even those imports that are earlier than the constraint).
-        ///
-        /// This overload of the method will return the result hashset.
-        ///
-        /// This private helper method should not be used directly.
-        /// It provides functionality for the public API of this class.
-        /// </summary>
-        private HashSet<RecordId> BuildDataSetLookupList(DataSetData dataSetData)
-        {
-            // Delegate to the second overload
-            var result = new HashSet<RecordId>();
-            BuildDataSetLookupList(dataSetData, result);
-            return result;
-        }
-
-        /// <summary>
-        /// Builds hashset of import datasets for specified dataset data,
-        /// including imports of imports to unlimited depth with cyclic
-        /// references and duplicates removed. This method uses cached lookup
-        /// list for the import datasets but not for the argument dataset.
-        ///
-        /// The list will not include datasets that are after the value of
-        /// CutoffTime if specified, or their imports (including
-        /// even those imports that are earlier than the constraint).
-        ///
-        /// This overload of the method will return the result hashset.
-        ///
-        /// This private helper method should not be used directly.
-        /// It provides functionality for the public API of this class.
-        /// </summary>
-        private void BuildDataSetLookupList(DataSetData dataSetData, HashSet<RecordId> result)
-        {
-            // Return if the dataset is null or has no imports
-            if (dataSetData == null) return;
-
-            // Error message if dataset has no Id or Key set
-            dataSetData.Id.CheckHasValue();
-            dataSetData.Key.CheckHasValue();
-
-            if (CutoffTime != null && dataSetData.Id > CutoffTime.Value)
-            {
-                // Do not add if revision time constraint is set and is before this dataset.
-                // In this case the import datasets should not be added either, even if they
-                // do not fail the revision time constraint
-                return;
-            }
-
-            // Add self to the result
-            result.Add(dataSetData.Id);
-
-            // Add imports to the result
-            if (dataSetData.Imports != null)
-            {
-                foreach (var dataSetId in dataSetData.Imports)
-                {
-                    // Dataset cannot include itself as its import
-                    if (dataSetData.Id == dataSetId)
-                        throw new Exception(
-                            $"Dataset {dataSetData.Key} with RecordId={dataSetData.Id} includes itself in the list of its imports.");
-
-                    // The Add method returns true if the argument is not yet present in the hashset
-                    if (result.Add(dataSetId))
-                    {
-                        // Add recursively if not already present in the hashset
-                        var cachedImportList = GetDataSetLookupList(dataSetId);
-                        foreach (var importId in cachedImportList)
-                        {
-                            result.Add(importId);
-                        }
-                    }
-                }
-            }
-        }
+        public abstract void SaveDataSet(DataSetData dataSetData, RecordId saveTo);
     }
 }

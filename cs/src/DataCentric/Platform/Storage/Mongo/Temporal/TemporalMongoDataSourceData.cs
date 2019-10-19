@@ -59,8 +59,16 @@ namespace DataCentric
     {
         /// <summary>Dictionary of collections indexed by type T.</summary>
         private ConcurrentDictionary<Type, object> collectionDict_ = new ConcurrentDictionary<Type, object>();
+        private Dictionary<string, RecordId> dataSetDict_ { get; } = new Dictionary<string, RecordId>();
+        private Dictionary<RecordId, HashSet<RecordId>> importDict_ { get; } = new Dictionary<RecordId, HashSet<RecordId>>();
 
         //--- ELEMENTS
+
+        /// <summary>
+        /// Records where _id is greater than CutoffTime will be
+        /// ignored by the data source.
+        /// </summary>
+        public RecordId? CutoffTime { get; set; }
 
         /// <summary>
         /// When FreezeImports is false, a query retrieves all records with a given key.
@@ -311,7 +319,146 @@ namespace DataCentric
             collection.BaseCollection.InsertOne(record);
         }
 
-        //--- PROTECTED
+        /// <summary>
+        /// Apply the final constraints after all prior Where clauses but before OrderBy clause:
+        ///
+        /// * The constraint on dataset lookup list, restricted by CutoffTime (if not null)
+        /// * The constraint on ID being strictly less than CutoffTime (if not null)
+        /// </summary>
+        public IQueryable<TRecord> ApplyFinalConstraints<TRecord>(IQueryable<TRecord> queryable, RecordId loadFrom)
+            where TRecord : Record
+        {
+            // Get lookup list by expanding the list of imports to arbitrary
+            // depth with duplicates and cyclic references removed.
+            //
+            // The list will not include datasets that are after the value of
+            // CutoffTime if specified, or their imports (including
+            // even those imports that are earlier than the constraint).
+            IEnumerable<RecordId> dataSetLookupList = GetDataSetLookupList(loadFrom);
+
+            // Apply constraint that the value is _dataset is
+            // one of the elements of dataSetLookupList_
+            var result = queryable.Where(p => dataSetLookupList.Contains(p.DataSet));
+
+            // Apply revision time constraint. By making this constraint the
+            // last among the constraints, we optimize the use of the index.
+            //
+            // The property savedBy_ is set using either CutoffTime element.
+            // Only one of these two elements can be set at a given time.
+            if (CutoffTime != null)
+            {
+                result = result.Where(p => p.Id <= CutoffTime.Value);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Get RecordId of the dataset with the specified name.
+        ///
+        /// All of the previously requested dataSetIds are cached by
+        /// the data source. To load the latest version of the dataset
+        /// written by a separate process, clear the cache first by
+        /// calling DataSource.ClearDataSetCache() method.
+        ///
+        /// Returns null if not found.
+        /// </summary>
+        public override RecordId? GetDataSetOrNull(string dataSetName, RecordId loadFrom)
+        {
+            if (dataSetDict_.TryGetValue(dataSetName, out RecordId result))
+            {
+                // Check if already cached, return if found
+                return result;
+            }
+            else
+            {
+                // Otherwise load from storage (this also updates the dictionaries)
+                DataSetKey dataSetKey = new DataSetKey() { DataSetName = dataSetName };
+                DataSetData dataSetData = this.LoadOrNull(dataSetKey, loadFrom);
+
+                // If not found, return RecordId.Empty
+                if (dataSetData == null) return null;
+
+                // If found, cache result in RecordId dictionary
+                dataSetDict_[dataSetName] = dataSetData.Id;
+
+                // Build and cache dataset lookup list if not found
+                if (!importDict_.TryGetValue(dataSetData.Id, out HashSet<RecordId> importSet))
+                {
+                    importSet = BuildDataSetLookupList(dataSetData);
+                    importDict_.Add(dataSetData.Id, importSet);
+                }
+
+                return dataSetData.Id;
+            }
+        }
+
+        /// <summary>
+        /// Save new version of the dataset.
+        ///
+        /// This method sets Id element of the argument to be the
+        /// new RecordId assigned to the record when it is saved.
+        /// The timestamp of the new RecordId is the current time.
+        ///
+        /// This method updates in-memory cache to the saved dataset.
+        /// </summary>
+        public override void SaveDataSet(DataSetData dataSetData, RecordId saveTo)
+        {
+            // Save dataset to storage. This updates its Id
+            // to the new RecordId created during save
+            Save<DataSetData>(dataSetData, saveTo);
+
+            // Update dataset dictionary with the new Id
+            dataSetDict_[dataSetData.Key] = dataSetData.Id;
+
+            // Update lookup list dictionary
+            var lookupList = BuildDataSetLookupList(dataSetData);
+            importDict_.Add(dataSetData.Id, lookupList);
+        }
+
+        /// <summary>
+        /// Returns enumeration of import datasets for specified dataset data,
+        /// including imports of imports to unlimited depth with cyclic
+        /// references and duplicates removed.
+        ///
+        /// The list will not include datasets that are after the value of
+        /// CutoffTime if specified, or their imports (including
+        /// even those imports that are earlier than the constraint).
+        /// </summary>
+        public IEnumerable<RecordId> GetDataSetLookupList(RecordId loadFrom)
+        {
+            // Root dataset has no imports (there is not even a record
+            // where these imports can be specified).
+            //
+            // Return list containing only the root dataset (RecordId.Empty) and exit
+            if (loadFrom == RecordId.Empty)
+            {
+                return new RecordId[] { RecordId.Empty };
+            }
+
+            if (importDict_.TryGetValue(loadFrom, out HashSet<RecordId> result))
+            {
+                // Check if the lookup list is already cached, return if yes
+                return result;
+            }
+            else
+            {
+                // Otherwise load from storage (returns null if not found)
+                DataSetData dataSetData = LoadOrNull<DataSetData>(loadFrom);
+
+                if (dataSetData == null) throw new Exception($"Dataset with RecordId={loadFrom} is not found.");
+                if (dataSetData.DataSet != RecordId.Empty) throw new Exception($"Dataset with RecordId={loadFrom} is not stored in root dataset.");
+
+                // Build the lookup list
+                result = BuildDataSetLookupList(dataSetData);
+
+                // Add to dictionary and return
+                importDict_.Add(loadFrom, result);
+                return result;
+            }
+        }
+
+        //--- PRIVATE
 
         /// <summary>
         /// Returned object holds two collection references - one for the base
@@ -332,7 +479,7 @@ namespace DataCentric
         /// Additional indices may be created using class attribute
         /// [IndexElements] for further performance optimization.
         /// </summary>
-        protected TemporalMongoCollection<TRecord> GetOrCreateCollection<TRecord>()
+        private TemporalMongoCollection<TRecord> GetOrCreateCollection<TRecord>()
             where TRecord : Record
         {
             // Check if collection object has already been cached
@@ -440,6 +587,103 @@ namespace DataCentric
             // Add the result to the collection dictionary and return
             collectionDict_.TryAdd(typeof(TRecord), result);
             return result;
+        }
+
+        /// <summary>
+        /// Builds hashset of import datasets for specified dataset data,
+        /// including imports of imports to unlimited depth with cyclic
+        /// references and duplicates removed. This method uses cached lookup
+        /// list for the import datasets but not for the argument dataset.
+        ///
+        /// The list will not include datasets that are after the value of
+        /// CutoffTime if specified, or their imports (including
+        /// even those imports that are earlier than the constraint).
+        ///
+        /// This overload of the method will return the result hashset.
+        ///
+        /// This private helper method should not be used directly.
+        /// It provides functionality for the public API of this class.
+        /// </summary>
+        private HashSet<RecordId> BuildDataSetLookupList(DataSetData dataSetData)
+        {
+            // Delegate to the second overload
+            var result = new HashSet<RecordId>();
+            BuildDataSetLookupList(dataSetData, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Builds hashset of import datasets for specified dataset data,
+        /// including imports of imports to unlimited depth with cyclic
+        /// references and duplicates removed. This method uses cached lookup
+        /// list for the import datasets but not for the argument dataset.
+        ///
+        /// The list will not include datasets that are after the value of
+        /// CutoffTime if specified, or their imports (including
+        /// even those imports that are earlier than the constraint).
+        ///
+        /// This overload of the method will return the result hashset.
+        ///
+        /// This private helper method should not be used directly.
+        /// It provides functionality for the public API of this class.
+        /// </summary>
+        private void BuildDataSetLookupList(DataSetData dataSetData, HashSet<RecordId> result)
+        {
+            // Return if the dataset is null or has no imports
+            if (dataSetData == null) return;
+
+            // Error message if dataset has no Id or Key set
+            dataSetData.Id.CheckHasValue();
+            dataSetData.Key.CheckHasValue();
+
+            if (CutoffTime != null && dataSetData.Id > CutoffTime.Value)
+            {
+                // Do not add if revision time constraint is set and is before this dataset.
+                // In this case the import datasets should not be added either, even if they
+                // do not fail the revision time constraint
+                return;
+            }
+
+            // Add self to the result
+            result.Add(dataSetData.Id);
+
+            // Add imports to the result
+            if (dataSetData.Imports != null)
+            {
+                foreach (var dataSetId in dataSetData.Imports)
+                {
+                    // Dataset cannot include itself as its import
+                    if (dataSetData.Id == dataSetId)
+                        throw new Exception(
+                            $"Dataset {dataSetData.Key} with RecordId={dataSetData.Id} includes itself in the list of its imports.");
+
+                    // The Add method returns true if the argument is not yet present in the hashset
+                    if (result.Add(dataSetId))
+                    {
+                        // Add recursively if not already present in the hashset
+                        var cachedImportList = GetDataSetLookupList(dataSetId);
+                        foreach (var importId in cachedImportList)
+                        {
+                            result.Add(importId);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Error message if either ReadOnly or CutoffTime is set.
+        /// Historical view of the data cannot be written to.
+        /// </summary>
+        private void CheckNotReadOnly()
+        {
+            if (ReadOnly != null && ReadOnly.Value)
+                throw new Exception(
+                    $"Attempting write operation for data source {DataSourceName} where ReadOnly flag is set.");
+            if (CutoffTime != null)
+                throw new Exception(
+                    $"Attempting write operation for data source {DataSourceName} where " +
+                    $"CutoffTime is set. Historical view of the data cannot be written to.");
         }
     }
 }

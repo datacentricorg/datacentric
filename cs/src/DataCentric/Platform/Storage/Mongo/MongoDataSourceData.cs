@@ -162,8 +162,6 @@ namespace DataCentric
         /// </summary>
         public override RecordId CreateOrderedRecordId()
         {
-            CheckNotReadOnly();
-
             // Generate RecordId and check that it is later
             // than the previous generated RecordId
             RecordId result = RecordId.GenerateNewId();
@@ -192,40 +190,6 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Apply the final constraints after all prior Where clauses but before OrderBy clause:
-        ///
-        /// * The constraint on dataset lookup list, restricted by CutoffTime (if not null)
-        /// * The constraint on ID being strictly less than CutoffTime (if not null)
-        /// </summary>
-        public IQueryable<TRecord> ApplyFinalConstraints<TRecord>(IQueryable<TRecord> queryable, RecordId loadFrom)
-            where TRecord : Record
-        {
-            // Get lookup list by expanding the list of imports to arbitrary
-            // depth with duplicates and cyclic references removed.
-            //
-            // The list will not include datasets that are after the value of
-            // CutoffTime if specified, or their imports (including
-            // even those imports that are earlier than the constraint).
-            IEnumerable<RecordId> dataSetLookupList = GetDataSetLookupList(loadFrom);
-
-            // Apply constraint that the value is _dataset is
-            // one of the elements of dataSetLookupList_
-            var result = queryable.Where(p => dataSetLookupList.Contains(p.DataSet));
-
-            // Apply revision time constraint. By making this constraint the
-            // last among the constraints, we optimize the use of the index.
-            //
-            // The property savedBy_ is set using either CutoffTime element.
-            // Only one of these two elements can be set at a given time.
-            if (CutoffTime != null)
-            {
-                result = result.Where(p => p.Id <= CutoffTime.Value);
-            }
-
-            return result;
-        }
-
-        /// <summary>
         /// Permanently deletes (drops) the database with all records
         /// in it without the possibility to recover them later.
         ///
@@ -238,7 +202,9 @@ namespace DataCentric
         /// </summary>
         public override void DeleteDb()
         {
-            CheckNotReadOnly();
+            if (ReadOnly != null && ReadOnly.Value)
+                throw new Exception(
+                    $"Attempting to drop (delete) database for the data source {DataSourceName} where ReadOnly flag is set.");
 
             // Do not delete (drop) the database this class did not create
             if (client_ != null && Db != null)

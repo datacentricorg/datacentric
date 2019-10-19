@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Data;
 using System.Runtime.CompilerServices;
 
 namespace DataCentric
@@ -31,7 +32,7 @@ namespace DataCentric
         /// <summary>Flush data to permanent storage.</summary>
         public override void Flush()
         {
-            ErrorMessage();
+            throw MethodCalledForNullDataSourceError();
         }
 
         /// <summary>
@@ -47,8 +48,7 @@ namespace DataCentric
         /// </summary>
         public override RecordId CreateOrderedRecordId()
         {
-            ErrorMessage();
-            return RecordId.Empty;
+            throw MethodCalledForNullDataSourceError();
         }
 
         /// <summary>
@@ -60,8 +60,7 @@ namespace DataCentric
         /// </summary>
         public override TRecord LoadOrNull<TRecord>(RecordId id)
         {
-            ErrorMessage();
-            return null;
+            throw MethodCalledForNullDataSourceError();
         }
 
         /// <summary>
@@ -87,8 +86,7 @@ namespace DataCentric
         /// </summary>
         public override TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId loadFrom)
         {
-            ErrorMessage();
-            return null;
+            throw MethodCalledForNullDataSourceError();
         }
 
         /// <summary>
@@ -110,8 +108,7 @@ namespace DataCentric
         /// </summary>
         public override IQuery<TRecord> GetQuery<TRecord>(RecordId loadFrom)
         {
-            ErrorMessage();
-            return null;
+            throw MethodCalledForNullDataSourceError();
         }
 
         /// <summary>
@@ -131,7 +128,7 @@ namespace DataCentric
         /// </summary>
         public override void Save<TRecord>(TRecord record, RecordId saveTo)
         {
-            ErrorMessage();
+            throw MethodCalledForNullDataSourceError();
         }
 
         /// <summary>
@@ -145,7 +142,7 @@ namespace DataCentric
         /// </summary>
         public override void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId deleteIn)
         {
-            ErrorMessage();
+            throw MethodCalledForNullDataSourceError();
         }
 
         /// <summary>
@@ -161,15 +158,44 @@ namespace DataCentric
         /// </summary>
         public override void DeleteDb()
         {
-            ErrorMessage();
+            throw MethodCalledForNullDataSourceError();
+        }
+
+        /// <summary>
+        /// Get RecordId of the dataset with the specified name.
+        ///
+        /// All of the previously requested dataSetIds are cached by
+        /// the data source. To load the latest version of the dataset
+        /// written by a separate process, clear the cache first by
+        /// calling DataSource.ClearDataSetCache() method.
+        ///
+        /// Returns null if not found.
+        /// </summary>
+        public override RecordId? GetDataSetOrNull(string dataSetName, RecordId loadFrom)
+        {
+            throw MethodCalledForNullDataSourceError();
+        }
+
+        /// <summary>
+        /// Save new version of the dataset.
+        ///
+        /// This method sets Id element of the argument to be the
+        /// new RecordId assigned to the record when it is saved.
+        /// The timestamp of the new RecordId is the current time.
+        ///
+        /// This method updates in-memory cache to the saved dataset.
+        /// </summary>
+        public override void SaveDataSet(DataSetData dataSetData, RecordId saveTo)
+        {
+            throw MethodCalledForNullDataSourceError();
         }
 
         //--- PRIVATE
 
-        /// <summary>Provides an error message if any of the data source methods are invoked.</summary>
-        private void ErrorMessage([CallerMemberName] string callerMemberName = null)
+        /// <summary>Creates an exception that a null data source method is invoked.</summary>
+        private Exception MethodCalledForNullDataSourceError([CallerMemberName] string callerMemberName = null)
         {
-            throw new Exception($"Attempt to invoke method {callerMemberName} for a null data source.");
+            return new Exception($"Attempt to invoke method {callerMemberName} for a null data source.");
         }
     }
 }
