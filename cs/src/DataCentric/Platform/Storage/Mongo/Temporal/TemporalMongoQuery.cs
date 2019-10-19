@@ -211,20 +211,6 @@ namespace DataCentric
             // * Finally, typed query is executed for each of these Ids and the results
             //   are yield returned to the caller.
             //
-
-
-            // Iterate over the typed query and populate lists of Keys and Ids.
-            // This will run the entire query but only retrieve RecordInfo,
-            // not the entire object which may be much larger.
-            //
-            // A given key may be encountered more than once in this list. Only
-            // one of these entries will have a matching Id. We will not attempt
-            // to determine which entry is the latest record in the latest dataset
-            // here, when dealing with the result set of the entire query. Instead,
-            // we will keep duplicate entries as they are and rely on subsequent
-            // Id match to eliminate all objects that are not the latest object
-            // in the latest dataset.
-
             // Project to key instead of returning the entire record
             var projectedBatchQueryable = batchQueryable.Select(p => new RecordInfo {Id = p.Id, Key = p.Key});
 
@@ -294,14 +280,6 @@ namespace DataCentric
                     var projectedIdQueryable = idQueryable
                         .Select(p => new RecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
 
-                    // Get dataset lookup list in descending order if FreezeImports is specified
-                    List<RecordId> descendingLookupList = null;
-                    if (collection_.DataSource.FreezeImports)
-                    {
-                        var dataSetLookupEnumerable = collection_.DataSource.GetDataSetLookupList(loadFrom_);
-                        descendingLookupList = dataSetLookupEnumerable.OrderByDescending(p => p).ToList();
-                    }
-
                     // Create a list of RecordIds for the records obtained using
                     // dataset lookup rules for the keys in the batch
                     var recordIds = new List<RecordId>();
@@ -314,58 +292,29 @@ namespace DataCentric
                             // The key was encountered before. Because the data is sorted by
                             // key and then by dataset and ID, this indicates that the object
                             // is not the latest and can be skipped
-                            if (true)
-                            {
-                                // Enable this when debugging the query to report skipped records
-                                // that are not the latest version in the latest dataset
-
-                                // dataSource_.Context.Log.Warning(obj.Key);
-                            }
-
-                            // Continue to next record without returning
-                            // the next item in the enumerable result
                             continue;
                         }
                         else
                         {
-                            if (collection_.DataSource.FreezeImports)
+                            RecordId recordId = obj.Id;
+                            RecordId recordDataSet = obj.DataSet;
+
+                            // Include the record if one of the following is true:
+                            // 
+                            // * ImportsCutoffTime is not set
+                            // * ImportsCutoffTime does not apply because the record
+                            //   is in the dataset itself, not its Imports list
+                            // * The record is in the list of Imports, and is earlier
+                            //   than ImportsCutoffTime
+                            if (collection_.DataSource.ImportsCutoffTime == null
+                                || recordDataSet == loadFrom_
+                                || recordId < collection_.DataSource.ImportsCutoffTime)
                             {
-                                RecordId recordId = obj.Id;
-                                RecordId recordDataSet = obj.DataSet;
-                                foreach (RecordId dataSetId in descendingLookupList)
-                                {
-                                    if (dataSetId == recordDataSet)
-                                    {
-                                        // Iterating over the dataset lookup list in descending order,
-                                        // we reached dataset of the record before finding a dataset
-                                        // that is earlier than the record. This is the latest record
-                                        // in the latest dataset for this key subject to the freeze rule.
+                                // Iterating over the dataset lookup list in descending order,
+                                // we reached dataset of the record before finding a dataset
+                                // that is earlier than the record. This is the latest record
+                                // in the latest dataset for this key subject to the freeze rule.
 
-                                        // Take the first object for a new key, relying on sorting
-                                        // by dataset and then by record's RecordId in descending
-                                        // order.
-                                        currentKey = objKey;
-
-                                        // Add to dictionary only if found in the list of batch Ids
-                                        // Otherwise this is not the latest record in the latest
-                                        // dataset (subject to freeze rule) and it should be skipped.
-                                        if (batchIdsHashSet.Contains(recordId))
-                                        {
-                                            recordIds.Add(recordId);
-                                        }
-                                    }
-
-                                    // Iterating over the dataset lookup list in descending order,
-                                    // we reached a dataset which is earlier than the record before
-                                    // we reached the dataset where the record is stored. This record
-                                    // is therefore excluded by the freeze rule and we should not
-                                    // yet set the new current key and skip the rest of the records
-                                    // for this key
-                                    if (dataSetId < recordId) break;
-                                }
-                            }
-                            else
-                            {
                                 // Take the first object for a new key, relying on sorting
                                 // by dataset and then by record's RecordId in descending
                                 // order.
@@ -373,8 +322,7 @@ namespace DataCentric
 
                                 // Add to dictionary only if found in the list of batch Ids
                                 // Otherwise this is not the latest record in the latest
-                                // dataset and it should be skipped.
-                                RecordId recordId = obj.Id;
+                                // dataset (subject to freeze rule) and it should be skipped.
                                 if (batchIdsHashSet.Contains(recordId))
                                 {
                                     recordIds.Add(recordId);

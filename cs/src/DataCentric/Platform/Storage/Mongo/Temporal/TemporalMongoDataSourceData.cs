@@ -37,23 +37,6 @@ namespace DataCentric
     /// records are looked up across a hierarchy of datasets, including the dataset
     /// itself, its direct Imports, Imports of Imports, etc., ordered by dataset's
     /// RecordId.
-    ///
-    /// When FreezeImports is false, a query retrieves all records with a given key.
-    /// The records are sorted by dataset's RecordId in descending order first, then
-    /// by record's RecordId also in descending order. The first record in sort order
-    /// is returned by the query, and all other records are ignored. This rule has
-    /// the effect of retrieving the latest record in the latest dataset.
-    ///
-    /// When FreezeImports is true, those records whose RecordId is greater than
-    /// RecordId of the next dataset in the lookup sequence (when the sequence is
-    /// ordered by dataset's RecordId) are excluded, after which the rule described
-    /// in the previous paragraph is applied. This has the effect of freezing the
-    /// state of each imported datasets in the import lookup sequence as of the creation
-    /// time of the next dataset in the sequence.
-    ///
-    /// The purpose of the FreezeImports flag is to prevent modification of records
-    /// in imported datasets from affecting the calculations in a dataset to which they
-    /// have been imported.
     /// </summary>
     public class TemporalMongoDataSourceData : MongoDataSourceData
     {
@@ -65,30 +48,22 @@ namespace DataCentric
         //--- ELEMENTS
 
         /// <summary>
-        /// Records where _id is greater than CutoffTime will be
-        /// ignored by the data source.
+        /// Records in the dataset itself or its imports where _id is greater than
+        /// CutoffTime will be ignored by the data source.
         /// </summary>
         public RecordId? CutoffTime { get; set; }
 
         /// <summary>
-        /// When FreezeImports is false, a query retrieves all records with a given key.
-        /// The records are sorted by dataset's RecordId in descending order first, then
-        /// by record's RecordId also in descending order. The first record in sort order
-        /// is returned by the query, and all other records are ignored. This rule has
-        /// the effect of retrieving the latest record in the latest dataset.
+        /// For a dataset where ImportsCutoffTime is set, records in the list of imports
+        /// which _id is greater than ImportsCutoffTime will be ignored by the data source;
+        /// however no records will be ignored in the dataset itself as a result of this
+        /// property being defined.
         ///
-        /// When FreezeImports is true, those records whose RecordId is greater than
-        /// RecordId of the next dataset in the lookup sequence (when the sequence is
-        /// ordered by dataset's RecordId) are excluded, after which the rule described
-        /// in the previous paragraph is applied. This has the effect of freezing the
-        /// state of each imported datasets in the import lookup sequence as of the creation
-        /// time of the next dataset in the sequence.
-        ///
-        /// The purpose of the FreezeImports flag is to prevent modification of records
-        /// in imported datasets from affecting the calculations in a dataset to which they
-        /// have been imported.
+        /// The property ImportsCutoffTime is not inherited; it has an effect only when
+        /// defined on the dataset itself, not when defined on an import or a parent of
+        /// a dataset.
         /// </summary>
-        public bool FreezeImports { get; set; } = true; // TODO - review the default
+        public RecordId? ImportsCutoffTime { get; set; }
 
         //--- METHODS
 

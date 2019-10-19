@@ -7,8 +7,9 @@ Verify: Load records by string key without constraint
 Verify:     Version found for key=A;0: 2
 Verify:     Version found for key=C;0: 0
 Verify: Query records without constraint
-Verify:     Key=A;0 DataSet=DataSet0 Version=1
+Verify:     Key=A;0 DataSet=DataSet0 Version=2
 Verify:     Key=B;0 DataSet=DataSet1 Version=2
+Verify:     Key=C;0 DataSet=DataSet0 Version=0
 Verify:     Key=D;0 DataSet=DataSet1 Version=0
 Verify: Load records by RecordId with CutoffTime constraint
 Verify: Found for RecordId(A0)=True
