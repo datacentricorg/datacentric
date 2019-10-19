@@ -56,15 +56,19 @@ namespace DataCentric
         public DbNameKey DbName { get; set; }
 
         /// <summary>
-        /// Use this flag to mark data source as readonly, but use either
-        /// IsReadOnly() or CheckNotReadonly() method to determine the
-        /// readonly status because the data source may be readonly for
-        /// two reasons:
+        /// Use this flag to mark data source as readonly.
         ///
-        /// * ReadOnly flag is true; or
-        /// * One of SavedByTime or SavedById is set
+        /// This value will be set to true if CutoffTime is
+        /// true, because a data source that views the data
+        /// for a cutoff time cannot modify its view.
         /// </summary>
-        public bool ReadOnly { get; set; }
+        public bool? ReadOnly { get; set; }
+
+        /// <summary>
+        /// Records where _id is greater than SavedById will be
+        /// ignored by the data source.
+        /// </summary>
+        public RecordId? SavedBy { get; set; }
 
         //--- METHODS
 
@@ -88,14 +92,6 @@ namespace DataCentric
 
         /// <summary>Flush data to permanent storage.</summary>
         public abstract void Flush();
-
-        /// <summary>
-        /// Returns true if the data source is readonly,
-        /// which may be because ReadOnly flag is true,
-        /// or due to other flags (e.g. SavedBy) defined
-        /// in derived types.
-        /// </summary>
-        public abstract bool IsReadOnly();
 
         /// <summary>
         /// The returned RecordIds have the following order guarantees:
@@ -212,19 +208,24 @@ namespace DataCentric
         //--- METHODS
 
         /// <summary>
-        /// Error message if the data source is readonly,
-        /// which may be for the following reasons:
+        /// Error message if the data source is readonly.
         ///
-        /// * ReadOnly flag is true; or
-        /// * One of SavedByTime or SavedById is set
+        /// This method also provides an alert if CutoffTime
+        /// is set but ReadOnly flag is not because  is not
+        /// possible to write to a view of the data as of a
+        /// past point in time.
         /// </summary>
         public void CheckNotReadOnly()
         {
-            if (IsReadOnly())
+            if (ReadOnly != null && ReadOnly.Value)
                 throw new Exception(
                     $"Attempting write operation for readonly data source {DataSourceName}. " +
                     $"A data source is readonly if either (a) its ReadOnly flag is set, or (b) " +
                     $"one of SavedByTime or SavedById is set.");
+            else if (SavedBy != null)
+                throw new Exception(
+                    $"Data source {DataSourceName} has CutoffTime set, but is not ReadOnly. " +
+                    $"It is not possible to write to a view of the data as of a past point in time.");
         }
 
         /// <summary>
@@ -296,7 +297,7 @@ namespace DataCentric
         /// references and duplicates removed.
         ///
         /// The list will not include datasets that are after the value of
-        /// SavedByTime/SavedById if specified, or their imports (including
+        /// CutoffTime if specified, or their imports (including
         /// even those imports that are earlier than the constraint).
         /// </summary>
         public IEnumerable<RecordId> GetDataSetLookupList(RecordId loadFrom)
@@ -332,17 +333,6 @@ namespace DataCentric
             }
         }
 
-        //--- PROTECTED
-
-        /// <summary>
-        /// Records where _id is greater than the returned value will be
-        /// ignored by the data source.
-        ///
-        /// This element is set based on either SavedByTime and SavedById
-        /// elements that are alternates; only one of them can be specified.
-        /// </summary>
-        protected abstract RecordId? GetSavedBy();
-
         //--- PRIVATE
 
         /// <summary>
@@ -352,7 +342,7 @@ namespace DataCentric
         /// list for the import datasets but not for the argument dataset.
         ///
         /// The list will not include datasets that are after the value of
-        /// SavedByTime/SavedById if specified, or their imports (including
+        /// CutoffTime if specified, or their imports (including
         /// even those imports that are earlier than the constraint).
         ///
         /// This overload of the method will return the result hashset.
@@ -375,7 +365,7 @@ namespace DataCentric
         /// list for the import datasets but not for the argument dataset.
         ///
         /// The list will not include datasets that are after the value of
-        /// SavedByTime/SavedById if specified, or their imports (including
+        /// CutoffTime if specified, or their imports (including
         /// even those imports that are earlier than the constraint).
         ///
         /// This overload of the method will return the result hashset.
@@ -392,8 +382,7 @@ namespace DataCentric
             dataSetData.Id.CheckHasValue();
             dataSetData.Key.CheckHasValue();
 
-            var savedBy = GetSavedBy();
-            if (savedBy != null && dataSetData.Id > savedBy.Value)
+            if (SavedBy != null && dataSetData.Id > SavedBy.Value)
             {
                 // Do not add if revision time constraint is set and is before this dataset.
                 // In this case the import datasets should not be added either, even if they

@@ -63,33 +63,6 @@ namespace DataCentric
         //--- ELEMENTS
 
         /// <summary>
-        /// Records where timestamp of _id rounded down to one second
-        /// is greater than SavedByTime will be ignored by the data source.
-        ///
-        /// The value of this element must fall precisely on the second,
-        /// error message otherwise.
-        ///
-        /// SavedByTime and SavedById elements are alternates;
-        /// they cannot be specified at the same time.
-        ///
-        /// If either SavedByTime or SavedById is specified, the
-        /// data source is readonly and its IsReadOnly() method returns true.
-        /// </summary>
-        public LocalDateTime? SavedByTime { get; set; }
-
-        /// <summary>
-        /// Records where _id is greater than SavedById will be
-        /// ignored by the data source.
-        ///
-        /// SavedByTime and SavedById elements are alternates;
-        /// they cannot be specified at the same time.
-        ///
-        /// If either SavedByTime or SavedById is specified, the
-        /// data source is readonly and its IsReadOnly() method returns true.
-        /// </summary>
-        public RecordId? SavedById { get; set; }
-
-        /// <summary>
         /// When FreezeImports is false, a query retrieves all records with a given key.
         /// The records are sorted by dataset's RecordId in descending order first, then
         /// by record's RecordId also in descending order. The first record in sort order
@@ -118,18 +91,6 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Returns true if the data source is readonly,
-        /// which may be for the following reasons:
-        ///
-        /// * ReadOnly flag is true; or
-        /// * One of SavedByTime or SavedById is set
-        /// </summary>
-        public override bool IsReadOnly()
-        {
-            return ReadOnly == true || SavedByTime != null || SavedById != null;
-        }
-
-        /// <summary>
         /// Load record by its RecordId.
         ///
         /// Return null if there is no record for the specified RecordId;
@@ -138,16 +99,14 @@ namespace DataCentric
         /// </summary>
         public override TRecord LoadOrNull<TRecord>(RecordId id)
         {
-            var savedBy = GetSavedBy();
-            if (savedBy != null)
+            if (SavedBy != null)
             {
-                // Return null for any record that has ID greater than
-                // the value returned by GetSavedBy() method
-                if (id > savedBy.Value) return null;
+                // Return null for any record that has ID greater than CutoffTime.
+                if (id > SavedBy.Value) return null;
             }
 
-            // Find last record in last dataset without constraining record type
-            // The result may not be derived from TRecord
+            // Find last record in last dataset without constraining record type.
+            // The result may not be derived from TRecord.
             var baseResult = GetOrCreateCollection<TRecord>()
                 .BaseCollection
                 .AsQueryable()
@@ -353,51 +312,6 @@ namespace DataCentric
         }
 
         //--- PROTECTED
-
-        /// <summary>
-        /// Records where _id is greater than the returned value will be
-        /// ignored by the data source.
-        ///
-        /// This element is set based on either SavedByTime and SavedById
-        /// elements that are alternates; only one of them can be specified.
-        /// </summary>
-        protected override RecordId? GetSavedBy()
-        {
-            // Set savedBy_ based on either SavedByTime or SavedById element
-            if (SavedByTime == null && SavedById == null)
-            {
-                // Clear the revision time constraint.
-                //
-                // This is only required when  running Init(...) again
-                // on an object that has been initialized before.
-                return null;
-            }
-            else if (SavedByTime != null && SavedById == null)
-            {
-                // We already know that SavedBy is not null,
-                // but we need to check separately that it is not empty
-                SavedByTime.CheckHasValue();
-
-                // Convert to the least value of RecordId with the specified timestamp
-                throw new NotImplementedException(); // TODO - replace by a single field
-                return null; // SavedByTime.Value.ToRecordId();
-            }
-            else if (SavedByTime == null && SavedById != null)
-            {
-                // We already know that SavedById is not null,
-                // but we need to check separately that it is not empty
-                SavedById.Value.CheckHasValue();
-
-                // Set the revision time constraint
-                return SavedById;
-            }
-            else
-            {
-                throw new Exception(
-                    "Elements SavedByTime and SavedById are alternates; " +
-                    "they cannot be specified at the same time.");
-            }
-        }
 
         /// <summary>
         /// Returned object holds two collection references - one for the base

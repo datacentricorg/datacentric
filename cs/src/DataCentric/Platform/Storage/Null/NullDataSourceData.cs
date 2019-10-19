@@ -35,18 +35,6 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Returns true if the data source is readonly,
-        /// which may be because ReadOnly flag is true,
-        /// or due to other flags (e.g. SavedBy) defined
-        /// in derived types.
-        /// </summary>
-        public override bool IsReadOnly()
-        {
-            ErrorMessage();
-            return false;
-        }
-
-        /// <summary>
         /// The returned RecordIds have the following order guarantees:
         ///
         /// * For this data source instance, to arbitrary resolution; and
@@ -174,18 +162,6 @@ namespace DataCentric
         public override void DeleteDb()
         {
             ErrorMessage();
-        }
-
-        //--- PROTECTED
-
-        /// <summary>
-        /// SavedBy flags are defined only for temporal data sources. Accordingly,
-        /// for this current data source the method should always return null.
-        /// </summary>
-        protected override RecordId? GetSavedBy()
-        {
-            ErrorMessage();
-            return null;
         }
 
         //--- PRIVATE

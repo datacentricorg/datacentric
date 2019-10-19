@@ -204,7 +204,7 @@ namespace DataCentric
             // depth with duplicates and cyclic references removed.
             //
             // The list will not include datasets that are after the value of
-            // SavedByTime/SavedById if specified, or their imports (including
+            // CutoffTime if specified, or their imports (including
             // even those imports that are earlier than the constraint).
             IEnumerable<RecordId> dataSetLookupList = GetDataSetLookupList(loadFrom);
 
@@ -217,10 +217,9 @@ namespace DataCentric
             //
             // The property savedBy_ is set using either SavedByTime or SavedById element.
             // Only one of these two elements can be set at a given time.
-            var savedBy = GetSavedBy();
-            if (savedBy != null)
+            if (SavedBy != null)
             {
-                result = result.Where(p => p.Id <= savedBy.Value);
+                result = result.Where(p => p.Id <= SavedBy.Value);
             }
 
             return result;
