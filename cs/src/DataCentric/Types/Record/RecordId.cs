@@ -319,6 +319,70 @@ namespace DataCentric
             return new RecordId(createdTime, 0, 0, 0);
         }
 
+        /// <summary>
+        /// Returns the minimum of two arguments.
+        ///
+        /// This method does not consider Record.Empty and null
+        /// to be equivalent:
+        ///
+        /// * Null is treated as missing value, the method returns
+        ///   the other value.
+        /// * RecordId.Empty is treated as being less than any
+        ///   other argument.
+        ///
+        /// Returns null if both arguments are null.
+        /// </summary>
+        public static RecordId? Min(RecordId? arg1, RecordId? arg2)
+        {
+            if (arg1 != null && arg2 != null)
+            {
+                // Neither is null, returns the smaller value
+                if (arg1 < arg2) return arg1;
+                else return arg2;
+            }
+            else if (arg1 == null)
+            {
+                // Also covers the case when both are null
+                return arg2;
+            }
+            else
+            {
+                return arg1;
+            }
+        }
+
+        /// <summary>
+        /// Returns the maximum of two arguments.
+        ///
+        /// This method does not consider Record.Empty and null
+        /// to be equivalent:
+        ///
+        /// * Null is treated as missing value, the method returns
+        ///   the other value.
+        /// * RecordId.Empty is treated as being less than any
+        ///   other argument.
+        ///
+        /// Returns null if both arguments are null.
+        /// </summary>
+        public static RecordId? Max(RecordId? arg1, RecordId? arg2)
+        {
+            if (arg1 != null && arg2 != null)
+            {
+                // Neither is null, returns the smaller value
+                if (arg1 > arg2) return arg1;
+                else return arg2;
+            }
+            else if (arg1 == null)
+            {
+                // Also covers the case when both are null
+                return arg2;
+            }
+            else
+            {
+                return arg1;
+            }
+        }
+
         //--- OPERATORS
 
         /// <summary>True if the first RecordId is less than the second RecordId.</summary>
