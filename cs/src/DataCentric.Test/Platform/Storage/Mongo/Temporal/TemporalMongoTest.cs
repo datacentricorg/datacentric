@@ -421,9 +421,9 @@ namespace DataCentric.Test
             }
         }
 
-        /// <summary>Test for SavedBy filtering.</summary>
+        /// <summary>Test for CutoffTime filtering.</summary>
         [Fact]
-        public void SavedBy()
+        public void CutoffTime()
         {
             using (var context = new TemporalMongoTestContext(this))
             {
@@ -482,10 +482,10 @@ namespace DataCentric.Test
                 }
 
                 // Set revision time constraint
-                context.DataSource.CastTo<DataSourceData>().SavedBy = cutoffRecordId;
+                context.DataSource.CastTo<DataSourceData>().CutoffTime = cutoffRecordId;
 
                 // Get each record by RecordId
-                context.Log.Verify("Load records by RecordId with SavedById constraint");
+                context.Log.Verify("Load records by RecordId with CutoffTime constraint");
                 context.Log.Verify($"Found for RecordId(A0)={context.LoadOrNull<BaseSampleData>(objA0) != null}");
                 context.Log.Verify($"Found for RecordId(A1)={context.LoadOrNull<BaseSampleData>(objA1) != null}");
                 context.Log.Verify($"Found for RecordId(A2)={context.LoadOrNull<BaseSampleData>(objA2) != null}");
@@ -497,7 +497,7 @@ namespace DataCentric.Test
                     var loadedA0 = context.LoadOrNull(new BaseSampleKey() { RecordName = "A", RecordIndex = 0 }, dataSet1);
                     var loadedC0 = context.LoadOrNull(new BaseSampleKey() { RecordName = "C", RecordIndex = 0 }, dataSet1);
 
-                    context.Log.Verify("Load records by string key with SavedById constraint");
+                    context.Log.Verify("Load records by string key with CutoffTime constraint");
                     if (loadedA0 != null) context.Log.Verify($"    Version found for key=A;0: {loadedA0.Version}");
                     if (loadedC0 != null) context.Log.Verify($"    Version found for key=C;0: {loadedC0.Version}");
                 }
@@ -510,7 +510,7 @@ namespace DataCentric.Test
                         .SortBy(p => p.RecordIndex)
                         .AsEnumerable();
 
-                    context.Log.Verify("Query records with SavedById constraint");
+                    context.Log.Verify("Query records with CutoffTime constraint");
                     foreach (var obj in query)
                     {
                         var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
@@ -521,7 +521,7 @@ namespace DataCentric.Test
                 // Clear revision time constraint before exiting to avoid an error
                 // about deleting readonly database. The error occurs because
                 // revision time constraint makes the data source readonly.
-                context.DataSource.CastTo<DataSourceData>().SavedBy = null;
+                context.DataSource.CastTo<DataSourceData>().CutoffTime = null;
             }
         }
 

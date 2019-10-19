@@ -99,10 +99,10 @@ namespace DataCentric
         /// </summary>
         public override TRecord LoadOrNull<TRecord>(RecordId id)
         {
-            if (SavedBy != null)
+            if (CutoffTime != null)
             {
                 // Return null for any record that has ID greater than CutoffTime.
-                if (id > SavedBy.Value) return null;
+                if (id > CutoffTime.Value) return null;
             }
 
             // Find last record in last dataset without constraining record type.

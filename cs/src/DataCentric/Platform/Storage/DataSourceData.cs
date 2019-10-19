@@ -65,10 +65,10 @@ namespace DataCentric
         public bool? ReadOnly { get; set; }
 
         /// <summary>
-        /// Records where _id is greater than SavedById will be
+        /// Records where _id is greater than CutoffTime will be
         /// ignored by the data source.
         /// </summary>
-        public RecordId? SavedBy { get; set; }
+        public RecordId? CutoffTime { get; set; }
 
         //--- METHODS
 
@@ -220,9 +220,9 @@ namespace DataCentric
             if (ReadOnly != null && ReadOnly.Value)
                 throw new Exception(
                     $"Attempting write operation for readonly data source {DataSourceName}. " +
-                    $"A data source is readonly if either (a) its ReadOnly flag is set, or (b) " +
-                    $"one of SavedByTime or SavedById is set.");
-            else if (SavedBy != null)
+                    $"A data source is readonly if either (a) ReadOnly flag is set, or (b) " +
+                    $"CutoffTime is set.");
+            else if (CutoffTime != null)
                 throw new Exception(
                     $"Data source {DataSourceName} has CutoffTime set, but is not ReadOnly. " +
                     $"It is not possible to write to a view of the data as of a past point in time.");
@@ -382,7 +382,7 @@ namespace DataCentric
             dataSetData.Id.CheckHasValue();
             dataSetData.Key.CheckHasValue();
 
-            if (SavedBy != null && dataSetData.Id > SavedBy.Value)
+            if (CutoffTime != null && dataSetData.Id > CutoffTime.Value)
             {
                 // Do not add if revision time constraint is set and is before this dataset.
                 // In this case the import datasets should not be added either, even if they

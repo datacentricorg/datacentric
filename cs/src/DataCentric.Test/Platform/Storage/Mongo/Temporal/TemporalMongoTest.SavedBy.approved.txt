@@ -10,13 +10,13 @@ Verify: Query records without constraint
 Verify:     Key=A;0 DataSet=DataSet0 Version=1
 Verify:     Key=B;0 DataSet=DataSet1 Version=2
 Verify:     Key=D;0 DataSet=DataSet1 Version=0
-Verify: Load records by RecordId with SavedById constraint
+Verify: Load records by RecordId with CutoffTime constraint
 Verify: Found for RecordId(A0)=True
 Verify: Found for RecordId(A1)=True
 Verify: Found for RecordId(A2)=False
 Verify: Found for RecordId(C0)=False
-Verify: Load records by string key with SavedById constraint
+Verify: Load records by string key with CutoffTime constraint
 Verify:     Version found for key=A;0: 1
-Verify: Query records with SavedById constraint
+Verify: Query records with CutoffTime constraint
 Verify:     Key=A;0 DataSet=DataSet0 Version=1
 Verify:     Key=B;0 DataSet=DataSet1 Version=1

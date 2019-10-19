@@ -194,8 +194,8 @@ namespace DataCentric
         /// <summary>
         /// Apply the final constraints after all prior Where clauses but before OrderBy clause:
         ///
-        /// * The constraint on dataset lookup list, restricted by SavedBy (if not null)
-        /// * The constraint on ID being strictly less than SavedBy (if not null)
+        /// * The constraint on dataset lookup list, restricted by CutoffTime (if not null)
+        /// * The constraint on ID being strictly less than CutoffTime (if not null)
         /// </summary>
         public IQueryable<TRecord> ApplyFinalConstraints<TRecord>(IQueryable<TRecord> queryable, RecordId loadFrom)
             where TRecord : Record
@@ -215,11 +215,11 @@ namespace DataCentric
             // Apply revision time constraint. By making this constraint the
             // last among the constraints, we optimize the use of the index.
             //
-            // The property savedBy_ is set using either SavedByTime or SavedById element.
+            // The property savedBy_ is set using either CutoffTime element.
             // Only one of these two elements can be set at a given time.
-            if (SavedBy != null)
+            if (CutoffTime != null)
             {
-                result = result.Where(p => p.Id <= SavedBy.Value);
+                result = result.Where(p => p.Id <= CutoffTime.Value);
             }
 
             return result;
