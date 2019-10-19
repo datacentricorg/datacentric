@@ -159,9 +159,9 @@ namespace DataCentric.Test
                 context.KeepTestData = true;
 
                 // Create from timestamp
-                var creationTime = InstantUtil.Utc(2003, 5, 1, 10, 15, 0);
+                var createdTime = InstantUtil.Utc(2003, 5, 1, 10, 15, 0);
                 var rec = new IdBasedKeySampleData();
-                rec.Id = new RecordId(creationTime, 1, 2, 3);
+                rec.Id = new RecordId(createdTime, 1, 2, 3);
                 rec.StringElement = "abc";
 
                 // Verify key serialization

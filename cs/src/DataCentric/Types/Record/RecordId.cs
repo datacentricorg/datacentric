@@ -68,7 +68,7 @@ namespace DataCentric
         public static RecordId Empty { get; } = default(RecordId);
 
         /// <summary>Creation time of the current object.</summary>
-        public Instant CreationTime
+        public Instant CreatedTime
         {
             get => Instant.FromUnixTimeSeconds(_a);
         }
@@ -87,12 +87,12 @@ namespace DataCentric
         }
 
         /// <summary>Create from datetime in UTC and the remaining bytes.</summary>
-        public RecordId(Instant creationTime, byte[] remainingBytes)
+        public RecordId(Instant createdTime, byte[] remainingBytes)
         {
-            long secondsSinceEpoch = creationTime.ToUnixTimeSeconds();
+            long secondsSinceEpoch = createdTime.ToUnixTimeSeconds();
             if (secondsSinceEpoch < int.MinValue || secondsSinceEpoch > int.MaxValue)
                 throw new Exception(
-                    $"CreationTime={creationTime} is out of range that can be represented by RecordId.");
+                    $"CreatedTime={createdTime} is out of range that can be represented by RecordId.");
 
             if (remainingBytes == null || remainingBytes.Length != 8)
                 throw new Exception(
@@ -104,12 +104,12 @@ namespace DataCentric
         }
 
         /// <summary>Create from datetime in UTC and randomization parameters.</summary>
-        public RecordId(Instant creationTime, int machine, short pid, int increment)
+        public RecordId(Instant createdTime, int machine, short pid, int increment)
         {
-            long secondsSinceEpoch = creationTime.ToUnixTimeSeconds();
+            long secondsSinceEpoch = createdTime.ToUnixTimeSeconds();
             if (secondsSinceEpoch < int.MinValue || secondsSinceEpoch > int.MaxValue)
                 throw new Exception(
-                    $"CreationTime={creationTime} is out of range that can be represented by RecordId.");
+                    $"CreatedTime={createdTime} is out of range that can be represented by RecordId.");
 
             if ((machine & 0xff000000) != 0) throw new Exception($"The machine value {machine} must be between 0 and 16777215 (it must fit in 3 bytes).");
             if ((increment & 0xff000000) != 0) throw new Exception($"The increment value {increment} must be between 0 and 16777215 (it must fit in 3 bytes).");
@@ -191,7 +191,7 @@ namespace DataCentric
             // serialized using fixed width method to millisecond precision
             // in UTC timezone, where milliseconds are included even if the
             // time falls on a second.
-            string creationTimeString = this.CreationTime.ToFixedWidthIsoString();
+            string createdTimeString = this.CreatedTime.ToFixedWidthIsoString();
 
             // Second part of the serialized value is 16 byte hexadecimal string
             var c = new char[16];
@@ -218,7 +218,7 @@ namespace DataCentric
             // yyyy-mm-ddThh:mm:ss.fffZhhhhhhhhhhhhhhhh
             //
             // where h represents a hexadecimal digit (total of 16)
-            string result = creationTimeString + hex;
+            string result = createdTimeString + hex;
             return result;
         }
 
@@ -227,11 +227,11 @@ namespace DataCentric
         /// <summary>Generates a new RecordId with a unique value.</summary>
         public static RecordId GenerateNewId()
         {
-            Instant creationTime = DateTime.UtcNow.ToInstant();
+            Instant createdTime = DateTime.UtcNow.ToInstant();
 
             // Only use low order 3 bytes
             int increment = Interlocked.Increment(ref __staticIncrement) & 0x00ffffff;
-            return new RecordId(creationTime, __staticMachine, __staticPid, increment);
+            return new RecordId(createdTime, __staticMachine, __staticPid, increment);
         }
 
         /// <summary>
@@ -289,9 +289,9 @@ namespace DataCentric
             if (value.Length != 40) return false;
 
             // Parse creation time using strict format yyyy-mm-ddThh:mm:ss
-            Instant creationTime;
-            string creationTimeString = value.Substring(0, 24);
-            if (!InstantUtil.TryParse(creationTimeString, out creationTime))
+            Instant createdTime;
+            string createdTimeString = value.Substring(0, 24);
+            if (!InstantUtil.TryParse(createdTimeString, out createdTime))
             {
                 return false;
             }
@@ -303,7 +303,7 @@ namespace DataCentric
 
             // Populate the first integer from timestamp
             // and the two remaining integers from the byte array
-            recordId = new RecordId(creationTime, bytes);
+            recordId = new RecordId(createdTime, bytes);
             return true;
         }
 
@@ -314,9 +314,9 @@ namespace DataCentric
         /// Any RecordId with the same creation time will
         /// be greater than this value.
         /// </summary>
-        public static RecordId FromCreationTime(Instant creationTime)
+        public static RecordId FromCreatedTime(Instant createdTime)
         {
-            return new RecordId(creationTime, 0, 0, 0);
+            return new RecordId(createdTime, 0, 0, 0);
         }
 
         //--- OPERATORS
