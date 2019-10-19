@@ -31,12 +31,12 @@ namespace DataCentric
     /// of a record with new RecordId, which is treated as a new dataset.
     ///
     /// The DataSetDetail record uses RecordId of the referenced dataset
-    /// as its primary key. It is located in the parent of the referenced
-    /// dataset alongside the reference dataset record itself, so it it not
-    /// affected by its own settings, such as ImportsCutoff or ReadOnly
-    /// flag.
+    /// as its primary key. It is located in the parent of the dataset
+    /// record to which it applies, rather than inside that record, so it
+    /// is not affected by its own settings, such as ImportsCutoffTime or
+    /// ReadOnly.
     /// </summary>
-    public abstract class DataSetDetailData : TypedRecord<DataSetDetailKey, DataSetDetailData>
+    public sealed class DataSetDetailData : TypedRecord<DataSetDetailKey, DataSetDetailData>
     {
         /// <summary>
         /// RecordId of the referenced dataset.
@@ -51,14 +51,26 @@ namespace DataCentric
         public bool? ReadOnly { get; set; }
 
         /// <summary>
-        /// If specified, data from the list of imported datasets is
-        /// queried for RecordId strictly less than the provided value.
+        /// Records in this dataset or its imports where RecordId is
+        /// greater or equal to the CutoffTime will be ignored by the
+        /// data source.
+        ///
+        /// The earlier of CutoffTime in the dataset and in the data
+        /// source will be used when both are set.
+        /// </summary>
+        public RecordId? CutoffTime { get; set; }
+
+        /// <summary>
+        /// Records the imports of this dataset where RecordId is
+        /// greater or equal to the CutoffTime will be ignored by the
+        /// data source. This setting does not affect records
+        /// in the dataset itself.
         ///
         /// This has the effect of ``freezing'' the state of imports
         /// as of the specified time (RecordId), thereby isolating
         /// the current dataset from changes to the data in imported
         /// datasets that occur after the specified time (RecordId).
         /// </summary>
-        public RecordId? ImportsCutoff { get; set; }
+        public RecordId? ImportsCutoffTime { get; set; }
     }
 }

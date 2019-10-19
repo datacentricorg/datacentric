@@ -280,6 +280,10 @@ namespace DataCentric
                     var projectedIdQueryable = idQueryable
                         .Select(p => new RecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
 
+                    // Dataset details record should is already cached if we reached this point
+                    var dataSetDetailData = collection_.DataSource.GetOrCreateDataSetDetail(loadFrom_);
+                    var importsCutoffTime = dataSetDetailData.ImportsCutoffTime;
+
                     // Create a list of RecordIds for the records obtained using
                     // dataset lookup rules for the keys in the batch
                     var recordIds = new List<RecordId>();
@@ -306,9 +310,9 @@ namespace DataCentric
                             //   is in the dataset itself, not its Imports list
                             // * The record is in the list of Imports, and is earlier
                             //   than ImportsCutoffTime
-                            if (collection_.DataSource.ImportsCutoffTime == null
+                            if (importsCutoffTime == null
                                 || recordDataSet == loadFrom_
-                                || recordId < collection_.DataSource.ImportsCutoffTime)
+                                || recordId < importsCutoffTime)
                             {
                                 // Iterating over the dataset lookup list in descending order,
                                 // we reached dataset of the record before finding a dataset

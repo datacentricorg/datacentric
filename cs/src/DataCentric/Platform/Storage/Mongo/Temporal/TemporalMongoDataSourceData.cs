@@ -43,27 +43,20 @@ namespace DataCentric
         /// <summary>Dictionary of collections indexed by type T.</summary>
         private ConcurrentDictionary<Type, object> collectionDict_ = new ConcurrentDictionary<Type, object>();
         private Dictionary<string, RecordId> dataSetDict_ { get; } = new Dictionary<string, RecordId>();
+        private Dictionary<RecordId, RecordId> dataSetParentDict_ { get; } = new Dictionary<RecordId, RecordId>();
+        private Dictionary<RecordId, DataSetDetailData> dataSetDetailDict_ { get; } = new Dictionary<RecordId, DataSetDetailData>();
         private Dictionary<RecordId, HashSet<RecordId>> importDict_ { get; } = new Dictionary<RecordId, HashSet<RecordId>>();
 
         //--- ELEMENTS
 
         /// <summary>
-        /// Records in the dataset itself or its imports where _id is greater than
-        /// CutoffTime will be ignored by the data source.
+        /// Records where _id is greater than CutoffTime
+        /// will be ignored by the data source.
+        ///
+        /// The earlier of CutoffTime in the dataset and in the data
+        /// source will be used when both are set.
         /// </summary>
         public RecordId? CutoffTime { get; set; }
-
-        /// <summary>
-        /// For a dataset where ImportsCutoffTime is set, records in the list of imports
-        /// which _id is greater than ImportsCutoffTime will be ignored by the data source;
-        /// however no records will be ignored in the dataset itself as a result of this
-        /// property being defined.
-        ///
-        /// The property ImportsCutoffTime is not inherited; it has an effect only when
-        /// defined on the dataset itself, not when defined on an import or a parent of
-        /// a dataset.
-        /// </summary>
-        public RecordId? ImportsCutoffTime { get; set; }
 
         //--- METHODS
 
@@ -354,8 +347,18 @@ namespace DataCentric
                 // If not found, return RecordId.Empty
                 if (dataSetData == null) return null;
 
-                // If found, cache result in RecordId dictionary
+                // Get or create dataset detail record
+                var dataSetDetailKey = new DataSetDetailKey {DataSetId = dataSetData.Id};
+                DataSetDetailData dataSetDetailData = this.LoadOrNull(dataSetDetailKey, loadFrom);
+                if (dataSetDetailData == null)
+                {
+                    dataSetDetailData = new DataSetDetailData {DataSetId = dataSetData.Id};
+                    Context.Save(dataSetDetailData, loadFrom);
+                }
+
+                // Cache RecordId for the dataset and its parent
                 dataSetDict_[dataSetName] = dataSetData.Id;
+                dataSetParentDict_[dataSetData.Id] = dataSetData.DataSet;
 
                 // Build and cache dataset lookup list if not found
                 if (!importDict_.TryGetValue(dataSetData.Id, out HashSet<RecordId> importSet))
@@ -383,8 +386,9 @@ namespace DataCentric
             // to the new RecordId created during save
             Save<DataSetData>(dataSetData, saveTo);
 
-            // Update dataset dictionary with the new Id
+            // Cache RecordId for the dataset and its parent
             dataSetDict_[dataSetData.Key] = dataSetData.Id;
+            dataSetParentDict_[dataSetData.Id] = dataSetData.DataSet;
 
             // Update lookup list dictionary
             var lookupList = BuildDataSetLookupList(dataSetData);
@@ -430,6 +434,43 @@ namespace DataCentric
                 // Add to dictionary and return
                 importDict_.Add(loadFrom, result);
                 return result;
+            }
+        }
+
+        /// <summary>
+        /// Get detail of the specified dataset, or create if does not yet exist.
+        ///
+        /// The detail is loaded for the dataset specified in the first argument
+        /// (detailFor) from the dataset specified in the second argument (loadFrom).
+        /// </summary>
+        public DataSetDetailData GetOrCreateDataSetDetail(RecordId detailFor)
+        {
+            if (dataSetDetailDict_.TryGetValue(detailFor, out DataSetDetailData result))
+            {
+                // Check if already cached, return if found
+                return result;
+            }
+            else
+            {
+                // Get dataset parent from the dictionary.
+                // We should not get here unless the value
+                // is already cached.
+                var parentId = dataSetParentDict_[detailFor];
+
+                // Otherwise try loading from storage (this also updates the dictionaries)
+                var dataSetDetailKey = new DataSetDetailKey { DataSetId = detailFor };
+                DataSetDetailData dataSetDetailData = this.LoadOrNull(dataSetDetailKey, parentId);
+
+                // Create if does not exist
+                if (dataSetDetailData == null)
+                {
+                    dataSetDetailData = new DataSetDetailData { DataSetId = detailFor };
+                    Context.Save(dataSetDetailData, parentId);
+                }
+
+                // Cache in dictionary and return;
+                dataSetDetailDict_[detailFor] = dataSetDetailData;
+                return dataSetDetailData;
             }
         }
 

@@ -323,7 +323,7 @@ namespace DataCentric
         /// <summary>
         /// Get RecordId of the dataset with the specified name.
         ///
-        /// This overload of the GetDataSetOrNull method does not
+        /// This overload of the GetDataSet method does not
         /// specify the loadFrom parameter explicitly and instead
         /// uses context.DataSet for its value.
         ///
