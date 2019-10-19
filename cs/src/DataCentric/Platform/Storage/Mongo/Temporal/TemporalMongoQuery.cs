@@ -281,8 +281,8 @@ namespace DataCentric
                         .Select(p => new RecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
 
                     // Dataset details record should is already cached if we reached this point
-                    var dataSetDetailData = collection_.DataSource.GetOrCreateDataSetDetail(loadFrom_);
-                    var importsCutoffTime = dataSetDetailData.ImportsCutoffTime;
+                    var dataSetDetailData = collection_.DataSource.GetDataSetDetailOrNull(loadFrom_);
+                    RecordId? importsCutoffTime = dataSetDetailData != null ? dataSetDetailData.ImportsCutoffTime : null;
 
                     // Create a list of RecordIds for the records obtained using
                     // dataset lookup rules for the keys in the batch

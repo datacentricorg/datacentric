@@ -436,19 +436,25 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Get detail of the specified dataset, or create if does not yet exist.
+        /// Get detail of the specified dataset.
+        ///
+        /// Returns null if the details record does not exist.
         ///
         /// The detail is loaded for the dataset specified in the first argument
         /// (detailFor) from the dataset specified in the second argument (loadFrom).
         /// </summary>
-        public DataSetDetailData GetOrCreateDataSetDetail(RecordId detailFor)
-        {
+        public DataSetDetailData GetDataSetDetailOrNull(RecordId detailFor)
+        { 
             if (detailFor == RecordId.Empty)
             {
-                // Return empty detail for root dataset
-                var result = new DataSetDetailData();
-                result.DataSetId = detailFor;
-                return result;
+                // Root dataset does not have details
+                // as it has no parent where the details
+                // would be stored, and storing details
+                // in the dataset itself would subject
+                // them to their own settings.
+                //
+                // Accordingly, return null.
+                return null;
             }
             else if (dataSetDetailDict_.TryGetValue(detailFor, out DataSetDetailData result))
             {
@@ -464,18 +470,11 @@ namespace DataCentric
 
                 // Otherwise try loading from storage (this also updates the dictionaries)
                 var dataSetDetailKey = new DataSetDetailKey { DataSetId = detailFor };
-                DataSetDetailData dataSetDetailData = this.LoadOrNull(dataSetDetailKey, parentId);
+                result = this.LoadOrNull(dataSetDetailKey, parentId);
 
-                // Create if does not exist
-                if (dataSetDetailData == null)
-                {
-                    dataSetDetailData = new DataSetDetailData { DataSetId = detailFor };
-                    Context.Save(dataSetDetailData, parentId);
-                }
-
-                // Cache in dictionary and return;
-                dataSetDetailDict_[detailFor] = dataSetDetailData;
-                return dataSetDetailData;
+                // Cache in dictionary even if null
+                dataSetDetailDict_[detailFor] = result;
+                return result;
             }
         }
 
@@ -705,8 +704,8 @@ namespace DataCentric
                 throw new Exception(
                     $"Attempting write operation for data source {DataSourceName} where ReadOnly flag is set.");
 
-            var dataSetDetailData = GetOrCreateDataSetDetail(dataSetId);
-            if (dataSetDetailData.ReadOnly != null && dataSetDetailData.ReadOnly.Value)
+            var dataSetDetailData = GetDataSetDetailOrNull(dataSetId);
+            if (dataSetDetailData != null && dataSetDetailData.ReadOnly != null && dataSetDetailData.ReadOnly.Value)
                 throw new Exception(
                     $"Attempting write operation for dataset {dataSetId} where ReadOnly flag is set.");
 
