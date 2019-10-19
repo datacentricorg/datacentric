@@ -280,13 +280,13 @@ namespace DataCentric
                     var projectedIdQueryable = idQueryable
                         .Select(p => new RecordInfo {Id = p.Id, DataSet = p.DataSet, Key = p.Key});
 
-                    // Dataset details record should is already cached if we reached this point
-                    var dataSetDetailData = collection_.DataSource.GetDataSetDetailOrNull(loadFrom_);
-                    RecordId? importsCutoffTime = dataSetDetailData != null ? dataSetDetailData.ImportsCutoffTime : null;
+                    // Gets ImportsCutoffTime from the dataset detail record.
+                    // Returns null if dataset detail record is not found.
+                    RecordId? importsCutoffTime = collection_.DataSource.GetImportsCutoffTime(loadFrom_);
 
                     // Create a list of RecordIds for the records obtained using
                     // dataset lookup rules for the keys in the batch
-                    var recordIds = new List<RecordId>();
+                        var recordIds = new List<RecordId>();
                     string currentKey = null;
                     foreach (var obj in projectedIdQueryable)
                     {
@@ -308,8 +308,8 @@ namespace DataCentric
                             // * ImportsCutoffTime is not set
                             // * ImportsCutoffTime does not apply because the record
                             //   is in the dataset itself, not its Imports list
-                            // * The record is in the list of Imports, and is earlier
-                            //   than ImportsCutoffTime
+                            // * The record is in the list of Imports, and its RecordId
+                            //   is earlier than ImportsCutoffTime
                             if (importsCutoffTime == null
                                 || recordDataSet == loadFrom_
                                 || recordId < importsCutoffTime)

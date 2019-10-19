@@ -33,8 +33,7 @@ namespace DataCentric
     /// The DataSetDetail record uses RecordId of the referenced dataset
     /// as its primary key. It is located in the parent of the dataset
     /// record to which it applies, rather than inside that record, so it
-    /// is not affected by its own settings, such as ImportsCutoffTime or
-    /// ReadOnly.
+    /// is not affected by its own settings.
     /// </summary>
     public sealed class DataSetDetailData : TypedRecord<DataSetDetailKey, DataSetDetailData>
     {
@@ -51,15 +50,35 @@ namespace DataCentric
         public bool? ReadOnly { get; set; }
 
         /// <summary>
-        /// Records the imports of this dataset where RecordId is
-        /// greater or equal to the CutoffTime will be ignored by the
-        /// data source. This setting does not affect records
-        /// in the dataset itself.
+        /// Records with RecordId that is greater than or equal to CutoffTime
+        /// will be ignored by load methods and queries, and the latest available
+        /// record where RecordId is less than CutoffTime will be returned instead.
         ///
-        /// This has the effect of ``freezing'' the state of imports
-        /// as of the specified time (RecordId), thereby isolating
-        /// the current dataset from changes to the data in imported
-        /// datasets that occur after the specified time (RecordId).
+        /// CutoffTime applies to both the records stored in the dataset itself,
+        /// and the reports loaded through the Imports list.
+        ///
+        /// CutoffTime may be set in data source globally, or for a specific dataset
+        /// in its details record. If CutoffTime is set for both, the earlier of the
+        /// two values will be used.
+        /// </summary>
+        public RecordId? CutoffTime { get; set; }
+
+        /// <summary>
+        /// Imported records (records loaded through the Imports list)
+        /// where RecordId is greater than or equal to CutoffTime
+        /// will be ignored by load methods and queries, and the latest
+        /// available record where RecordId is less than CutoffTime will
+        /// be returned instead.
+        ///
+        /// This setting only affects records loaded through the Imports
+        /// list. It does not affect records stored in the dataset itself.
+        ///
+        /// Use this feature to freeze Imports as of a given CreatedTime
+        /// (part of RecordId), isolating the dataset from changes to the
+        /// data in imported datasets that occur after that time.
+        ///
+        /// If ImportsCutoffTime is set for both data source and dataset,
+        /// the earlier of the two values will be used.
         /// </summary>
         public RecordId? ImportsCutoffTime { get; set; }
     }

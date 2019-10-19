@@ -31,10 +31,9 @@ namespace DataCentric
     /// of a record with new RecordId, which is treated as a new dataset.
     ///
     /// The DataSetDetail record uses RecordId of the referenced dataset
-    /// as its primary key. It is located in the parent of the referenced
-    /// dataset alongside the reference dataset record itself, so it it not
-    /// affected by its own settings, such as ImportsCutoff or ReadOnly
-    /// flag.
+    /// as its primary key. It is located in the parent of the dataset
+    /// record to which it applies, rather than inside that record, so it
+    /// is not affected by its own settings.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<DataSetDetailKey>))]
     public sealed class DataSetDetailKey : TypedKey<DataSetDetailKey, DataSetDetailData>

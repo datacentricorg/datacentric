@@ -48,11 +48,16 @@ namespace DataCentric
         //--- ELEMENTS
 
         /// <summary>
-        /// Records where _id is greater than CutoffTime
-        /// will be ignored by the data source.
+        /// Records with RecordId that is greater than or equal to CutoffTime
+        /// will be ignored by load methods and queries, and the latest available
+        /// record where RecordId is less than CutoffTime will be returned instead.
         ///
-        /// The earlier of CutoffTime in the dataset and in the data
-        /// source will be used when both are set.
+        /// CutoffTime applies to both the records stored in the dataset itself,
+        /// and the reports loaded through the Imports list.
+        ///
+        /// CutoffTime may be set in data source globally, or for a specific dataset
+        /// in its details record. If CutoffTime is set for both, the earlier of the
+        /// two values will be used.
         /// </summary>
         public RecordId? CutoffTime { get; set; }
 
@@ -73,10 +78,16 @@ namespace DataCentric
         /// </summary>
         public override TRecord LoadOrNull<TRecord>(RecordId id)
         {
+            // This is a preliminary check for CutoffTime of the data source
+            // to avoid unnecessary loading. Once the record is loaded, we 
+            // will perform full check using GetCutoffTime(...) method
+            // that takes into account both CutoffTime of the data source
+            // and CutoffTime of the dataset.
             if (CutoffTime != null)
             {
-                // Return null for any record that has ID greater than CutoffTime.
-                if (id > CutoffTime.Value) return null;
+                // Return null for any record that has RecordId
+                // that is greater than or equal to CutoffTime.
+                if (id >= CutoffTime.Value) return null;
             }
 
             // Find last record in last dataset without constraining record type.
@@ -89,6 +100,15 @@ namespace DataCentric
             // Check not only for null but also for the DeletedRecord
             if (baseResult != null && !baseResult.Is<DeletedRecord>())
             {
+                // Now we use GetCutoffTime() for the full check
+                RecordId? cutoffTime = GetCutoffTime(baseResult.DataSet);
+                if (cutoffTime != null)
+                {
+                    // Return null for any record that has RecordId
+                    // that is greater than or equal to CutoffTime.
+                    if (id >= cutoffTime.Value) return null;
+                }
+
                 // Record is found but we do not yet know if it has the right type.
                 // Attempt to cast Record to TRecord and check if the result is null.
                 TRecord result = baseResult.As<TRecord>();
@@ -311,9 +331,10 @@ namespace DataCentric
             //
             // The property savedBy_ is set using either CutoffTime element.
             // Only one of these two elements can be set at a given time.
-            if (CutoffTime != null)
+            RecordId? cutoffTime = GetCutoffTime(loadFrom);
+            if (cutoffTime != null)
             {
-                result = result.Where(p => p.Id <= CutoffTime.Value);
+                result = result.Where(p => p.Id < cutoffTime.Value);
             }
 
             return result;
@@ -476,6 +497,61 @@ namespace DataCentric
                 dataSetDetailDict_[detailFor] = result;
                 return result;
             }
+        }
+
+        /// <summary>
+        /// CutoffTime should only be used via this method which also takes into
+        /// account the CutoffTime set in dataset detail record, and never directly.
+        /// 
+        /// CutoffTime may be set in data source globally, or for a specific dataset
+        /// in its details record. If CutoffTime is set for both, this method will
+        /// return the earlier of the two values will be used.
+        /// 
+        /// Records with RecordId that is greater than or equal to CutoffTime
+        /// will be ignored by load methods and queries, and the latest available
+        /// record where RecordId is less than CutoffTime will be returned instead.
+        ///
+        /// CutoffTime applies to both the records stored in the dataset itself,
+        /// and the reports loaded through the Imports list.
+        /// </summary>
+        public RecordId? GetCutoffTime(RecordId dataSetId)
+        {
+            // Get imports cutoff time for the dataset detail record.
+            // If the record is not found, consider its CutoffTime null.
+            var dataSetDetailData = GetDataSetDetailOrNull(dataSetId);
+            RecordId? dataSetCutoffTime = dataSetDetailData != null ? dataSetDetailData.CutoffTime : null;
+
+            // If CutoffTime is set for both data source and dataset,
+            // this method returns the earlier of the two values.
+            var result = RecordId.Min(CutoffTime, dataSetCutoffTime);
+            return result;
+        }
+
+        /// <summary>
+        /// Gets ImportsCutoffTime from the dataset detail record.
+        /// Returns null if dataset detail record is not found.
+        /// 
+        /// Imported records (records loaded through the Imports list)
+        /// where RecordId is greater than or equal to CutoffTime
+        /// will be ignored by load methods and queries, and the latest
+        /// available record where RecordId is less than CutoffTime will
+        /// be returned instead.
+        ///
+        /// This setting only affects records loaded through the Imports
+        /// list. It does not affect records stored in the dataset itself.
+        ///
+        /// Use this feature to freeze Imports as of a given CreatedTime
+        /// (part of RecordId), isolating the dataset from changes to the
+        /// data in imported datasets that occur after that time.
+        /// </summary>
+        public RecordId? GetImportsCutoffTime(RecordId dataSetId)
+        {
+            // Get dataset detail record
+            var dataSetDetailData = GetDataSetDetailOrNull(dataSetId);
+
+            // Return null if the record is not found
+            if (dataSetDetailData != null) return dataSetDetailData.ImportsCutoffTime;
+            else return null;
         }
 
         //--- PRIVATE
@@ -656,7 +732,8 @@ namespace DataCentric
             dataSetData.Id.CheckHasValue();
             dataSetData.Key.CheckHasValue();
 
-            if (CutoffTime != null && dataSetData.Id > CutoffTime.Value)
+            RecordId? cutoffTime = GetCutoffTime(dataSetData.DataSet);
+            if (cutoffTime != null && dataSetData.Id >= cutoffTime.Value)
             {
                 // Do not add if revision time constraint is set and is before this dataset.
                 // In this case the import datasets should not be added either, even if they
@@ -697,6 +774,7 @@ namespace DataCentric
         /// * ReadOnly is set for the data source
         /// * ReadOnly is set for the dataset
         /// * CutoffTime is set for the data source
+        /// * CutoffTime is set for the dataset
         /// </summary>
         private void CheckNotReadOnly(RecordId dataSetId)
         {
@@ -712,6 +790,11 @@ namespace DataCentric
             if (CutoffTime != null)
                 throw new Exception(
                     $"Attempting write operation for data source {DataSourceName} where " +
+                    $"CutoffTime is set. Historical view of the data cannot be written to.");
+
+            if (dataSetDetailData != null && dataSetDetailData.CutoffTime != null)
+                throw new Exception(
+                    $"Attempting write operation for the dataset {dataSetId} where " +
                     $"CutoffTime is set. Historical view of the data cannot be written to.");
         }
     }
