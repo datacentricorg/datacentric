@@ -53,9 +53,7 @@ namespace DataCentric
         /// <summary>
         /// Use this flag to mark data source as readonly.
         ///
-        /// This value will be set to true if CutoffTime is
-        /// true, because a data source that views the data
-        /// for a cutoff time cannot modify its view.
+        /// Data source may also be readonly because CutoffTime is set.
         /// </summary>
         public bool? ReadOnly { get; set; }
 

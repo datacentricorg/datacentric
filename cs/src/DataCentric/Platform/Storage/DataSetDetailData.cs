@@ -51,16 +51,6 @@ namespace DataCentric
         public bool? ReadOnly { get; set; }
 
         /// <summary>
-        /// Records in this dataset or its imports where RecordId is
-        /// greater or equal to the CutoffTime will be ignored by the
-        /// data source.
-        ///
-        /// The earlier of CutoffTime in the dataset and in the data
-        /// source will be used when both are set.
-        /// </summary>
-        public RecordId? CutoffTime { get; set; }
-
-        /// <summary>
         /// Records the imports of this dataset where RecordId is
         /// greater or equal to the CutoffTime will be ignored by the
         /// data source. This setting does not affect records

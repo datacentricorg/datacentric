@@ -18,12 +18,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using NodaTime;
 
 namespace DataCentric
 {
@@ -226,7 +224,7 @@ namespace DataCentric
         /// </summary>
         public override void Save<TRecord>(TRecord record, RecordId saveTo)
         {
-            CheckNotReadOnly();
+            CheckNotReadOnly(saveTo);
 
             var collection = GetOrCreateCollection<TRecord>();
 
@@ -264,7 +262,7 @@ namespace DataCentric
         /// </summary>
         public override void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId deleteIn)
         {
-            CheckNotReadOnly();
+            CheckNotReadOnly(deleteIn);
 
             // Create DeletedRecord with the specified key
             var record = new DeletedRecord {Key = key.Value};
@@ -445,7 +443,14 @@ namespace DataCentric
         /// </summary>
         public DataSetDetailData GetOrCreateDataSetDetail(RecordId detailFor)
         {
-            if (dataSetDetailDict_.TryGetValue(detailFor, out DataSetDetailData result))
+            if (detailFor == RecordId.Empty)
+            {
+                // Return empty detail for root dataset
+                var result = new DataSetDetailData();
+                result.DataSetId = detailFor;
+                return result;
+            }
+            else if (dataSetDetailDict_.TryGetValue(detailFor, out DataSetDetailData result))
             {
                 // Check if already cached, return if found
                 return result;
@@ -688,14 +693,23 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Error message if either ReadOnly or CutoffTime is set.
-        /// Historical view of the data cannot be written to.
+        /// Error message if one of the following is the case:
+        ///
+        /// * ReadOnly is set for the data source
+        /// * ReadOnly is set for the dataset
+        /// * CutoffTime is set for the data source
         /// </summary>
-        private void CheckNotReadOnly()
+        private void CheckNotReadOnly(RecordId dataSetId)
         {
             if (ReadOnly != null && ReadOnly.Value)
                 throw new Exception(
                     $"Attempting write operation for data source {DataSourceName} where ReadOnly flag is set.");
+
+            var dataSetDetailData = GetOrCreateDataSetDetail(dataSetId);
+            if (dataSetDetailData.ReadOnly != null && dataSetDetailData.ReadOnly.Value)
+                throw new Exception(
+                    $"Attempting write operation for dataset {dataSetId} where ReadOnly flag is set.");
+
             if (CutoffTime != null)
                 throw new Exception(
                     $"Attempting write operation for data source {DataSourceName} where " +
