@@ -237,38 +237,71 @@ namespace DataCentric
         /// The reason for this behavior is that the record may be stored from
         /// a different dataset than the one where it is used.
         ///
-        /// This method guarantees that TemporalIds will be in strictly increasing
-        /// order for this instance of the data source class always, and across
-        /// all processes and machine if they are not created within the same
-        /// second.
+        /// This method guarantees that TemporalIds of the saved records will be in
+        /// strictly increasing order.
         /// </summary>
         public override void Save<TRecord>(TRecord record, TemporalId saveTo)
         {
+            // Delegate implementation to SaveMany
+            SaveMany(new List<TRecord> {record}, saveTo);
+        }
+
+        /// <summary>
+        /// Save multiple records to the specified dataset. After the method exits,
+        /// for each record the property record.DataSet will be set to the value of
+        /// the saveTo parameter.
+        ///
+        /// All Save methods ignore the value of record.DataSet before the
+        /// Save method is called. When dataset is not specified explicitly,
+        /// the value of dataset from the context, not from the record, is used.
+        /// The reason for this behavior is that the record may be stored from
+        /// a different dataset than the one where it is used.
+        ///
+        /// This method guarantees that TemporalIds of the saved records will be in
+        /// strictly increasing order.
+        /// </summary>
+        public override void SaveMany<TRecord>(IEnumerable<TRecord> records, TemporalId saveTo)
+        {
             CheckNotReadOnly(saveTo);
 
+            // Get collection
             var collection = GetOrCreateCollection<TRecord>();
 
-            // This method guarantees that TemporalIds will be in strictly increasing
-            // order for this instance of the data source class always, and across
-            // all processes and machine if they are not created within the same
-            // second.
-            var recordId = CreateOrderedTemporalId();
+            // Convert to list unless already a list. The first line
+            // will assign null if not already a list, in which case
+            // the second line will convert.
+            List<TRecord> recordsList = records as List<TRecord>;
+            if (recordsList == null) recordsList = records.ToList(); 
+            
+            // Iterate over list elements to populate fields
+            foreach (var record in recordsList)
+            {
+                // This method guarantees that TemporalIds will be in strictly increasing
+                // order for this instance of the data source class always, and across
+                // all processes and machine if they are not created within the same
+                // second.
+                var recordId = CreateOrderedTemporalId();
 
-            // TemporalId of the record must be strictly later
-            // than TemporalId of the dataset where it is stored
-            if (recordId <= saveTo)
-                throw new Exception(
-                    $"TemporalId={recordId} of a record must be greater than " +
-                    $"TemporalId={saveTo} of the dataset where it is being saved.");
+                // TemporalId of the record must be strictly later
+                // than TemporalId of the dataset where it is stored
+                if (recordId <= saveTo)
+                    throw new Exception(
+                        $"TemporalId={recordId} of a record must be greater than " +
+                        $"TemporalId={saveTo} of the dataset where it is being saved.");
 
-            // Assign ID and DataSet, and only then initialize, because
-            // initialization code may use record.ID and record.DataSet
-            record.Id = recordId;
-            record.DataSet = saveTo;
-            record.Init(Context);
+                // Assign ID and DataSet, and only then initialize, because
+                // initialization code may use record.ID and record.DataSet
+                record.Id = recordId;
+                record.DataSet = saveTo;
+                record.Init(Context);
+            }
 
-            // By design, insert will fail if TemporalId is not unique within the collection
-            collection.TypedCollection.InsertOne(record);
+            // Use InsertOne for a single element, and InsertMany for multiple.
+            // Do nothing if the list has zero size.
+            //
+            // Insert will fail if TemporalId is not unique within the collection.
+            if (recordsList.Count > 1) collection.TypedCollection.InsertMany(recordsList);
+            else if (recordsList.Count == 1) collection.TypedCollection.InsertMany(recordsList);
         }
 
         /// <summary>
