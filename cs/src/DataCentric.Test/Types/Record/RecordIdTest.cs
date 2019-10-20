@@ -18,19 +18,19 @@ limitations under the License.
 using System;
 using System.Linq;
 using DataCentric;
-using MongoDB.Bson; // TODO - remove the remaining use of MongoDB so RecordId is fully portable
+using MongoDB.Bson; // TODO - remove the remaining use of MongoDB so TemporalId is fully portable
 using Xunit;
 
 namespace DataCentric.Test
 {
-    public class RecordIdTest
+    public class TemporalIdTest
     {
         [Fact]
         public void TestParse()
         {
             // Lowercase and uppercase
-            var recordId1 = RecordId.Parse("2003-05-01T10:15:00.000Z0000010002000abc");
-            var recordId2 = RecordId.Parse("2003-05-01T10:15:00.000Z0000010002000ABC");
+            var recordId1 = TemporalId.Parse("2003-05-01T10:15:00.000Z0000010002000abc");
+            var recordId2 = TemporalId.Parse("2003-05-01T10:15:00.000Z0000010002000ABC");
             Assert.True(recordId1.ToByteArray().SequenceEqual(recordId2.ToByteArray()));
 
             // ToString returns lower case
@@ -42,9 +42,9 @@ namespace DataCentric.Test
         public void TestTryParse()
         {
             // Lowercase and uppercase
-            RecordId recordId1, recordId2;
-            Assert.True(RecordId.TryParse("2003-05-01T10:15:00.000Z0000010002000abc", out recordId1));
-            Assert.True(RecordId.TryParse("2003-05-01T10:15:00.000Z0000010002000ABC", out recordId2));
+            TemporalId recordId1, recordId2;
+            Assert.True(TemporalId.TryParse("2003-05-01T10:15:00.000Z0000010002000abc", out recordId1));
+            Assert.True(TemporalId.TryParse("2003-05-01T10:15:00.000Z0000010002000ABC", out recordId2));
             Assert.True(recordId1.ToByteArray().SequenceEqual(recordId2.ToByteArray()));
 
             // ToString returns lower case

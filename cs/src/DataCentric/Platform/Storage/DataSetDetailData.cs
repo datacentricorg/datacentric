@@ -28,9 +28,9 @@ namespace DataCentric
     ///
     /// The reason dataset record is immutable is that any change to the
     /// the dataset record in a temporal data source results in creation
-    /// of a record with new RecordId, which is treated as a new dataset.
+    /// of a record with new TemporalId, which is treated as a new dataset.
     ///
-    /// The DataSetDetail record uses RecordId of the referenced dataset
+    /// The DataSetDetail record uses TemporalId of the referenced dataset
     /// as its primary key. It is located in the parent of the dataset
     /// record to which it applies, rather than inside that record, so it
     /// is not affected by its own settings.
@@ -38,10 +38,10 @@ namespace DataCentric
     public sealed class DataSetDetailData : TypedRecord<DataSetDetailKey, DataSetDetailData>
     {
         /// <summary>
-        /// RecordId of the referenced dataset.
+        /// TemporalId of the referenced dataset.
         /// </summary>
         [BsonRequired]
-        public RecordId DataSetId { get; set; }
+        public TemporalId DataSetId { get; set; }
 
         /// <summary>
         /// If specified, write operations to the referenced dataset
@@ -50,9 +50,9 @@ namespace DataCentric
         public bool? ReadOnly { get; set; }
 
         /// <summary>
-        /// Records with RecordId that is greater than or equal to CutoffTime
+        /// Records with TemporalId that is greater than or equal to CutoffTime
         /// will be ignored by load methods and queries, and the latest available
-        /// record where RecordId is less than CutoffTime will be returned instead.
+        /// record where TemporalId is less than CutoffTime will be returned instead.
         ///
         /// CutoffTime applies to both the records stored in the dataset itself,
         /// and the reports loaded through the Imports list.
@@ -61,25 +61,25 @@ namespace DataCentric
         /// in its details record. If CutoffTime is set for both, the earlier of the
         /// two values will be used.
         /// </summary>
-        public RecordId? CutoffTime { get; set; }
+        public TemporalId? CutoffTime { get; set; }
 
         /// <summary>
         /// Imported records (records loaded through the Imports list)
-        /// where RecordId is greater than or equal to CutoffTime
+        /// where TemporalId is greater than or equal to CutoffTime
         /// will be ignored by load methods and queries, and the latest
-        /// available record where RecordId is less than CutoffTime will
+        /// available record where TemporalId is less than CutoffTime will
         /// be returned instead.
         ///
         /// This setting only affects records loaded through the Imports
         /// list. It does not affect records stored in the dataset itself.
         ///
         /// Use this feature to freeze Imports as of a given CreatedTime
-        /// (part of RecordId), isolating the dataset from changes to the
+        /// (part of TemporalId), isolating the dataset from changes to the
         /// data in imported datasets that occur after that time.
         ///
         /// If ImportsCutoffTime is set for both data source and dataset,
         /// the earlier of the two values will be used.
         /// </summary>
-        public RecordId? ImportsCutoffTime { get; set; }
+        public TemporalId? ImportsCutoffTime { get; set; }
     }
 }

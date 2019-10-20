@@ -69,50 +69,50 @@ namespace DataCentric
         void Flush();
 
         /// <summary>
-        /// The returned RecordIds have the following order guarantees:
+        /// The returned TemporalIds have the following order guarantees:
         ///
         /// * For this data source instance, to arbitrary resolution; and
         /// * Across all processes and machines, to one second resolution
         ///
-        /// One second resolution means that two RecordIds created within
+        /// One second resolution means that two TemporalIds created within
         /// the same second by different instances of the data source
         /// class may not be ordered chronologically unless they are at
         /// least one second apart.
         /// </summary>
-        RecordId CreateOrderedRecordId();
+        TemporalId CreateOrderedTemporalId();
 
         /// <summary>
-        /// Load record by its RecordId.
+        /// Load record by its TemporalId.
         ///
-        /// Return null if there is no record for the specified RecordId;
+        /// Return null if there is no record for the specified TemporalId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        TRecord LoadOrNull<TRecord>(RecordId id)
+        TRecord LoadOrNull<TRecord>(TemporalId id)
             where TRecord : Record;
 
         /// <summary>
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
-        /// order of dataset RecordIds, and then in the descending
-        /// order of record RecordIds within the first dataset that
-        /// has at least one record. Both dataset and record RecordIds
+        /// order of dataset TemporalIds, and then in the descending
+        /// order of record TemporalIds within the first dataset that
+        /// has at least one record. Both dataset and record TemporalIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty RecordId value that is less
-        /// than any other RecordId value. Accordingly, the root
+        /// The root dataset has empty TemporalId value that is less
+        /// than any other TemporalId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// The first record in this lookup order is returned, or null
         /// if no records are found or if DeletedRecord is the first
         /// record.
         ///
-        /// Return null if there is no record for the specified RecordId;
+        /// Return null if there is no record for the specified TemporalId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId loadFrom)
+        TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, TemporalId loadFrom)
             where TKey : TypedKey<TKey, TRecord>, new()
             where TRecord : TypedRecord<TKey, TRecord>;
 
@@ -120,20 +120,20 @@ namespace DataCentric
         /// Get query for the specified type.
         ///
         /// After applying query parameters, the lookup occurs first in
-        /// descending order of dataset RecordIds, and then in the descending
-        /// order of record RecordIds within the first dataset that
-        /// has at least one record. Both dataset and record RecordIds
+        /// descending order of dataset TemporalIds, and then in the descending
+        /// order of record TemporalIds within the first dataset that
+        /// has at least one record. Both dataset and record TemporalIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty RecordId value that is less
-        /// than any other RecordId value. Accordingly, the root
+        /// The root dataset has empty TemporalId value that is less
+        /// than any other TemporalId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// Generic parameter TRecord is not necessarily the root data type;
         /// it may also be a type derived from the root data type.
         /// </summary>
-        IQuery<TRecord> GetQuery<TRecord>(RecordId loadFrom)
+        IQuery<TRecord> GetQuery<TRecord>(TemporalId loadFrom)
             where TRecord : Record;
 
         /// <summary>
@@ -146,12 +146,12 @@ namespace DataCentric
         /// The reason for this behavior is that the record may be stored from
         /// a different dataset than the one where it is used.
         ///
-        /// This method guarantees that RecordIds will be in strictly increasing
+        /// This method guarantees that TemporalIds will be in strictly increasing
         /// order for this instance of the data source class always, and across
         /// all processes and machine if they are not created within the same
         /// second.
         /// </summary>
-        void Save<TRecord>(TRecord record, RecordId saveTo)
+        void Save<TRecord>(TRecord record, TemporalId saveTo)
             where TRecord : Record;
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace DataCentric
         /// To avoid an additional roundtrip to the data store, the delete
         /// marker is written even when the record does not exist.
         /// </summary>
-        void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId deleteIn)
+        void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, TemporalId deleteIn)
             where TKey : TypedKey<TKey, TRecord>, new()
             where TRecord : TypedRecord<TKey, TRecord>;
 
@@ -181,7 +181,7 @@ namespace DataCentric
         void DeleteDb();
 
         /// <summary>
-        /// Get RecordId of the dataset with the specified name.
+        /// Get TemporalId of the dataset with the specified name.
         ///
         /// All of the previously requested dataSetIds are cached by
         /// the data source. To load the latest version of the dataset
@@ -190,35 +190,35 @@ namespace DataCentric
         ///
         /// Returns null if not found.
         /// </summary>
-        RecordId? GetDataSetOrNull(string dataSetName, RecordId loadFrom);
+        TemporalId? GetDataSetOrNull(string dataSetName, TemporalId loadFrom);
 
         /// <summary>
         /// Save new version of the dataset.
         ///
         /// This method sets Id element of the argument to be the
-        /// new RecordId assigned to the record when it is saved.
-        /// The timestamp of the new RecordId is the current time.
+        /// new TemporalId assigned to the record when it is saved.
+        /// The timestamp of the new TemporalId is the current time.
         ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
-        void SaveDataSet(DataSetData dataSetData, RecordId saveTo);
+        void SaveDataSet(DataSetData dataSetData, TemporalId saveTo);
     }
 
     /// <summary>Extension methods for IDataSource.</summary>
     public static class IDataSourceExtensions
     {
         /// <summary>
-        /// Load record by its RecordId.
+        /// Load record by its TemporalId.
         ///
-        /// Error message if there is no record for the specified RecordId,
+        /// Error message if there is no record for the specified TemporalId,
         /// or if the record exists but is not derived from TRecord.
         /// </summary>
-        public static TRecord Load<TRecord>(this IDataSource obj, RecordId id)
+        public static TRecord Load<TRecord>(this IDataSource obj, TemporalId id)
             where TRecord : Record
         {
             var result = obj.LoadOrNull<TRecord>(id);
             if (result == null) throw new Exception(
-                $"Record with RecordId={id} is not found in data store {obj.DataSourceName}.");
+                $"Record with TemporalId={id} is not found in data store {obj.DataSourceName}.");
             return result;
         }
 
@@ -244,7 +244,7 @@ namespace DataCentric
         ///
         /// Error message if the record is not found or is a DeletedRecord.
         /// </summary>
-        public static TRecord Load<TKey, TRecord>(this IDataSource obj, TypedKey<TKey, TRecord> key, RecordId loadFrom)
+        public static TRecord Load<TKey, TRecord>(this IDataSource obj, TypedKey<TKey, TRecord> key, TemporalId loadFrom)
             where TKey : TypedKey<TKey, TRecord>, new()
             where TRecord : TypedRecord<TKey, TRecord>
         {
@@ -254,23 +254,23 @@ namespace DataCentric
 
             // Error message if null, otherwise return
             if (result == null) throw new Exception(
-                $"Record with key {key} is not found in dataset with RecordId={loadFrom}.");
+                $"Record with key {key} is not found in dataset with TemporalId={loadFrom}.");
 
             return result;
         }
 
         /// <summary>
-        /// Return RecordId of the latest Common dataset.
+        /// Return TemporalId of the latest Common dataset.
         ///
         /// Common dataset is always stored in root dataset.
         /// </summary>
-        public static RecordId GetCommon(this IDataSource obj)
+        public static TemporalId GetCommon(this IDataSource obj)
         {
-            return obj.GetDataSet(DataSetKey.Common.DataSetName, RecordId.Empty);
+            return obj.GetDataSet(DataSetKey.Common.DataSetName, TemporalId.Empty);
         }
 
         /// <summary>
-        /// Get RecordId of the dataset with the specified name.
+        /// Get TemporalId of the dataset with the specified name.
         ///
         /// All of the previously requested dataSetIds are cached by
         /// the data source. To load the latest version of the dataset
@@ -279,7 +279,7 @@ namespace DataCentric
         ///
         /// Error message if not found.
         /// </summary>
-        public static RecordId GetDataSet(this IDataSource obj, string dataSetName, RecordId loadFrom)
+        public static TemporalId GetDataSet(this IDataSource obj, string dataSetName, TemporalId loadFrom)
         {
             // Get dataset or null
             var result = obj.GetDataSetOrNull(dataSetName, loadFrom);
@@ -301,7 +301,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static RecordId CreateCommon(this IDataSource obj)
+        public static TemporalId CreateCommon(this IDataSource obj)
         {
             // Create with default flags in root dataset
             return obj.CreateCommon(DataSetFlags.Default);
@@ -325,10 +325,10 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static RecordId CreateCommon(this IDataSource obj, DataSetFlags flags)
+        public static TemporalId CreateCommon(this IDataSource obj, DataSetFlags flags)
         {
             // Create with the specified flags in root dataset
-            return obj.CreateDataSet("Common", flags, RecordId.Empty);
+            return obj.CreateDataSet("Common", flags, TemporalId.Empty);
         }
 
         /// <summary>
@@ -338,10 +338,10 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static RecordId CreateDataSet(this IDataSource obj, string dataSetName, RecordId parentDataSet)
+        public static TemporalId CreateDataSet(this IDataSource obj, string dataSetName, TemporalId parentDataSet)
         {
             // If imports are not specified, define with parentDataSet as the only import
-            var imports = new RecordId[] { parentDataSet };
+            var imports = new TemporalId[] { parentDataSet };
 
             // Create with default flags in parentDataSet
             return obj.CreateDataSet(dataSetName, imports, DataSetFlags.Default, parentDataSet);
@@ -354,7 +354,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static RecordId CreateDataSet(this IDataSource obj, string dataSetName, IEnumerable<RecordId> imports, RecordId parentDataSet)
+        public static TemporalId CreateDataSet(this IDataSource obj, string dataSetName, IEnumerable<TemporalId> imports, TemporalId parentDataSet)
         {
             // Create with default flags in parentDataSet
             return obj.CreateDataSet(dataSetName, imports, DataSetFlags.Default, parentDataSet);
@@ -367,10 +367,10 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static RecordId CreateDataSet(this IDataSource obj, string dataSetName, DataSetFlags flags, RecordId parentDataSet)
+        public static TemporalId CreateDataSet(this IDataSource obj, string dataSetName, DataSetFlags flags, TemporalId parentDataSet)
         {
             // If imports are not specified, define with parent dataset as the only import
-            var imports = new RecordId[] { parentDataSet };
+            var imports = new TemporalId[] { parentDataSet };
 
             // Create with the specified flags in parentDataSet
             return obj.CreateDataSet(dataSetName, imports, flags, parentDataSet);
@@ -383,7 +383,7 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the created dataset.
         /// </summary>
-        public static RecordId CreateDataSet(this IDataSource obj, string dataSetName, IEnumerable<RecordId> imports, DataSetFlags flags, RecordId parentDataSet)
+        public static TemporalId CreateDataSet(this IDataSource obj, string dataSetName, IEnumerable<TemporalId> imports, DataSetFlags flags, TemporalId parentDataSet)
         {
             // Create dataset record with the specified name and import
             var result = new DataSetData() { DataSetName = dataSetName, Imports = imports.ToList() };
@@ -402,7 +402,7 @@ namespace DataCentric
             // Save in parentDataSet (this also updates the dictionaries)
             obj.SaveDataSet(result, parentDataSet);
 
-            // Return RecordId that was assigned to the
+            // Return TemporalId that was assigned to the
             // record inside the SaveDataSet method
             return result.Id;
         }

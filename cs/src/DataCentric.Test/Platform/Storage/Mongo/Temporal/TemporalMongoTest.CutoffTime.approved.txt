@@ -1,8 +1,8 @@
-Verify: Load records by RecordId without constraint
-Verify: Found for RecordId(A0)=True
-Verify: Found for RecordId(A1)=True
-Verify: Found for RecordId(A2)=True
-Verify: Found for RecordId(C0)=True
+Verify: Load records by TemporalId without constraint
+Verify: Found for TemporalId(A0)=True
+Verify: Found for TemporalId(A1)=True
+Verify: Found for TemporalId(A2)=True
+Verify: Found for TemporalId(C0)=True
 Verify: Load records by string key without constraint
 Verify:     Version found for key=A;0: 2
 Verify:     Version found for key=C;0: 0
@@ -11,11 +11,11 @@ Verify:     Key=A;0 DataSet=DataSet0 Version=2
 Verify:     Key=B;0 DataSet=DataSet1 Version=2
 Verify:     Key=C;0 DataSet=DataSet0 Version=0
 Verify:     Key=D;0 DataSet=DataSet1 Version=0
-Verify: Load records by RecordId with CutoffTime constraint
-Verify: Found for RecordId(A0)=True
-Verify: Found for RecordId(A1)=True
-Verify: Found for RecordId(A2)=False
-Verify: Found for RecordId(C0)=False
+Verify: Load records by TemporalId with CutoffTime constraint
+Verify: Found for TemporalId(A0)=True
+Verify: Found for TemporalId(A1)=True
+Verify: Found for TemporalId(A2)=False
+Verify: Found for TemporalId(C0)=False
 Verify: Load records by string key with CutoffTime constraint
 Verify:     Version found for key=A;0: 1
 Verify: Query records with CutoffTime constraint

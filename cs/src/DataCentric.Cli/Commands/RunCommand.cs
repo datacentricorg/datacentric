@@ -120,7 +120,7 @@ namespace DataCentric.Cli
             TKey key = Activator.CreateInstance<TKey>();
             key.PopulateFrom(command.Key);
 
-            RecordId dataSet = context.GetDataSet(command.Dataset, context.DataSet);
+            TemporalId dataSet = context.GetDataSet(command.Dataset, context.DataSet);
             TRecord record = (TRecord) context.LoadOrNull(key, dataSet);
 
             record.Init(context);

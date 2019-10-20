@@ -64,7 +64,7 @@ namespace DataCentric
                     return !dateTimeValue.HasValue();
                 case Instant instantValue:
                     return !instantValue.HasValue();
-                case RecordId recordIdValue:
+                case TemporalId recordIdValue:
                     return !recordIdValue.HasValue();
                 default:
                     // If not null and does not have a known HasValue method,

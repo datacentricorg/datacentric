@@ -40,7 +40,7 @@ namespace DataCentric
         private InstanceType instanceType_;
         private string dbName_;
         private IMongoClient client_;
-        private RecordId prevRecordId_ = RecordId.Empty;
+        private TemporalId prevTemporalId_ = TemporalId.Empty;
 
         //--- ELEMENTS
 
@@ -150,42 +150,42 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// The returned RecordIds have the following order guarantees:
+        /// The returned TemporalIds have the following order guarantees:
         ///
         /// * For this data source instance, to arbitrary resolution; and
         /// * Across all processes and machines, to one second resolution
         ///
-        /// One second resolution means that two RecordIds created within
+        /// One second resolution means that two TemporalIds created within
         /// the same second by different instances of the data source
         /// class may not be ordered chronologically unless they are at
         /// least one second apart.
         /// </summary>
-        public override RecordId CreateOrderedRecordId()
+        public override TemporalId CreateOrderedTemporalId()
         {
-            // Generate RecordId and check that it is later
-            // than the previous generated RecordId
-            RecordId result = RecordId.GenerateNewId();
+            // Generate TemporalId and check that it is later
+            // than the previous generated TemporalId
+            TemporalId result = TemporalId.GenerateNewId();
             int retryCounter = 0;
-            while (result <= prevRecordId_)
+            while (result <= prevTemporalId_)
             {
                 // Getting inside the while loop will be very rare as this would
                 // require the increment to roll from max int to min int within
                 // the same second, therefore it is a good idea to log the event
-                if (retryCounter++ == 0) Context.Log.Warning("MongoDB generated RecordId not in increasing order, retrying.");
+                if (retryCounter++ == 0) Context.Log.Warning("MongoDB generated TemporalId not in increasing order, retrying.");
 
-                // If new RecordId is not strictly greater than the previous one,
-                // keep generating new RecordIds until it changes
-                result = RecordId.GenerateNewId();
+                // If new TemporalId is not strictly greater than the previous one,
+                // keep generating new TemporalIds until it changes
+                result = TemporalId.GenerateNewId();
             }
 
             // Report the number of retries
             if (retryCounter != 0)
             {
-                Context.Log.Warning($"Generated RecordId in increasing order after {retryCounter} retries.");
+                Context.Log.Warning($"Generated TemporalId in increasing order after {retryCounter} retries.");
             }
 
-            // Update previous RecordId and return
-            prevRecordId_ = result;
+            // Update previous TemporalId and return
+            prevTemporalId_ = result;
             return result;
         }
 

@@ -34,7 +34,7 @@ namespace DataCentric
         where TRecord : Record
     {
         private readonly TemporalMongoCollection<TRecord> collection_;
-        private readonly RecordId loadFrom_;
+        private readonly TemporalId loadFrom_;
         private readonly IQueryable<TRecord> queryable_;
         private readonly IOrderedQueryable<TRecord> orderedQueryable_;
 
@@ -43,7 +43,7 @@ namespace DataCentric
         /// <summary>
         /// Create query from collection and dataset.
         /// </summary>
-        public TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, RecordId loadFrom)
+        public TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, TemporalId loadFrom)
         {
             collection_ = collection;
             loadFrom_ = loadFrom;
@@ -67,7 +67,7 @@ namespace DataCentric
         /// This constructor is private and is intended for use by the
         /// implementation of this class only.
         /// </summary>
-        private TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, RecordId loadFrom, IQueryable<TRecord> queryable)
+        private TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, TemporalId loadFrom, IQueryable<TRecord> queryable)
         {
             if (queryable == null)
                 throw new Exception(
@@ -85,7 +85,7 @@ namespace DataCentric
         /// This constructor is private and is intended for use by the
         /// implementation of this class only.
         /// </summary>
-        private TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, RecordId loadFrom, IOrderedQueryable<TRecord> orderedQueryable)
+        private TemporalMongoQuery(TemporalMongoCollection<TRecord> collection, TemporalId loadFrom, IOrderedQueryable<TRecord> orderedQueryable)
         {
             if (orderedQueryable == null)
                 throw new Exception(
@@ -225,8 +225,8 @@ namespace DataCentric
                     // by the user specified query and sort order
                     int batchIndex = 0;
                     var batchKeysHashSet = new HashSet<string>();
-                    var batchIdsHashSet = new HashSet<RecordId>();
-                    var batchIdsList = new List<RecordId>();
+                    var batchIdsHashSet = new HashSet<TemporalId>();
+                    var batchIdsList = new List<TemporalId>();
                     while (true)
                     {
                         // Advance cursor and check if there are more results left in the query
@@ -237,7 +237,7 @@ namespace DataCentric
                             // If yes, get key from the enumerator
                             RecordInfo recordInfo = stepOneEnumerator.Current;
                             string batchKey = recordInfo.Key;
-                            RecordId batchId = recordInfo.Id;
+                            TemporalId batchId = recordInfo.Id;
 
                             // Add Key and Id to hashsets, increment
                             // batch index only if this is a new key
@@ -282,11 +282,11 @@ namespace DataCentric
 
                     // Gets ImportsCutoffTime from the dataset detail record.
                     // Returns null if dataset detail record is not found.
-                    RecordId? importsCutoffTime = collection_.DataSource.GetImportsCutoffTime(loadFrom_);
+                    TemporalId? importsCutoffTime = collection_.DataSource.GetImportsCutoffTime(loadFrom_);
 
-                    // Create a list of RecordIds for the records obtained using
+                    // Create a list of TemporalIds for the records obtained using
                     // dataset lookup rules for the keys in the batch
-                        var recordIds = new List<RecordId>();
+                        var recordIds = new List<TemporalId>();
                     string currentKey = null;
                     foreach (var obj in projectedIdQueryable)
                     {
@@ -300,15 +300,15 @@ namespace DataCentric
                         }
                         else
                         {
-                            RecordId recordId = obj.Id;
-                            RecordId recordDataSet = obj.DataSet;
+                            TemporalId recordId = obj.Id;
+                            TemporalId recordDataSet = obj.DataSet;
 
                             // Include the record if one of the following is true:
                             // 
                             // * ImportsCutoffTime is not set
                             // * ImportsCutoffTime does not apply because the record
                             //   is in the dataset itself, not its Imports list
-                            // * The record is in the list of Imports, and its RecordId
+                            // * The record is in the list of Imports, and its TemporalId
                             //   is earlier than ImportsCutoffTime
                             if (importsCutoffTime == null
                                 || recordDataSet == loadFrom_
@@ -320,7 +320,7 @@ namespace DataCentric
                                 // in the latest dataset for this key subject to the freeze rule.
 
                                 // Take the first object for a new key, relying on sorting
-                                // by dataset and then by record's RecordId in descending
+                                // by dataset and then by record's TemporalId in descending
                                 // order.
                                 currentKey = objKey;
 
@@ -345,7 +345,7 @@ namespace DataCentric
                         .Where(p => recordIds.Contains(p.Id));
 
                     // Populate a dictionary of records by Id
-                    var recordDict = new Dictionary<RecordId, TRecord>();
+                    var recordDict = new Dictionary<TemporalId, TRecord>();
                     foreach (var record in recordQueryable)
                     {
                         recordDict.Add(record.Id, record);
@@ -355,7 +355,7 @@ namespace DataCentric
                     // in the same order as the original query
                     foreach(var batchId in batchIdsList)
                     {
-                        // If a record RecordId is present in batchIds but not
+                        // If a record TemporalId is present in batchIds but not
                         // in recordDict, this indicates that the record found
                         // by the query is not the latest and it should be skipped
                         if (recordDict.TryGetValue(batchId, out var result))

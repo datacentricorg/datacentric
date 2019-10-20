@@ -161,7 +161,7 @@ namespace DataCentric.Test
                 // Create from timestamp
                 var createdTime = InstantUtil.Utc(2003, 5, 1, 10, 15, 0);
                 var rec = new IdBasedKeySampleData();
-                rec.Id = new RecordId(createdTime, 1, 2, 3);
+                rec.Id = new TemporalId(createdTime, 1, 2, 3);
                 rec.StringElement = "abc";
 
                 // Verify key serialization
@@ -173,7 +173,7 @@ namespace DataCentric.Test
                 key.PopulateFrom(keyValue);
                 context.Log.Verify($"Deserialized key: {key}");
 
-                context.Log.Assert(key.Id == rec.Id, "RecordId serialization roundtrip.");
+                context.Log.Assert(key.Id == rec.Id, "TemporalId serialization roundtrip.");
             }
         }
     }

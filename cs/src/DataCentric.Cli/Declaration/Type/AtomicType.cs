@@ -86,10 +86,10 @@ namespace DataCentric.Cli
         NullableTime,
 
         /// <summary>Object Id.</summary>
-        RecordId,
+        TemporalId,
 
         /// <summary>Nullable recordId.</summary>
-        NullableRecordId,
+        NullableTemporalId,
 
         /// <summary>Minute.</summary>
         Minute,

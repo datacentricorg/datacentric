@@ -33,7 +33,7 @@ namespace DataCentric
             else if (type == typeof(LocalDateTime)) return new BsonLocalDateTimeSerializer();
             else if (type == typeof(Instant)) return new BsonInstantSerializer();
             else if (type == typeof(IsoDayOfWeek)) return new BsonIsoDayOfWeekSerializer();
-            else if (type == typeof(RecordId)) return new BsonRecordIdSerializer();
+            else if (type == typeof(TemporalId)) return new BsonTemporalIdSerializer();
             else return null;
         }
     }

@@ -47,8 +47,8 @@ namespace DataCentric.Test
         public class B
         {
             [BsonId]
-            public RecordId Id { get; set; }
-            public RecordId DataSet { get; set; }
+            public TemporalId Id { get; set; }
+            public TemporalId DataSet { get; set; }
             public string KeyElement { get; set; }
             public string StringElement1 { get; set; }
             public string StringElement2 { get; set; }
@@ -61,7 +61,7 @@ namespace DataCentric.Test
         public class Cursor
         {
             [BsonId]
-            public RecordId Id { get; set; }
+            public TemporalId Id { get; set; }
             public string KeyElement { get; set; }
         }
 
@@ -143,13 +143,13 @@ namespace DataCentric.Test
             List<B> records = new List<B>();
             for (int dataSetIndex = 0; dataSetIndex < dataSetCount_; ++dataSetIndex)
             {
-                RecordId dataSet = RecordId.GenerateNewId();
+                TemporalId dataSet = TemporalId.GenerateNewId();
                 for (int versionIndex = 0; versionIndex < versionCount_; ++versionIndex)
                 {
                     for (int recordIndex = 0; recordIndex < recordCount_; ++recordIndex)
                     {
                         var rec = new B();
-                        rec.Id = RecordId.GenerateNewId();
+                        rec.Id = TemporalId.GenerateNewId();
                         rec.DataSet = dataSet;
                         rec.KeyElement = String.Concat("KeyPrefix", recordIndex);
                         rec.StringElement1 = (recordIndex % 2).ToString();
@@ -343,10 +343,10 @@ namespace DataCentric.Test
                     .ThenByDescending(p => p.Id)
                     .Select(p => new Cursor {Id = p.Id, KeyElement = p.KeyElement});
 
-                // Get RecordIds of the query results
+                // Get TemporalIds of the query results
                 int recordIdCount = 0;
                 HashSet<string> keys = new HashSet<string>();
-                List<RecordId> recordIds = new List<RecordId>();
+                List<TemporalId> recordIds = new List<TemporalId>();
                 foreach (var obj in query)
                 {
                     if (keys.Add(obj.KeyElement))
@@ -356,7 +356,7 @@ namespace DataCentric.Test
                     }
                 }
 
-                // Iterate over RecordIds
+                // Iterate over TemporalIds
                 int recordCount = 0;
                 var recordQuery = collection.AsQueryable()
                     .Where(p => recordIds.Contains(p.Id));
@@ -366,7 +366,7 @@ namespace DataCentric.Test
                     recordCount++;
                 }
 
-                context.Log.Verify($"Query returned {recordCount} records from {recordIdCount} RecordIds.");
+                context.Log.Verify($"Query returned {recordCount} records from {recordIdCount} TemporalIds.");
                 context.Log.Verify($"Sum(DoubleElement)={sum}");
             }
         }

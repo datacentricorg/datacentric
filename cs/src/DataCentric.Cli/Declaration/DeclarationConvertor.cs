@@ -46,7 +46,7 @@ namespace DataCentric.Cli
             typeof(LocalMinute),
             typeof(LocalDateTime),
             typeof(Instant),
-            typeof(RecordId),
+            typeof(TemporalId),
 
             // Nullables
             typeof(bool?),
@@ -59,7 +59,7 @@ namespace DataCentric.Cli
             typeof(LocalMinute?),
             typeof(LocalDateTime?),
             typeof(Instant?),
-            typeof(RecordId?),
+            typeof(TemporalId?),
         };
 
         /// <summary>
@@ -488,9 +488,9 @@ namespace DataCentric.Cli
                     type == typeof(LocalDate?)     ? AtomicType.NullableDate :
                     type == typeof(LocalTime?)     ? AtomicType.NullableTime :
                     type == typeof(LocalMinute?)   ? AtomicType.NullableMinute :
-                    // RecordId
-                    type == typeof(RecordId)  ? AtomicType.RecordId :
-                    type == typeof(RecordId?) ? AtomicType.NullableRecordId :
+                    // TemporalId
+                    type == typeof(TemporalId)  ? AtomicType.TemporalId :
+                    type == typeof(TemporalId?) ? AtomicType.NullableTemporalId :
                                                 throw new ArgumentException($"Unknown value type: {type.FullName}");
             }
             else if (type.IsSubclassOf(typeof(Key)))

@@ -35,21 +35,21 @@ namespace DataCentric
     public sealed class RecordInfo
     {
         /// <summary>
-        /// RecordId of the record is specific to its version.
+        /// TemporalId of the record is specific to its version.
         ///
         /// For the record's history to be captured correctly, all
-        /// update operations must assign a new RecordId with the
+        /// update operations must assign a new TemporalId with the
         /// timestamp that matches update time.
         /// </summary>
-        public RecordId Id { get; set; }
+        public TemporalId Id { get; set; }
 
         /// <summary>
-        /// RecordId of the dataset where the record is stored.
+        /// TemporalId of the dataset where the record is stored.
         ///
         /// For records stored in root dataset, the value of
-        /// DataSet element should be RecordId.Empty.
+        /// DataSet element should be TemporalId.Empty.
         /// </summary>
-        public RecordId DataSet { get; set; }
+        public TemporalId DataSet { get; set; }
 
         /// <summary>
         /// String key consists of semicolon delimited primary key elements:

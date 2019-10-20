@@ -26,7 +26,7 @@ namespace DataCentric
     /// mongo server and picking specified database.
     ///
     /// The context loads an existing Common dataset from data source
-    /// and assigns its RecordId to the DataSet property of the context.
+    /// and assigns its TemporalId to the DataSet property of the context.
     /// </summary>
     public class ExternalMongoTestContext : UnitTestContext
     {
@@ -66,7 +66,7 @@ namespace DataCentric
             DataSource = dataSource;
 
             // Common dataset should already exist in data source, if not then create.
-            DataSet = dataSource.GetDataSetOrNull("Common", RecordId.Empty) ?? dataSource.CreateCommon();
+            DataSet = dataSource.GetDataSetOrNull("Common", TemporalId.Empty) ?? dataSource.CreateCommon();
         }
     }
 }

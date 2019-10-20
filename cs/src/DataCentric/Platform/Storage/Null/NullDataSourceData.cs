@@ -36,29 +36,29 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// The returned RecordIds have the following order guarantees:
+        /// The returned TemporalIds have the following order guarantees:
         ///
         /// * For this data source instance, to arbitrary resolution; and
         /// * Across all processes and machines, to one second resolution
         ///
-        /// One second resolution means that two RecordIds created within
+        /// One second resolution means that two TemporalIds created within
         /// the same second by different instances of the data source
         /// class may not be ordered chronologically unless they are at
         /// least one second apart.
         /// </summary>
-        public override RecordId CreateOrderedRecordId()
+        public override TemporalId CreateOrderedTemporalId()
         {
             throw MethodCalledForNullDataSourceError();
         }
 
         /// <summary>
-        /// Load record by its RecordId.
+        /// Load record by its TemporalId.
         ///
-        /// Return null if there is no record for the specified RecordId;
+        /// Return null if there is no record for the specified TemporalId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public override TRecord LoadOrNull<TRecord>(RecordId id)
+        public override TRecord LoadOrNull<TRecord>(TemporalId id)
         {
             throw MethodCalledForNullDataSourceError();
         }
@@ -66,25 +66,25 @@ namespace DataCentric
         /// <summary>
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
-        /// order of dataset RecordIds, and then in the descending
-        /// order of record RecordIds within the first dataset that
-        /// has at least one record. Both dataset and record RecordIds
+        /// order of dataset TemporalIds, and then in the descending
+        /// order of record TemporalIds within the first dataset that
+        /// has at least one record. Both dataset and record TemporalIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty RecordId value that is less
-        /// than any other RecordId value. Accordingly, the root
+        /// The root dataset has empty TemporalId value that is less
+        /// than any other TemporalId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// The first record in this lookup order is returned, or null
         /// if no records are found or if DeletedRecord is the first
         /// record.
         ///
-        /// Return null if there is no record for the specified RecordId;
+        /// Return null if there is no record for the specified TemporalId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public override TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId loadFrom)
+        public override TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, TemporalId loadFrom)
         {
             throw MethodCalledForNullDataSourceError();
         }
@@ -93,20 +93,20 @@ namespace DataCentric
         /// Get query for the specified type.
         ///
         /// After applying query parameters, the lookup occurs first in
-        /// descending order of dataset RecordIds, and then in the descending
-        /// order of record RecordIds within the first dataset that
-        /// has at least one record. Both dataset and record RecordIds
+        /// descending order of dataset TemporalIds, and then in the descending
+        /// order of record TemporalIds within the first dataset that
+        /// has at least one record. Both dataset and record TemporalIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty RecordId value that is less
-        /// than any other RecordId value. Accordingly, the root
+        /// The root dataset has empty TemporalId value that is less
+        /// than any other TemporalId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// Generic parameter TRecord is not necessarily the root data type;
         /// it may also be a type derived from the root data type.
         /// </summary>
-        public override IQuery<TRecord> GetQuery<TRecord>(RecordId loadFrom)
+        public override IQuery<TRecord> GetQuery<TRecord>(TemporalId loadFrom)
         {
             throw MethodCalledForNullDataSourceError();
         }
@@ -121,12 +121,12 @@ namespace DataCentric
         /// The reason for this behavior is that the record may be stored from
         /// a different dataset than the one where it is used.
         ///
-        /// This method guarantees that RecordIds will be in strictly increasing
+        /// This method guarantees that TemporalIds will be in strictly increasing
         /// order for this instance of the data source class always, and across
         /// all processes and machine if they are not created within the same
         /// second.
         /// </summary>
-        public override void Save<TRecord>(TRecord record, RecordId saveTo)
+        public override void Save<TRecord>(TRecord record, TemporalId saveTo)
         {
             throw MethodCalledForNullDataSourceError();
         }
@@ -140,7 +140,7 @@ namespace DataCentric
         /// To avoid an additional roundtrip to the data store, the delete
         /// marker is written even when the record does not exist.
         /// </summary>
-        public override void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId deleteIn)
+        public override void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, TemporalId deleteIn)
         {
             throw MethodCalledForNullDataSourceError();
         }
@@ -162,7 +162,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Get RecordId of the dataset with the specified name.
+        /// Get TemporalId of the dataset with the specified name.
         ///
         /// All of the previously requested dataSetIds are cached by
         /// the data source. To load the latest version of the dataset
@@ -171,7 +171,7 @@ namespace DataCentric
         ///
         /// Returns null if not found.
         /// </summary>
-        public override RecordId? GetDataSetOrNull(string dataSetName, RecordId loadFrom)
+        public override TemporalId? GetDataSetOrNull(string dataSetName, TemporalId loadFrom)
         {
             throw MethodCalledForNullDataSourceError();
         }
@@ -180,12 +180,12 @@ namespace DataCentric
         /// Save new version of the dataset.
         ///
         /// This method sets Id element of the argument to be the
-        /// new RecordId assigned to the record when it is saved.
-        /// The timestamp of the new RecordId is the current time.
+        /// new TemporalId assigned to the record when it is saved.
+        /// The timestamp of the new TemporalId is the current time.
         ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
-        public override void SaveDataSet(DataSetData dataSetData, RecordId saveTo)
+        public override void SaveDataSet(DataSetData dataSetData, TemporalId saveTo)
         {
             throw MethodCalledForNullDataSourceError();
         }

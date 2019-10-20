@@ -46,7 +46,7 @@ namespace DataCentric.Test
             }
         }
 
-        /// <summary>Test saving and loading back the job queue record using RecordId based key.</summary>
+        /// <summary>Test saving and loading back the job queue record using TemporalId based key.</summary>
         [Fact]
         public void Load()
         {
@@ -69,7 +69,7 @@ namespace DataCentric.Test
                 var jobKey = new JobKey { Id = jobId };
                 var loadedJob = context.Load(jobKey);
 
-                // Check that RecordId based key works correctly
+                // Check that TemporalId based key works correctly
                 Assert.True(loadedJob.Queue.Value == loadedQueue.ToKey().Value);
 
                 // Run the job

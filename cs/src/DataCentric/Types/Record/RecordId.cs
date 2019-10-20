@@ -21,7 +21,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Security;
 using System.Threading;
-using MongoDB.Bson; // TODO - remove the remaining use of MongoDB so RecordId is fully portable
+using MongoDB.Bson; // TODO - remove the remaining use of MongoDB so TemporalId is fully portable
 using NodaTime;
 
 namespace DataCentric
@@ -33,26 +33,26 @@ namespace DataCentric
     ///   Unix ticks since the epoch (1970).
     /// * Int64 that is randomized using machine-specific information.
     ///
-    /// RecordId has the same size as GUID and can be stored in a
+    /// TemporalId has the same size as GUID and can be stored in a
     /// data type designed for GUID.
     ///
-    /// RecordId is unique in the absence of collision for its randomized
+    /// TemporalId is unique in the absence of collision for its randomized
     /// part, which by design has extremely low probability. It has the
     /// following ordering guarantees:
     ///
-    /// * When generated in the same process, RecordIds are strictly ordered
+    /// * When generated in the same process, TemporalIds are strictly ordered
     ///   irrespective of how fast they are generated.
-    /// * When generated independently, RecordIds are ordered if generated
+    /// * When generated independently, TemporalIds are ordered if generated
     ///   more than one operating system clock event apart. While the
     ///   underlying tick data type has 100ns resolution, the operating
     ///   system clock more typically has one event per 10-20 ms.
     ///
-    /// Because RecordId does not rely on auto-incremented database field,
+    /// Because TemporalId does not rely on auto-incremented database field,
     /// it can be used with distributed, web scale databases where getting
     /// a strictly increasing auto-incremented identifier would cause a
     /// performance hit.
     /// </summary>
-    public struct RecordId : IComparable<RecordId>, IEquatable<RecordId>
+    public struct TemporalId : IComparable<TemporalId>, IEquatable<TemporalId>
     {
         private static readonly int __staticMachine = (GetMachineHash() + GetAppDomainId()) & 0x00ffffff;
         private static readonly short __staticPid = GetPid();
@@ -65,7 +65,7 @@ namespace DataCentric
         //--- PROPERTIES
 
         /// <summary>Empty value.</summary>
-        public static RecordId Empty { get; } = default(RecordId);
+        public static TemporalId Empty { get; } = default(TemporalId);
 
         /// <summary>Creation time of the current object.</summary>
         public Instant CreatedTime
@@ -76,10 +76,10 @@ namespace DataCentric
         //--- CONSTRUCTORS
 
         /// <summary>Create from a byte array of size 12.</summary>
-        public RecordId(byte[] bytes)
+        public TemporalId(byte[] bytes)
         {
             if (bytes == null || bytes.Length != 12)
-                throw new Exception($"Bytes array passed to RecordId ctor must be 12 bytes long.");
+                throw new Exception($"Bytes array passed to TemporalId ctor must be 12 bytes long.");
 
             _a = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
             _b = (bytes[4] << 24) | (bytes[5] << 16) | (bytes[6] << 8) | bytes[7];
@@ -87,16 +87,16 @@ namespace DataCentric
         }
 
         /// <summary>Create from datetime in UTC and the remaining bytes.</summary>
-        public RecordId(Instant createdTime, byte[] remainingBytes)
+        public TemporalId(Instant createdTime, byte[] remainingBytes)
         {
             long secondsSinceEpoch = createdTime.ToUnixTimeSeconds();
             if (secondsSinceEpoch < int.MinValue || secondsSinceEpoch > int.MaxValue)
                 throw new Exception(
-                    $"CreatedTime={createdTime} is out of range that can be represented by RecordId.");
+                    $"CreatedTime={createdTime} is out of range that can be represented by TemporalId.");
 
             if (remainingBytes == null || remainingBytes.Length != 8)
                 throw new Exception(
-                    $"Remaining bytes array passed to RecordId ctor must be 8 bytes long.");
+                    $"Remaining bytes array passed to TemporalId ctor must be 8 bytes long.");
 
             _a = (int) secondsSinceEpoch;
             _b = (remainingBytes[0] << 24) | (remainingBytes[1] << 16) | (remainingBytes[2] << 8) | remainingBytes[3];
@@ -104,12 +104,12 @@ namespace DataCentric
         }
 
         /// <summary>Create from datetime in UTC and randomization parameters.</summary>
-        public RecordId(Instant createdTime, int machine, short pid, int increment)
+        public TemporalId(Instant createdTime, int machine, short pid, int increment)
         {
             long secondsSinceEpoch = createdTime.ToUnixTimeSeconds();
             if (secondsSinceEpoch < int.MinValue || secondsSinceEpoch > int.MaxValue)
                 throw new Exception(
-                    $"CreatedTime={createdTime} is out of range that can be represented by RecordId.");
+                    $"CreatedTime={createdTime} is out of range that can be represented by TemporalId.");
 
             if ((machine & 0xff000000) != 0) throw new Exception($"The machine value {machine} must be between 0 and 16777215 (it must fit in 3 bytes).");
             if ((increment & 0xff000000) != 0) throw new Exception($"The increment value {increment} must be between 0 and 16777215 (it must fit in 3 bytes).");
@@ -119,8 +119,8 @@ namespace DataCentric
             _c = ((int)pid << 24) | increment;
         }
 
-        /// <summary>Compares this RecordId to another RecordId.</summary>
-        public int CompareTo(RecordId other)
+        /// <summary>Compares this TemporalId to another TemporalId.</summary>
+        public int CompareTo(TemporalId other)
         {
             int result = ((uint)_a).CompareTo((uint)other._a);
             if (result != 0) { return result; }
@@ -129,8 +129,8 @@ namespace DataCentric
             return ((uint)_c).CompareTo((uint)other._c);
         }
 
-        /// <summary>True if the two RecordIds are equal.</summary>
-        public bool Equals(RecordId rhs)
+        /// <summary>True if the two TemporalIds are equal.</summary>
+        public bool Equals(TemporalId rhs)
         {
             return
                 _a == rhs._a &&
@@ -138,12 +138,12 @@ namespace DataCentric
                 _c == rhs._c;
         }
 
-        /// <summary>True if the other object is an RecordId and equal to this one.</summary>
+        /// <summary>True if the other object is an TemporalId and equal to this one.</summary>
         public override bool Equals(object obj)
         {
-            if (obj is RecordId)
+            if (obj is TemporalId)
             {
-                return Equals((RecordId)obj);
+                return Equals((TemporalId)obj);
             }
             else
             {
@@ -161,7 +161,7 @@ namespace DataCentric
             return hash;
         }
 
-        /// <summary>Converts the RecordId to a byte array of length 12.</summary>
+        /// <summary>Converts the TemporalId to a byte array of length 12.</summary>
         public byte[] ToByteArray()
         {
             var bytes = new byte[12];
@@ -213,7 +213,7 @@ namespace DataCentric
             c[15] = BsonUtils.ToHexChar(_c & 0x0f);
             string hex = new string(c);
 
-            // RecordId is serialized using the following format:
+            // TemporalId is serialized using the following format:
             //
             // yyyy-mm-ddThh:mm:ss.fffZhhhhhhhhhhhhhhhh
             //
@@ -224,28 +224,28 @@ namespace DataCentric
 
         //--- STATIC
 
-        /// <summary>Generates a new RecordId with a unique value.</summary>
-        public static RecordId GenerateNewId()
+        /// <summary>Generates a new TemporalId with a unique value.</summary>
+        public static TemporalId GenerateNewId()
         {
             Instant createdTime = DateTime.UtcNow.ToInstant();
 
             // Only use low order 3 bytes
             int increment = Interlocked.Increment(ref __staticIncrement) & 0x00ffffff;
-            return new RecordId(createdTime, __staticMachine, __staticPid, increment);
+            return new TemporalId(createdTime, __staticMachine, __staticPid, increment);
         }
 
         /// <summary>
-        /// Parses a string and creates a new RecordId.
+        /// Parses a string and creates a new TemporalId.
         ///
-        /// RecordId is serialized using the following format:
+        /// TemporalId is serialized using the following format:
         ///
         /// yyyy-mm-ddThh:mm:ss.fffZhhhhhhhhhhhhhhhh
         ///
         /// where each h represents a hexadecimal digit (total of 16).
         /// </summary>
-        public static RecordId Parse(string value)
+        public static TemporalId Parse(string value)
         {
-            RecordId result;
+            TemporalId result;
             if (TryParse(value, out result))
             {
                 return result;
@@ -253,33 +253,33 @@ namespace DataCentric
             else
             { 
                 throw new Exception(
-                    $"RecordId={value} does not consist of ISO timestamp in UTC (Z) " +
+                    $"TemporalId={value} does not consist of ISO timestamp in UTC (Z) " +
                     $"timezone followed by hexadecimal string of length 16.");
             }
         }
 
         /// <summary>
-        /// Tries to parse a string and create a new RecordId.
+        /// Tries to parse a string and create a new TemporalId.
         ///
-        /// RecordId is serialized using the following format:
+        /// TemporalId is serialized using the following format:
         ///
         /// yyyy-mm-ddThh:mm:ss.fffZhhhhhhhhhhhhhhhh
         ///
         /// where each h represents a hexadecimal digit (total of 16).
         /// </summary>
-        public static bool TryParse(string value, out RecordId recordId)
+        public static bool TryParse(string value, out TemporalId recordId)
         {
-            // Return empty RecordId for null or empty string
+            // Return empty TemporalId for null or empty string
             if (string.IsNullOrEmpty(value))
             {
-                recordId = RecordId.Empty;
+                recordId = TemporalId.Empty;
                 return true;
             }
 
             // Set to empty value in case the method exits early
-            recordId = default(RecordId);
+            recordId = default(TemporalId);
 
-            // RecordId is serialized using the following format:
+            // TemporalId is serialized using the following format:
             //
             // yyyy-mm-ddThh:mm:ss.fffZhhhhhhhhhhhhhhhh
             //
@@ -303,20 +303,20 @@ namespace DataCentric
 
             // Populate the first integer from timestamp
             // and the two remaining integers from the byte array
-            recordId = new RecordId(createdTime, bytes);
+            recordId = new TemporalId(createdTime, bytes);
             return true;
         }
 
         /// <summary>
-        /// The smallest value of RecordId possible for
+        /// The smallest value of TemporalId possible for
         /// a given creation time.
         ///
-        /// Any RecordId with the same creation time will
+        /// Any TemporalId with the same creation time will
         /// be greater than this value.
         /// </summary>
-        public static RecordId FromCreatedTime(Instant createdTime)
+        public static TemporalId FromCreatedTime(Instant createdTime)
         {
-            return new RecordId(createdTime, 0, 0, 0);
+            return new TemporalId(createdTime, 0, 0, 0);
         }
 
         /// <summary>
@@ -327,12 +327,12 @@ namespace DataCentric
         ///
         /// * Null is treated as missing value, the method returns
         ///   the other value.
-        /// * RecordId.Empty is treated as being less than any
+        /// * TemporalId.Empty is treated as being less than any
         ///   other argument.
         ///
         /// Returns null if both arguments are null.
         /// </summary>
-        public static RecordId? Min(RecordId? arg1, RecordId? arg2)
+        public static TemporalId? Min(TemporalId? arg1, TemporalId? arg2)
         {
             if (arg1 != null && arg2 != null)
             {
@@ -359,12 +359,12 @@ namespace DataCentric
         ///
         /// * Null is treated as missing value, the method returns
         ///   the other value.
-        /// * RecordId.Empty is treated as being less than any
+        /// * TemporalId.Empty is treated as being less than any
         ///   other argument.
         ///
         /// Returns null if both arguments are null.
         /// </summary>
-        public static RecordId? Max(RecordId? arg1, RecordId? arg2)
+        public static TemporalId? Max(TemporalId? arg1, TemporalId? arg2)
         {
             if (arg1 != null && arg2 != null)
             {
@@ -385,38 +385,38 @@ namespace DataCentric
 
         //--- OPERATORS
 
-        /// <summary>True if the first RecordId is less than the second RecordId.</summary>
-        public static bool operator <(RecordId lhs, RecordId rhs)
+        /// <summary>True if the first TemporalId is less than the second TemporalId.</summary>
+        public static bool operator <(TemporalId lhs, TemporalId rhs)
         {
             return lhs.CompareTo(rhs) < 0;
         }
 
-        /// <summary>True if the first RecordId is less than or equal to the second RecordId.</summary>
-        public static bool operator <=(RecordId lhs, RecordId rhs)
+        /// <summary>True if the first TemporalId is less than or equal to the second TemporalId.</summary>
+        public static bool operator <=(TemporalId lhs, TemporalId rhs)
         {
             return lhs.CompareTo(rhs) <= 0;
         }
 
-        /// <summary>True if the two RecordIds are equal.</summary>
-        public static bool operator ==(RecordId lhs, RecordId rhs)
+        /// <summary>True if the two TemporalIds are equal.</summary>
+        public static bool operator ==(TemporalId lhs, TemporalId rhs)
         {
             return lhs.Equals(rhs);
         }
 
-        /// <summary>True if the two RecordIds are not equal.</summary>
-        public static bool operator !=(RecordId lhs, RecordId rhs)
+        /// <summary>True if the two TemporalIds are not equal.</summary>
+        public static bool operator !=(TemporalId lhs, TemporalId rhs)
         {
             return !(lhs == rhs);
         }
 
-        /// <summary>True if the first RecordId is greater than or equal to the second RecordId.</summary>
-        public static bool operator >=(RecordId lhs, RecordId rhs)
+        /// <summary>True if the first TemporalId is greater than or equal to the second TemporalId.</summary>
+        public static bool operator >=(TemporalId lhs, TemporalId rhs)
         {
             return lhs.CompareTo(rhs) >= 0;
         }
 
-        /// <summary>True if the first RecordId is greater than the second RecordId.</summary>
-        public static bool operator >(RecordId lhs, RecordId rhs)
+        /// <summary>True if the first TemporalId is greater than the second TemporalId.</summary>
+        public static bool operator >(TemporalId lhs, TemporalId rhs)
         {
             return lhs.CompareTo(rhs) > 0;
         }
@@ -472,31 +472,31 @@ namespace DataCentric
         }
     }
 
-    /// <summary>Extension methods for RecordId.</summary>
-    public static class RecordIdExtensions
+    /// <summary>Extension methods for TemporalId.</summary>
+    public static class TemporalIdExtensions
     {
         /// <summary>Return false if equal to the default constructed value.</summary>
-        public static bool HasValue(this RecordId value)
+        public static bool HasValue(this TemporalId value)
         {
             return value != default;
         }
 
         /// <summary>Return false if null or equal to the default constructed value.</summary>
-        public static bool HasValue(this RecordId? value)
+        public static bool HasValue(this TemporalId? value)
         {
             return value.HasValue && value.HasValue();
         }
 
         /// <summary>Error message if equal to the default constructed value.</summary>
-        public static void CheckHasValue(this RecordId value)
+        public static void CheckHasValue(this TemporalId value)
         {
-            if (!value.HasValue()) throw new Exception("Required RecordId value is not set.");
+            if (!value.HasValue()) throw new Exception("Required TemporalId value is not set.");
         }
 
         /// <summary>Error message if null or equal to the default constructed value.</summary>
-        public static void CheckHasValue(this RecordId? value)
+        public static void CheckHasValue(this TemporalId? value)
         {
-            if (!value.HasValue()) throw new Exception("Required RecordId value is not set.");
+            if (!value.HasValue()) throw new Exception("Required TemporalId value is not set.");
         }
     }
 }

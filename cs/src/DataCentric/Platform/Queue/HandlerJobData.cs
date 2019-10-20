@@ -25,11 +25,11 @@ namespace DataCentric
     public class HandlerJobData : JobData
     {
         /// <summary>
-        /// RecordId of the record whose handler will be called
+        /// TemporalId of the record whose handler will be called
         /// by the Run() method of this job.
         /// </summary>
         [BsonRequired]
-        public RecordId TargetId { get; set; }
+        public TemporalId TargetId { get; set; }
 
         /// <summary>
         /// Name of the handler method that will be called by
@@ -56,7 +56,7 @@ namespace DataCentric
         /// </summary>
         public override void Run()
         {
-            // Load record by its RecordId, error message if not found
+            // Load record by its TemporalId, error message if not found
             var record = Context.DataSource.Load<Record>(TargetId);
 
             // Get handler method info using string handler name

@@ -23,29 +23,29 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>
-    /// Serializes RecordId by converting it to RecordId.
+    /// Serializes TemporalId by converting it to TemporalId.
     /// </summary>
-    public class BsonRecordIdSerializer : SerializerBase<RecordId>
+    public class BsonTemporalIdSerializer : SerializerBase<TemporalId>
     {
         /// <summary>
-        /// Deserialize RecordId by creating it from RecordId.
+        /// Deserialize TemporalId by creating it from TemporalId.
         ///
         /// The serializer accepts empty value.
         /// </summary>
-        public override RecordId Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
+        public override TemporalId Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
             // Convert via byte array
             ObjectId objId = context.Reader.ReadObjectId();
-            RecordId result = new RecordId(objId.ToByteArray());
+            TemporalId result = new TemporalId(objId.ToByteArray());
             return result;
         }
 
         /// <summary>
-        /// Serialize RecordId by converting it to RecordId.
+        /// Serialize TemporalId by converting it to TemporalId.
         ///
         /// The serializer accepts empty value.
         /// </summary>
-        public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, RecordId value)
+        public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, TemporalId value)
         {
             // Convert via byte array
             ObjectId objId = new ObjectId(value.ToByteArray());

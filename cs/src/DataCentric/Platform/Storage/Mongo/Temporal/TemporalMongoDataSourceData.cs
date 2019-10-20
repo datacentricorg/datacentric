@@ -34,23 +34,23 @@ namespace DataCentric
     /// In addition to being temporal, this data source is also hierarchical; the
     /// records are looked up across a hierarchy of datasets, including the dataset
     /// itself, its direct Imports, Imports of Imports, etc., ordered by dataset's
-    /// RecordId.
+    /// TemporalId.
     /// </summary>
     public class TemporalMongoDataSourceData : MongoDataSourceData
     {
         /// <summary>Dictionary of collections indexed by type T.</summary>
         private ConcurrentDictionary<Type, object> collectionDict_ = new ConcurrentDictionary<Type, object>();
-        private Dictionary<string, RecordId> dataSetDict_ { get; } = new Dictionary<string, RecordId>();
-        private Dictionary<RecordId, RecordId> dataSetParentDict_ { get; } = new Dictionary<RecordId, RecordId>();
-        private Dictionary<RecordId, DataSetDetailData> dataSetDetailDict_ { get; } = new Dictionary<RecordId, DataSetDetailData>();
-        private Dictionary<RecordId, HashSet<RecordId>> importDict_ { get; } = new Dictionary<RecordId, HashSet<RecordId>>();
+        private Dictionary<string, TemporalId> dataSetDict_ { get; } = new Dictionary<string, TemporalId>();
+        private Dictionary<TemporalId, TemporalId> dataSetParentDict_ { get; } = new Dictionary<TemporalId, TemporalId>();
+        private Dictionary<TemporalId, DataSetDetailData> dataSetDetailDict_ { get; } = new Dictionary<TemporalId, DataSetDetailData>();
+        private Dictionary<TemporalId, HashSet<TemporalId>> importDict_ { get; } = new Dictionary<TemporalId, HashSet<TemporalId>>();
 
         //--- ELEMENTS
 
         /// <summary>
-        /// Records with RecordId that is greater than or equal to CutoffTime
+        /// Records with TemporalId that is greater than or equal to CutoffTime
         /// will be ignored by load methods and queries, and the latest available
-        /// record where RecordId is less than CutoffTime will be returned instead.
+        /// record where TemporalId is less than CutoffTime will be returned instead.
         ///
         /// CutoffTime applies to both the records stored in the dataset itself,
         /// and the reports loaded through the Imports list.
@@ -59,7 +59,7 @@ namespace DataCentric
         /// in its details record. If CutoffTime is set for both, the earlier of the
         /// two values will be used.
         /// </summary>
-        public RecordId? CutoffTime { get; set; }
+        public TemporalId? CutoffTime { get; set; }
 
         //--- METHODS
 
@@ -70,13 +70,13 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Load record by its RecordId.
+        /// Load record by its TemporalId.
         ///
-        /// Return null if there is no record for the specified RecordId;
+        /// Return null if there is no record for the specified TemporalId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public override TRecord LoadOrNull<TRecord>(RecordId id)
+        public override TRecord LoadOrNull<TRecord>(TemporalId id)
         {
             // This is a preliminary check for CutoffTime of the data source
             // to avoid unnecessary loading. Once the record is loaded, we 
@@ -85,7 +85,7 @@ namespace DataCentric
             // and CutoffTime of the dataset.
             if (CutoffTime != null)
             {
-                // Return null for any record that has RecordId
+                // Return null for any record that has TemporalId
                 // that is greater than or equal to CutoffTime.
                 if (id >= CutoffTime.Value) return null;
             }
@@ -101,10 +101,10 @@ namespace DataCentric
             if (baseResult != null && !baseResult.Is<DeletedRecord>())
             {
                 // Now we use GetCutoffTime() for the full check
-                RecordId? cutoffTime = GetCutoffTime(baseResult.DataSet);
+                TemporalId? cutoffTime = GetCutoffTime(baseResult.DataSet);
                 if (cutoffTime != null)
                 {
-                    // Return null for any record that has RecordId
+                    // Return null for any record that has TemporalId
                     // that is greater than or equal to CutoffTime.
                     if (id >= cutoffTime.Value) return null;
                 }
@@ -118,7 +118,7 @@ namespace DataCentric
                     // of class that is not derived from TRecord, in this case the API
                     // requires error message, not returning null
                     throw new Exception(
-                        $"Stored type {result.GetType().Name} for RecordId={id} and " +
+                        $"Stored type {result.GetType().Name} for TemporalId={id} and " +
                         $"Key={result.Key} is not an instance of the requested type {typeof(TRecord).Name}.");
                 }
 
@@ -136,25 +136,25 @@ namespace DataCentric
         /// <summary>
         /// Load record by string key from the specified dataset or
         /// its list of imports. The lookup occurs first in descending
-        /// order of dataset RecordIds, and then in the descending
-        /// order of record RecordIds within the first dataset that
-        /// has at least one record. Both dataset and record RecordIds
+        /// order of dataset TemporalIds, and then in the descending
+        /// order of record TemporalIds within the first dataset that
+        /// has at least one record. Both dataset and record TemporalIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty RecordId value that is less
-        /// than any other RecordId value. Accordingly, the root
+        /// The root dataset has empty TemporalId value that is less
+        /// than any other TemporalId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// The first record in this lookup order is returned, or null
         /// if no records are found or if DeletedRecord is the first
         /// record.
         ///
-        /// Return null if there is no record for the specified RecordId;
+        /// Return null if there is no record for the specified TemporalId;
         /// however an exception will be thrown if the record exists but
         /// is not derived from TRecord.
         /// </summary>
-        public override TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId loadFrom)
+        public override TRecord LoadOrNull<TKey, TRecord>(TypedKey<TKey, TRecord> key, TemporalId loadFrom)
         {
             // String value of the key in semicolon delimited format for use in the query
             string keyValue = key.ToString();
@@ -207,20 +207,20 @@ namespace DataCentric
         /// Get query for the specified type.
         ///
         /// After applying query parameters, the lookup occurs first in
-        /// descending order of dataset RecordIds, and then in the descending
-        /// order of record RecordIds within the first dataset that
-        /// has at least one record. Both dataset and record RecordIds
+        /// descending order of dataset TemporalIds, and then in the descending
+        /// order of record TemporalIds within the first dataset that
+        /// has at least one record. Both dataset and record TemporalIds
         /// are ordered chronologically to one second resolution,
         /// and are unique within the database server or cluster.
         ///
-        /// The root dataset has empty RecordId value that is less
-        /// than any other RecordId value. Accordingly, the root
+        /// The root dataset has empty TemporalId value that is less
+        /// than any other TemporalId value. Accordingly, the root
         /// dataset is the last one in the lookup order of datasets.
         ///
         /// Generic parameter TRecord is not necessarily the root data type;
         /// it may also be a type derived from the root data type.
         /// </summary>
-        public override IQuery<TRecord> GetQuery<TRecord>(RecordId loadFrom)
+        public override IQuery<TRecord> GetQuery<TRecord>(TemporalId loadFrom)
         {
             // Get or create collection, then create query from collection
             var collection = GetOrCreateCollection<TRecord>();
@@ -237,29 +237,29 @@ namespace DataCentric
         /// The reason for this behavior is that the record may be stored from
         /// a different dataset than the one where it is used.
         ///
-        /// This method guarantees that RecordIds will be in strictly increasing
+        /// This method guarantees that TemporalIds will be in strictly increasing
         /// order for this instance of the data source class always, and across
         /// all processes and machine if they are not created within the same
         /// second.
         /// </summary>
-        public override void Save<TRecord>(TRecord record, RecordId saveTo)
+        public override void Save<TRecord>(TRecord record, TemporalId saveTo)
         {
             CheckNotReadOnly(saveTo);
 
             var collection = GetOrCreateCollection<TRecord>();
 
-            // This method guarantees that RecordIds will be in strictly increasing
+            // This method guarantees that TemporalIds will be in strictly increasing
             // order for this instance of the data source class always, and across
             // all processes and machine if they are not created within the same
             // second.
-            var recordId = CreateOrderedRecordId();
+            var recordId = CreateOrderedTemporalId();
 
-            // RecordId of the record must be strictly later
-            // than RecordId of the dataset where it is stored
+            // TemporalId of the record must be strictly later
+            // than TemporalId of the dataset where it is stored
             if (recordId <= saveTo)
                 throw new Exception(
-                    $"Attempting to save a record with RecordId={recordId} that is later " +
-                    $"than RecordId={saveTo} of the dataset where it is being saved.");
+                    $"Attempting to save a record with TemporalId={recordId} that is later " +
+                    $"than TemporalId={saveTo} of the dataset where it is being saved.");
 
             // Assign ID and DataSet, and only then initialize, because
             // initialization code may use record.ID and record.DataSet
@@ -267,7 +267,7 @@ namespace DataCentric
             record.DataSet = saveTo;
             record.Init(Context);
 
-            // By design, insert will fail if RecordId is not unique within the collection
+            // By design, insert will fail if TemporalId is not unique within the collection
             collection.TypedCollection.InsertOne(record);
         }
 
@@ -280,7 +280,7 @@ namespace DataCentric
         /// To avoid an additional roundtrip to the data store, the delete
         /// marker is written even when the record does not exist.
         /// </summary>
-        public override void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, RecordId deleteIn)
+        public override void Delete<TKey, TRecord>(TypedKey<TKey, TRecord> key, TemporalId deleteIn)
         {
             CheckNotReadOnly(deleteIn);
 
@@ -290,18 +290,18 @@ namespace DataCentric
             // Get collection
             var collection = GetOrCreateCollection<TRecord>();
 
-            // This method guarantees that RecordIds will be in strictly increasing
+            // This method guarantees that TemporalIds will be in strictly increasing
             // order for this instance of the data source class always, and across
             // all processes and machine if they are not created within the same
             // second.
-            var recordId = CreateOrderedRecordId();
+            var recordId = CreateOrderedTemporalId();
             record.Id = recordId;
 
             // Assign dataset and then initialize, as the results of
             // initialization may depend on record.DataSet
             record.DataSet = deleteIn;
 
-            // By design, insert will fail if RecordId is not unique within the collection
+            // By design, insert will fail if TemporalId is not unique within the collection
             collection.BaseCollection.InsertOne(record);
         }
 
@@ -311,7 +311,7 @@ namespace DataCentric
         /// * The constraint on dataset lookup list, restricted by CutoffTime (if not null)
         /// * The constraint on ID being strictly less than CutoffTime (if not null)
         /// </summary>
-        public IQueryable<TRecord> ApplyFinalConstraints<TRecord>(IQueryable<TRecord> queryable, RecordId loadFrom)
+        public IQueryable<TRecord> ApplyFinalConstraints<TRecord>(IQueryable<TRecord> queryable, TemporalId loadFrom)
             where TRecord : Record
         {
             // Get lookup list by expanding the list of imports to arbitrary
@@ -320,7 +320,7 @@ namespace DataCentric
             // The list will not include datasets that are after the value of
             // CutoffTime if specified, or their imports (including
             // even those imports that are earlier than the constraint).
-            IEnumerable<RecordId> dataSetLookupList = GetDataSetLookupList(loadFrom);
+            IEnumerable<TemporalId> dataSetLookupList = GetDataSetLookupList(loadFrom);
 
             // Apply constraint that the value is _dataset is
             // one of the elements of dataSetLookupList_
@@ -331,7 +331,7 @@ namespace DataCentric
             //
             // The property savedBy_ is set using either CutoffTime element.
             // Only one of these two elements can be set at a given time.
-            RecordId? cutoffTime = GetCutoffTime(loadFrom);
+            TemporalId? cutoffTime = GetCutoffTime(loadFrom);
             if (cutoffTime != null)
             {
                 result = result.Where(p => p.Id < cutoffTime.Value);
@@ -341,7 +341,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Get RecordId of the dataset with the specified name.
+        /// Get TemporalId of the dataset with the specified name.
         ///
         /// All of the previously requested dataSetIds are cached by
         /// the data source. To load the latest version of the dataset
@@ -350,9 +350,9 @@ namespace DataCentric
         ///
         /// Returns null if not found.
         /// </summary>
-        public override RecordId? GetDataSetOrNull(string dataSetName, RecordId loadFrom)
+        public override TemporalId? GetDataSetOrNull(string dataSetName, TemporalId loadFrom)
         {
-            if (dataSetDict_.TryGetValue(dataSetName, out RecordId result))
+            if (dataSetDict_.TryGetValue(dataSetName, out TemporalId result))
             {
                 // Check if already cached, return if found
                 return result;
@@ -363,7 +363,7 @@ namespace DataCentric
                 DataSetKey dataSetKey = new DataSetKey() { DataSetName = dataSetName };
                 DataSetData dataSetData = this.LoadOrNull(dataSetKey, loadFrom);
 
-                // If not found, return RecordId.Empty
+                // If not found, return TemporalId.Empty
                 if (dataSetData == null) return null;
 
                 // Get or create dataset detail record
@@ -375,12 +375,12 @@ namespace DataCentric
                     Context.Save(dataSetDetailData, loadFrom);
                 }
 
-                // Cache RecordId for the dataset and its parent
+                // Cache TemporalId for the dataset and its parent
                 dataSetDict_[dataSetName] = dataSetData.Id;
                 dataSetParentDict_[dataSetData.Id] = dataSetData.DataSet;
 
                 // Build and cache dataset lookup list if not found
-                if (!importDict_.TryGetValue(dataSetData.Id, out HashSet<RecordId> importSet))
+                if (!importDict_.TryGetValue(dataSetData.Id, out HashSet<TemporalId> importSet))
                 {
                     importSet = BuildDataSetLookupList(dataSetData);
                     importDict_.Add(dataSetData.Id, importSet);
@@ -394,18 +394,18 @@ namespace DataCentric
         /// Save new version of the dataset.
         ///
         /// This method sets Id element of the argument to be the
-        /// new RecordId assigned to the record when it is saved.
-        /// The timestamp of the new RecordId is the current time.
+        /// new TemporalId assigned to the record when it is saved.
+        /// The timestamp of the new TemporalId is the current time.
         ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
-        public override void SaveDataSet(DataSetData dataSetData, RecordId saveTo)
+        public override void SaveDataSet(DataSetData dataSetData, TemporalId saveTo)
         {
             // Save dataset to storage. This updates its Id
-            // to the new RecordId created during save
+            // to the new TemporalId created during save
             Save<DataSetData>(dataSetData, saveTo);
 
-            // Cache RecordId for the dataset and its parent
+            // Cache TemporalId for the dataset and its parent
             dataSetDict_[dataSetData.Key] = dataSetData.Id;
             dataSetParentDict_[dataSetData.Id] = dataSetData.DataSet;
 
@@ -423,18 +423,18 @@ namespace DataCentric
         /// CutoffTime if specified, or their imports (including
         /// even those imports that are earlier than the constraint).
         /// </summary>
-        public IEnumerable<RecordId> GetDataSetLookupList(RecordId loadFrom)
+        public IEnumerable<TemporalId> GetDataSetLookupList(TemporalId loadFrom)
         {
             // Root dataset has no imports (there is not even a record
             // where these imports can be specified).
             //
-            // Return list containing only the root dataset (RecordId.Empty) and exit
-            if (loadFrom == RecordId.Empty)
+            // Return list containing only the root dataset (TemporalId.Empty) and exit
+            if (loadFrom == TemporalId.Empty)
             {
-                return new RecordId[] { RecordId.Empty };
+                return new TemporalId[] { TemporalId.Empty };
             }
 
-            if (importDict_.TryGetValue(loadFrom, out HashSet<RecordId> result))
+            if (importDict_.TryGetValue(loadFrom, out HashSet<TemporalId> result))
             {
                 // Check if the lookup list is already cached, return if yes
                 return result;
@@ -444,8 +444,8 @@ namespace DataCentric
                 // Otherwise load from storage (returns null if not found)
                 DataSetData dataSetData = LoadOrNull<DataSetData>(loadFrom);
 
-                if (dataSetData == null) throw new Exception($"Dataset with RecordId={loadFrom} is not found.");
-                if (dataSetData.DataSet != RecordId.Empty) throw new Exception($"Dataset with RecordId={loadFrom} is not stored in root dataset.");
+                if (dataSetData == null) throw new Exception($"Dataset with TemporalId={loadFrom} is not found.");
+                if (dataSetData.DataSet != TemporalId.Empty) throw new Exception($"Dataset with TemporalId={loadFrom} is not stored in root dataset.");
 
                 // Build the lookup list
                 result = BuildDataSetLookupList(dataSetData);
@@ -464,9 +464,9 @@ namespace DataCentric
         /// The detail is loaded for the dataset specified in the first argument
         /// (detailFor) from the dataset specified in the second argument (loadFrom).
         /// </summary>
-        public DataSetDetailData GetDataSetDetailOrNull(RecordId detailFor)
+        public DataSetDetailData GetDataSetDetailOrNull(TemporalId detailFor)
         { 
-            if (detailFor == RecordId.Empty)
+            if (detailFor == TemporalId.Empty)
             {
                 // Root dataset does not have details
                 // as it has no parent where the details
@@ -507,23 +507,23 @@ namespace DataCentric
         /// in its details record. If CutoffTime is set for both, this method will
         /// return the earlier of the two values will be used.
         /// 
-        /// Records with RecordId that is greater than or equal to CutoffTime
+        /// Records with TemporalId that is greater than or equal to CutoffTime
         /// will be ignored by load methods and queries, and the latest available
-        /// record where RecordId is less than CutoffTime will be returned instead.
+        /// record where TemporalId is less than CutoffTime will be returned instead.
         ///
         /// CutoffTime applies to both the records stored in the dataset itself,
         /// and the reports loaded through the Imports list.
         /// </summary>
-        public RecordId? GetCutoffTime(RecordId dataSetId)
+        public TemporalId? GetCutoffTime(TemporalId dataSetId)
         {
             // Get imports cutoff time for the dataset detail record.
             // If the record is not found, consider its CutoffTime null.
             var dataSetDetailData = GetDataSetDetailOrNull(dataSetId);
-            RecordId? dataSetCutoffTime = dataSetDetailData != null ? dataSetDetailData.CutoffTime : null;
+            TemporalId? dataSetCutoffTime = dataSetDetailData != null ? dataSetDetailData.CutoffTime : null;
 
             // If CutoffTime is set for both data source and dataset,
             // this method returns the earlier of the two values.
-            var result = RecordId.Min(CutoffTime, dataSetCutoffTime);
+            var result = TemporalId.Min(CutoffTime, dataSetCutoffTime);
             return result;
         }
 
@@ -532,19 +532,19 @@ namespace DataCentric
         /// Returns null if dataset detail record is not found.
         /// 
         /// Imported records (records loaded through the Imports list)
-        /// where RecordId is greater than or equal to CutoffTime
+        /// where TemporalId is greater than or equal to CutoffTime
         /// will be ignored by load methods and queries, and the latest
-        /// available record where RecordId is less than CutoffTime will
+        /// available record where TemporalId is less than CutoffTime will
         /// be returned instead.
         ///
         /// This setting only affects records loaded through the Imports
         /// list. It does not affect records stored in the dataset itself.
         ///
         /// Use this feature to freeze Imports as of a given CreatedTime
-        /// (part of RecordId), isolating the dataset from changes to the
+        /// (part of TemporalId), isolating the dataset from changes to the
         /// data in imported datasets that occur after that time.
         /// </summary>
-        public RecordId? GetImportsCutoffTime(RecordId dataSetId)
+        public TemporalId? GetImportsCutoffTime(TemporalId dataSetId)
         {
             // Get dataset detail record
             var dataSetDetailData = GetDataSetDetailOrNull(dataSetId);
@@ -700,10 +700,10 @@ namespace DataCentric
         /// This private helper method should not be used directly.
         /// It provides functionality for the public API of this class.
         /// </summary>
-        private HashSet<RecordId> BuildDataSetLookupList(DataSetData dataSetData)
+        private HashSet<TemporalId> BuildDataSetLookupList(DataSetData dataSetData)
         {
             // Delegate to the second overload
-            var result = new HashSet<RecordId>();
+            var result = new HashSet<TemporalId>();
             BuildDataSetLookupList(dataSetData, result);
             return result;
         }
@@ -723,7 +723,7 @@ namespace DataCentric
         /// This private helper method should not be used directly.
         /// It provides functionality for the public API of this class.
         /// </summary>
-        private void BuildDataSetLookupList(DataSetData dataSetData, HashSet<RecordId> result)
+        private void BuildDataSetLookupList(DataSetData dataSetData, HashSet<TemporalId> result)
         {
             // Return if the dataset is null or has no imports
             if (dataSetData == null) return;
@@ -732,7 +732,7 @@ namespace DataCentric
             dataSetData.Id.CheckHasValue();
             dataSetData.Key.CheckHasValue();
 
-            RecordId? cutoffTime = GetCutoffTime(dataSetData.DataSet);
+            TemporalId? cutoffTime = GetCutoffTime(dataSetData.DataSet);
             if (cutoffTime != null && dataSetData.Id >= cutoffTime.Value)
             {
                 // Do not add if revision time constraint is set and is before this dataset.
@@ -752,7 +752,7 @@ namespace DataCentric
                     // Dataset cannot include itself as its import
                     if (dataSetData.Id == dataSetId)
                         throw new Exception(
-                            $"Dataset {dataSetData.Key} with RecordId={dataSetData.Id} includes itself in the list of its imports.");
+                            $"Dataset {dataSetData.Key} with TemporalId={dataSetData.Id} includes itself in the list of its imports.");
 
                     // The Add method returns true if the argument is not yet present in the hashset
                     if (result.Add(dataSetId))
@@ -776,7 +776,7 @@ namespace DataCentric
         /// * CutoffTime is set for the data source
         /// * CutoffTime is set for the dataset
         /// </summary>
-        private void CheckNotReadOnly(RecordId dataSetId)
+        private void CheckNotReadOnly(TemporalId dataSetId)
         {
             if (ReadOnly != null && ReadOnly.Value)
                 throw new Exception(

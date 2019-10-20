@@ -44,16 +44,16 @@ namespace DataCentric
     public sealed class JobQueueKey : TypedKey<JobQueueKey, JobQueueData>
     {
         /// <summary>
-        /// Defining element Id here includes the record's RecordId
-        /// in its key. Because RecordId of the record is specific
+        /// Defining element Id here includes the record's TemporalId
+        /// in its key. Because TemporalId of the record is specific
         /// to its version, this is equivalent to using an auto-
         /// incrementing column as part of the record's primary key
         /// in a relational database.
         ///
         /// For the record's history to be captured correctly, all
-        /// update operations must assign a new RecordId with the
+        /// update operations must assign a new TemporalId with the
         /// timestamp that matches update time.
         /// </summary>
-        public RecordId Id { get; set; }
+        public TemporalId Id { get; set; }
     }
 }

@@ -78,7 +78,7 @@ namespace DataCentric
                             writer.WriteEndElement(innerElementName);
                         }
                         break;
-                    case RecordId idElement:
+                    case TemporalId idElement:
                         // Do not serialize
                         break;
                     default:
@@ -200,7 +200,7 @@ namespace DataCentric
                                 dataElement.DeserializeFrom(innerXmlNode);
                             }
                             break;
-                        case RecordId idElement:
+                        case TemporalId idElement:
                             // Do not serialize
                             break;
                         default:
