@@ -60,5 +60,21 @@ namespace DataCentric.Test
 
         /// <summary>Sample element.</summary>
         public int? Version { get; set; }
+
+        //--- METHODS
+
+        /// <summary>Non-virtual handler defined in base type.</summary>
+        [Handler]
+        public void NonVirtualBaseHandler()
+        {
+            Context.Log.Verify("NonVirtualBaseHandler");
+        }
+
+        /// <summary>Virtual handler defined in base type.</summary>
+        [Handler]
+        public virtual void VirtualBaseHandler()
+        {
+            Context.Log.Verify("VirtualBaseHandler implemented in Base");
+        }
     }
 }

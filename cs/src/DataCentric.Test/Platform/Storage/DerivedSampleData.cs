@@ -63,5 +63,21 @@ namespace DataCentric.Test
 
         /// <summary>Sample element.</summary>
         public List<BaseSampleKey> KeyElementList { get; set; }
+
+        //--- METHODS
+
+        /// <summary>Non-virtual handler defined in base type.</summary>
+        [Handler]
+        public void NonVirtualDerivedHandler()
+        {
+            Context.Log.Verify("NonVirtualDerivedHandler");
+        }
+
+        /// <summary>Override of the virtual handler defined in base type.</summary>
+        [Handler]
+        public override void VirtualBaseHandler()
+        {
+            Context.Log.Verify("VirtualBaseHandler implemented in Derived");
+        }
     }
 }
