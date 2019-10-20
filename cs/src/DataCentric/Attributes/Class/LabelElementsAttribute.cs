@@ -59,13 +59,9 @@ namespace DataCentric
         ///
         /// Empty definition string is not permitted.
         /// </summary>
-        public LabelElementsAttribute(string definition)
-        {
-            if (string.IsNullOrEmpty(definition))
-                throw new Exception("LabelElements attribute cannot be constructed from an empty string.");
+        public string Definition { get; set; }
 
-            Definition = definition;
-        }
+        //--- CONSTRUCTORS
 
         /// <summary>
         /// Create label from a comma separated list of element(s) that will
@@ -79,6 +75,12 @@ namespace DataCentric
         ///
         /// Empty definition string is not permitted.
         /// </summary>
-        public string Definition { get; set; }
+        public LabelElementsAttribute(string definition)
+        {
+            if (string.IsNullOrEmpty(definition))
+                throw new Exception("LabelElements attribute cannot be constructed from an empty string.");
+
+            Definition = definition;
+        }
     }
 }

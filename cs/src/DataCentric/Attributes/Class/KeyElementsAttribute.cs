@@ -45,7 +45,20 @@ namespace DataCentric
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public sealed class KeyElementsAttribute : Attribute
-    {
+    {        
+        /// <summary>
+        /// Create key from comma separated list of key elements in the
+        /// order listed in the attribute definition, or example:
+        ///
+        /// * A is a simple primary key consisting of element A;
+        /// * A, B is a complex primary key consisting of elements A, B.
+        ///
+        /// Empty definition string means the record is a singleton.
+        /// </summary>
+        public string Definition { get; set; }
+
+        //--- CONSTRUCTORS
+
         /// <summary>
         /// Create key from comma separated list of key elements in the
         /// order listed in the attribute definition, or example:
@@ -59,16 +72,5 @@ namespace DataCentric
         {
             Definition = definition;
         }
-
-        /// <summary>
-        /// Create key from comma separated list of key elements in the
-        /// order listed in the attribute definition, or example:
-        ///
-        /// * A is a simple primary key consisting of element A;
-        /// * A, B is a complex primary key consisting of elements A, B.
-        ///
-        /// Empty definition string means the record is a singleton.
-        /// </summary>
-        public string Definition { get; set; }
     }
 }

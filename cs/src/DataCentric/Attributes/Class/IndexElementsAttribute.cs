@@ -47,6 +47,33 @@ namespace DataCentric
     public sealed class IndexElementsAttribute : Attribute
     {
         /// <summary>
+        /// The definition string for the index is a comma separated
+        /// list of element names. The elements sorted in descending
+        /// order are prefixed by -.
+        ///
+        /// Examples:
+        ///
+        /// * A is an index on element A in ascending order;
+        /// * -A is an index on element A in descending order;
+        /// * A,B,-C is an index on elements A and B in ascending
+        ///   order and then element C in descending order.
+        /// </summary>
+        public string Definition { get; set; }
+
+        /// <summary>
+        /// Custom short name of the index (optional).
+        ///
+        /// By default, the delimited elements string (index
+        /// definition) is used as index name. When the default
+        /// name exceeds the maximum index name length, use
+        /// this optional property to specify a shorter custom
+        /// index name.
+        /// </summary>
+        public string Name { get; set; }
+
+        //--- CONSTRUCTORS
+
+        /// <summary>
         /// Create from the index definition string.
         ///
         /// The definition string for the index is a comma separated
@@ -91,31 +118,6 @@ namespace DataCentric
             Definition = definition;
             Name = name;
         }
-
-        /// <summary>
-        /// The definition string for the index is a comma separated
-        /// list of element names. The elements sorted in descending
-        /// order are prefixed by -.
-        ///
-        /// Examples:
-        ///
-        /// * A is an index on element A in ascending order;
-        /// * -A is an index on element A in descending order;
-        /// * A,B,-C is an index on elements A and B in ascending
-        ///   order and then element C in descending order.
-        /// </summary>
-        public string Definition { get; set; }
-
-        /// <summary>
-        /// Custom short name of the index (optional).
-        ///
-        /// By default, the delimited elements string (index
-        /// definition) is used as index name. When the default
-        /// name exceeds the maximum index name length, use
-        /// this optional property to specify a shorter custom
-        /// index name.
-        /// </summary>
-        public string Name { get; set; }
 
         /// <summary>
         /// Get IndexedElements attributes for the class and its
