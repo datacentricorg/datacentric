@@ -50,7 +50,7 @@ namespace DataCentric.Test
                     record.InstantToken = new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(recordIndexMod4).ToInstant(DateTimeZone.Utc);
                     record.EnumToken = (SampleEnum)(recordIndexMod2 + 1);
 
-                    context.Save(record, context.DataSet);
+                    context.SaveOne(record, context.DataSet);
                 }
 
                 if (true)
@@ -119,7 +119,7 @@ namespace DataCentric.Test
                     record.InstantToken = new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(recordIndexMod4).ToInstant(DateTimeZone.Utc);
                     record.EnumToken = (SampleEnum) (recordIndexMod2 + 1);
 
-                    context.Save(record, context.DataSet);
+                    context.SaveOne(record, context.DataSet);
                 }
 
                 if (true)

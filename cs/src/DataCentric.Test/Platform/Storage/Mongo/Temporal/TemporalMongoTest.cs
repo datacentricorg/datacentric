@@ -711,7 +711,7 @@ namespace DataCentric.Test
             rec.Version = version;
 
             var dataSet = context.GetDataSet(dataSetName, context.DataSet);
-            context.Save(rec, dataSet);
+            context.SaveOne(rec, dataSet);
 
             return rec.Id;
         }
@@ -731,7 +731,7 @@ namespace DataCentric.Test
             rec.EnumValue = SampleEnum.EnumValue2;
 
             var dataSet = context.GetDataSet(dataSetName, context.DataSet);
-            context.Save(rec, dataSet);
+            context.SaveOne(rec, dataSet);
             return rec.Id;
         }
 
@@ -795,7 +795,7 @@ namespace DataCentric.Test
             rec.KeyElementList.Add(keyList1);
 
             var dataSet = context.GetDataSet(dataSetName, context.DataSet);
-            context.Save(rec, dataSet);
+            context.SaveOne(rec, dataSet);
             return rec.Id;
         }
 
@@ -815,7 +815,7 @@ namespace DataCentric.Test
             rec.OtherDoubleElement2 = 200.0;
 
             var dataSet = context.GetDataSet(dataSetName, context.DataSet);
-            context.Save(rec, dataSet);
+            context.SaveOne(rec, dataSet);
             return rec.Id;
         }
 
@@ -835,7 +835,7 @@ namespace DataCentric.Test
             rec.OtherDoubleElement3 = 200.0;
 
             var dataSet = context.GetDataSet(dataSetName, context.DataSet);
-            context.Save(rec, dataSet);
+            context.SaveOne(rec, dataSet);
             return rec.Id;
         }
     }

@@ -229,7 +229,7 @@ namespace DataCentric
         /// all processes and machine if they are not created within the same
         /// second.
         /// </summary>
-        public static void Save<TRecord>(this IContext obj, TRecord record)
+        public static void SaveOne<TRecord>(this IContext obj, TRecord record)
             where TRecord : Record
         {
             // All Save methods ignore the value of record.DataSet before the
@@ -237,7 +237,7 @@ namespace DataCentric
             // the value of dataset from the context, not from the record, is used.
             // The reason for this behavior is that the record may be stored from
             // a different dataset than the one where it is used.
-            obj.DataSource.Save(record, obj.DataSet);
+            obj.DataSource.SaveOne(record, obj.DataSet);
         }
 
         /// <summary>
@@ -255,10 +255,10 @@ namespace DataCentric
         /// all processes and machine if they are not created within the same
         /// second.
         /// </summary>
-        public static void Save<TRecord>(this IContext obj, TRecord record, TemporalId saveTo)
+        public static void SaveOne<TRecord>(this IContext obj, TRecord record, TemporalId saveTo)
             where TRecord : Record
         {
-            obj.DataSource.Save(record, saveTo);
+            obj.DataSource.SaveOne(record, saveTo);
         }
 
         /// <summary>

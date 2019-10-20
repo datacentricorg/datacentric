@@ -88,7 +88,7 @@ namespace DataCentric.Cli
             string fileContent = File.ReadAllText(csvFile);
             var records = CsvRecordsSerializer<T>.Deserialize(fileContent);
 
-            foreach (var record in records) context.Save(record, dataset);
+            context.SaveMany(records, dataset);
         }
     }
 }

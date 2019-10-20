@@ -53,7 +53,7 @@ namespace DataCentric.Test
                 context.Log.Verify(key.Value);
 
                 // Save
-                context.Save(record, context.DataSet);
+                context.SaveOne(record, context.DataSet);
 
                 // Load from storage
                 var loadedRecord = context.LoadOrNull(key, context.DataSet);
@@ -88,7 +88,7 @@ namespace DataCentric.Test
                 context.Log.Verify(key.Value);
 
                 // Save
-                context.Save(record, context.DataSet);
+                context.SaveOne(record, context.DataSet);
 
                 // Load from storage
                 var loadedRecord = context.LoadOrNull(key, context.DataSet);

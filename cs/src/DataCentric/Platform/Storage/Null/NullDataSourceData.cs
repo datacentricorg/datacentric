@@ -127,7 +127,7 @@ namespace DataCentric
         /// all processes and machine if they are not created within the same
         /// second.
         /// </summary>
-        public override void Save<TRecord>(TRecord record, TemporalId saveTo)
+        public override void SaveOne<TRecord>(TRecord record, TemporalId saveTo)
         {
             throw MethodCalledForNullDataSourceError();
         }

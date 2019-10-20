@@ -151,7 +151,7 @@ namespace DataCentric
         /// all processes and machine if they are not created within the same
         /// second.
         /// </summary>
-        void Save<TRecord>(TRecord record, TemporalId saveTo)
+        void SaveOne<TRecord>(TRecord record, TemporalId saveTo)
             where TRecord : Record;
 
         /// <summary>

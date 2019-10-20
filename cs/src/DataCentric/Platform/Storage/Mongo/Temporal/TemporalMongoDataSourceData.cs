@@ -240,7 +240,7 @@ namespace DataCentric
         /// This method guarantees that TemporalIds of the saved records will be in
         /// strictly increasing order.
         /// </summary>
-        public override void Save<TRecord>(TRecord record, TemporalId saveTo)
+        public override void SaveOne<TRecord>(TRecord record, TemporalId saveTo)
         {
             // Delegate implementation to SaveMany
             SaveMany(new List<TRecord> {record}, saveTo);
@@ -405,7 +405,7 @@ namespace DataCentric
                 if (dataSetDetailData == null)
                 {
                     dataSetDetailData = new DataSetDetailData {DataSetId = dataSetData.Id};
-                    Context.Save(dataSetDetailData, loadFrom);
+                    Context.SaveOne(dataSetDetailData, loadFrom);
                 }
 
                 // Cache TemporalId for the dataset and its parent
@@ -436,7 +436,7 @@ namespace DataCentric
         {
             // Save dataset to storage. This updates its Id
             // to the new TemporalId created during save
-            Save<DataSetData>(dataSetData, saveTo);
+            SaveOne<DataSetData>(dataSetData, saveTo);
 
             // Cache TemporalId for the dataset and its parent
             dataSetDict_[dataSetData.Key] = dataSetData.Id;

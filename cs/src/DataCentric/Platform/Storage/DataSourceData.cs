@@ -163,7 +163,7 @@ namespace DataCentric
         /// all processes and machine if they are not created within the same
         /// second.
         /// </summary>
-        public abstract void Save<TRecord>(TRecord record, TemporalId saveTo)
+        public abstract void SaveOne<TRecord>(TRecord record, TemporalId saveTo)
             where TRecord : Record;
 
         /// <summary>

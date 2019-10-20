@@ -54,13 +54,13 @@ namespace DataCentric.Test
             {
                 // Create queue record and save, then get its id
                 var queue = new JobQueueData();
-                context.Save(queue, context.DataSet);
+                context.SaveOne(queue, context.DataSet);
                 var queueId = queue.Id;
 
                 // Create job record and save, then get its id
                 var job = new SampleJobData();
                 job.Queue = queue.ToKey();
-                context.Save(job, context.DataSet);
+                context.SaveOne(job, context.DataSet);
                 var jobId = job.Id;
 
                 // Load the records back

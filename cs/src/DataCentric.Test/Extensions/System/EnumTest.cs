@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
 using NodaTime;
 using Xunit;
@@ -95,6 +96,7 @@ namespace DataCentric.Test
         {
             using (var context = new TemporalMongoTestContext(this))
             {
+                var records = new List<EnumTestNonNullableSampleData>();
                 for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
                 {
                     int recordIndexMod8 = recordIndex % 8;
@@ -104,8 +106,9 @@ namespace DataCentric.Test
                     record.EnumValue = (EnumTestSampleType)(recordIndexMod8);
                     record.DayOfWeek = (IsoDayOfWeek)recordIndexMod8;
 
-                    context.Save(record, context.DataSet);
+                    records.Add(record);
                 }
+                context.SaveMany(records);
 
                 if (true)
                 {
@@ -145,6 +148,7 @@ namespace DataCentric.Test
         {
             using (var context = new TemporalMongoTestContext(this))
             {
+                var records = new List<EnumTestNullableSampleData>();
                 for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
                 {
                     int recordIndexMod8 = recordIndex % 8;
@@ -154,8 +158,9 @@ namespace DataCentric.Test
                     record.EnumValue = (EnumTestSampleType)(recordIndexMod8);
                     record.DayOfWeek = (IsoDayOfWeek)recordIndexMod8;
 
-                    context.Save(record, context.DataSet);
+                    records.Add(record);
                 }
+                context.SaveMany(records);
 
                 if (true)
                 {
