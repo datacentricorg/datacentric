@@ -132,7 +132,7 @@ namespace DataCentric
                 case bool boolValue:
                 case int intValue:
                 case long longValue:
-                case TemporalId recordIdValue:
+                case TemporalId temporalIdValue:
                 case Enum enumValue:
                 case Key keyValue:
                     // Use AsString() for all remaining types including the key

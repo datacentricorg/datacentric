@@ -258,8 +258,8 @@ namespace DataCentric
             // than TemporalId of the dataset where it is stored
             if (recordId <= saveTo)
                 throw new Exception(
-                    $"Attempting to save a record with TemporalId={recordId} that is later " +
-                    $"than TemporalId={saveTo} of the dataset where it is being saved.");
+                    $"TemporalId={recordId} of a record must be greater than " +
+                    $"TemporalId={saveTo} of the dataset where it is being saved.");
 
             // Assign ID and DataSet, and only then initialize, because
             // initialization code may use record.ID and record.DataSet

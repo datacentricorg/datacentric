@@ -286,7 +286,7 @@ namespace DataCentric
 
                     // Create a list of TemporalIds for the records obtained using
                     // dataset lookup rules for the keys in the batch
-                        var recordIds = new List<TemporalId>();
+                    var recordIds = new List<TemporalId>();
                     string currentKey = null;
                     foreach (var obj in projectedIdQueryable)
                     {

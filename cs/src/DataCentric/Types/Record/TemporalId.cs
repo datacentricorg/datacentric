@@ -267,17 +267,17 @@ namespace DataCentric
         ///
         /// where each h represents a hexadecimal digit (total of 16).
         /// </summary>
-        public static bool TryParse(string value, out TemporalId recordId)
+        public static bool TryParse(string value, out TemporalId result)
         {
             // Return empty TemporalId for null or empty string
             if (string.IsNullOrEmpty(value))
             {
-                recordId = TemporalId.Empty;
+                result = TemporalId.Empty;
                 return true;
             }
 
             // Set to empty value in case the method exits early
-            recordId = default(TemporalId);
+            result = default(TemporalId);
 
             // TemporalId is serialized using the following format:
             //
@@ -303,7 +303,7 @@ namespace DataCentric
 
             // Populate the first integer from timestamp
             // and the two remaining integers from the byte array
-            recordId = new TemporalId(createdTime, bytes);
+            result = new TemporalId(createdTime, bytes);
             return true;
         }
 
