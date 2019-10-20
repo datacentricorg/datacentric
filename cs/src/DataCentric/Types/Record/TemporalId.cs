@@ -27,18 +27,21 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>
-    /// A 16-byte ordered record identifier that consists of two parts:
+    /// A 16-byte, unique, ordered identifier that consists of two Int64
+    /// elements:
     ///
-    /// * Int64 representing creation time recorded as the number of
-    ///   Unix ticks since the epoch (1970).
-    /// * Int64 that is randomized using machine-specific information.
+    /// * First element representing creation time recorded as the number
+    ///   of ticks since the Unix epoch (1970).
+    /// * Second element is randomized with the inclusion of machine-specific
+    ///   information to make the identifier unique in combination with the
+    ///   first element.
     ///
     /// TemporalId has the same size as GUID and can be stored in a
     /// data type designed for GUID.
     ///
     /// TemporalId is unique in the absence of collision for its randomized
-    /// part, which by design has extremely low probability. It has the
-    /// following ordering guarantees:
+    /// part, which by design has extremely low probability (similar to GUID).
+    /// It has the following ordering guarantees:
     ///
     /// * When generated in the same process, TemporalIds are strictly ordered
     ///   irrespective of how fast they are generated.

@@ -205,8 +205,8 @@ namespace DataCentric
             //   is executed in batches, and its result is projected to a list of keys.
             // * Second, untyped query for all keys retrieved during the batch is executed
             //   and projected to (Id, DataSet, Key) elements only. Using Imports lookup
-            //   sequence and FreezeImports flag, a list of record Ids for the latest
-            //   object in the latest dataset is obtained. Records for which type does
+            //   sequence and FreezeImports flag, a list of TemporalIds for the latest
+            //   record in the latest dataset is obtained. Records for which type does
             //   not match are skipped.
             // * Finally, typed query is executed for each of these Ids and the results
             //   are yield returned to the caller.
