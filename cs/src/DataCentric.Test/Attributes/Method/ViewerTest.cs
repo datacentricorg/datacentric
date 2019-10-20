@@ -21,34 +21,36 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Test for HandlerMethod attribute.</summary>
-    public class HandlerTest
+    public class ViewerTest
     {
         /// <summary>
-        /// In this test, we invoke handlers in process to create baseline output
+        /// In this test, we invoke viewers in process to create baseline output
         /// that will be compared to the output of the CLI call.
         /// </summary>
         [Fact]
-        public void InProcess()
+        public void Smoke()
         {
-            using (var context = new UnitTestContext(this))
+            using (var context = new TemporalMongoTestContext(this))
             {
                 // Create base instance
                 var baseSampleData = new BaseSampleData();
-                baseSampleData.RecordName = "InProcess";
+                baseSampleData.RecordName = "Smoke";
                 baseSampleData.RecordIndex = 1;
-                baseSampleData.Init(context);
+                context.SaveOne(baseSampleData);
 
-                // Invoke handlers of the base class
-                baseSampleData.NonVirtualBaseHandler();
-                baseSampleData.VirtualBaseHandler();
+                // Invoke viewers
+                baseSampleData.DefaultNamedViewer();
+                baseSampleData.CustomNamedViewer();
 
-                // Create derived instance
-                var derivedSampleData = new DerivedSampleData();
-                derivedSampleData.Init(context);
-
-                // Invoke handlers of the derived class
-                derivedSampleData.NonVirtualDerivedHandler();
-                derivedSampleData.VirtualBaseHandler();
+                // Check for the results
+                var defaultNamedView = context
+                    .Load(new ViewKey {RecordId = baseSampleData.Id, ViewName = "DefaultNamedViewer"})
+                    .CastTo<ViewSampleData>();
+                context.Log.Verify(defaultNamedView.SampleViewString);
+                var customNamedView = context
+                    .Load(new ViewKey {RecordId = baseSampleData.Id, ViewName = "CustomName"})
+                    .CastTo<ViewSampleData>();
+                context.Log.Verify(customNamedView.SampleViewString);
             }
         }
     }

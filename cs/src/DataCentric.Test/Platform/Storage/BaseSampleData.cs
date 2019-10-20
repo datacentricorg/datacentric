@@ -76,5 +76,27 @@ namespace DataCentric.Test
         {
             Context.Log.Verify("VirtualBaseHandler implemented in Base");
         }
+
+        /// <summary>Viewer with default view name.</summary>
+        [Viewer]
+        public void DefaultNamedViewer()
+        {
+            var viewData = new ViewSampleData();
+            viewData.RecordId = Id;
+            viewData.ViewName = "DefaultNamedViewer";
+            viewData.SampleViewString = "Default named viewer";
+            Context.SaveOne(viewData);
+        }
+
+        /// <summary>Viewer with a custom view name.</summary>
+        [Viewer("CustomName")]
+        public void CustomNamedViewer()
+        {
+            var viewData = new ViewSampleData();
+            viewData.RecordId = Id;
+            viewData.ViewName = "CustomName";
+            viewData.SampleViewString = "Custom named viewer";
+            Context.SaveOne(viewData);
+        }
     }
 }

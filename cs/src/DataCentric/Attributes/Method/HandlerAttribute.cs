@@ -24,11 +24,16 @@ namespace DataCentric
     /// Handlers are methods of a Record that can be invoked
     /// through the user interface or CLI.
     ///
-    /// A handler method must:
+    /// A handler method must return void and either take no
+    /// parameters, or take parameters that are a combination
+    /// of:
     ///
-    /// * Take parameters that are either atomic types or
-    ///   classes derived from Data; and
-    /// * Return void.
+    /// * Atomic types
+    /// * Classes derived from Data
+    ///
+    /// While passing Record types as handler parameters is not
+    /// prohibited, best practice is to pass such parameters by
+    /// specifying their key rather than their data.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
     public class HandlerAttribute : Attribute
