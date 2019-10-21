@@ -44,7 +44,7 @@ namespace DataCentric
     /// The parser will check that each element exists in type TRecord
     /// or its base types, error message otherwise.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public sealed class LabelElementsAttribute : Attribute
     {
         /// <summary>

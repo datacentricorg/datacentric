@@ -43,7 +43,7 @@ namespace DataCentric
     /// name specified as part of the definition string, an error
     /// message is given.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
     public sealed class IndexElementsAttribute : Attribute
     {
         /// <summary>
