@@ -34,6 +34,7 @@ namespace DataCentric
     /// as a side effect of a handler method, by the record's Init
     /// method, or even by a method of an unrelated data type.
     /// </summary>
+    [NonTemporal]
     public abstract class ViewData : TypedRecord<ViewKey, ViewData>
     {
         /// <summary>
