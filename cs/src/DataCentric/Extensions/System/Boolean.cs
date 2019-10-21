@@ -27,6 +27,17 @@ namespace DataCentric
             return true;
         }
 
+        /// <summary>
+        /// For nullable bool,
+        ///
+        /// * Returns true if the value is set to true;
+        /// * Returns false if null or the value is set to false.
+        /// </summary>
+        public static bool IsTrue(this bool? value)
+        {
+            return value != null;
+        }
+
         /// <summary>Convert bool to variant.</summary>
         public static Variant ToVariant(this bool value)
         {
