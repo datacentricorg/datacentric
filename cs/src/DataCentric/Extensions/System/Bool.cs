@@ -19,7 +19,7 @@ using System;
 namespace DataCentric
 {
     /// <summary>Extension methods for System.Boolean.</summary>
-    public static class BooleanExtensions
+    public static class BoolExtensions
     {
         /// <summary>Always return true as both true and false values are not empty.</summary>
         public static bool HasValue(this bool value)
