@@ -272,7 +272,7 @@ namespace DataCentric
             // the second line will convert.
             List<TRecord> recordsList = records as List<TRecord>;
             if (recordsList == null) recordsList = records.ToList(); 
-            
+
             // Iterate over list elements to populate fields
             foreach (var record in recordsList)
             {
@@ -646,68 +646,66 @@ namespace DataCentric
             var baseCollection = Db.GetCollection<Record>(collectionName);
             var typedCollection = Db.GetCollection<TRecord>(collectionName);
 
-            if (true)
-            {
-                // Each data type has an index for optimized loading by key.
-                // This index consists of Key in ascending order, followed by
-                // DataSet and ID in descending order.
-                var indexKeys = Builders<TRecord>.IndexKeys
-                    .Ascending(new StringFieldDefinition<TRecord>("_key")) // .Key
-                    .Descending(new StringFieldDefinition<TRecord>("_dataset")) // .DataSet
-                    .Descending(new StringFieldDefinition<TRecord>("_id")); // .Id
+            //--- Load standard index types
 
-                // Use index definition convention to specify the index name
-                var indexName = "Key-DataSet-Id";
-                var indexModel = new CreateIndexModel<TRecord>(indexKeys, new CreateIndexOptions { Name = indexName });
-                typedCollection.Indexes.CreateOne(indexModel);
-            }
+            // Each data type has an index for optimized loading by key.
+            // This index consists of Key in ascending order, followed by
+            // DataSet and ID in descending order.
+            var loadIndexKeys = Builders<TRecord>.IndexKeys
+                .Ascending(new StringFieldDefinition<TRecord>("_key")) // .Key
+                .Descending(new StringFieldDefinition<TRecord>("_dataset")) // .DataSet
+                .Descending(new StringFieldDefinition<TRecord>("_id")); // .Id
+
+            // Use index definition convention to specify the index name
+            var loadIndexName = "Key-DataSet-Id";
+            var loadIndexModel = new CreateIndexModel<TRecord>(loadIndexKeys, new CreateIndexOptions { Name = loadIndexName });
+            typedCollection.Indexes.CreateOne(loadIndexModel);
+
+            //--- Load custom index types
 
             // Additional indices are provided using IndexAttribute for the class.
-            if (true)
+            // Get a sorted dictionary of (definition, name) pairs
+            // for the inheritance chain of the specified type.
+            var indexDict = IndexElementsAttribute.GetAttributesDict<TRecord>();
+
+            // Iterate over the dictionary to define the index
+            foreach (var indexInfo in indexDict)
             {
-                // Get a sorted dictionary of (definition, name) pairs
-                // for the inheritance chain of the specified type.
-                var indexDict = IndexElementsAttribute.GetAttributesDict<TRecord>();
+                string indexDefinition = indexInfo.Key;
+                string indexName = indexInfo.Value;
 
-                // Iterate over the dictionary to define the index
-                foreach (var indexInfo in indexDict)
+                // Parse index definition to get a list of (ElementName,SortOrder) tuples
+                List<(string, int)> indexTokens = IndexElementsAttribute.ParseDefinition<TRecord>(indexDefinition);
+
+                var indexKeysBuilder = Builders<TRecord>.IndexKeys;
+                IndexKeysDefinition<TRecord> indexKeys = null;
+
+                // Iterate over (ElementName,SortOrder) tuples
+                foreach (var indexToken in indexTokens)
                 {
-                    string indexDefinition = indexInfo.Key;
-                    string indexName = indexInfo.Value;
+                    (string elementName, int sortOrder) = indexToken;
 
-                    // Parse index definition to get a list of (ElementName,SortOrder) tuples
-                    List<(string, int)> indexTokens = IndexElementsAttribute.ParseDefinition<TRecord>(indexDefinition);
-
-                    var indexKeysBuilder = Builders<TRecord>.IndexKeys;
-                    IndexKeysDefinition<TRecord> indexKeys = null;
-
-                    // Iterate over (ElementName,SortOrder) tuples
-                    foreach (var indexToken in indexTokens)
+                    if (indexKeys == null)
                     {
-                        (string elementName, int sortOrder) = indexToken;
-
-                        if (indexKeys == null)
-                        {
-                            // Create from builder for the first element
-                            if (sortOrder == 1) indexKeys = indexKeysBuilder.Ascending(new StringFieldDefinition<TRecord>(elementName));
-                            else if (sortOrder == -1) indexKeys = indexKeysBuilder.Descending(new StringFieldDefinition<TRecord>(elementName));
-                            else throw new Exception("Sort order must be 1 or -1.");
-                        }
-                        else
-                        {
-                            // Chain to the previous list of index keys for the remaining elements
-                            if (sortOrder == 1) indexKeys = indexKeys.Ascending(new StringFieldDefinition<TRecord>(elementName));
-                            else if (sortOrder == -1) indexKeys = indexKeys.Descending(new StringFieldDefinition<TRecord>(elementName));
-                            else throw new Exception("Sort order must be 1 or -1.");
-                        }
+                        // Create from builder for the first element
+                        if (sortOrder == 1) indexKeys = indexKeysBuilder.Ascending(new StringFieldDefinition<TRecord>(elementName));
+                        else if (sortOrder == -1) indexKeys = indexKeysBuilder.Descending(new StringFieldDefinition<TRecord>(elementName));
+                        else throw new Exception("Sort order must be 1 or -1.");
                     }
-
-                    if (indexName == null) throw new Exception("Index name cannot be null.");
-                    var indexModel = new CreateIndexModel<TRecord>(indexKeys, new CreateIndexOptions { Name = indexName });
-
-                    // Add to indexes for the collection
-                    typedCollection.Indexes.CreateOne(indexModel);
+                    else
+                    {
+                        // Chain to the previous list of index keys for the remaining elements
+                        if (sortOrder == 1) indexKeys = indexKeys.Ascending(new StringFieldDefinition<TRecord>(elementName));
+                        else if (sortOrder == -1) indexKeys = indexKeys.Descending(new StringFieldDefinition<TRecord>(elementName));
+                        else throw new Exception("Sort order must be 1 or -1.");
+                    }
                 }
+
+                if (indexName == null) throw new Exception("Index name cannot be null.");
+                var indexModel = new CreateIndexModel<TRecord>(indexKeys, new CreateIndexOptions { Name = indexName });
+
+                // Add to indexes for the collection
+                typedCollection.Indexes.CreateOne(indexModel);
             }
 
             // Create result that holds both base and typed collections
