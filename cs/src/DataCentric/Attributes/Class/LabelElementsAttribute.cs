@@ -25,6 +25,9 @@ namespace DataCentric
     /// be displayed by the user interface where key elements(s) would be
     /// displayed otherwise.
     ///
+    /// This method must be set for the root data type of a collection.
+    /// Root data type is the type derived directly from TypedRecord.
+    /// 
     /// Examples:
     ///
     /// * A means simple label A

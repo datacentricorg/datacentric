@@ -24,6 +24,9 @@ namespace DataCentric
     /// Create key from comma separated list of key elements in the
     /// order listed in the attribute definition, or example:
     ///
+    /// This method must be set for the root data type of a collection.
+    /// Root data type is the type derived directly from TypedRecord.
+    ///
     /// * A is a simple primary key consisting of element A;
     /// * A, B is a complex primary key consisting of elements A, B.
     ///

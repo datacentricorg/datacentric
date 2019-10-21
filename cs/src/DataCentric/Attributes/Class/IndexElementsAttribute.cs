@@ -25,6 +25,9 @@ namespace DataCentric
     /// for the class. A class may have more than one IndexElements
     /// attribute, each for a separate index.
     ///
+    /// This method must be set for the root data type of a collection.
+    /// Root data type is the type derived directly from TypedRecord.
+    ///
     /// The definition string for the index is a comma separated
     /// list of element names. The elements sorted in descending
     /// order are prefixed by -.
