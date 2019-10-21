@@ -72,11 +72,6 @@ namespace DataCentric
         public bool? NonTemporal { get; set; }
 
         /// <summary>
-        /// If set, the dataset is readonly.
-        /// </summary>
-        public bool? Readonly { get; set; } // TODO - temporary, should be in DataSetDetail record
-
-        /// <summary>
         /// List of datasets where records are looked up if they are
         /// not found in the current dataset.
         ///
