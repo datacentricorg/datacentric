@@ -38,10 +38,10 @@ namespace DataCentric.Test
         {
             [BsonId]
             public string KeyElement { get; set; }
-            public double DoubleElement { get; set; }
-            public double IntElement { get; set; }
+            public double? DoubleElement { get; set; }
+            public double? IntElement { get; set; }
             public List<double> ArrayElement { get; set; }
-            public int VersionElement { get; set; }
+            public int? VersionElement { get; set; }
         }
 
         public class B
@@ -52,10 +52,10 @@ namespace DataCentric.Test
             public string KeyElement { get; set; }
             public string StringElement1 { get; set; }
             public string StringElement2 { get; set; }
-            public double DoubleElement { get; set; }
-            public double IntElement { get; set; }
+            public double? DoubleElement { get; set; }
+            public double? IntElement { get; set; }
             public List<double> ArrayElement { get; set; }
-            public int VersionElement { get; set; }
+            public int? VersionElement { get; set; }
         }
 
         public class Cursor
@@ -212,7 +212,7 @@ namespace DataCentric.Test
                     var obj = collection.Find(p => p.KeyElement == key).SingleOrDefault();
 
                     count++;
-                    sum += obj.DoubleElement;
+                    sum += obj.DoubleElement.Value;
                 }
 
                 context.Log.Verify($"Found {count} records.");
@@ -240,7 +240,7 @@ namespace DataCentric.Test
                     var obj = query.FirstOrDefault();
 
                     count++;
-                    sum += obj.DoubleElement;
+                    sum += obj.DoubleElement.Value;
                 }
 
                 context.Log.Verify($"Found {count} records.");
@@ -266,7 +266,7 @@ namespace DataCentric.Test
                 foreach (var obj in query)
                 {
                     count++;
-                    sum += obj.DoubleElement;
+                    sum += obj.DoubleElement.Value;
                 }
 
                 context.Log.Verify($"Query returned {count} records.");
@@ -306,7 +306,7 @@ namespace DataCentric.Test
                 {
                     if (keys.Add(obj.KeyElement))
                     {
-                        sum += obj.DoubleElement;
+                        sum += obj.DoubleElement.Value;
                         count++;
                     }
                 }
@@ -362,7 +362,7 @@ namespace DataCentric.Test
                     .Where(p => recordIds.Contains(p.Id));
                 foreach (var record in recordQuery)
                 {
-                    sum += record.DoubleElement;
+                    sum += record.DoubleElement.Value;
                     recordCount++;
                 }
 

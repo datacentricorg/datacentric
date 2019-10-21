@@ -31,10 +31,10 @@ namespace DataCentric.Test
     public class OutOfOrderKeyElementsSampleData : TypedRecord<OutOfOrderKeyElementsSampleKey, OutOfOrderKeyElementsSampleData>
     {
         /// <summary>Sample element.</summary>
-        public int InitialElement1 { get; set; }
+        public int? InitialElement1 { get; set; }
 
         /// <summary>Sample element.</summary>
-        public int InitialElement2 { get; set; }
+        public int? InitialElement2 { get; set; }
 
         /// <summary>Out of order key element.</summary>
         public string KeyElement2 { get; set; }
