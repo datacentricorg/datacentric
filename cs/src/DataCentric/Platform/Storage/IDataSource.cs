@@ -51,6 +51,25 @@ namespace DataCentric
         /// <summary>Unique data source name.</summary>
         string DataSourceName { get; }
 
+        /// <summary>
+        /// Flag indicating that the data source is non-temporal.
+        ///
+        /// For the data stored in data sources where NonTemporal == false,
+        /// the data source keeps permanent history of changes to each
+        /// record (except where dataset or record are marked as NonTemporal),
+        /// and provides the ability to access the record as of the specified
+        /// TemporalId, where TemporalId serves as a timeline (records created
+        /// later have greater TemporalId than records created earlier).
+        ///
+        /// For the data stored in data source where NonTemporal == true,
+        /// the data source keeps only the latest version of the record. All
+        /// datasets created by a NonTemporal data source must also be non-temporal.
+        ///
+        /// In a non-temporal data source, this flag is ignored as all
+        /// datasets in such data source are non-temporal.
+        /// </summary>
+        bool? NonTemporal { get; }
+
         //--- METHODS
 
         /// <summary>
@@ -405,15 +424,13 @@ namespace DataCentric
             // Create dataset record with the specified name and import
             var result = new DataSetData() { DataSetName = dataSetName, Imports = imports.ToList() };
 
-            if ((flags & DataSetFlags.NonTemporal) == DataSetFlags.NonTemporal)
+            // If data source is NonTemporal, dataset will be created
+            // as NonTemporal even if not specified by dataset flags
+            if (obj.NonTemporal.IsTrue() || (flags & DataSetFlags.NonTemporal) == DataSetFlags.NonTemporal)
             {
-                // Make non-temporal
+                // Make non-temporal if either data source is NonTemporal,
+                // or dataset flag for NonTemporal is set
                 result.NonTemporal = true;
-            }
-            else
-            {
-                // Make temporal
-                result.NonTemporal = false;
             }
 
             // Save in parentDataSet (this also updates the dictionaries)
