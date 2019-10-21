@@ -18,6 +18,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
@@ -296,12 +297,18 @@ namespace DataCentric
                 record.Init(Context);
             }
 
-            // Use InsertOne for a single element, and InsertMany for multiple.
-            // Do nothing if the list has zero size.
-            //
-            // Insert will fail if TemporalId is not unique within the collection.
-            if (recordsList.Count > 1) collection.TypedCollection.InsertMany(recordsList);
-            else if (recordsList.Count == 1) collection.TypedCollection.InsertMany(recordsList);
+            if (IsNonTemporal<TRecord>(saveTo))
+            {
+                // Replace the record if exists, or insert if it does not 
+                collection.TypedCollection.InsertMany(recordsList); // TODO - replace by Upsert
+            }
+            else
+            {
+                // Always insert, previous version will remain in the database
+                // but will not be found except through loading by TemporalId,
+                // or CutoffTime/ImportsCutoffTime customization
+                collection.TypedCollection.InsertMany(recordsList);
+            }
         }
 
         /// <summary>
@@ -530,6 +537,32 @@ namespace DataCentric
                 dataSetDetailDict_[detailFor] = result;
                 return result;
             }
+        }
+
+        /// <summary>
+        /// Returns true if either dataset has NonTemporal flag set, or record type
+        /// has NonTemporal attribute.
+        ///
+        /// Note that if data source has NonTemporal flag set, then dataset will
+        /// also have NonTemporal flag set.
+        /// </summary>
+        public bool IsNonTemporal<TRecord>(TemporalId dataSetId) where TRecord: Record
+        {
+            // Check NonTemporal attribute for the data source, if set return true.
+            if (NonTemporal.IsTrue()) return true;
+
+            // Otherwise check NonTemporal attribute for the type, if set return true
+            if (typeof(TRecord).GetCustomAttribute<NonTemporalAttribute>(true) != null) return true;
+
+            // Root dataset which cannot have NonTemporal flag.
+            // In this case return false
+            if (dataSetId == TemporalId.Empty) return false;
+
+            // In dataset other than root, check for NonTemporal flag of the dataset record.
+            // If not set, consider its value false.
+            var dataSetDetailData = LoadOrNull<DataSetData>(dataSetId);
+            if (dataSetDetailData != null && dataSetDetailData.NonTemporal.IsTrue()) return true;
+            else return false;
         }
 
         /// <summary>

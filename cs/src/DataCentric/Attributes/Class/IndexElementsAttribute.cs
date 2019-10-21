@@ -145,8 +145,8 @@ namespace DataCentric
                         $"Data source cannot get collection for type {typeof(TRecord).Name} " +
                         $"because it is not derived from type Record.");
 
-                // Get class attributes without inheritance
-                var classAttributes = classType.GetCustomAttributes<IndexElementsAttribute>(false);
+                // Get class attributes with inheritance
+                var classAttributes = classType.GetCustomAttributes<IndexElementsAttribute>(true);
                 foreach (var classAttribute in classAttributes)
                 {
                     string definition = classAttribute.Definition;
