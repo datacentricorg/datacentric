@@ -102,7 +102,7 @@ namespace DataCentric
         ///
         /// The default value of KeepTestData is false.
         /// </summary>
-        public bool KeepTestData { get; set; }
+        public bool? KeepTestData { get; set; }
 
         //--- METHODS
 
@@ -120,7 +120,7 @@ namespace DataCentric
         /// </summary>
         public override void Dispose()
         {
-            if (!KeepTestData)
+            if (!KeepTestData.IsTrue())
             {
                 // Permanently delete the unit test database
                 // unless KeepTestData is true
