@@ -168,24 +168,6 @@ namespace DataCentric
             where TRecord : Record;
 
         /// <summary>
-        /// Save record to the specified dataset. After the method exits,
-        /// record.DataSet will be set to the value of the dataSet parameter.
-        ///
-        /// All Save methods ignore the value of record.DataSet before the
-        /// Save method is called. When dataset is not specified explicitly,
-        /// the value of dataset from the context, not from the record, is used.
-        /// The reason for this behavior is that the record may be stored from
-        /// a different dataset than the one where it is used.
-        ///
-        /// This method guarantees that TemporalIds will be in strictly increasing
-        /// order for this instance of the data source class always, and across
-        /// all processes and machine if they are not created within the same
-        /// second.
-        /// </summary>
-        public abstract void SaveOne<TRecord>(TRecord record, TemporalId saveTo)
-            where TRecord : Record;
-
-        /// <summary>
         /// Save multiple records to the specified dataset. After the method exits,
         /// for each record the property record.DataSet will be set to the value of
         /// the saveTo parameter.
