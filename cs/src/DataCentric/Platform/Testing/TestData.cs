@@ -91,7 +91,8 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Get context for the test that depends on the test environment.
+        /// Create a new context for the test method. The way the context
+        /// is created depends on how the test is invoked.
         ///
         /// When invoked inside xUnit test runner, Context will be null
         /// and a new copy of unit test runner will be created.
@@ -103,7 +104,7 @@ namespace DataCentric
         /// This method may be used by the unit tests in this class or as
         /// part of the test data set up by other classes.
         /// </summary>
-        public IContext GetContext(
+        public IContext CreateMethodContext(
             [CallerMemberName] string methodName = null,
             [CallerFilePath] string sourceFilePath = null)
         {
