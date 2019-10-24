@@ -37,6 +37,8 @@ namespace DataCentric
     public class MongoTestContext<TDataSource> : UnitTestContext
         where TDataSource : MongoDataSourceData, IDataSource, new()
     {
+        private bool keepTestData_;
+
         /// <summary>
         /// Unit test context for the specified object for the Mongo
         /// server running on the default port of localhost.
@@ -93,17 +95,6 @@ namespace DataCentric
             DataSource.DeleteDb();
         }
 
-        //--- PROPERTIES
-
-        /// <summary>
-        /// The data in test database is erased when the context is created
-        /// irrespective of KeepTestData value. However it is only erased on
-        /// Dispose() if the value of KeepTestData is true.
-        ///
-        /// The default value of KeepTestData is false.
-        /// </summary>
-        public bool? KeepTestData { get; set; }
-
         //--- METHODS
 
         /// <summary>
@@ -120,7 +111,7 @@ namespace DataCentric
         /// </summary>
         public override void Dispose()
         {
-            if (!KeepTestData.IsTrue())
+            if (!keepTestData_)
             {
                 // Permanently delete the unit test database
                 // unless KeepTestData is true
@@ -129,6 +120,25 @@ namespace DataCentric
 
             // Dispose base
             base.Dispose();
+        }
+
+        /// <summary>
+        /// Invoke this method to keep test data after the
+        /// test method exits.
+        ///
+        /// When running under xUnit, the data in test database is not
+        /// erased on test method exit if KeepTestData() was invoked.
+        ///
+        /// When running under DataCentric, the test dataset will not
+        /// be deleted on test method exit if KeepTestData() was invoked.
+        ///
+        /// Note that test data is always erased when test method enters,
+        /// irrespective of any KeepTestData() calls and irrespective of
+        /// whether or not KeepTestData() has been called.
+        /// </summary>
+        public override void KeepTestData()
+        {
+            keepTestData_ = true;
         }
     }
 }
