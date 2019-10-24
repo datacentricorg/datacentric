@@ -67,14 +67,6 @@ namespace DataCentric
         //--- METHODS
 
         /// <summary>
-        /// Creates test data in the default dataset of its argument context.
-        ///
-        /// This method may be used by the unit tests in this class or as
-        /// part of the test data set up by other classes.
-        /// </summary>
-        void SetUp(IContext context);
-
-        /// <summary>
         /// Run all methods in this class that have [Fact] or [Theory] attribute.
         ///
         /// This method will run each of the test methods using its own instance

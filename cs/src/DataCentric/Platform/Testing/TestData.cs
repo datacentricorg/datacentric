@@ -135,14 +135,6 @@ namespace DataCentric
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Creates test data in the default dataset of its argument context.
-        ///
-        /// This method may be used by the unit tests in this class or as
-        /// part of the test data set up by other classes.
-        /// </summary>
-        public abstract void SetUp(IContext context);
-
         //--- PROTECTED
 
         /// <summary>
