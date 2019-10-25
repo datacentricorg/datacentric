@@ -424,7 +424,7 @@ namespace DataCentric
         {
             // Save dataset to storage. This updates its Id
             // to the new TemporalId created during save
-            SaveOne<DataSetData>(dataSetData, saveTo);
+            this.SaveOne<DataSetData>(dataSetData, saveTo);
 
             // Cache TemporalId for the dataset and its parent
             dataSetDict_[dataSetData.Key] = dataSetData.Id;
