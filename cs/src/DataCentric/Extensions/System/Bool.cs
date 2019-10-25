@@ -35,7 +35,7 @@ namespace DataCentric
         /// </summary>
         public static bool IsTrue(this bool? value)
         {
-            return value != null;
+            return value != null && value.Value;
         }
 
         /// <summary>Convert bool to variant.</summary>
