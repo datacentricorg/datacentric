@@ -23,13 +23,13 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Unit test for Query.</summary>
-    public class QueryTest
+    public class QueryTestData : TestData
     {
         /// <summary>Query on all permitted nullable element types.</summary>
         [Fact]
         public void NullableElements()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
                 {
@@ -98,7 +98,7 @@ namespace DataCentric.Test
         [Fact]
         public void NonNullableElements()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
                 {

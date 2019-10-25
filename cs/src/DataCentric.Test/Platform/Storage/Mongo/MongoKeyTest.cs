@@ -24,13 +24,13 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Unit test for key serialization in Mongo 2.1 format.</summary>
-    public class MongoKeyTest
+    public class MongoKeyTestData : TestData
     {
         /// <summary>>Key class that has all of the permitted non-nullable key elements included.</summary>
         [Fact]
         public void CompleteNonNullableKey()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 var record = new NonNullableElementsSampleData();
                 record.DataSet = context.DataSet;
@@ -65,7 +65,7 @@ namespace DataCentric.Test
         [Fact]
         public void CompleteNullableKey()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 var record = new NullableElementsSampleData();
                 record.DataSet = context.DataSet;
@@ -102,9 +102,9 @@ namespace DataCentric.Test
         [Fact]
         public void CompositeKey()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
-                context.KeepTestData = true;
+                context.KeepTestData();
 
                 var rec = new CompositeKeySampleData();
                 rec.KeyElement1 = "abc";
@@ -130,9 +130,9 @@ namespace DataCentric.Test
         [Fact]
         public void SingletonKey()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
-                context.KeepTestData = true;
+                context.KeepTestData();
 
                 var rec = new SingletonSampleData();
                 rec.StringElement = "abc";
@@ -154,9 +154,9 @@ namespace DataCentric.Test
         [Fact]
         public void IdBasedKey()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
-                context.KeepTestData = true;
+                context.KeepTestData();
 
                 // Create from timestamp
                 var createdTime = InstantUtil.Utc(2003, 5, 1, 10, 15, 0);

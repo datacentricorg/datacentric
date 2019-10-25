@@ -24,7 +24,7 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Unit test for JobQueue.</summary>
-    public class JobQueueTest
+    public class JobQueueTestData : TestData
     {
         public class SampleJobData : JobData
         {
@@ -50,7 +50,7 @@ namespace DataCentric.Test
         [Fact]
         public void Load()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 // Create queue record and save, then get its id
                 var queue = new JobQueueData();

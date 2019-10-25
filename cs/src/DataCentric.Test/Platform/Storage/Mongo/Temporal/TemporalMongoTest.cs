@@ -26,13 +26,13 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>Unit test for TemporalMongoDataSourceData.</summary>
-    public class TemporalMongoTest
+    public class TemporalMongoTestData : TestData
     {
         /// <summary>Smoke test.</summary>
         [Fact]
         public void Smoke()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 SaveBasicData(context);
 
@@ -64,7 +64,7 @@ namespace DataCentric.Test
         [Fact]
         public void MultipleDataSetQuery()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 // Begin from DataSet0
                 var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
@@ -131,7 +131,7 @@ namespace DataCentric.Test
         [Fact]
         public void CreateOrderedTemporalId()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 for (int i = 0; i < 10_000; ++i)
                 {
@@ -148,7 +148,7 @@ namespace DataCentric.Test
         [Fact]
         public void Delete()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 SaveBasicData(context);
 
@@ -224,7 +224,7 @@ namespace DataCentric.Test
         [Fact]
         public void TypeChange()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 // Create records with minimal data
 
@@ -294,7 +294,7 @@ namespace DataCentric.Test
         [Fact]
         public void ElementTypesQuery()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 // Saves data in A and B datasets, A is an import of B
                 SaveCompleteData(context);
@@ -331,7 +331,7 @@ namespace DataCentric.Test
         [Fact]
         public void PolymorphicQuery()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 // Saves data in A and B datasets, A is an import of B
                 SaveCompleteData(context);
@@ -400,7 +400,7 @@ namespace DataCentric.Test
         [Fact]
         public void Sort()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 // Saves data in A and B datasets, A is an import of B
                 SaveCompleteData(context);
@@ -425,7 +425,7 @@ namespace DataCentric.Test
         [Fact]
         public void CutoffTime()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 // Create two versions in DataSet0
                 var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);
@@ -529,7 +529,7 @@ namespace DataCentric.Test
         [Fact]
         public void QueryWithFilterOnDeletedRecord()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 // Create datasets
                 var dataSet0 = context.CreateDataSet("DataSet0", context.DataSet);

@@ -21,7 +21,7 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Test for HandlerMethod attribute.</summary>
-    public class ViewerTest
+    public class ViewerTestData : TestData
     {
         /// <summary>
         /// In this test, we invoke viewers in process to create baseline output
@@ -30,7 +30,7 @@ namespace DataCentric.Test
         [Fact]
         public void Smoke()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 // Create base instance
                 var baseSampleData = new BaseSampleData();

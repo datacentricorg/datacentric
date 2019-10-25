@@ -27,7 +27,7 @@ using MongoDB.Driver.Linq;
 namespace DataCentric.Test
 {
     /// <summary>Unit tests for the native functionality of the MongoDB driver.</summary>
-    public class MongoPerformanceTest
+    public class MongoPerformanceTestData : TestData
     {
         private static int recordCount_ = 10; // 300_000;
         private static int dataSetCount_ = 2; //10;
@@ -178,7 +178,7 @@ namespace DataCentric.Test
         [Fact]
         public void InsertA()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsA(context);
             }
@@ -188,7 +188,7 @@ namespace DataCentric.Test
         [Fact]
         public void InsertB()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsB(context);
             }
@@ -198,7 +198,7 @@ namespace DataCentric.Test
         [Fact]
         public void FindOneA()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsA(context);
 
@@ -224,7 +224,7 @@ namespace DataCentric.Test
         [Fact]
         public void FindOneB()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsB(context);
 
@@ -252,7 +252,7 @@ namespace DataCentric.Test
         [Fact]
         public void OneStepQueryA()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsA(context);
 
@@ -278,7 +278,7 @@ namespace DataCentric.Test
         [Fact]
         public void OneStepQueryB()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsB(context);
 
@@ -320,7 +320,7 @@ namespace DataCentric.Test
         [Fact]
         public void TwoStepQueryB()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsB(context);
 

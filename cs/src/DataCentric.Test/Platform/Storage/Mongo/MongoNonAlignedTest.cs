@@ -27,13 +27,13 @@ namespace DataCentric.Test
     /// Data type where key elements are not the first in the record, and/or
     /// not in the same order in the record as in the key.
     /// </summary>
-    public class MongoNonAlignedTest
+    public class MongoNonAlignedTestData : TestData
     {
         /// <summary>Smoke test.</summary>
         [Fact]
         public void Smoke()
         {
-            using (var context = new TemporalMongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 var record = new OutOfOrderKeyElementsSampleData();
                 record.DataSet = context.DataSet;

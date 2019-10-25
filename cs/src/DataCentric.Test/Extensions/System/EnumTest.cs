@@ -67,131 +67,134 @@ namespace DataCentric.Test
     }
 
     /// <summary>Unit test for Query.</summary>
-    public class EnumTest
+    public class EnumTestData: TestData
+
     {
-        /// <summary>
-        /// Test that empty value is recognized by IsEmpty() method.
-        ///
-        /// One of the tests is for an enum with HasValue() defined,
-        /// another for enum without HasValue().
-        /// </summary>
-        [Fact]
-        public void EmptyValue()
+    /// <summary>
+    /// Test that empty value is recognized by IsEmpty() method.
+    ///
+    /// One of the tests is for an enum with HasValue() defined,
+    /// another for enum without HasValue().
+    /// </summary>
+    [Fact]
+    public void EmptyValue()
+    {
+        using (var context = new UnitTestContext(this))
         {
-            using (var context = new UnitTestContext(this))
-            {
-                // Shows that we cannot detect special enum values such as None or Empty
-                object none = IsoDayOfWeek.None;
-                context.Log.Assert(none.IsEmpty() == false, "None.IsEmpty() == false");
+            // Shows that we cannot detect special enum values such as None or Empty
+            object none = IsoDayOfWeek.None;
+            context.Log.Assert(none.IsEmpty() == false, "None.IsEmpty() == false");
 
-                // Regular values are also not empty
-                object mon = IsoDayOfWeek.Monday;
-                context.Log.Assert(mon.IsEmpty() == false, "Monday.IsEmpty() == false");
-            }
+            // Regular values are also not empty
+            object mon = IsoDayOfWeek.Monday;
+            context.Log.Assert(mon.IsEmpty() == false, "Monday.IsEmpty() == false");
         }
+    }
 
-        /// <summary>>Key class that has all of the permitted non-nullable key elements included.</summary>
-        [Fact]
-        public void CompleteNonNullableQuery()
+    /// <summary>>Key class that has all of the permitted non-nullable key elements included.</summary>
+    [Fact]
+    public void CompleteNonNullableQuery()
+    {
+        using (var context = CreateMethodContext())
         {
-            using (var context = new TemporalMongoTestContext(this))
+            var records = new List<EnumTestNonNullableSampleData>();
+            for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
             {
-                var records = new List<EnumTestNonNullableSampleData>();
-                for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
+                int recordIndexMod8 = recordIndex % 8;
+
+                var record = new EnumTestNonNullableSampleData();
+                record.EnumAsKey = (EnumTestSampleType) (recordIndexMod8);
+                record.EnumValue = (EnumTestSampleType) (recordIndexMod8);
+                record.DayOfWeek = (IsoDayOfWeek) recordIndexMod8;
+
+                records.Add(record);
+            }
+
+            context.SaveMany(records);
+
+            if (true)
+            {
+                // Query for all records without restrictions,
+                // should return 8 records
+                var query = context.DataSource.GetQuery<EnumTestNonNullableSampleData>(context.DataSet);
+
+                context.Log.Verify("Unconstrained query");
+                foreach (var obj in query.AsEnumerable())
                 {
-                    int recordIndexMod8 = recordIndex % 8;
-
-                    var record = new EnumTestNonNullableSampleData();
-                    record.EnumAsKey = (EnumTestSampleType)(recordIndexMod8);
-                    record.EnumValue = (EnumTestSampleType)(recordIndexMod8);
-                    record.DayOfWeek = (IsoDayOfWeek)recordIndexMod8;
-
-                    records.Add(record);
-                }
-                context.SaveMany(records);
-
-                if (true)
-                {
-                    // Query for all records without restrictions,
-                    // should return 8 records
-                    var query = context.DataSource.GetQuery<EnumTestNonNullableSampleData>(context.DataSet);
-
-                    context.Log.Verify("Unconstrained query");
-                    foreach (var obj in query.AsEnumerable())
-                    {
-                        context.Log.Verify($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
-                    }
-                }
-
-                if (true)
-                {
-                    // Query for all records without restrictions,
-                    // should return 1 out of 8 records
-
-                    var query = context.DataSource.GetQuery<EnumTestNonNullableSampleData>(context.DataSet)
-                        .Where(p => p.EnumAsKey == (EnumTestSampleType) 1)
-                        .Where(p => p.EnumValue == (EnumTestSampleType) 1)
-                        .Where(p => p.DayOfWeek == (IsoDayOfWeek) 1);
-
-                    context.Log.Verify("Constrained query");
-                    foreach (var obj in query.AsEnumerable())
-                    {
-                        context.Log.Verify($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
-                    }
+                    context.Log.Verify($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
                 }
             }
-        }
 
-        /// <summary>>Key class that has all of the permitted nullable key elements included.</summary>
-        [Fact]
-        public void CompleteNullableQuery()
-        {
-            using (var context = new TemporalMongoTestContext(this))
+            if (true)
             {
-                var records = new List<EnumTestNullableSampleData>();
-                for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
+                // Query for all records without restrictions,
+                // should return 1 out of 8 records
+
+                var query = context.DataSource.GetQuery<EnumTestNonNullableSampleData>(context.DataSet)
+                    .Where(p => p.EnumAsKey == (EnumTestSampleType) 1)
+                    .Where(p => p.EnumValue == (EnumTestSampleType) 1)
+                    .Where(p => p.DayOfWeek == (IsoDayOfWeek) 1);
+
+                context.Log.Verify("Constrained query");
+                foreach (var obj in query.AsEnumerable())
                 {
-                    int recordIndexMod8 = recordIndex % 8;
-
-                    var record = new EnumTestNullableSampleData();
-                    record.EnumAsKey = (EnumTestSampleType)(recordIndexMod8);
-                    record.EnumValue = (EnumTestSampleType)(recordIndexMod8);
-                    record.DayOfWeek = (IsoDayOfWeek)recordIndexMod8;
-
-                    records.Add(record);
-                }
-                context.SaveMany(records);
-
-                if (true)
-                {
-                    // Query for all records without restrictions,
-                    // should return 8 records
-                    var query = context.DataSource.GetQuery<EnumTestNullableSampleData>(context.DataSet);
-
-                    context.Log.Verify("Unconstrained query");
-                    foreach (var obj in query.AsEnumerable())
-                    {
-                        context.Log.Verify($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
-                    }
-                }
-
-                if (true)
-                {
-                    // Query for all records without restrictions,
-                    // should return 1 out of 8 records
-
-                    var query = context.DataSource.GetQuery<EnumTestNullableSampleData>(context.DataSet)
-                        .Where(p => p.EnumAsKey == (EnumTestSampleType)1)
-                        .Where(p => p.EnumValue == (EnumTestSampleType)1)
-                        .Where(p => p.DayOfWeek == (IsoDayOfWeek)1);
-
-                    context.Log.Verify("Constrained query");
-                    foreach (var obj in query.AsEnumerable())
-                    {
-                        context.Log.Verify($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
-                    }
+                    context.Log.Verify($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
                 }
             }
         }
+    }
+
+    /// <summary>>Key class that has all of the permitted nullable key elements included.</summary>
+    [Fact]
+    public void CompleteNullableQuery()
+    {
+        using (var context = CreateMethodContext())
+        {
+            var records = new List<EnumTestNullableSampleData>();
+            for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
+            {
+                int recordIndexMod8 = recordIndex % 8;
+
+                var record = new EnumTestNullableSampleData();
+                record.EnumAsKey = (EnumTestSampleType) (recordIndexMod8);
+                record.EnumValue = (EnumTestSampleType) (recordIndexMod8);
+                record.DayOfWeek = (IsoDayOfWeek) recordIndexMod8;
+
+                records.Add(record);
+            }
+
+            context.SaveMany(records);
+
+            if (true)
+            {
+                // Query for all records without restrictions,
+                // should return 8 records
+                var query = context.DataSource.GetQuery<EnumTestNullableSampleData>(context.DataSet);
+
+                context.Log.Verify("Unconstrained query");
+                foreach (var obj in query.AsEnumerable())
+                {
+                    context.Log.Verify($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
+                }
+            }
+
+            if (true)
+            {
+                // Query for all records without restrictions,
+                // should return 1 out of 8 records
+
+                var query = context.DataSource.GetQuery<EnumTestNullableSampleData>(context.DataSet)
+                    .Where(p => p.EnumAsKey == (EnumTestSampleType) 1)
+                    .Where(p => p.EnumValue == (EnumTestSampleType) 1)
+                    .Where(p => p.DayOfWeek == (IsoDayOfWeek) 1);
+
+                context.Log.Verify("Constrained query");
+                foreach (var obj in query.AsEnumerable())
+                {
+                    context.Log.Verify($"    Key={obj.Key} IsoDayOfWeek={obj.DayOfWeek}");
+                }
+            }
+        }
+    }
     }
 }
