@@ -387,15 +387,6 @@ namespace DataCentric
                 // If not found, return TemporalId.Empty
                 if (dataSetData == null) return null;
 
-                // Get or create dataset detail record
-                var dataSetDetailKey = new DataSetDetailKey {DataSetId = dataSetData.Id};
-                DataSetDetailData dataSetDetailData = this.LoadOrNull(dataSetDetailKey, loadFrom);
-                if (dataSetDetailData == null)
-                {
-                    dataSetDetailData = new DataSetDetailData {DataSetId = dataSetData.Id};
-                    Context.SaveOne(dataSetDetailData, loadFrom);
-                }
-
                 // Cache TemporalId for the dataset and its parent
                 dataSetDict_[dataSetName] = dataSetData.Id;
                 dataSetParentDict_[dataSetData.Id] = dataSetData.DataSet;
