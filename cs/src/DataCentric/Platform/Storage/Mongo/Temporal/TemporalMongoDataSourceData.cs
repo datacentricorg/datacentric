@@ -244,6 +244,7 @@ namespace DataCentric
         /// </summary>
         public override void SaveMany<TRecord>(IEnumerable<TRecord> records, TemporalId saveTo)
         {
+            // Error message if data source and/or dataset is readonly
             CheckNotReadOnly(saveTo);
 
             // Get collection
@@ -253,7 +254,12 @@ namespace DataCentric
             // will assign null if not already a list, in which case
             // the second line will convert.
             List<TRecord> recordsList = records as List<TRecord>;
-            if (recordsList == null) recordsList = records.ToList(); 
+            if (recordsList == null) recordsList = records.ToList();
+
+            // Do nothing if the list of records is empty. Checking for zero
+            // size here will prevent a subsequent error in InsertMany method
+            // of the native Mongo driver.
+            if (recordsList.Count == 0) return;
 
             // Iterate over list elements to populate fields
             foreach (var record in recordsList)
