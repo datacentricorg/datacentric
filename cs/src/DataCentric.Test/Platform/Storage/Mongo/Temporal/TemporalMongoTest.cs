@@ -26,7 +26,7 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>Unit test for TemporalMongoDataSourceData.</summary>
-    public class TemporalMongoTestData : TestData
+    public class TemporalMongoTest : UnitTest
     {
         /// <summary>Smoke test.</summary>
         [Fact]

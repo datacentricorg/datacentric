@@ -36,7 +36,7 @@ namespace DataCentric
     /// is used to create test data by the tests in this class or as part
     /// of the test data set up by other classes.
     /// </summary>
-    public abstract class TestData : TypedRecord<TestKey, TestData>, ITest
+    public abstract class UnitTest : TypedRecord<UnitTestKey, UnitTest>, IUnitTest
     {
         /// <summary>
         /// Unique test name.
@@ -61,7 +61,7 @@ namespace DataCentric
         /// <summary>
         /// The constructor assigns test name.
         /// </summary>
-        public TestData()
+        public UnitTest()
         {
             // This element is set to the fully qualified test class name
             // in the Init(context) method of the base class.

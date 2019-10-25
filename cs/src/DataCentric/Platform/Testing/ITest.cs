@@ -35,7 +35,7 @@ namespace DataCentric
     /// is used to create test data by the tests in this class or as part
     /// of the test data set up by other classes.
     /// </summary>
-    public interface ITest
+    public interface IUnitTest
     {
         /// <summary>
         /// Execution context provides access to key resources including:

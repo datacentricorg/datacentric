@@ -67,7 +67,7 @@ namespace DataCentric.Test
     }
 
     /// <summary>Unit test for Query.</summary>
-    public class EnumTestData: TestData
+    public class EnumTest : UnitTest
 
     {
     /// <summary>

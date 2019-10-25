@@ -23,7 +23,7 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Unit test for Query.</summary>
-    public class QueryTestData : TestData
+    public class QueryTest : UnitTest
     {
         /// <summary>Query on all permitted nullable element types.</summary>
         [Fact]

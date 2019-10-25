@@ -34,8 +34,8 @@ namespace DataCentric
     /// is used to create test data by the tests in this class or as part
     /// of the test data set up by other classes.
     /// </summary>
-    [BsonSerializer(typeof(BsonKeySerializer<TestKey>))]
-    public sealed class TestKey : TypedKey<TestKey, TestData>
+    [BsonSerializer(typeof(BsonKeySerializer<UnitTestKey>))]
+    public sealed class UnitTestKey : TypedKey<UnitTestKey, UnitTest>
     {
         /// <summary>
         /// Unique test name.
