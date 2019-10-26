@@ -27,18 +27,21 @@ namespace DataCentric
         const string alphabet_ = "abcdefghijklmnopqrstuvwxyz";
 
         /// <summary>
-        /// Generate a non-repeating sequence of random lowercase character strings.
-        /// A total of count strings with the length of stringLength will be generated.
-        ///
-        /// This method generates pure character strings, without including numbers.
+        /// Generate a random sequence of lowercase ASCII strings of specified length.
+        /// This method generates pure alphabetical strings, without including numbers.
+        /// 
+        /// A total of stringLength strings with the length of stringLength will be
+        /// generated.
+        /// 
+        /// No dictionary check is performed on the result to avoid unacceptable letter
+        /// combinations; use with caution and always inspect the output.
         ///
         /// Change the value of random seed passed to this method to avoid generating
-        /// the same sequence when this function is called multiple times.
-        ///
-        /// This method does not have cryptographic strength and should be used
-        /// for test data generation only.
+        /// the same sequence when this function is called multiple times. This method
+        /// does not have cryptographic strength and should be used for test data generation
+        /// only.
         /// </summary>
-        public static List<string> GenerateRandomStrings(int stringLength, int sampleCount, int randomSeed)
+        public static List<string> GenerateRandomStrings(int stringCount, int stringLength, int randomSeed)
         {
             var result = new HashSet<string>();
 
@@ -50,13 +53,13 @@ namespace DataCentric
             // of samples. For stringLength >= 5 this number
             // if high enough for most realistic stringCount
             // choices.
-            if (stringLength < 5 && sampleCount > Math.Pow(alphabet_.Length, stringLength) / 2)
+            if (stringLength < 5 && stringCount > Math.Pow(alphabet_.Length, stringLength) / 2)
                 throw new Exception(
-                    $"Requested number of random string samples {sampleCount} " +
+                    $"Requested number of random string samples {stringCount} " +
                     $"is too high for string length {stringLength}.");
 
             int sampleIndex = 0;
-            while (sampleIndex < sampleCount)
+            while (sampleIndex < stringCount)
             {
                 // Create sample string from random characters
                 var builder = new StringBuilder();

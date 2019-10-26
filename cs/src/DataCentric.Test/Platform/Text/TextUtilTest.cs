@@ -31,15 +31,15 @@ namespace DataCentric.Test
             using (var context = new UnitTestContext(this))
             {
                 // Two short strings, seed 0
-                List<string> result1 = TextUtil.GenerateRandomStrings(3, 2, 0);
+                List<string> result1 = TextUtil.GenerateRandomStrings(2, 3, 0);
                 context.Log.Verify($"Seed 0: {string.Join(";", result1)}");
 
                 // Confirm that generated values change with seed
-                List<string> result2 = TextUtil.GenerateRandomStrings(3, 2, 1);
+                List<string> result2 = TextUtil.GenerateRandomStrings(2, 3, 1);
                 context.Log.Verify($"Seed 0: {string.Join(";", result2)}");
 
                 // Confirm that the generator works for string length exceeding alphabet size
-                List<string> result3 = TextUtil.GenerateRandomStrings(50, 1, 0);
+                List<string> result3 = TextUtil.GenerateRandomStrings(1, 50, 0);
                 context.Log.Verify($"Long string: {string.Join(";",result3)}");
             }
         }
