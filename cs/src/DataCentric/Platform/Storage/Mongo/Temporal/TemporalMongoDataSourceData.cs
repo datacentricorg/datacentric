@@ -43,7 +43,7 @@ namespace DataCentric
         private ConcurrentDictionary<Type, object> collectionDict_ = new ConcurrentDictionary<Type, object>();
         private Dictionary<string, TemporalId> dataSetDict_ { get; } = new Dictionary<string, TemporalId>();
         private Dictionary<TemporalId, TemporalId> dataSetParentDict_ { get; } = new Dictionary<TemporalId, TemporalId>();
-        private Dictionary<TemporalId, DataSetDetailData> dataSetDetailDict_ { get; } = new Dictionary<TemporalId, DataSetDetailData>();
+        private Dictionary<TemporalId, DataSetDetail> dataSetDetailDict_ { get; } = new Dictionary<TemporalId, DataSetDetail>();
         private Dictionary<TemporalId, HashSet<TemporalId>> importDict_ { get; } = new Dictionary<TemporalId, HashSet<TemporalId>>();
 
         //--- ELEMENTS
@@ -482,7 +482,7 @@ namespace DataCentric
         /// The detail is loaded for the dataset specified in the first argument
         /// (detailFor) from the dataset specified in the second argument (loadFrom).
         /// </summary>
-        public DataSetDetailData GetDataSetDetailOrNull(TemporalId detailFor)
+        public DataSetDetail GetDataSetDetailOrNull(TemporalId detailFor)
         { 
             if (detailFor == TemporalId.Empty)
             {
@@ -495,7 +495,7 @@ namespace DataCentric
                 // Accordingly, return null.
                 return null;
             }
-            else if (dataSetDetailDict_.TryGetValue(detailFor, out DataSetDetailData result))
+            else if (dataSetDetailDict_.TryGetValue(detailFor, out DataSetDetail result))
             {
                 // Check if already cached, return if found
                 return result;
@@ -538,8 +538,8 @@ namespace DataCentric
 
             // In dataset other than root, check for NonTemporal flag of the dataset record.
             // If not set, consider its value false.
-            var dataSetDetailData = LoadOrNull<DataSetData>(dataSetId);
-            if (dataSetDetailData != null && dataSetDetailData.NonTemporal.IsTrue()) return true;
+            var dataSetDetail = LoadOrNull<DataSetData>(dataSetId);
+            if (dataSetDetail != null && dataSetDetail.NonTemporal.IsTrue()) return true;
             else return false;
         }
 
@@ -562,8 +562,8 @@ namespace DataCentric
         {
             // Get imports cutoff time for the dataset detail record.
             // If the record is not found, consider its CutoffTime null.
-            var dataSetDetailData = GetDataSetDetailOrNull(dataSetId);
-            TemporalId? dataSetCutoffTime = dataSetDetailData != null ? dataSetDetailData.CutoffTime : null;
+            var dataSetDetail = GetDataSetDetailOrNull(dataSetId);
+            TemporalId? dataSetCutoffTime = dataSetDetail != null ? dataSetDetail.CutoffTime : null;
 
             // If CutoffTime is set for both data source and dataset,
             // this method returns the earlier of the two values.
@@ -591,10 +591,10 @@ namespace DataCentric
         public TemporalId? GetImportsCutoffTime(TemporalId dataSetId)
         {
             // Get dataset detail record
-            var dataSetDetailData = GetDataSetDetailOrNull(dataSetId);
+            var dataSetDetail = GetDataSetDetailOrNull(dataSetId);
 
             // Return null if the record is not found
-            if (dataSetDetailData != null) return dataSetDetailData.ImportsCutoffTime;
+            if (dataSetDetail != null) return dataSetDetail.ImportsCutoffTime;
             else return null;
         }
 
@@ -824,8 +824,8 @@ namespace DataCentric
                 throw new Exception(
                     $"Attempting write operation for data source {DataSourceName} where ReadOnly flag is set.");
 
-            var dataSetDetailData = GetDataSetDetailOrNull(dataSetId);
-            if (dataSetDetailData != null && dataSetDetailData.ReadOnly != null && dataSetDetailData.ReadOnly.Value)
+            var dataSetDetail = GetDataSetDetailOrNull(dataSetId);
+            if (dataSetDetail != null && dataSetDetail.ReadOnly != null && dataSetDetail.ReadOnly.Value)
                 throw new Exception(
                     $"Attempting write operation for dataset {dataSetId} where ReadOnly flag is set.");
 
@@ -834,7 +834,7 @@ namespace DataCentric
                     $"Attempting write operation for data source {DataSourceName} where " +
                     $"CutoffTime is set. Historical view of the data cannot be written to.");
 
-            if (dataSetDetailData != null && dataSetDetailData.CutoffTime != null)
+            if (dataSetDetail != null && dataSetDetail.CutoffTime != null)
                 throw new Exception(
                     $"Attempting write operation for the dataset {dataSetId} where " +
                     $"CutoffTime is set. Historical view of the data cannot be written to.");

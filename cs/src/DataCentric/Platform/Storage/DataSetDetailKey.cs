@@ -36,7 +36,7 @@ namespace DataCentric
     /// is not affected by its own settings.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<DataSetDetailKey>))]
-    public sealed class DataSetDetailKey : TypedKey<DataSetDetailKey, DataSetDetailData>
+    public sealed class DataSetDetailKey : TypedKey<DataSetDetailKey, DataSetDetail>
     {
         /// <summary>
         /// TemporalId of the referenced dataset.

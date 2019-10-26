@@ -726,11 +726,11 @@
       <FileName>Platform\Storage\DataSetData.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.DataSetDetailData" Collapsed="true">
+  <Class Name="DataCentric.DataSetDetail" Collapsed="true">
     <Position X="68" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAEAAAgAAAAAAAAAAAIAAAAQAA=</HashCode>
-      <FileName>Platform\Storage\DataSetDetailData.cs</FileName>
+      <FileName>Platform\Storage\DataSetDetail.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.DataSetDetailKey" Collapsed="true">

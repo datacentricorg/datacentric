@@ -35,7 +35,7 @@ namespace DataCentric
     /// record to which it applies, rather than inside that record, so it
     /// is not affected by its own settings.
     /// </summary>
-    public sealed class DataSetDetailData : TypedRecord<DataSetDetailKey, DataSetDetailData>
+    public sealed class DataSetDetail : TypedRecord<DataSetDetailKey, DataSetDetail>
     {
         /// <summary>
         /// TemporalId of the referenced dataset.
