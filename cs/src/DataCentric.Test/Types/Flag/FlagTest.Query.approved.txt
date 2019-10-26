@@ -1,0 +1,5 @@
+Verify: Unconstrained query
+Verify:     Key=Off Flag=
+Verify:     Key=On Flag=True
+Verify: Constrained query
+Verify:     Key=On Flag=True
