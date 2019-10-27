@@ -28,7 +28,7 @@ namespace DataCentric
     /// headers are present. Each header is a string that may optionally
     /// use dot delimiter to represent hierarchical structure.
     /// </summary>
-    public class TableData<T>
+    public class Table<T>
     {
         private int rowCount_;
         private int colCount_;

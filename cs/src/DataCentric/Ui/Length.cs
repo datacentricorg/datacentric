@@ -21,7 +21,7 @@ namespace DataCentric
     /// <summary>
     /// Provides length in relative and/or absolute units.
     /// </summary>
-    public abstract class LengthData : Data
+    public abstract class Length : Data
     {
         /// <summary>
         /// Relative length expressed in the units of:

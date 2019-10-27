@@ -23,7 +23,7 @@ namespace DataCentric
     /// Data representation of a user interface screen.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<ScreenKey>))]
-    public sealed class ScreenKey : TypedKey<ScreenKey, ScreenData>
+    public sealed class ScreenKey : TypedKey<ScreenKey, Screen>
     {
         /// <summary>
         /// Unique screen name.

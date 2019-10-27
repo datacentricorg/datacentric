@@ -37,19 +37,19 @@ namespace DataCentric
         /// parent container.
         /// </summary>
         [BsonRequired]
-        public PositionData Position { get; set; }
+        public Position Position { get; set; }
 
         /// <summary>
         /// The height of this item, relative to the other children of its parent in percent.
         /// </summary>
         [BsonRequired]
-        public LengthData Height { get; set; }
+        public Length Height { get; set; }
 
         /// <summary>
         /// The width of this item, relative to the other children of its parent in percent.
         /// </summary>
         [BsonRequired]
-        public LengthData Width { get; set; }
+        public Length Width { get; set; }
 
         /// <summary>
         /// An array of layout items that will be created as children of this item.

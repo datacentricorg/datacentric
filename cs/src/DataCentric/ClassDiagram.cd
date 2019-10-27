@@ -698,11 +698,11 @@
       <FileName>Platform\Storage\Mongo\MongoDataSource.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.MongoServerData" Collapsed="true">
+  <Class Name="DataCentric.MongoServer" Collapsed="true">
     <Position X="50" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Platform\Storage\Mongo\MongoServerData.cs</FileName>
+      <FileName>Platform\Storage\Mongo\MongoServer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.MongoServerKey" Collapsed="true">
@@ -762,11 +762,11 @@
       <FileName>Platform\Storage\DataSourceKey.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.DbNameData" Collapsed="true">
+  <Class Name="DataCentric.DbName" Collapsed="true">
     <Position X="70.25" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAACAAAAAAAAAA=</HashCode>
-      <FileName>Platform\Storage\DbNameData.cs</FileName>
+      <FileName>Platform\Storage\DbName.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.DbNameKey" Collapsed="true">
@@ -790,11 +790,11 @@
       <FileName>Platform\Text\TextUtil.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.TimeZoneData" Collapsed="true">
+  <Class Name="DataCentric.TimeZone" Collapsed="true">
     <Position X="61.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAIAAAAAAAAAAACAAAAAAAAAAAACAAAAAAA=</HashCode>
-      <FileName>Platform\TimeZone\TimeZoneData.cs</FileName>
+      <FileName>Platform\TimeZone\TimeZone.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.TimeZoneKey" Collapsed="true">
@@ -924,18 +924,18 @@
       <FileName>Types\Table\CsvUtil.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.TableData" Collapsed="true">
+  <Class Name="DataCentric.Table" Collapsed="true">
     <Position X="86" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Ui\TableData.cs</FileName>
+      <FileName>Ui\Table.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.TableData&lt;T&gt;" Collapsed="true">
+  <Class Name="DataCentric.Table&lt;T&gt;" Collapsed="true">
     <Position X="5.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAACAAAIESQAAAAEBAACEAAAIAIAAAAEAIgA=</HashCode>
-      <FileName>Types\Table\TableData.cs</FileName>
+      <FileName>Types\Table\Table.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.TableLayoutExtensions" Collapsed="true">
@@ -952,53 +952,53 @@
       <FileName>Types\Table\TableUtil.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.ValueTableData" Collapsed="true">
+  <Class Name="DataCentric.ValueTable" Collapsed="true">
     <Position X="5.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAACAAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Types\Table\ValueTableData.cs</FileName>
+      <FileName>Types\Table\ValueTable.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.ButtonData" Collapsed="true">
+  <Class Name="DataCentric.Button" Collapsed="true">
     <Position X="88.25" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAQ=</HashCode>
-      <FileName>Ui\ButtonData.cs</FileName>
+      <FileName>Ui\Button.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.ContainerData" Collapsed="true">
+  <Class Name="DataCentric.Container" Collapsed="true">
     <Position X="90.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
-      <FileName>Ui\ContainerData.cs</FileName>
+      <FileName>Ui\Container.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.ControlData" Collapsed="true">
+  <Class Name="DataCentric.Control" Collapsed="true">
     <Position X="88.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Ui\ControlData.cs</FileName>
+      <FileName>Ui\Control.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.LengthData" Collapsed="true">
+  <Class Name="DataCentric.Length" Collapsed="true">
     <Position X="92.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
-      <FileName>Ui\LengthData.cs</FileName>
+      <FileName>Ui\Length.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.PositionData" Collapsed="true">
+  <Class Name="DataCentric.Position" Collapsed="true">
     <Position X="95" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAABAAAAAAgAAAQAEAAAAAIAAAACACAAAAAAAA=</HashCode>
-      <FileName>Ui\PositionData.cs</FileName>
+      <FileName>Ui\Position.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.ScreenData" Collapsed="true">
+  <Class Name="DataCentric.Screen" Collapsed="true">
     <Position X="45.5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
-      <FileName>Ui\ScreenData.cs</FileName>
+      <FileName>Ui\Screen.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.ScreenKey" Collapsed="true">

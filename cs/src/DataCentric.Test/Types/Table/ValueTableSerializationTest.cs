@@ -73,7 +73,7 @@ namespace DataCentric.Test
             // Create and resize
             int rowCount = 3;
             int colCount = Math.Max(valueTypes.Length, 4);
-            var originalTable = new ValueTableData();
+            var originalTable = new ValueTable();
             originalTable.Resize(layout, rowCount, colCount);
             PopulateHeaders(originalTable);
             PopulateValues(valueTypes, originalTable);
@@ -83,7 +83,7 @@ namespace DataCentric.Test
             context.Log.Verify($"{layout}", originalNoHeadersString);
 
             // Deserialize from string back into table
-            var parsedNoHeadersTable = new ValueTableData();
+            var parsedNoHeadersTable = new ValueTable();
             parsedNoHeadersTable.ParseCsv(layout, valueTypes, originalNoHeadersString);
             string parsedNoHeadersString = parsedNoHeadersTable.ToString();
 
@@ -92,7 +92,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Populate table headers based on the specified layout.</summary>
-        private void PopulateHeaders(ValueTableData result)
+        private void PopulateHeaders(ValueTable result)
         {
             TableLayout layout = result.Layout;
 
@@ -129,7 +129,7 @@ namespace DataCentric.Test
         /// Populate with values based on the specified array
         /// of value types, repeating the types in cycle.
         /// </summary>
-        private void PopulateValues(AtomicType[] valueTypes, ValueTableData result)
+        private void PopulateValues(AtomicType[] valueTypes, ValueTable result)
         {
             // Initial values to populate the data
             int stringValueAsInt = 0;

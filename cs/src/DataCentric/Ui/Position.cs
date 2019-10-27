@@ -25,40 +25,40 @@ namespace DataCentric
     /// Provides information for positioning a control within its
     /// parent container or scroll window.
     /// </summary>
-    public abstract class PositionData : Data
+    public abstract class Position : Data
     {
         /// <summary>
         /// Specifies the type of positioning method used for an element.
         /// </summary>
         [BsonRequired]
-        public PositionTypeEnum? Position { get; set; }
+        public PositionTypeEnum? PositionType { get; set; }
 
         /// <summary>
         /// Specify vertical position of the control counting from the top.
         ///
         /// Only one of Top or Bottom properties can be specified.
         /// </summary>
-        public LengthData Top { get; set; }
+        public Length Top { get; set; }
 
         /// <summary>
         /// Specify vertical position of the control counting from the bottom.
         ///
         /// Only one of Top or Bottom properties can be specified.
         /// </summary>
-        public LengthData Bottom { get; set; }
+        public Length Bottom { get; set; }
 
         /// <summary>
         /// Specify horizontal position of the control counting from the left.
         ///
         /// Only one of Left or Right properties can be specified.
         /// </summary>
-        public LengthData Left { get; set; }
+        public Length Left { get; set; }
 
         /// <summary>
         /// Specify horizontal position of the control counting from the right.
         ///
         /// Only one of Left or Right properties can be specified.
         /// </summary>
-        public LengthData Right { get; set; }
+        public Length Right { get; set; }
     }
 }

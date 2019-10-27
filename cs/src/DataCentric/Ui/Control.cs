@@ -27,7 +27,7 @@ namespace DataCentric
     /// This base type provides a standard way to position the
     /// control within its parent container.
     /// </summary>
-    public abstract class ControlData : Data
+    public abstract class Control : Data
     {
         /// <summary>
         /// Provides information for positioning the control within its
@@ -38,6 +38,6 @@ namespace DataCentric
         /// parent container content.
         /// </summary>
         [BsonRequired]
-        public PositionData Position { get; set; }
+        public Position Position { get; set; }
     }
 }

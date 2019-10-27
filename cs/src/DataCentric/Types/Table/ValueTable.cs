@@ -33,7 +33,7 @@ namespace DataCentric
     /// Each header is a string that may optionally use dot delimiter
     /// to represent hierarchical structure.
     /// </summary>
-    public class ValueTableData : TableData<object>
+    public class ValueTable : Table<object>
     {
         /// <summary>
         /// Create from multi-line CSV text using the specified matrix

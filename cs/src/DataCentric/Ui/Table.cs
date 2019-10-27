@@ -24,7 +24,7 @@ namespace DataCentric
     /// <summary>
     /// Data representation of a user interface control.
     /// </summary>
-    public class TableData : ControlData
+    public class Table : Control // TODO - name conflict with the other table type?
     {
     }
 }

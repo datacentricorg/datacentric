@@ -25,7 +25,7 @@ namespace DataCentric
     /// The method Action() is invoked when the
     /// button is pressed.
     /// </summary>
-    public abstract class ButtonData : ControlData
+    public abstract class Button : Control
     {
         /// <summary>
         /// Text is displayed on the button.

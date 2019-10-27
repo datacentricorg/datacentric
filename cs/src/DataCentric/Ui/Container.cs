@@ -24,11 +24,11 @@ namespace DataCentric
     /// <summary>
     /// Data representation of a user interface control.
     /// </summary>
-    public abstract class ContainerData : ControlData
+    public abstract class Container : Control
     {
         /// <summary>
         /// Child controls of the container.
         /// </summary>
-        public List<ControlData> Controls { get; set; }
+        public List<Control> Controls { get; set; }
     }
 }

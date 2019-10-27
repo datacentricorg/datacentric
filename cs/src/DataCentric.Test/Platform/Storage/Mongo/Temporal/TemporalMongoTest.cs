@@ -370,7 +370,7 @@ namespace DataCentric.Test
                     }
                 }
                 {
-                    context.Log.Verify("Query by DerivedSample : MongoTestData which also picks up MongoTestDerivedFromDerivedData : DerivedSample, unconstrained");
+                    context.Log.Verify("Query by DerivedSample : BaseSample which also picks up DerivedFromDerivedSample : DerivedSample, unconstrained");
                     var query = context.GetQuery<DerivedSample>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
@@ -378,7 +378,7 @@ namespace DataCentric.Test
                     }
                 }
                 {
-                    context.Log.Verify("Query by MongoTestOtherDerivedData : MongoTestData, unconstrained");
+                    context.Log.Verify("Query by OtherDerivedSample : BaseSample, unconstrained");
                     var query = context.GetQuery<OtherDerivedSample>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
@@ -386,7 +386,7 @@ namespace DataCentric.Test
                     }
                 }
                 {
-                    context.Log.Verify("Query by MongoTestDerivedFromDerivedData : DerivedSample, where DerivedSample : MongoTestData, unconstrained");
+                    context.Log.Verify("Query by DerivedFromDerivedSample : DerivedSample, where DerivedSample : BaseSample, unconstrained");
                     var query = context.GetQuery<DerivedFromDerivedSample>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {

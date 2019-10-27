@@ -24,7 +24,7 @@ namespace DataCentric
     /// <summary>
     /// Data representation of a user interface screen.
     /// </summary>
-    public abstract class ScreenData : TypedRecord<ScreenKey, ScreenData>
+    public abstract class Screen : TypedRecord<ScreenKey, Screen>
     {
         /// <summary>
         /// Unique screen name.
@@ -35,6 +35,6 @@ namespace DataCentric
         /// <summary>
         /// Controls located on the screen.
         /// </summary>
-        public List<ControlData> Controls { get; set; }
+        public List<Control> Controls { get; set; }
     }
 }

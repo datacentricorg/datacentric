@@ -28,7 +28,7 @@ namespace DataCentric
     /// Server URI specified here must refer to the entire server, not
     /// an individual database.
     /// </summary>
-    public class MongoServerData : TypedRecord<MongoServerKey, MongoServerData>
+    public class MongoServer : TypedRecord<MongoServerKey, MongoServer>
     {
         /// <summary>
         /// Mongo server URI.

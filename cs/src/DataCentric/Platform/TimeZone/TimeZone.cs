@@ -43,8 +43,10 @@ namespace DataCentric
     /// has two slash-delimited tokens, the first referencing the
     /// country and the other the city, for example America/New_York.
     /// </summary>
-    public class TimeZoneData : TypedRecord<TimeZoneKey, TimeZoneData>
+    public class TimeZone : TypedRecord<TimeZoneKey, TimeZone>
     {
+        private DateTimeZone dateTimeZone_;
+
         /// <summary>
         /// Unique timezone name.
         ///
@@ -67,20 +69,7 @@ namespace DataCentric
         [BsonRequired]
         public string TimeZoneName { get; set; }
 
-        /// <summary>
-        /// NodaTime timezone object used for conversion between
-        /// UTC and local date, time, minute, and datetime.
-        ///
-        /// This property is set in Init(...) method based on TimeZoneName.
-        /// Because TimeZoneName is used to look up timezone conventions,
-        /// it must match the code in IANA timezone database precisely.
-        ///
-        /// The IANA city timezone code has two slash-delimited tokens,
-        /// the first referencing the country and the other the city, for
-        /// example America/New_York.
-        /// </summary>
-        [BsonRequired]
-        public DateTimeZone TimeZone { get; private set; } // TODO - convert to method
+        //--- METHODS
 
         /// <summary>
         /// Set Context property and perform validation of the record's data,
@@ -111,12 +100,26 @@ namespace DataCentric
                     $"is defined.");
 
             // Initialize TimeZone property
-            TimeZone = DateTimeZoneProviders.Tzdb.GetZoneOrNull(TimeZoneName);
+            dateTimeZone_ = DateTimeZoneProviders.Tzdb.GetZoneOrNull(TimeZoneName);
 
             // If still null after initialization, TimeZoneName
             // was not found in the IANA database of city codes
-            if (TimeZone == null)
+            if (dateTimeZone_ == null)
                 throw new Exception($"TimeZoneName={TimeZoneName} not found in IANA TZDB timezone database.");
         }
+
+        /// <summary>
+        /// NodaTime timezone object used for conversion between
+        /// UTC and local date, time, minute, and datetime.
+        ///
+        /// This property is set in Init(...) method based on TimeZoneName.
+        /// Because TimeZoneName is used to look up timezone conventions,
+        /// it must match the code in IANA timezone database precisely.
+        ///
+        /// The IANA city timezone code has two slash-delimited tokens,
+        /// the first referencing the country and the other the city, for
+        /// example America/New_York.
+        /// </summary>
+        public DateTimeZone GetDateTimeZone() { return dateTimeZone_; }
     }
 }

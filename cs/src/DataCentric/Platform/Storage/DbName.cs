@@ -32,7 +32,7 @@ namespace DataCentric
     ///
     /// This record is stored in root dataset.
     /// </summary>
-    public abstract class DbNameData : RootRecord<DbNameKey, DbNameData>
+    public abstract class DbName : RootRecord<DbNameKey, DbName>
     {
         /// <summary>
         /// Instance type enumeration.

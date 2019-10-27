@@ -26,7 +26,7 @@ namespace DataCentric
     /// an individual database.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<MongoServerKey>))]
-    public class MongoServerKey : TypedKey<MongoServerKey, MongoServerData>
+    public class MongoServerKey : TypedKey<MongoServerKey, MongoServer>
     {
         /// <summary>
         /// Mongo server URI.
