@@ -60,19 +60,5 @@ namespace DataCentric
         /// Only one of Left or Right properties can be specified.
         /// </summary>
         public LengthData Right { get; set; }
-
-        /// <summary>
-        /// Sets the height of an element.
-        ///
-        /// If Height is not specified, the control will be auto sized.
-        /// </summary>
-        public LengthData Height { get; set; }
-
-        /// <summary>
-        /// Sets the width of an element.
-        ///
-        /// If Width is not specified, the control will be auto sized.
-        /// </summary>
-        public LengthData Width { get; set; }
     }
 }

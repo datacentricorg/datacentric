@@ -23,31 +23,11 @@ namespace DataCentric
     /// </summary>
     public enum PositionTypeEnum
     {
-        /// <summary>Empty</summary>
-        Empty,
-
-        /// <summary>
-        /// Control positioned according to the normal flow of content
-        /// inside its parent container.
-        ///
-        /// Static positioned controls must not have Top, Bottom, Left,
-        /// or Right properties defined.
-        /// </summary>
-        Static,
-
         /// <summary>
         /// Control positioned relative to the position it would have
         /// if it were Static.
         /// </summary>
         Relative,
-
-        /// <summary>
-        /// Control positioned relative to the current scroll window.
-        ///
-        /// To position a control relative to its parent container
-        /// rather than scroll window, use Absolute.
-        /// </summary>
-        Fixed,
 
         /// <summary>
         /// Control positioned relative to its parent container.
