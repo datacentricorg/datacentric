@@ -26,23 +26,22 @@ namespace DataCentric.Test
     /// <summary>Unit test for JobQueue.</summary>
     public class JobQueueTest : UnitTest
     {
-        public class SampleJob : Job
+        public class SampleKey : TypedKey<SampleKey, SampleRecord>
         {
-            /// <summary>
-            /// This method is executed by the queue to run the job.
-            /// Depending on the type of queue, it may be
-            ///
-            /// * Executed in a different process or thread
-            /// * Executed on a different machine
-            /// * Executed in parallel or out of sequence
-            ///
-            /// This method should be implemented defensively to
-            /// ensure that the job runs successfully in all of
-            /// these cases.
-            /// </summary>
-            public override void Run()
+            /// <summary>Sample field</summary>
+            public string SampleName { get; set; }
+        }
+
+        public class SampleRecord : TypedRecord<SampleKey, SampleRecord>
+        {
+            /// <summary>Sample field</summary>
+            [BsonRequired]
+            public string SampleName { get; set; }
+
+            /// <summary>Sample method.</summary>
+            public void SampleMethod()
             {
-                Context.Log.Verify("Running");
+                Context.Log.Verify("SampleMethod Running");
             }
         }
 
@@ -52,15 +51,23 @@ namespace DataCentric.Test
         {
             using (var context = CreateMethodContext())
             {
+                // Create sample record
+                var sampleRecord = new SampleRecord();
+                sampleRecord.SampleName = "SampleName";
+                context.SaveOne(sampleRecord);
+
                 // Create queue record and save, then get its id
                 var queue = new JobQueue();
                 context.SaveOne(queue, context.DataSet);
                 var queueId = queue.Id;
 
                 // Create job record and save, then get its id
-                var job = new SampleJob();
+                var job = new Job();
                 job.Queue = queue.ToKey();
-                context.SaveOne(job, context.DataSet);
+                job.CollectionName = DataTypeInfo.GetOrCreate(typeof(SampleRecord)).RootType.Name; // TODO - simplify
+                job.RecordId = sampleRecord.Id;
+                job.MethodName = "SampleMethod";
+                context.SaveOne(job);
                 var jobId = job.Id;
 
                 // Load the records back
@@ -73,7 +80,8 @@ namespace DataCentric.Test
                 Assert.True(loadedJob.Queue.Value == loadedQueue.ToKey().Value);
 
                 // Run the job
-                loadedJob.Run();
+                // TODO - incomment when implemented
+                // loadedJob.Run();
 
                 context.Log.Verify("Completed");
             }

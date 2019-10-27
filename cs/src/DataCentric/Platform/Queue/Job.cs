@@ -20,43 +20,109 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace DataCentric
 {
     /// <summary>
+    /// The job executes a method of the specified record using:
+    ///
+    /// * Name of the collection where the record is stored
+    /// * TemporalId of the record
+    /// * Name of the method to be executed
+    /// * List of parameter names (optional)
+    /// * List of serialized parameter values (optional)
+    ///
+    /// The invoked method must return void.
+    ///
+    /// A job can execute any public method of a class that returns void.
+    /// There is no requirement to mark the method by [Handler] or
+    /// [Viewer] attribute.
+    /// 
     /// After a job record is created, it is detected and scheduled for
     /// execution by the queue specified by the record.Queue element.
     ///
-    /// The queue updates the job status record at least every
-    /// time its status changes, and optionally more often to
-    /// update its progress fraction and progress message. It
-    /// also monitors the dataset where it is running for interrupt
-    /// records.
+    /// The queue updates the JobProgress record at least every time its
+    /// status changes, and optionally more often to update its progress
+    /// fraction and progress message. It also monitors the dataset where
+    /// it is running for JobCancellation records and writes log entries
+    /// to the log specified by the queue.
     ///
-    /// To execute the job, the queue invokes method Run() of
-    /// the job record. Depending on the type of queue, it may be:
+    /// To run the job, the queue executes the Run() method of this class
+    /// which in turn invokes method with MethodName in the referenced record.
+    /// Depending on the type of queue, MethodName may be executed:
     ///
-    /// * Executed in a different process or thread
-    /// * Executed on a different machine
-    /// * Executed in parallel or out of sequence
+    /// * In a different process or thread than the one that created the job
+    /// * On a different machine than the one where the job was created
+    /// * In parallel or out of sequence relative to other jobs
     ///
-    /// The Run() method must be implemented defensively to ensure
-    /// that the job runs successfully in all of these cases.
+    /// The job submitter must ensure that the specified method will have
+    /// access to the resources it needs and will be able to run successfully
+    /// in each of these cases.
     /// </summary>
-    public abstract class Job : TypedRecord<JobKey, Job>
+    public sealed class Job : TypedRecord<JobKey, Job>
     {
         /// <summary>Queue to which the job is submitted.</summary>
         [BsonRequired]
         public JobQueueKey Queue { get; set; }
 
         /// <summary>
-        /// This method is executed by the queue to run the job.
-        /// Depending on the type of queue, it may be
+        /// Name of the collection where the referenced record is stored.
         ///
-        /// * Executed in a different process or thread
-        /// * Executed on a different machine
-        /// * Executed in parallel or out of sequence
-        ///
-        /// This method should be implemented defensively to
-        /// ensure that the job runs successfully in all of
-        /// these cases.
+        /// Referenced record is the record in this collection whose
+        /// TemporalId is RecordId.
         /// </summary>
-        public abstract void Run();
+        [BsonRequired]
+        public string CollectionName { get; set; }
+
+        /// <summary>
+        /// TemporalId of the referenced record.
+        ///
+        /// This key is specific to the version of the referenced record.
+        /// When a new record is created for the same key, the view will
+        /// continue referencing the original version of the record where
+        /// Id=RecordId.
+        /// </summary>
+        public TemporalId RecordId { get; set; }
+
+        /// <summary>
+        /// Name of the method of the referenced record executed by the job.
+        ///
+        /// Referenced record is the record in collection with CollectionName
+        /// whose TemporalId is RecordId.
+        /// </summary>
+        [BsonRequired]
+        public string MethodName { get; set; }
+
+        /// <summary>
+        /// Invokes method with MethodName in the referenced record.
+        ///
+        /// Depending on the type of queue, MethodName may be executed:
+        ///
+        /// * In a different process or thread than the one that created the job
+        /// * On a different machine than the one where the job was created
+        /// * In parallel or out of sequence relative to other jobs
+        ///
+        /// The job submitter must ensure that the specified method will have
+        /// access to the resources it needs and will be able to run successfully
+        /// in each of these cases.
+        /// </summary>
+        public void Run()
+        {
+            // TODO Not implemented yet, code below is a stub
+            throw new NotImplementedException();
+
+            // Load record by its TemporalId, error message if not found
+            var record = Context.DataSource.Load<Record>(RecordId);
+
+            // Get handler method info using string handler name
+            var type = record.GetType();
+            var methodInfo = type.GetMethod(MethodName);
+
+            // If handler with the name specified in TargetHandler
+            // is not found, methodInfo will be null
+            if (methodInfo == null)
+                throw new Exception($"Handler {MethodName} not found in record type {type.Name}.");
+
+            // Invoke the handler. No parameters are specified
+            // and no return value is expected as handler return
+            // type is always void.
+            methodInfo.Invoke(record, null);
+        }
     }
 }

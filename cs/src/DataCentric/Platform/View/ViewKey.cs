@@ -39,13 +39,12 @@ namespace DataCentric
     public sealed class ViewKey : TypedKey<ViewKey, View>
     {
         /// <summary>
-        /// TemporalId of the record for which the view is created.
+        /// TemporalId of the record to which the view applies.
         ///
-        /// This key is specific to the record version. When a new
-        /// record is created for the same key, view records created
-        /// for its previous version will no longer be visible except
-        /// when Id of the record remains the same in a non-temporal
-        /// data source or dataset.
+        /// This key is specific to the version of the referenced record.
+        /// When a new record is created for the same key, the view will
+        /// continue referencing the original version of the record where
+        /// Id=RecordId.
         /// </summary>
         public TemporalId RecordId { get; set; }
 
