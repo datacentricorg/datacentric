@@ -64,21 +64,21 @@ namespace DataCentric.Test
         //--- METHODS
 
         /// <summary>Non-virtual handler defined in base type.</summary>
-        [Handler]
+        [HandlerMethod]
         public void NonVirtualBaseHandler()
         {
             Context.Log.Verify("NonVirtualBaseHandler");
         }
 
         /// <summary>Virtual handler defined in base type.</summary>
-        [Handler]
+        [HandlerMethod]
         public virtual void VirtualBaseHandler()
         {
             Context.Log.Verify("VirtualBaseHandler implemented in Base");
         }
 
         /// <summary>Viewer with default view name.</summary>
-        [Viewer]
+        [ViewerMethod]
         public void DefaultNamedViewer()
         {
             var viewData = new ViewSample();
@@ -89,7 +89,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Viewer with a custom view name.</summary>
-        [Viewer("CustomName")]
+        [ViewerMethod("CustomName")]
         public void CustomNamedViewer()
         {
             var viewData = new ViewSample();

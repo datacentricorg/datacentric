@@ -36,7 +36,7 @@ namespace DataCentric
     /// specifying their key rather than their data.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]
-    public class HandlerAttribute : Attribute
+    public class HandlerMethodAttribute : Attribute
     {
     }
 }

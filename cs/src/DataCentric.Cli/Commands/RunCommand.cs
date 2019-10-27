@@ -102,9 +102,9 @@ namespace DataCentric.Cli
             MethodInfo handlerMethod = record.GetType().GetMethod(Handler)
                                        ?? throw new ArgumentException($"Method '{Handler}' not found");
 
-            // Check that method has [Handler] attribute before calling it.
-            if (handlerMethod.GetCustomAttribute<HandlerAttribute>() == null)
-                throw new Exception($"Cannot run {Handler} method, missing [Handler] attribute.");
+            // Check that method has [HandlerMethod] attribute before calling it.
+            if (handlerMethod.GetCustomAttribute<HandlerMethodAttribute>() == null)
+                throw new Exception($"Cannot run {Handler} method, missing [HandlerMethod] attribute.");
 
             handlerMethod.Invoke(record, ActivatorUtil.CreateParameterValues(handlerMethod, Arguments));
         }

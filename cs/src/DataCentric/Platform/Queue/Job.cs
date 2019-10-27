@@ -31,8 +31,8 @@ namespace DataCentric
     /// The invoked method must return void.
     ///
     /// A job can execute any public method of a class that returns void.
-    /// There is no requirement to mark the method by [Handler] or
-    /// [Viewer] attribute.
+    /// There is no requirement to mark the method by [HandlerMethod] or
+    /// [ViewerMethod] attribute.
     /// 
     /// After a job record is created, it is detected and scheduled for
     /// execution by the queue specified by the record.Queue element.

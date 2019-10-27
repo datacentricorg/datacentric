@@ -67,14 +67,14 @@ namespace DataCentric.Test
         //--- METHODS
 
         /// <summary>Non-virtual handler defined in base type.</summary>
-        [Handler]
+        [HandlerMethod]
         public void NonVirtualDerivedHandler()
         {
             Context.Log.Verify("NonVirtualDerivedHandler");
         }
 
         /// <summary>Override of the virtual handler defined in base type.</summary>
-        [Handler]
+        [HandlerMethod]
         public override void VirtualBaseHandler()
         {
             Context.Log.Verify("VirtualBaseHandler implemented in Derived");

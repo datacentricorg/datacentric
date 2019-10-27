@@ -204,7 +204,7 @@ namespace DataCentric.Cli
             if (TypesExtractor.BasicTypes.Contains(method.GetBaseDefinition().ReflectedType))
                 return false;
 
-            var hasHandlerAttribute = method.GetCustomAttribute<HandlerAttribute>() != null;
+            var hasHandlerAttribute = method.GetCustomAttribute<HandlerMethodAttribute>() != null;
 
             // Check if all method parameters are allowed:
             // either atomic types or classes derived from Data

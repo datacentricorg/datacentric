@@ -128,7 +128,7 @@ namespace DataCentric
         /// This method will run each of the test methods using its own instance
         /// of the test class in parallel.
         /// </summary>
-        [Handler]
+        [HandlerMethod]
         public void RunAll()
         {
             // TODO - implement using reflection
