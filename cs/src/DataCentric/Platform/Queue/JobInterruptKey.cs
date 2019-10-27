@@ -20,17 +20,23 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace DataCentric
 {
     /// <summary>
-    /// The queue to which the job is submitted continuously
-    /// monitors the dataset where it is running for interrupt
-    /// records. Once an interrupt record is detected, the action
-    /// specified by this enum is performed for job specified by
-    /// the interrupt record, and job status is updated accordingly.
+    /// The role of JobCancellation record is to enable graceful termination
+    /// of a job from inside MethodName of the job before the job is terminated
+    /// by the queue.
+    ///
+    /// The context object created by the Run() method of the job and passed
+    /// to the referenced record must from time to time check for the presence
+    /// of the cancellation record and set the flag Cancelled of the Context.
+    /// The check should be performed with the frequency that will not affect
+    /// performance.
+    ///
+    /// If MethodName does not exit, it is forcibly terminated by the queue
+    /// after a grace period.
     /// </summary>
-    [BsonSerializer(typeof(BsonKeySerializer<JobInterruptKey>))]
-    public sealed class JobInterruptKey : TypedKey<JobInterruptKey, JobInterrupt>
+    [BsonSerializer(typeof(BsonKeySerializer<JobCancellationKey>))]
+    public sealed class JobCancellationKey : TypedKey<JobCancellationKey, JobCancellation>
     {
-        /// <summary>Job to which the interrupt record applies.</summary>
-        [BsonRequired]
+        /// <summary>The job to which this JobCancellation record applies.</summary>
         public JobKey Job { get; set; }
     }
 }

@@ -462,18 +462,18 @@
       <FileName>Platform\Queue\Job.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.JobInterrupt" Collapsed="true">
+  <Class Name="DataCentric.JobCancellation" Collapsed="true">
     <Position X="56.75" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAACAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Platform\Queue\JobInterrupt.cs</FileName>
+      <FileName>Platform\Queue\JobCancellation.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.JobInterruptKey" Collapsed="true">
+  <Class Name="DataCentric.JobCancellationKey" Collapsed="true">
     <Position X="16.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Platform\Queue\JobInterruptKey.cs</FileName>
+      <FileName>Platform\Queue\JobCancellationKey.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.JobKey" Collapsed="true">
@@ -1130,11 +1130,11 @@
       <FileName>Platform\Logging\LogVerbosityEnum.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="DataCentric.JobInterruptType" Collapsed="true">
+  <Enum Name="DataCentric.JobCancellationType" Collapsed="true">
     <Position X="108" Y="12" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Platform\Queue\JobInterruptType.cs</FileName>
+      <FileName>Platform\Queue\JobCancellationType.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="DataCentric.JobStatus" Collapsed="true">
