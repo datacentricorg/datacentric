@@ -497,18 +497,18 @@
       <FileName>Platform\Queue\JobLogEntryKey.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.JobMonitor" Collapsed="true">
+  <Class Name="DataCentric.JobProgress" Collapsed="true">
     <Position X="81.5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAACgAAAAAAAAAAAAAACAAAAEAAAAAAAAAA=</HashCode>
-      <FileName>Platform\Queue\JobMonitor.cs</FileName>
+      <FileName>Platform\Queue\JobProgress.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.JobMonitorKey" Collapsed="true">
+  <Class Name="DataCentric.JobProgressKey" Collapsed="true">
     <Position X="34.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Platform\Queue\JobMonitorKey.cs</FileName>
+      <FileName>Platform\Queue\JobProgressKey.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.JobQueue" Collapsed="true">

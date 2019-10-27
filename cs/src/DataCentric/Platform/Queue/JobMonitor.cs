@@ -31,7 +31,7 @@ namespace DataCentric
     /// The status may also be updated by the queue to which the job is submitted, e.g.
     /// to record Failed status.
     /// </summary>
-    public sealed class JobMonitor : TypedRecord<JobMonitorKey, JobMonitor>
+    public sealed class JobProgress : TypedRecord<JobProgressKey, JobProgress>
     {
         /// <summary>Monitored job.</summary>
         [BsonRequired]
@@ -45,7 +45,7 @@ namespace DataCentric
         /// to record Failed status.
         /// </summary>
         [BsonRequired]
-        public JobStatus? StatusType { get; set; }
+        public JobStatus? Status { get; set; }
 
         /// <summary>
         /// Job progress fraction from 0 to 1.

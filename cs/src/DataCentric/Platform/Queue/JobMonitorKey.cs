@@ -28,8 +28,8 @@ namespace DataCentric
     /// The status may also be updated by the queue to which the job is submitted, e.g.
     /// to record Failed status.
     /// </summary>
-    [BsonSerializer(typeof(BsonKeySerializer<JobMonitorKey>))]
-    public sealed class JobMonitorKey : TypedKey<JobMonitorKey, JobMonitor>
+    [BsonSerializer(typeof(BsonKeySerializer<JobProgressKey>))]
+    public sealed class JobProgressKey : TypedKey<JobProgressKey, JobProgress>
     {
         /// <summary>Monitored job.</summary>
         public JobKey Job { get; set; }
