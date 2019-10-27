@@ -45,14 +45,13 @@ namespace DataCentric
             // of the key return the proper value for the record.
             //
             // Get PropertyInfo arrays for TKey and TRecord
-            var rootTypeName = DataTypeInfo.GetOrCreate(this).RootType.Name;
             var dataElementInfoDict = DataTypeInfo.GetOrCreate<TRecord>().DataElementDict;
             var keyElementInfoArray = DataTypeInfo.GetOrCreate<TKey>().DataElements;
 
             // Check that TRecord has the same or greater number of elements
             // as TKey (all elements of TKey must also be present in TRecord)
             if (dataElementInfoDict.Count < keyElementInfoArray.Length) throw new Exception(
-                 $"Root data type {rootTypeName} has fewer elements than key type {typeof(TKey).Name}.");
+                 $"Record type {typeof(TRecord).Name} has fewer elements than key type {typeof(TKey).Name}.");
 
             // Iterate over the key elements
             foreach (var keyElementInfo in keyElementInfoArray)
@@ -61,14 +60,14 @@ namespace DataCentric
                 {
                     throw new Exception(
                         $"Element {keyElementInfo.Name} of key type {typeof(TKey).Name} " +
-                        $"is not found in the root data type {rootTypeName}.");
+                        $"is not found in the record type {typeof(TRecord).Name}.");
                 }
 
                 if (keyElementInfo.PropertyType != dataElementInfo.PropertyType)
                     throw new Exception(
                         $"Element {typeof(TKey).Name} has type {keyElementInfo.PropertyType.Name} which does not " +
                         $"match the type {dataElementInfo.PropertyType.Name} of the corresponding element in the " +
-                        $"root data type {rootTypeName}.");
+                        $"record type {typeof(TRecord).Name}.");
 
                 // Read from the record and assign to the key
                 object elementValue = dataElementInfo.GetValue(record);

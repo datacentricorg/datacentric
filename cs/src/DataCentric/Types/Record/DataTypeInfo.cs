@@ -33,13 +33,28 @@ namespace DataCentric
     {
         [ThreadStatic] private static Dictionary<Type, DataTypeInfo> dict_; // Do not initialize ThreadStatic here, initializer will run in first thread only
 
+        private readonly Type type_;
+        private readonly Type rootType_;
+
         //--- PROPERTIES
 
         /// <summary>
-        /// Type of the class at the root of the inheritance chain, one
-        /// level above Data, Key(TRecord), or Record(TKey).
+        /// Name of the database table or collection where the record is stored.
+        ///
+        /// By convention, this method returns the name of the class one level
+        /// below TypedRecord in the inheritance chain, without namespace.
+        ///
+        /// Error message if called for a type that is not derived from TypedRecord.
         /// </summary>
-        public Type RootType { get; }
+        public string GetCollectionName()
+        {
+            if (DataKind != DataKindEnum.Record)
+                throw new Exception(
+                    $"GetCollectionName() method is called for {type_.Name} " +
+                    $"that is not derived from TypedRecord.");
+
+            return rootType_.Name;
+        }
 
         /// <summary>Kind of the data type (record, key, or element).</summary>
         public DataKindEnum DataKind { get; }
@@ -149,6 +164,8 @@ namespace DataCentric
         /// </summary>
         private DataTypeInfo(Type type)
         {
+            type_ = type;
+
             // Populate the inheritance chain from parent to base,
             // stop when one of the base classes is reached or
             // there is no base class
@@ -162,18 +179,18 @@ namespace DataCentric
                 Type baseType = currentType.BaseType;
                 if (baseType == typeof(Data))
                 {
-                    if (RootType == null)
+                    if (rootType_ == null)
                     {
                         DataKind = DataKindEnum.Element;
-                        RootType = currentType;
+                        rootType_ = currentType;
                     }
                 }
                 else if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(TypedKey<,>))
                 {
-                    if (RootType == null)
+                    if (rootType_ == null)
                     {
                         DataKind = DataKindEnum.Key;
-                        RootType = currentType;
+                        rootType_ = currentType;
 
                         if (inheritanceChain.Count > 1)
                             throw new Exception(
@@ -183,10 +200,10 @@ namespace DataCentric
                 }
                 else if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(TypedRecord<,>))
                 {
-                    if (RootType == null)
+                    if (rootType_ == null)
                     {
                         DataKind = DataKindEnum.Record;
-                        RootType = currentType;
+                        rootType_ = currentType;
                     }
                 }
 

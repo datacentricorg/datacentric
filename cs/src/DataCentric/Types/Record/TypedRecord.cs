@@ -49,7 +49,7 @@ namespace DataCentric
                 //
                 // Get PropertyInfo arrays for TKey and TRecord
                 var tokens = new List<string>();
-                var rootTypeName = DataTypeInfo.GetOrCreate(this).RootType.Name;
+                var rootTypeName = DataTypeInfo.GetOrCreate(this).GetCollectionName();
                 var dataElementInfoDict = DataTypeInfo.GetOrCreate(this).DataElementDict;
                 var keyElementInfoArray = DataTypeInfo.GetOrCreate<TKey>().DataElements;
 
