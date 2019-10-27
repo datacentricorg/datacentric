@@ -164,7 +164,7 @@ namespace DataCentric
         {
             // Generate TemporalId and check that it is later
             // than the previous generated TemporalId
-            TemporalId result = TemporalId.GenerateNewId();
+            TemporalId result = TemporalId.Next();
             int retryCounter = 0;
             while (result <= prevTemporalId_)
             {
@@ -175,7 +175,7 @@ namespace DataCentric
 
                 // If new TemporalId is not strictly greater than the previous one,
                 // keep generating new TemporalIds until it changes
-                result = TemporalId.GenerateNewId();
+                result = TemporalId.Next();
             }
 
             // Report the number of retries

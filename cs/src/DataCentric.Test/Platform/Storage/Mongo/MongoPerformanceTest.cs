@@ -143,13 +143,13 @@ namespace DataCentric.Test
             List<B> records = new List<B>();
             for (int dataSetIndex = 0; dataSetIndex < dataSetCount_; ++dataSetIndex)
             {
-                TemporalId dataSet = TemporalId.GenerateNewId();
+                TemporalId dataSet = TemporalId.Next();
                 for (int versionIndex = 0; versionIndex < versionCount_; ++versionIndex)
                 {
                     for (int recordIndex = 0; recordIndex < recordCount_; ++recordIndex)
                     {
                         var rec = new B();
-                        rec.Id = TemporalId.GenerateNewId();
+                        rec.Id = TemporalId.Next();
                         rec.DataSet = dataSet;
                         rec.KeyElement = String.Concat("KeyPrefix", recordIndex);
                         rec.StringElement1 = (recordIndex % 2).ToString();

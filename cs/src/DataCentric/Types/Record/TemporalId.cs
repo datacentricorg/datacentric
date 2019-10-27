@@ -228,7 +228,7 @@ namespace DataCentric
         //--- STATIC
 
         /// <summary>Generates a new TemporalId with a unique value.</summary>
-        public static TemporalId GenerateNewId()
+        public static TemporalId Next()
         {
             Instant createdTime = DateTime.UtcNow.ToInstant();
 
