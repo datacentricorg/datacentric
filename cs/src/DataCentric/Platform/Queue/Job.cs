@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace DataCentric
@@ -22,20 +23,36 @@ namespace DataCentric
     /// <summary>
     /// The job executes a method of the specified record using:
     ///
-    /// * Name of the collection where the record is stored
-    /// * TemporalId of the record
-    /// * Name of the method to be executed
-    /// * List of parameter names (optional)
-    /// * List of serialized parameter values (optional)
+    /// * CollectionName - collection where the record is stored
+    /// * RecordId - TemporalId of the record
+    /// * MethodName - method to be executed
+    /// * ParamNames - method parameter names (optional)
+    /// * ParamValues - serialized method parameter values (optional)
+    ///
+    /// The method to be executed may take the following parameter types:
+    ///
+    /// * Atomic type - serialized by AsString() method
+    /// * Enum - serialized as string value
+    /// * Key - serialized in semicolon delimited format without type
+    ///
+    /// The order of parameters in ParameterNames and ParameterValues
+    /// must match, but does not have to be the same as the order
+    /// of parameters in the method signature.
     ///
     /// The invoked method must return void.
     ///
     /// A job can execute any public method of a class that returns void.
     /// There is no requirement to mark the method by [HandlerMethod] or
     /// [ViewerMethod] attribute.
+    ///
+    /// The job may optionally provides the list of prerequisite job keys.
+    /// The job will be executed after JobProgress record for each of the
+    /// prerequisite jobs has Completed status.
     /// 
     /// After a job record is created, it is detected and scheduled for
     /// execution by the queue specified by the record.JobQueue element.
+    /// It will have Pending status until all prerequisite jobs are
+    /// completed.
     ///
     /// The queue updates the JobProgress record at least every time its
     /// status changes, and optionally more often to update its progress
@@ -96,6 +113,32 @@ namespace DataCentric
         /// </summary>
         [BsonRequired]
         public string MethodName { get; set; }
+
+        /// <summary>
+        /// Method parameter names (optional).
+        ///
+        /// The order of parameters in ParameterNames and ParameterValues
+        /// must match, but does not have to be the same as the order
+        /// of parameters in the method signature.
+        /// </summary>
+        public List<string> ParamNames { get; set; }
+
+        /// <summary>
+        /// Serialized method parameter values (optional).
+        ///
+        /// The order of parameters in ParameterNames and ParameterValues
+        /// must match, but does not have to be the same as the order
+        /// of parameters in the method signature.
+        /// </summary>
+        public List<string> ParamValues { get; set; }
+
+        /// <summary>
+        /// Optional list of prerequisite job keys.
+        /// 
+        /// The job will be executed after JobProgress record for each of
+        /// the prerequisite jobs has Completed status.
+        /// </summary>
+        public List<JobKey> Prerequisites { get; set; }
 
         /// <summary>
         /// Invokes method with MethodName in the referenced record.
