@@ -35,7 +35,7 @@ namespace DataCentric
     /// [ViewerMethod] attribute.
     /// 
     /// After a job record is created, it is detected and scheduled for
-    /// execution by the queue specified by the record.Queue element.
+    /// execution by the queue specified by the record.JobQueue element.
     ///
     /// The queue updates the JobProgress record at least every time its
     /// status changes, and optionally more often to update its progress
@@ -43,8 +43,16 @@ namespace DataCentric
     /// it is running for JobCancellation records and writes log entries
     /// to the log specified by the queue.
     ///
-    /// To run the job, the queue executes the Run() method of this class
-    /// which in turn invokes method with MethodName in the referenced record.
+    /// Because Job records reference the queue by its JobQueueName,
+    /// the existing jobs do not need to be resubmitted when a new
+    /// queue record is created for the same JobQueueName but it is
+    /// important to ensure that only one job with a given JobQueueName
+    /// is running at any given time.
+    /// 
+    /// To run the job, JobQueue executes the Run() method of Job which
+    /// in turn invokes method with MethodName in the referenced record
+    /// referenced by the job.
+    /// 
     /// Depending on the type of queue, MethodName may be executed:
     ///
     /// * In a different process or thread than the one that created the job

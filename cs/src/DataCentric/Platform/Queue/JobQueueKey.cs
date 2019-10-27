@@ -30,30 +30,37 @@ namespace DataCentric
     /// also monitors the dataset where it is running for interrupt
     /// records.
     ///
-    /// To execute the job, the queue invokes method Run() of
-    /// the job record. Depending on the type of queue, it may be:
+    /// Because Job records reference the queue by its JobQueueName,
+    /// the existing jobs do not need to be resubmitted when a new
+    /// queue record is created for the same JobQueueName but it is
+    /// important to ensure that only one job with a given JobQueueName
+    /// is running at any given time.
+    /// 
+    /// To run the job, JobQueue executes the Run() method of Job which
+    /// in turn invokes method with MethodName in the referenced record
+    /// referenced by the job.
+    /// 
+    /// Depending on the type of queue, MethodName may be executed:
     ///
-    /// * Executed in a different process or thread
-    /// * Executed on a different machine
-    /// * Executed in parallel or out of sequence
+    /// * In a different process or thread than the one that created the job
+    /// * On a different machine than the one where the job was created
+    /// * In parallel or out of sequence relative to other jobs
     ///
-    /// The Run() method must be implemented defensively to ensure
-    /// that the job runs successfully in all of these cases.
+    /// The job submitter must ensure that the specified method will have
+    /// access to the resources it needs and will be able to run successfully
+    /// in each of these cases.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<JobQueueKey>))]
     public sealed class JobQueueKey : TypedKey<JobQueueKey, JobQueue>
     {
         /// <summary>
-        /// Defining element Id here includes the record's TemporalId
-        /// in its key. Because TemporalId of the record is specific
-        /// to its version, this is equivalent to using an auto-
-        /// incrementing column as part of the record's primary key
-        /// in a relational database.
+        /// Unique job queue name.
         ///
-        /// For the record's history to be captured correctly, all
-        /// update operations must assign a new TemporalId with the
-        /// timestamp that matches update time.
+        /// Because Job records reference the queue not by its
+        /// TemporalId but by its name, existing jobs do not need to
+        /// be resubmitted when a new queue record is created.
         /// </summary>
-        public TemporalId Id { get; set; }
+        [BsonRequired]
+        public string JobQueueName { get; set; }
     }
 }

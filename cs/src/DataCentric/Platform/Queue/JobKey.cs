@@ -21,24 +21,48 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>
+    /// The job executes a method of the specified record using:
+    ///
+    /// * Name of the collection where the record is stored
+    /// * TemporalId of the record
+    /// * Name of the method to be executed
+    /// * List of parameter names (optional)
+    /// * List of serialized parameter values (optional)
+    ///
+    /// The invoked method must return void.
+    ///
+    /// A job can execute any public method of a class that returns void.
+    /// There is no requirement to mark the method by [HandlerMethod] or
+    /// [ViewerMethod] attribute.
+    /// 
     /// After a job record is created, it is detected and scheduled for
-    /// execution by the queue specified by the record.Queue element.
+    /// execution by the queue specified by the record.JobQueue element.
     ///
-    /// The queue updates the job status record at least every
-    /// time its status changes, and optionally more often to
-    /// update its progress fraction and progress message. It
-    /// also monitors the dataset where it is running for interrupt
-    /// records.
+    /// The queue updates the JobProgress record at least every time its
+    /// status changes, and optionally more often to update its progress
+    /// fraction and progress message. It also monitors the dataset where
+    /// it is running for JobCancellation records and writes log entries
+    /// to the log specified by the queue.
     ///
-    /// To execute the job, the queue invokes method Run() of
-    /// the job record. Depending on the type of queue, it may be:
+    /// Because Job records reference the queue by its JobQueueName,
+    /// the existing jobs do not need to be resubmitted when a new
+    /// queue record is created for the same JobQueueName but it is
+    /// important to ensure that only one job with a given JobQueueName
+    /// is running at any given time.
+    /// 
+    /// To run the job, JobQueue executes the Run() method of Job which
+    /// in turn invokes method with MethodName in the referenced record
+    /// referenced by the job.
+    /// 
+    /// Depending on the type of queue, MethodName may be executed:
     ///
-    /// * Executed in a different process or thread
-    /// * Executed on a different machine
-    /// * Executed in parallel or out of sequence
+    /// * In a different process or thread than the one that created the job
+    /// * On a different machine than the one where the job was created
+    /// * In parallel or out of sequence relative to other jobs
     ///
-    /// The Run() method must be implemented defensively to ensure
-    /// that the job runs successfully in all of these cases.
+    /// The job submitter must ensure that the specified method will have
+    /// access to the resources it needs and will be able to run successfully
+    /// in each of these cases.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<JobKey>))]
     public sealed class JobKey : TypedKey<JobKey, Job>
