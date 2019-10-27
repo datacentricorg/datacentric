@@ -51,17 +51,22 @@ namespace DataCentric.Test
         {
             using (var context = CreateMethodContext())
             {
-                // Create sample record
-                var sampleRecord = new SampleRecord();
-                sampleRecord.SampleName = "SampleName";
-                context.SaveOne(sampleRecord);
+                // Create data log record and save
+                var dataLog = new DataLog();
+                dataLog.LogName = "SampleLog";
+                context.SaveOne(dataLog);
 
                 // Create queue record and save, then get its id
                 var queue = new JobQueue();
                 queue.JobQueueName = "SampleQueue";
-                queue.Log = new LogKey() {LogName = "SampleLog"}; // TODO - create log for the test
+                queue.Log = dataLog.ToKey();
                 context.SaveOne(queue, context.DataSet);
                 var queueId = queue.Id;
+
+                // Create sample record
+                var sampleRecord = new SampleRecord();
+                sampleRecord.SampleName = "SampleName";
+                context.SaveOne(sampleRecord);
 
                 // Create job record and save, then get its id
                 var job = new Job();

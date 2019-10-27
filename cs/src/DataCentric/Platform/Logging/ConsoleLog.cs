@@ -21,7 +21,7 @@ using System.Text;
 namespace DataCentric
 {
     /// <summary>Writes log output to system console.</summary>
-    public class ConsoleLog : TextLog
+    public sealed class ConsoleLog : TextLog
     {
         /// <summary>
         /// Set Context property and perform validation of the record's data,

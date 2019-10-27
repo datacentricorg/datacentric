@@ -21,11 +21,7 @@ using System.IO;
 namespace DataCentric
 {
     /// <summary>
-    /// Provides support for text log output in:
-    ///
-    /// * ConsoleLog
-    /// * StringLog
-    /// * FileLog
+    /// Abstract base class of Log implementations that convert entries to text.
     /// </summary>
     public abstract class TextLog : Log
     {
