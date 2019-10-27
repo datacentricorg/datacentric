@@ -20,13 +20,13 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace DataCentric
 {
     /// <summary>
-    /// Records a single entry in a log.
+    /// A single entry (message) in a log.
     ///
-    /// The log record serves as the key for querying log entries.
+    /// The Log record serves as the key for querying LogEntry records.
     /// To obtain the entire log, run a query for the Log element of
-    /// the entry record, then sort the entry records by their TemporalId.
+    /// the LogEntry record, then sort the entry records by their TemporalId.
     ///
-    /// Derive from this class to provide specialized log entry types
+    /// Derive from this class to provide specialized LogEntry subtypes
     /// that include additional data.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<LogEntryKey>))]

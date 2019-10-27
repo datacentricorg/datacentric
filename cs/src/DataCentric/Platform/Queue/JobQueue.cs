@@ -43,5 +43,14 @@ namespace DataCentric
     /// </summary>
     public class JobQueue : TypedRecord<JobQueueKey, JobQueue>
     {
+        /// <summary>
+        /// Log where the job submitted to this queue will write its
+        /// output.
+        ///
+        /// To obtain the entire log, run a query for the Log element of
+        /// the entry record, then sort the entry records by their TemporalId.
+        /// </summary>
+        [BsonRequired]
+        public LogKey Log { get; set; }
     }
 }
