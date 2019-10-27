@@ -524,7 +524,7 @@ namespace DataCentric
         /// Note that if data source has NonTemporal flag set, then dataset will
         /// also have NonTemporal flag set.
         /// </summary>
-        public bool IsNonTemporal<TRecord>(TemporalId dataSetId) where TRecord: Record
+        public bool IsNonTemporal<TRecord>(TemporalId dataSetId) where TRecord : Record
         {
             // Check NonTemporal attribute for the data source, if set return true.
             if (NonTemporal.IsTrue()) return true;
@@ -650,8 +650,7 @@ namespace DataCentric
             }
 
             // Collection name is root class name of the record without prefix
-            Type rootType = DataTypeInfo.GetOrCreate(typeof(TRecord)).RootType;
-            string collectionName = rootType.Name;
+            string collectionName = DataTypeInfo.GetOrCreate<TRecord>().RootType.Name;
 
             // Get interfaces to base and typed collections for the same name
             var baseCollection = Db.GetCollection<Record>(collectionName);

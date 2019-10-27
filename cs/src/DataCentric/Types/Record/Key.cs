@@ -48,7 +48,7 @@ namespace DataCentric
             get
             {
                 var tokens = new List<string>();
-                var elementInfoArray = DataTypeInfo.GetOrCreate(GetType()).DataElements;
+                var elementInfoArray = DataTypeInfo.GetOrCreate(this).DataElements;
                 foreach (var elementInfo in elementInfoArray)
                 {
                     // Convert key element to string key token.

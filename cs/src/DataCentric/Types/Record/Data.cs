@@ -32,7 +32,7 @@ namespace DataCentric
             writer.WriteStartDict();
 
             // Iterate over the list of elements
-            var innerElementInfoList = DataTypeInfo.GetOrCreate(GetType()).DataElements;
+            var innerElementInfoList = DataTypeInfo.GetOrCreate(this).DataElements;
             foreach (var innerElementInfo in innerElementInfoList)
             {
                 // Get element name and value
@@ -98,7 +98,7 @@ namespace DataCentric
             if (reader == null) return;
 
             // Iterate over the list of elements
-            var elementInfoList = DataTypeInfo.GetOrCreate(GetType()).DataElements;
+            var elementInfoList = DataTypeInfo.GetOrCreate(this).DataElements;
             foreach (var elementInfo in elementInfoList)
             {
                 // Get element name and type

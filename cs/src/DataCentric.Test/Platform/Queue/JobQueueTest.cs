@@ -71,7 +71,7 @@ namespace DataCentric.Test
                 // Create job record and save, then get its id
                 var job = new Job();
                 job.Queue = queue.ToKey();
-                job.CollectionName = DataTypeInfo.GetOrCreate(typeof(SampleRecord)).RootType.Name; // TODO - simplify
+                job.CollectionName = DataTypeInfo.GetOrCreate<SampleRecord>().RootType.Name; // TODO - simplify
                 job.RecordId = sampleRecord.Id;
                 job.MethodName = "SampleMethod";
                 context.SaveOne(job);

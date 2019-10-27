@@ -94,6 +94,25 @@ namespace DataCentric
         /// This object contains information about the data type
         /// including the list of its elements (public properties
         /// that have one of the supported data types).
+        ///
+        /// This overload accepts type as generic parameter.
+        /// </summary>
+        public static DataTypeInfo GetOrCreate<TData>()
+            where TData : Data
+        {
+            // Delegate to the overload taking Type
+            return GetOrCreate(typeof(TData));
+        }
+
+        /// <summary>
+        /// Get cached instance for the specified type, or create
+        /// using  and add to thread static cache if does not exist.
+        ///
+        /// This object contains information about the data type
+        /// including the list of its elements (public properties
+        /// that have one of the supported data types).
+        ///
+        /// This overload accepts the value of Type as parameter.
         /// </summary>
         public static DataTypeInfo GetOrCreate(Type type)
         {
