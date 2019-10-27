@@ -26,7 +26,7 @@ namespace DataCentric
     /// specified by this enum is performed for job specified by
     /// the interrupt record, and job status is updated accordingly.
     /// </summary>
-    public sealed class JobInterruptData : TypedRecord<JobInterruptKey, JobInterruptData>
+    public sealed class JobInterrupt : TypedRecord<JobInterruptKey, JobInterrupt>
     {
         /// <summary>Job to which the interrupt record applies.</summary>
         [BsonRequired]

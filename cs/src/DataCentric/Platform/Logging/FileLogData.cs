@@ -22,7 +22,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace DataCentric
 {
     /// <summary>Writes log output to the specified text file as it arrives.</summary>
-    public class FileLogData : TextLogData
+    public class FileLog : TextLog
     {
         //--- PROPERTIES
 

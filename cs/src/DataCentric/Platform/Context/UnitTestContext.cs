@@ -64,7 +64,7 @@ namespace DataCentric
 
             // All properties must be set before initialization is performed
             OutputFolder = new DiskFolder { FolderPath = testFolderPath };
-            Log = new FileLogData { LogFilePath = logFileName };
+            Log = new FileLog { LogFilePath = logFileName };
             Progress = new NullProgress();
 
             // Increase log verbosity to Verify from its

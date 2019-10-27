@@ -27,7 +27,7 @@ namespace DataCentric
     /// order of their TemporalId.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<JobLogEntryKey>))]
-    public sealed class JobLogEntryKey : TypedKey<JobLogEntryKey, JobLogEntryData>
+    public sealed class JobLogEntryKey : TypedKey<JobLogEntryKey, JobLogEntry>
     {
         /// <summary>
         /// Defining element Id here includes the record's TemporalId

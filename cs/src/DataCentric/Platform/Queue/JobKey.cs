@@ -41,7 +41,7 @@ namespace DataCentric
     /// that the job runs successfully in all of these cases.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<JobKey>))]
-    public sealed class JobKey : TypedKey<JobKey, JobData>
+    public sealed class JobKey : TypedKey<JobKey, Job>
     {
         /// <summary>
         /// Defining element Id here includes the record's TemporalId

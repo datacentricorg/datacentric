@@ -30,7 +30,7 @@ namespace DataCentric
     /// that include additional data.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<LogEntryKey>))]
-    public sealed class LogEntryKey : TypedKey<LogEntryKey, LogEntryData>
+    public sealed class LogEntryKey : TypedKey<LogEntryKey, LogEntry>
     {
         /// <summary>
         /// Defining element Id here includes the record's TemporalId

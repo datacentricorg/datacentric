@@ -76,7 +76,7 @@ namespace DataCentric
         /// * Title (should not have line breaks; if found will be replaced by spaces)
         /// * Description (line breaks and formatting will be preserved)
         ///
-        /// The remaining fields of LogEntryData will be populated if the log
+        /// The remaining fields of LogEntry will be populated if the log
         /// entry is published to a data source. They are not necessary if the
         /// log entry is published to a text log.
         ///
@@ -91,7 +91,7 @@ namespace DataCentric
         ///     Sample Description Line 1
         ///     Sample Description Line 2
         /// </summary>
-        void Publish(LogEntryData logEntryData);
+        void Publish(LogEntry logEntry);
     }
 
     /// <summary>Extension methods for ILog.</summary>
@@ -135,10 +135,10 @@ namespace DataCentric
             // Populate only those fields of of the log entry that are passed to this method.
             // The remaining fields will be populated if the log entry is published to a data
             // source. They are not necessary if the log entry is published to a text log.
-            var logEntryData = new LogEntryData {Verbosity = verbosity, Title = title, Description = description};
+            var logEntry = new LogEntry {Verbosity = verbosity, Title = title, Description = description};
 
             // Publish the log entry to the log
-            obj.Publish(logEntryData);
+            obj.Publish(logEntry);
         }
 
         /// <summary>

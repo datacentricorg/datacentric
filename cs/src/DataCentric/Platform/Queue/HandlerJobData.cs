@@ -22,7 +22,7 @@ namespace DataCentric
     /// <summary>
     /// Executes the specified handler when Run() is invoked.
     /// </summary>
-    public class HandlerJobData : JobData
+    public class HandlerJob : Job
     {
         /// <summary>
         /// TemporalId of the record whose handler will be called

@@ -27,7 +27,7 @@ namespace DataCentric
     /// * StringLog
     /// * FileLog
     /// </summary>
-    public abstract class TextLogData : LogData
+    public abstract class TextLog : Log
     {
         private readonly string indentString_ = new String(' ', 4);
         private readonly string[] lineSeparators_ = new string[] {"\r\n", "\r", "\n"};
@@ -73,7 +73,7 @@ namespace DataCentric
         /// * Title (should not have line breaks; if found will be replaced by spaces)
         /// * Description (line breaks and formatting will be preserved)
         ///
-        /// The remaining fields of LogEntryData will be populated if the log
+        /// The remaining fields of LogEntry will be populated if the log
         /// entry is published to a data source. They are not necessary if the
         /// log entry is published to a text log.
         ///
@@ -88,23 +88,23 @@ namespace DataCentric
         ///     Sample Description Line 1
         ///     Sample Description Line 2
         /// </summary>
-        public override void Publish(LogEntryData logEntryData)
+        public override void Publish(LogEntry logEntry)
         {
             // Do not record the log entry if entry verbosity exceeds log verbosity
             // Record all entries if log verbosity is not specified
-            if (logEntryData.Verbosity <= Verbosity)
+            if (logEntry.Verbosity <= Verbosity)
             {
                 // Title should not have line breaks; if found will be replaced by spaces
-                string titleWithNoSpaces = logEntryData.Title.Replace(Environment.NewLine, " ");
-                string formattedTitle = $"{logEntryData.Verbosity}: {titleWithNoSpaces}";
+                string titleWithNoSpaces = logEntry.Title.Replace(Environment.NewLine, " ");
+                string formattedTitle = $"{logEntry.Verbosity}: {titleWithNoSpaces}";
                 textWriter_.WriteLine(formattedTitle);
 
                 // Skip if Description is not specified
-                if (!string.IsNullOrEmpty(logEntryData.Description))
+                if (!string.IsNullOrEmpty(logEntry.Description))
                 {
                     // Split the description into lines
                     string[] descriptionLines =
-                        logEntryData.Description.Split(lineSeparators_, StringSplitOptions.None);
+                        logEntry.Description.Split(lineSeparators_, StringSplitOptions.None);
 
                     // Write lines with indent and remove the trailing blank line if any
                     int descriptionLineCount = descriptionLines.Length;

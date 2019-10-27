@@ -36,7 +36,7 @@ namespace DataCentric
     /// method, or even by a method of an unrelated data type.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<ViewKey>))]
-    public sealed class ViewKey : TypedKey<ViewKey, ViewData>
+    public sealed class ViewKey : TypedKey<ViewKey, View>
     {
         /// <summary>
         /// TemporalId of the record for which the view is created.

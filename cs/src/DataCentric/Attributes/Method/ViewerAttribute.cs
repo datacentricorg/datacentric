@@ -21,11 +21,11 @@ namespace DataCentric
     /// <summary>
     /// Attribute for identifying viewer methods.
     ///
-    /// Viewers are methods that create ViewData records that
+    /// Viewers are methods that create View records that
     /// are displayed along with the record in the user interface,
     /// e.g. on a tab of the screen associated with the Record.
     ///
-    /// Note that not all ViewData records are created by viewer
+    /// Note that not all View records are created by viewer
     /// methods. Some may be created as side effect of a handler,
     /// by the record's Init method, or even by an unrelated data
     /// type.
@@ -33,7 +33,7 @@ namespace DataCentric
     /// A viewer method must not take any parameters and have
     /// no return value.
     ///
-    /// ViewData record created by the viewer must have ViewName
+    /// View record created by the viewer must have ViewName
     /// that matches the value specified in the attribute constructor,
     /// or if not specified, the name of the viewer method.
     /// </summary>
@@ -53,7 +53,7 @@ namespace DataCentric
         //--- CONSTRUCTORS
 
         /// <summary>
-        /// Create ViewData with ViewName that is the same as the name of
+        /// Create View with ViewName that is the same as the name of
         /// the viewer method to which this attribute is applied. 
         ///
         /// Name of the view displayed in the user interface, usually
@@ -65,7 +65,7 @@ namespace DataCentric
         }
 
         /// <summary>
-        /// Create ViewData with the specified view name.
+        /// Create View with the specified view name.
         /// 
         /// Name of the view displayed in the user interface, usually
         /// on the tab where view is displayed.

@@ -29,7 +29,7 @@ namespace DataCentric
     /// of the LogEntry record, then sort the entry records by
     /// their TemporalId.
     /// </summary>
-    public abstract class LogData : TypedRecord<LogKey, LogData>, ILog
+    public abstract class Log : TypedRecord<LogKey, Log>, ILog
     {
         /// <summary>Unique log name.</summary>
         [BsonRequired]
@@ -96,7 +96,7 @@ namespace DataCentric
         /// * Title (should not have line breaks; if found will be replaced by spaces)
         /// * Description (line breaks and formatting will be preserved)
         ///
-        /// The remaining fields of LogEntryData will be populated if the log
+        /// The remaining fields of LogEntry will be populated if the log
         /// entry is published to a data source. They are not necessary if the
         /// log entry is published to a text log.
         ///
@@ -111,6 +111,6 @@ namespace DataCentric
         ///     Sample Description Line 1
         ///     Sample Description Line 2
         /// </summary>
-        public abstract void Publish(LogEntryData logEntryData);
+        public abstract void Publish(LogEntry logEntry);
     }
 }

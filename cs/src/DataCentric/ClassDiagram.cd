@@ -369,18 +369,18 @@
       <FileName>Platform\FileSystem\PatternMatch.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.ConsoleLogData" Collapsed="true">
+  <Class Name="DataCentric.ConsoleLog" Collapsed="true">
     <Position X="63.5" Y="7.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
-      <FileName>Platform\Logging\ConsoleLogData.cs</FileName>
+      <FileName>Platform\Logging\ConsoleLog.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.FileLogData" Collapsed="true">
+  <Class Name="DataCentric.FileLog" Collapsed="true">
     <Position X="65.75" Y="7.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACCAAAAAA=</HashCode>
-      <FileName>Platform\Logging\FileLogData.cs</FileName>
+      <FileName>Platform\Logging\FileLog.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.ILogExtensions" Collapsed="true">
@@ -390,19 +390,19 @@
       <FileName>Platform\Logging\ILog.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.LogData" Collapsed="true">
+  <Class Name="DataCentric.Log" Collapsed="true">
     <Position X="64.5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAEAAAIAAAAAAAAAAAgACAAAIAAA=</HashCode>
-      <FileName>Platform\Logging\LogData.cs</FileName>
+      <FileName>Platform\Logging\Log.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataCentric.LogEntryData" Collapsed="true">
+  <Class Name="DataCentric.LogEntry" Collapsed="true">
     <Position X="77" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAgAEAEAAAAAAAAAAgAAAAAAgACAAAAAAA=</HashCode>
-      <FileName>Platform\Logging\LogEntryData.cs</FileName>
+      <FileName>Platform\Logging\LogEntry.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.LogEntryKey" Collapsed="true">
@@ -419,11 +419,11 @@
       <FileName>Platform\Logging\LogKey.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.TextLogData" Collapsed="true">
+  <Class Name="DataCentric.TextLog" Collapsed="true">
     <Position X="64.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAQACIAAAAAAEAAAAAAQAAAAAAAAAAAAAAIAAA=</HashCode>
-      <FileName>Platform\Logging\TextLogData.cs</FileName>
+      <FileName>Platform\Logging\TextLog.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.LogProgress" Collapsed="true">
@@ -448,25 +448,25 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="DataCentric.HandlerJobData" Collapsed="true">
+  <Class Name="DataCentric.HandlerJob" Collapsed="true">
     <Position X="54.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAI=</HashCode>
-      <FileName>Platform\Queue\HandlerJobData.cs</FileName>
+      <FileName>Platform\Queue\HandlerJob.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.JobData" Collapsed="true">
+  <Class Name="DataCentric.Job" Collapsed="true">
     <Position X="53.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAI=</HashCode>
-      <FileName>Platform\Queue\JobData.cs</FileName>
+      <FileName>Platform\Queue\Job.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.JobInterruptData" Collapsed="true">
+  <Class Name="DataCentric.JobInterrupt" Collapsed="true">
     <Position X="56.75" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAACAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Platform\Queue\JobInterruptData.cs</FileName>
+      <FileName>Platform\Queue\JobInterrupt.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.JobInterruptKey" Collapsed="true">
@@ -483,11 +483,11 @@
       <FileName>Platform\Queue\JobKey.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.JobLogEntryData" Collapsed="true">
+  <Class Name="DataCentric.JobLogEntry" Collapsed="true">
     <Position X="79.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAgIAAAAAA=</HashCode>
-      <FileName>Platform\Queue\JobLogEntryData.cs</FileName>
+      <FileName>Platform\Queue\JobLogEntry.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.JobLogEntryKey" Collapsed="true">
@@ -497,11 +497,11 @@
       <FileName>Platform\Queue\JobLogEntryKey.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.JobMonitorData" Collapsed="true">
+  <Class Name="DataCentric.JobMonitor" Collapsed="true">
     <Position X="81.5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAACgAAAAAAAAAAAAAACAAAAEAAAAAAAAAA=</HashCode>
-      <FileName>Platform\Queue\JobMonitorData.cs</FileName>
+      <FileName>Platform\Queue\JobMonitor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.JobMonitorKey" Collapsed="true">
@@ -511,11 +511,11 @@
       <FileName>Platform\Queue\JobMonitorKey.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.JobQueueData" Collapsed="true">
+  <Class Name="DataCentric.JobQueue" Collapsed="true">
     <Position X="43.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Platform\Queue\JobQueueData.cs</FileName>
+      <FileName>Platform\Queue\JobQueue.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.JobQueueKey" Collapsed="true">
@@ -525,11 +525,11 @@
       <FileName>Platform\Queue\JobQueueKey.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.ViewerJobData" Collapsed="true">
+  <Class Name="DataCentric.ViewerJob" Collapsed="true">
     <Position X="52.25" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
-      <FileName>Platform\Queue\ViewerJobData.cs</FileName>
+      <FileName>Platform\Queue\ViewerJob.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.ViewerOutputData" Collapsed="true">
@@ -903,11 +903,11 @@
       <FileName>Types\Record\TypedRecord.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.ViewData" Collapsed="true">
+  <Class Name="DataCentric.View" Collapsed="true">
     <Position X="83.75" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
-      <FileName>Types\Record\ViewData.cs</FileName>
+      <FileName>Types\Record\View.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.ViewKey" Collapsed="true">

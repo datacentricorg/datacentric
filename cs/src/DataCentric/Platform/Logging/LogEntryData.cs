@@ -32,7 +32,7 @@ namespace DataCentric
     /// Derive from this class to provide specialized log entry types
     /// that include additional data.
     /// </summary>
-    public class LogEntryData : TypedRecord<LogEntryKey, LogEntryData>
+    public class LogEntry : TypedRecord<LogEntryKey, LogEntry>
     {
         /// <summary>
         /// Log for which the entry is recorded.

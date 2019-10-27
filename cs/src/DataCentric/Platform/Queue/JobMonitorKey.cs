@@ -29,7 +29,7 @@ namespace DataCentric
     /// to record Failed status.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<JobMonitorKey>))]
-    public sealed class JobMonitorKey : TypedKey<JobMonitorKey, JobMonitorData>
+    public sealed class JobMonitorKey : TypedKey<JobMonitorKey, JobMonitor>
     {
         /// <summary>Monitored job.</summary>
         public JobKey Job { get; set; }

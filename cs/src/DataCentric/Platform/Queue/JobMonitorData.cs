@@ -31,7 +31,7 @@ namespace DataCentric
     /// The status may also be updated by the queue to which the job is submitted, e.g.
     /// to record Failed status.
     /// </summary>
-    public sealed class JobMonitorData : TypedRecord<JobMonitorKey, JobMonitorData>
+    public sealed class JobMonitor : TypedRecord<JobMonitorKey, JobMonitor>
     {
         /// <summary>Monitored job.</summary>
         [BsonRequired]

@@ -31,7 +31,7 @@ namespace DataCentric
     /// their TemporalId.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<LogKey>))]
-    public sealed class LogKey : TypedKey<LogKey, LogData>
+    public sealed class LogKey : TypedKey<LogKey, Log>
     {
         /// <summary>Unique log name.</summary>
         public string LogName { get; set; }

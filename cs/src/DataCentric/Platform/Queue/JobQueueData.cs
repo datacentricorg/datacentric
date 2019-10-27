@@ -41,7 +41,7 @@ namespace DataCentric
     /// The Run() method must be implemented defensively to ensure
     /// that the job runs successfully in all of these cases.
     /// </summary>
-    public class JobQueueData : TypedRecord<JobQueueKey, JobQueueData>
+    public class JobQueue : TypedRecord<JobQueueKey, JobQueue>
     {
     }
 }

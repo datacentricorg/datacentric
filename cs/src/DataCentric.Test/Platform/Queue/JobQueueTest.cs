@@ -26,7 +26,7 @@ namespace DataCentric.Test
     /// <summary>Unit test for JobQueue.</summary>
     public class JobQueueTest : UnitTest
     {
-        public class SampleJobData : JobData
+        public class SampleJob : Job
         {
             /// <summary>
             /// This method is executed by the queue to run the job.
@@ -53,12 +53,12 @@ namespace DataCentric.Test
             using (var context = CreateMethodContext())
             {
                 // Create queue record and save, then get its id
-                var queue = new JobQueueData();
+                var queue = new JobQueue();
                 context.SaveOne(queue, context.DataSet);
                 var queueId = queue.Id;
 
                 // Create job record and save, then get its id
-                var job = new SampleJobData();
+                var job = new SampleJob();
                 job.Queue = queue.ToKey();
                 context.SaveOne(job, context.DataSet);
                 var jobId = job.Id;

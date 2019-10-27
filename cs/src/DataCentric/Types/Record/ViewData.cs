@@ -35,7 +35,7 @@ namespace DataCentric
     /// method, or even by a method of an unrelated data type.
     /// </summary>
     [NonTemporal]
-    public abstract class ViewData : TypedRecord<ViewKey, ViewData>
+    public abstract class View : TypedRecord<ViewKey, View>
     {
         /// <summary>
         /// TemporalId of the record for which the view is created.

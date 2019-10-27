@@ -29,7 +29,7 @@ namespace DataCentric
     /// the log entry record to the job and sort the records in the
     /// order of their TemporalId.
     /// </summary>
-    public sealed class JobLogEntryData : TypedRecord<JobLogEntryKey, JobLogEntryData>
+    public sealed class JobLogEntry : TypedRecord<JobLogEntryKey, JobLogEntry>
     {
         /// <summary>Job for which log entry is recorded.</summary>
         [BsonRequired]
