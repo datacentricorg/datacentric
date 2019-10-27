@@ -32,7 +32,7 @@ namespace DataCentric.Test
         {
             using (var context = CreateMethodContext())
             {
-                var record = new NonNullableElementsSampleData();
+                var record = new NonNullableElementsSample();
                 record.DataSet = context.DataSet;
                 record.StringToken = "A";
                 record.BoolToken = true;
@@ -67,7 +67,7 @@ namespace DataCentric.Test
         {
             using (var context = CreateMethodContext())
             {
-                var record = new NullableElementsSampleData();
+                var record = new NullableElementsSample();
                 record.DataSet = context.DataSet;
                 record.StringToken = "A";
                 record.BoolToken = true;
@@ -106,7 +106,7 @@ namespace DataCentric.Test
             {
                 context.KeepTestData();
 
-                var rec = new CompositeKeySampleData();
+                var rec = new CompositeKeySample();
                 rec.KeyElement1 = "abc";
                 rec.KeyElement2 = new BaseSampleKey();
                 rec.KeyElement2.RecordName = "def";
@@ -134,7 +134,7 @@ namespace DataCentric.Test
             {
                 context.KeepTestData();
 
-                var rec = new SingletonSampleData();
+                var rec = new SingletonSample();
                 rec.StringElement = "abc";
 
                 // Verify key serialization
@@ -160,7 +160,7 @@ namespace DataCentric.Test
 
                 // Create from timestamp
                 var createdTime = InstantUtil.Utc(2003, 5, 1, 10, 15, 0);
-                var rec = new IdBasedKeySampleData();
+                var rec = new IdBasedKeySample();
                 rec.Id = new TemporalId(createdTime, 1, 2, 3);
                 rec.StringElement = "abc";
 

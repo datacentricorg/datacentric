@@ -26,7 +26,7 @@ namespace DataCentric.Test
 {
     /// <summary>Base class of sample data for data source testing.</summary>
     [BsonSerializer(typeof(BsonKeySerializer<BaseSampleKey>))]
-    public sealed class BaseSampleKey : TypedKey<BaseSampleKey, BaseSampleData>
+    public sealed class BaseSampleKey : TypedKey<BaseSampleKey, BaseSample>
     {
         /// <summary>Sample element.</summary>
         public string RecordName { get; set; }

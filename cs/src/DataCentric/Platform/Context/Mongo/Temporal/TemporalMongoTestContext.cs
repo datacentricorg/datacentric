@@ -20,7 +20,7 @@ using System.Runtime.CompilerServices;
 namespace DataCentric
 {
     /// <summary>
-    /// Specialization of MongoTestContext for TemporalMongoDataSourceData.
+    /// Specialization of MongoTestContext for TemporalMongoDataSource.
     ///
     /// MongoTestContext is the context for use in test fixtures that
     /// require a data source, parameterized by data source type.
@@ -36,7 +36,7 @@ namespace DataCentric
     ///
     /// For tests that do not require a data source, use UnitTestContext.
     /// </summary>
-    public class TemporalMongoTestContext : MongoTestContext<TemporalMongoDataSourceData>
+    public class TemporalMongoTestContext : MongoTestContext<TemporalMongoDataSource>
     {
         /// <summary>
         /// Unit test context for the specified object for the Mongo

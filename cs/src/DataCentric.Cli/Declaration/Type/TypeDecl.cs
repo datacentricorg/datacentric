@@ -24,7 +24,7 @@ namespace DataCentric.Cli
     /// The names of type elements and corresponding tags coincide.</summary>
     [Serializable]
     [XmlRoot]
-    public class TypeDeclData : IDeclData
+    public class TypeDecl : IDecl
     {
         /// <summary>Module reference.</summary>
         public ModuleKey Module { get; set; }
@@ -46,7 +46,7 @@ namespace DataCentric.Cli
 
         /// <summary>Type Params</summary>
         [XmlElement]
-        public List<TypeParamDeclData> TypeParams { get; set; }
+        public List<TypeParamDecl> TypeParams { get; set; }
 
         /// <summary>Type aliases.</summary>
         [XmlElement]
@@ -61,21 +61,21 @@ namespace DataCentric.Cli
 
         /// <summary>Inherit Type Argument.</summary>
         [XmlElement]
-        public List<TypeArgumentDeclData> InheritTypeArguments { get; set; }
+        public List<TypeArgumentDecl> InheritTypeArguments { get; set; }
 
         /// <summary>Parent interfaces</summary>
         [XmlElement]
         public List<TypeDeclKey> Interfaces { get; set; }
 
         /// <summary>Handler declaration block.</summary>
-        public HandlerDeclareBlockDeclData Declare { get; set; }
+        public HandlerDeclareBlockDecl Declare { get; set; }
 
         /// <summary>Handler implementation block.</summary>
-        public HandlerImplementBlockDeclData Implement { get; set; }
+        public HandlerImplementBlockDecl Implement { get; set; }
 
         /// <summary>Element declaration block.</summary>
         [XmlElement]
-        public List<TypeElementDeclData> Elements { get; set; }
+        public List<TypeElementDecl> Elements { get; set; }
 
         /// <summary>Array of key element names.</summary>
         [XmlElement]
@@ -83,7 +83,7 @@ namespace DataCentric.Cli
 
         /// <summary>Array of index definitions.</summary>
         [XmlElement]
-        public List<TypeIndexData> Index { get; set; }
+        public List<TypeIndex> Index { get; set; }
 
         /// <summary>Immutable flag.</summary>
         public YesNo? Immutable { get; set; }

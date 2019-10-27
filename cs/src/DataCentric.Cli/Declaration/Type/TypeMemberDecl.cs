@@ -20,13 +20,13 @@ using System.Xml.Serialization;
 namespace DataCentric.Cli
 {
     /// <summary>Type argument declaration.</summary>
-    public class TypeMemberDeclData
+    public class TypeMemberDecl
     {
         /// <summary>Type Param</summary>
         public string TypeParam { get; set; }
 
         /// <summary>Value or atomic element declaration.</summary>
-        public ValueDeclData Value { get; set; }
+        public ValueDecl Value { get; set; }
 
         /// <summary>Enumeration element declaration.</summary>
         public TypeDeclKey Enum { get; set; }
@@ -45,7 +45,7 @@ namespace DataCentric.Cli
 
         /// <summary>Type Argument.</summary>
         [XmlElement]
-        public List<TypeArgumentDeclData> TypeArguments { get; set; }
+        public List<TypeArgumentDecl> TypeArguments { get; set; }
 
         /// <summary>Interface element declaration.</summary>
         public TypeDeclKey Interface { get; set; }

@@ -22,7 +22,7 @@ namespace DataCentric.Cli
 {
     public static class CppEnumBuilder
     {
-        public static string BuildEnumHeader(EnumDeclData decl, Dictionary<string, string> includePath)
+        public static string BuildEnumHeader(EnumDecl decl, Dictionary<string, string> includePath)
         {
             var writer = new CppCodeWriter();
 
@@ -50,7 +50,7 @@ namespace DataCentric.Cli
             return writer.ToString();
         }
 
-        public static string BuildEnumSource(EnumDeclData decl, Dictionary<string, string> includePath)
+        public static string BuildEnumSource(EnumDecl decl, Dictionary<string, string> includePath)
         {
             var writer = new CppCodeWriter();
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
@@ -73,7 +73,7 @@ namespace DataCentric.Cli
             return writer.ToString();
         }
 
-        private static void BuildEnumDeclaration(EnumDeclData decl, CppCodeWriter writer)
+        private static void BuildEnumDeclaration(EnumDecl decl, CppCodeWriter writer)
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
             var type = decl.Name.Underscore();
@@ -98,7 +98,7 @@ namespace DataCentric.Cli
 
             writer.AppendLine("enum enum_type {");
             writer.PushIndent();
-            foreach (EnumItemDeclData item in elements)
+            foreach (EnumItemDecl item in elements)
             {
                 writer.AppendLines(CommentHelper.FormatComment(item.Comment));
                 writer.AppendLine($"{item.Name.Underscore()},");
@@ -133,7 +133,7 @@ protected:
             writer.AppendLine("};");
         }
 
-        private static void BuildEnumImplementation(EnumDeclData decl, CppCodeWriter writer)
+        private static void BuildEnumImplementation(EnumDecl decl, CppCodeWriter writer)
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
             var type = decl.Name.Underscore();
@@ -168,7 +168,7 @@ dot::type_t {type}::type() {{ return typeof(); }}");
             writer.PushIndent();
             writer.PushIndent();
 
-            foreach (EnumItemDeclData item in decl.Items)
+            foreach (EnumItemDecl item in decl.Items)
             {
                 writer.AppendLine($"map_[\"{item.Name.Underscore()}\"] = {item.Name.Underscore()};");
             }

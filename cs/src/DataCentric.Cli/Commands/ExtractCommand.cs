@@ -90,7 +90,7 @@ namespace DataCentric.Cli
 
                 foreach (Type type in types)
                 {
-                    TypeDeclData decl = DeclarationConvertor.TypeToDecl(type, docNavigator, projNavigator);
+                    TypeDecl decl = DeclarationConvertor.TypeToDecl(type, docNavigator, projNavigator);
 
                     string outputFolder = Path.Combine(OutputFolder, decl.Module.ModuleName.Replace('.','\\'));
                     Directory.CreateDirectory(outputFolder);
@@ -108,7 +108,7 @@ namespace DataCentric.Cli
                 List<Type> enums = TypesExtractor.GetEnums(assembly, Types);
                 foreach (Type type in enums)
                 {
-                    EnumDeclData decl = DeclarationConvertor.EnumToDecl(type, docNavigator, projNavigator);
+                    EnumDecl decl = DeclarationConvertor.EnumToDecl(type, docNavigator, projNavigator);
 
                     string outputFolder = Path.Combine(OutputFolder, decl.Module.ModuleName.Replace('.','\\'));
                     Directory.CreateDirectory(outputFolder);

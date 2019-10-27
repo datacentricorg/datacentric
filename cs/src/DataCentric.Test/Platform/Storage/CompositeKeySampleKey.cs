@@ -26,7 +26,7 @@ namespace DataCentric.Test
 {
     /// <summary>Data type sample with composite key.</summary>
     [BsonSerializer(typeof(BsonKeySerializer<CompositeKeySampleKey>))]
-    public sealed class CompositeKeySampleKey : TypedKey<CompositeKeySampleKey, CompositeKeySampleData>
+    public sealed class CompositeKeySampleKey : TypedKey<CompositeKeySampleKey, CompositeKeySample>
     {
         /// <summary>Sample element.</summary>
         public string KeyElement1 { get; set; }

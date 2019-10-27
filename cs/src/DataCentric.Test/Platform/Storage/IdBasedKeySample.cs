@@ -27,7 +27,7 @@ namespace DataCentric.Test
     /// <summary>
     /// A sample type where the only key element is the record's Id.
     /// </summary>
-    public class IdBasedKeySampleData : TypedRecord<IdBasedKeySampleKey, IdBasedKeySampleData>
+    public class IdBasedKeySample : TypedRecord<IdBasedKeySampleKey, IdBasedKeySample>
     {
         /// <summary>Sample element.</summary>
         public string StringElement { get; set; }

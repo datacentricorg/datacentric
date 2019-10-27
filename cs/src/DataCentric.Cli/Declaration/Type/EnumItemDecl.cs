@@ -20,7 +20,7 @@ using System.Xml.Serialization;
 namespace DataCentric.Cli
 {
     /// <summary>Enum item declaration.</summary>
-    public class EnumItemDeclData
+    public class EnumItemDecl
     {
         /// <summary>Item name.</summary>
         public string Name { get; set; }

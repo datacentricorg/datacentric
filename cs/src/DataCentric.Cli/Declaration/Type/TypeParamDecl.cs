@@ -17,7 +17,7 @@ limitations under the License.
 namespace DataCentric.Cli
 {
     /// <summary>Type parameter declaration.</summary>
-    public class TypeParamDeclData
+    public class TypeParamDecl
     {
         /// <summary>Type parameter name.</summary>
         public string Name { get; set; }

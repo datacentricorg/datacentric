@@ -30,7 +30,7 @@ namespace DataCentric.Test
         {
             using (var context = new UnitTestContext(this))
             {
-                var obj = new BaseTypeSampleData();
+                var obj = new BaseTypeSample();
                 obj.SampleName = "ABC";
                 obj.DoubleElement = 1.0;
 
@@ -38,7 +38,7 @@ namespace DataCentric.Test
                 string className = obj.GetType().Name;
                 context.Log.Verify("Original", xmlString);
 
-                var deserialized = new BaseTypeSampleData();
+                var deserialized = new BaseTypeSample();
                 deserialized.ParseXml(xmlString);
                 string deserializedString = deserialized.ToXml();
                 context.Log.Verify("Copy", deserializedString);
@@ -52,7 +52,7 @@ namespace DataCentric.Test
         {
             using (var context = new UnitTestContext(this))
             {
-                var obj = new DerivedTypeSampleData();
+                var obj = new DerivedTypeSample();
                 obj.SampleName = "AAA";
                 obj.DoubleElement = 1.0;
                 obj.IntElement = 1;
@@ -80,16 +80,16 @@ namespace DataCentric.Test
                 keyListElement2.SampleName = "BBB";
                 obj.KeyList.Add(keyListElement2);
 
-                obj.DataElement = new ElementTypeSampleData();
+                obj.DataElement = new ElementTypeSample();
                 obj.DataElement.SampleName = "CCC";
                 obj.DataElement.DoubleElement = 2.0;
 
-                obj.DataList = new List<ElementTypeSampleData>();
-                var dataListItem1 = new ElementTypeSampleData();
+                obj.DataList = new List<ElementTypeSample>();
+                var dataListItem1 = new ElementTypeSample();
                 dataListItem1.SampleName = "DDD";
                 dataListItem1.DoubleElement = 3.0;
                 obj.DataList.Add(dataListItem1);
-                var dataListItem2 = new ElementTypeSampleData();
+                var dataListItem2 = new ElementTypeSample();
                 dataListItem2.SampleName = "DDD";
                 dataListItem2.DoubleElement = 4.0;
                 obj.DataList.Add(dataListItem2);
@@ -98,7 +98,7 @@ namespace DataCentric.Test
                 string className = obj.GetType().Name;
                 context.Log.Verify("Original", xmlString);
 
-                var deserialized = new DerivedTypeSampleData();
+                var deserialized = new DerivedTypeSample();
                 deserialized.ParseXml(xmlString);
                 string deserializedString = deserialized.ToXml();
                 context.Log.Verify("Copy", deserializedString);

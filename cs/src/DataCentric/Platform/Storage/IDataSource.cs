@@ -219,7 +219,7 @@ namespace DataCentric
         ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
-        void SaveDataSet(DataSetData dataSetData, TemporalId saveTo);
+        void SaveDataSet(DataSet dataSetRecord, TemporalId saveTo);
     }
 
     /// <summary>Extension methods for IDataSource.</summary>
@@ -424,7 +424,7 @@ namespace DataCentric
         public static TemporalId CreateDataSet(this IDataSource obj, string dataSetName, IEnumerable<TemporalId> imports, DataSetFlags flags, TemporalId parentDataSet)
         {
             // Create dataset record with the specified name and import
-            var result = new DataSetData() { DataSetName = dataSetName, Imports = imports.ToList() };
+            var result = new DataSet() { DataSetName = dataSetName, Imports = imports.ToList() };
 
             // If data source is NonTemporal, dataset will be created
             // as NonTemporal even if not specified by dataset flags

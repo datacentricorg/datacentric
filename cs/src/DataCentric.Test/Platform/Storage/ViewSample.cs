@@ -25,7 +25,7 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>Sample for the viewer output.</summary>
-    public class ViewSampleData : View
+    public class ViewSample : View
     {
         /// <summary>Sample view string.</summary>
         public string SampleViewString { get; set; }

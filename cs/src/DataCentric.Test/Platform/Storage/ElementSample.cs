@@ -25,7 +25,7 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>Element data class.</summary>
-    public class ElementSampleData : Data
+    public class ElementSample : Data
     {
         /// <summary>Sample element.</summary>
         public double? DoubleElement3 { get; set; }

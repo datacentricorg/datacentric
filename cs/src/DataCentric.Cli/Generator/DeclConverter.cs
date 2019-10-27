@@ -30,31 +30,31 @@ namespace DataCentric.Cli
 
     public static class DeclConverter
     {
-        public static List<IDeclData> ReadDeclUnits(string path)
+        public static List<IDecl> ReadDeclUnits(string path)
         {
-            var result = new List<IDeclData>();
+            var result = new List<IDecl>();
 
             var typeFiles = Directory.GetFiles(path, "*.cltype", SearchOption.AllDirectories);
             foreach (var file in typeFiles)
             {
                 string text = File.ReadAllText(file);
-                result.Add(DeclarationSerializer.Deserialize<TypeDeclData>(text));
+                result.Add(DeclarationSerializer.Deserialize<TypeDecl>(text));
             }
 
             var enumFiles = Directory.GetFiles(path, "*.clenum", SearchOption.AllDirectories);
             foreach (var file in enumFiles)
             {
                 string text = File.ReadAllText(file);
-                result.Add(DeclarationSerializer.Deserialize<EnumDeclData>(text));
+                result.Add(DeclarationSerializer.Deserialize<EnumDecl>(text));
             }
 
             return result;
         }
 
-        public static List<CppFileInfo> ConvertSet(List<IDeclData> declarations)
+        public static List<CppFileInfo> ConvertSet(List<IDecl> declarations)
         {
-            List<TypeDeclData> typeDecls = declarations.OfType<TypeDeclData>().ToList();
-            List<EnumDeclData> enumDecls = declarations.OfType<EnumDeclData>().ToList();
+            List<TypeDecl> typeDecls = declarations.OfType<TypeDecl>().ToList();
+            List<EnumDecl> enumDecls = declarations.OfType<EnumDecl>().ToList();
 
             var typeIncludes = typeDecls.ToDictionary(t => t.Name, GetIncludePath);
             var enumIncludes = enumDecls.ToDictionary(t => t.Name, GetIncludePath);
@@ -67,7 +67,7 @@ namespace DataCentric.Cli
             return types.Concat(enums).ToList();
         }
 
-        private static string GetIncludePath(IDeclData decl)
+        private static string GetIncludePath(IDecl decl)
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
 
@@ -77,7 +77,7 @@ namespace DataCentric.Cli
                        : $"{settings.Namespace}".Underscore().Replace('.', '/');
         }
 
-        private static List<CppFileInfo> ConvertType(TypeDeclData decl, Dictionary<string, string> includePath)
+        private static List<CppFileInfo> ConvertType(TypeDecl decl, Dictionary<string, string> includePath)
         {
             string pathInProject = includePath[decl.Name];
 
@@ -121,7 +121,7 @@ namespace DataCentric.Cli
             return result;
         }
 
-        private static List<CppFileInfo> ConvertEnum(EnumDeclData decl, Dictionary<string, string> includePath)
+        private static List<CppFileInfo> ConvertEnum(EnumDecl decl, Dictionary<string, string> includePath)
         {
             var result = new List<CppFileInfo>();
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);

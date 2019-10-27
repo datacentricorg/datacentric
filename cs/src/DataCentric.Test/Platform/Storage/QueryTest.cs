@@ -36,7 +36,7 @@ namespace DataCentric.Test
                     int recordIndexMod2 = recordIndex % 2;
                     int recordIndexMod4 = recordIndex % 4;
 
-                    var record = new NullableElementsSampleData();
+                    var record = new NullableElementsSample();
                     record.RecordIndex = recordIndex;
                     record.DataSet = context.DataSet;
                     record.StringToken = "A" + recordIndexMod4.ToString();
@@ -58,7 +58,7 @@ namespace DataCentric.Test
                     // Query for all records without restrictions,
                     // should return 4 out of 8 records because
                     // each record has two versions
-                    var query = context.DataSource.GetQuery<NullableElementsSampleData>(context.DataSet);
+                    var query = context.DataSource.GetQuery<NullableElementsSample>(context.DataSet);
 
                     context.Log.Verify("Unconstrained query");
                     foreach (var obj in query.AsEnumerable())
@@ -73,7 +73,7 @@ namespace DataCentric.Test
                     // should return 4 out of 8 records because
                     // each record has two versions
 
-                    var query = context.DataSource.GetQuery<NullableElementsSampleData>(context.DataSet)
+                    var query = context.DataSource.GetQuery<NullableElementsSample>(context.DataSet)
                         .Where(p => p.StringToken == "A1")
                         .Where(p => p.BoolToken == false)
                         .Where(p => p.IntToken == 1)
@@ -105,7 +105,7 @@ namespace DataCentric.Test
                     int recordIndexMod2 = recordIndex % 2;
                     int recordIndexMod4 = recordIndex % 4;
 
-                    var record = new NonNullableElementsSampleData();
+                    var record = new NonNullableElementsSample();
                     record.RecordIndex = recordIndex;
                     record.DataSet = context.DataSet;
                     record.StringToken = "A" + recordIndexMod4.ToString();
@@ -127,7 +127,7 @@ namespace DataCentric.Test
                     // Query for all records without restrictions,
                     // should return 4 out of 8 records because
                     // each record has two versions
-                    var query = context.DataSource.GetQuery<NonNullableElementsSampleData>(context.DataSet);
+                    var query = context.DataSource.GetQuery<NonNullableElementsSample>(context.DataSet);
 
                     context.Log.Verify("Unconstrained query");
                     foreach (var obj in query.AsEnumerable())
@@ -142,7 +142,7 @@ namespace DataCentric.Test
                     // should return 4 out of 8 records because
                     // each record has two versions
 
-                    var query = context.DataSource.GetQuery<NonNullableElementsSampleData>(context.DataSet)
+                    var query = context.DataSource.GetQuery<NonNullableElementsSample>(context.DataSet)
                         .Where(p => p.StringToken == "A1")
                         .Where(p => p.BoolToken == false)
                         .Where(p => p.IntToken == 1)

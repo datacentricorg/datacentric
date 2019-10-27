@@ -26,7 +26,7 @@ namespace DataCentric.Test
 {
     /// <summary>Sample derived data class.</summary>
     [IndexElements("DoubleElement2, -DoubleElement")]
-    public class DerivedSampleData : BaseSampleData
+    public class DerivedSample : BaseSample
     {
         /// <summary>Sample element.</summary>
         public double? DoubleElement2 { get; set; }
@@ -53,10 +53,10 @@ namespace DataCentric.Test
         public List<double?> ListOfNullableDouble { get; set; }
 
         /// <summary>Sample element.</summary>
-        public ElementSampleData DataElement { get; set; }
+        public ElementSample DataElement { get; set; }
 
         /// <summary>Sample element.</summary>
-        public List<ElementSampleData> DataElementList { get; set; }
+        public List<ElementSample> DataElementList { get; set; }
 
         /// <summary>Sample element.</summary>
         public BaseSampleKey KeyElement { get; set; }

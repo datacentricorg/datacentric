@@ -34,7 +34,7 @@ namespace DataCentric
     ///
     /// This record is stored in root dataset.
     /// </summary>
-    public abstract class DataSourceData : RootRecord<DataSourceKey, DataSourceData>, IDataSource
+    public abstract class DataSource : RootRecord<DataSourceKey, DataSource>, IDataSource
     {
         /// <summary>Unique data source name.</summary>
         [BsonRequired]
@@ -233,6 +233,6 @@ namespace DataCentric
         ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
-        public abstract void SaveDataSet(DataSetData dataSetData, TemporalId saveTo);
+        public abstract void SaveDataSet(DataSet dataSetRecord, TemporalId saveTo);
     }
 }

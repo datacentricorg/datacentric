@@ -28,7 +28,7 @@ namespace DataCentric
     /// This implementation will raise an error if any of its
     /// methods are invoked.
     /// </summary>
-    public class NullDataSourceData : DataSourceData
+    public class NullDataSource : DataSource
     {
         /// <summary>Flush data to permanent storage.</summary>
         public override void Flush()
@@ -185,7 +185,7 @@ namespace DataCentric
         ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
-        public override void SaveDataSet(DataSetData dataSetData, TemporalId saveTo)
+        public override void SaveDataSet(DataSet dataSetRecord, TemporalId saveTo)
         {
             throw MethodCalledForNullDataSourceError();
         }

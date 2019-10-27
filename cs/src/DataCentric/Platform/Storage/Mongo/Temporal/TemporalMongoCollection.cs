@@ -43,7 +43,7 @@ namespace DataCentric
         /// be used by other classes directly.
         /// </summary>
         public TemporalMongoCollection(
-            TemporalMongoDataSourceData dataSource,
+            TemporalMongoDataSource dataSource,
             IMongoCollection<Record> baseCollection,
             IMongoCollection<TRecord> typedCollection)
         {
@@ -53,7 +53,7 @@ namespace DataCentric
         }
 
         /// <summary>Interface to the data source.</summary>
-        public TemporalMongoDataSourceData DataSource { get; }
+        public TemporalMongoDataSource DataSource { get; }
 
         /// <summary>Collection for the base record type.</summary>
         public IMongoCollection<Record> BaseCollection { get; }

@@ -1,4 +1,4 @@
-Verify: Key=B;0 Type=DerivedSampleData
-Verify: Key=B;1 Type=DerivedSampleData
-Verify: Key=B;2 Type=DerivedSampleData
-Verify: Key=B;3 Type=DerivedSampleData
+Verify: Key=B;0 Type=DerivedSample
+Verify: Key=B;1 Type=DerivedSample
+Verify: Key=B;2 Type=DerivedSample
+Verify: Key=B;3 Type=DerivedSample

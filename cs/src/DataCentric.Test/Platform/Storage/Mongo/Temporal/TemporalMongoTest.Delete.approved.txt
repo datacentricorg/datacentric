@@ -1,26 +1,26 @@
 Verify: Initial load
-Verify: Record A;0 in dataset DataSet0 found and has Type=BaseSampleData.
-Verify: Record A;0 in dataset DataSet1 found and has Type=BaseSampleData.
+Verify: Record A;0 in dataset DataSet0 found and has Type=BaseSample.
+Verify: Record A;0 in dataset DataSet1 found and has Type=BaseSample.
 Verify: Record B;0 in dataset DataSet0 not found.
-Verify: Record B;0 in dataset DataSet1 found and has Type=DerivedSampleData.
+Verify: Record B;0 in dataset DataSet1 found and has Type=DerivedSample.
 Verify: Query in dataset DataSet0
-Verify: Record A;0 returned by query in dataset DataSet0 and has Type=BaseSampleData.
+Verify: Record A;0 returned by query in dataset DataSet0 and has Type=BaseSample.
 Verify: Query in dataset DataSet1
-Verify: Record A;0 returned by query in dataset DataSet1 and has Type=BaseSampleData.
-Verify: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedSampleData.
+Verify: Record A;0 returned by query in dataset DataSet1 and has Type=BaseSample.
+Verify: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedSample.
 Verify: Delete A0 record in B dataset
-Verify: Record A;0 in dataset DataSet0 found and has Type=BaseSampleData.
+Verify: Record A;0 in dataset DataSet0 found and has Type=BaseSample.
 Verify: Record A;0 in dataset DataSet1 not found.
 Verify: Query in dataset DataSet0
-Verify: Record A;0 returned by query in dataset DataSet0 and has Type=BaseSampleData.
+Verify: Record A;0 returned by query in dataset DataSet0 and has Type=BaseSample.
 Verify: Query in dataset DataSet1
-Verify: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedSampleData.
+Verify: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedSample.
 Verify: Delete A0 record in A dataset
 Verify: Record A;0 in dataset DataSet0 not found.
 Verify: Record A;0 in dataset DataSet1 not found.
 Verify: Query in dataset DataSet0
 Verify: Query in dataset DataSet1
-Verify: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedSampleData.
+Verify: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedSample.
 Verify: Delete B0 record in B dataset
 Verify: Record B;0 in dataset DataSet0 not found.
 Verify: Record B;0 in dataset DataSet1 not found.

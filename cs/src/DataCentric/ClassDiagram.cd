@@ -676,11 +676,11 @@
       <FileName>Platform\Storage\Mongo\Temporal\TemporalMongoCollection.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.TemporalMongoDataSourceData" Collapsed="true">
+  <Class Name="DataCentric.TemporalMongoDataSource" Collapsed="true">
     <Position X="72.5" Y="9" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AgAgAgAUAABBAAIDAgAAAAAgAAEEAACABABAAABoACA=</HashCode>
-      <FileName>Platform\Storage\Mongo\Temporal\TemporalMongoDataSourceData.cs</FileName>
+      <FileName>Platform\Storage\Mongo\Temporal\TemporalMongoDataSource.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.TemporalMongoQuery&lt;TRecord&gt;" Collapsed="true" BaseTypeListCollapsed="true">
@@ -691,11 +691,11 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="DataCentric.MongoDataSourceData" Collapsed="true">
+  <Class Name="DataCentric.MongoDataSource" Collapsed="true">
     <Position X="72.5" Y="7.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAgAEAAEAAEACAAAiACAIABAAECAAAAAAA=</HashCode>
-      <FileName>Platform\Storage\Mongo\MongoDataSourceData.cs</FileName>
+      <FileName>Platform\Storage\Mongo\MongoDataSource.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.MongoServerData" Collapsed="true">
@@ -712,18 +712,18 @@
       <FileName>Platform\Storage\Mongo\MongoServerKey.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.NullDataSourceData" Collapsed="true">
+  <Class Name="DataCentric.NullDataSource" Collapsed="true">
     <Position X="74.75" Y="7.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAACAgAEAAAAAAEAAIAAAAAAAAAoACA=</HashCode>
-      <FileName>Platform\Storage\Null\NullDataSourceData.cs</FileName>
+      <FileName>Platform\Storage\Null\NullDataSource.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.DataSetData" Collapsed="true">
+  <Class Name="DataCentric.DataSet" Collapsed="true">
     <Position X="59" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACCAAAAAA=</HashCode>
-      <FileName>Platform\Storage\DataSetData.cs</FileName>
+      <FileName>Platform\Storage\DataSet.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.DataSetDetail" Collapsed="true">
@@ -747,11 +747,11 @@
       <FileName>Platform\Storage\DataSetKey.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.DataSourceData" Collapsed="true">
+  <Class Name="DataCentric.DataSource" Collapsed="true">
     <Position X="73.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQEAAAAACAAAAACAgAEAAAAACEAAIAAAAAIAAAoACA=</HashCode>
-      <FileName>Platform\Storage\DataSourceData.cs</FileName>
+      <FileName>Platform\Storage\DataSource.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

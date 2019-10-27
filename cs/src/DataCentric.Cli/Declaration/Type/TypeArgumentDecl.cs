@@ -17,7 +17,7 @@ limitations under the License.
 namespace DataCentric.Cli
 {
     /// <summary>Type argument declaration.</summary>
-    public class TypeArgumentDeclData : TypeMemberDeclData
+    public class TypeArgumentDecl : TypeMemberDecl
     {
     }
 }

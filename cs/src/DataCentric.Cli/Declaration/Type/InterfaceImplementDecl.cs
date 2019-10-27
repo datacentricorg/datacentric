@@ -17,7 +17,7 @@ limitations under the License.
 namespace DataCentric.Cli
 {
     /// <summary>Interface implementation data.</summary>
-    public class InterfaceImplementDeclData
+    public class InterfaceImplementDecl
     {
         /// <summary>Interface</summary>
         public TypeDeclKey Interface { get; set; }

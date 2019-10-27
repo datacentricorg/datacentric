@@ -22,7 +22,7 @@ namespace DataCentric.Cli
 {
     public static class CppKeyBuilder
     {
-        public static string BuildKeyHeader(TypeDeclData decl, Dictionary<string, string> declSet)
+        public static string BuildKeyHeader(TypeDecl decl, Dictionary<string, string> declSet)
         {
             var writer = new CppCodeWriter();
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
@@ -49,7 +49,7 @@ namespace DataCentric.Cli
             return writer.ToString();
         }
 
-        public static string BuildKeySource(TypeDeclData decl, Dictionary<string, string> declSet)
+        public static string BuildKeySource(TypeDecl decl, Dictionary<string, string> declSet)
         {
             var writer = new CppCodeWriter();
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
@@ -74,7 +74,7 @@ namespace DataCentric.Cli
             return writer.ToString();
         }
 
-        private static void BuildClassDeclaration(TypeDeclData decl, CppCodeWriter writer)
+        private static void BuildClassDeclaration(TypeDecl decl, CppCodeWriter writer)
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
             var type = decl.Name.Underscore();
@@ -134,7 +134,7 @@ namespace DataCentric.Cli
             writer.AppendLine($"inline {type}_key make_{type}_key() {{ return new {type}_key_impl; }}");
         }
 
-        private static void BuildClassImplementation(TypeDeclData decl, CppCodeWriter writer)
+        private static void BuildClassImplementation(TypeDecl decl, CppCodeWriter writer)
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
             var type = decl.Name.Underscore();

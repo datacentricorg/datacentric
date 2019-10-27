@@ -22,7 +22,7 @@ namespace DataCentric.Cli
 {
     public static class CppElementBuilder
     {
-        public static void WriteElements(List<TypeElementDeclData> elements, CppCodeWriter writer)
+        public static void WriteElements(List<TypeElementDecl> elements, CppCodeWriter writer)
         {
             foreach (var element in elements)
             {
@@ -35,7 +35,7 @@ namespace DataCentric.Cli
             }
         }
 
-        public static string GetType(TypeElementDeclData element)
+        public static string GetType(TypeElementDecl element)
         {
             string type = element.Value != null ? GetValue(element.Value) :
                           element.Data != null  ? $"{element.Data.Name.Underscore()}_data" :
@@ -46,7 +46,7 @@ namespace DataCentric.Cli
             return element.Vector == YesNo.Y ? $"dot::list<{type}>" : type;
         }
 
-        public static string GetValue(ValueDeclData valueDecl)
+        public static string GetValue(ValueDecl valueDecl)
         {
             var atomicType = valueDecl.Type;
             return

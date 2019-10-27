@@ -39,10 +39,10 @@ namespace DataCentric
     /// an error will be raised.
     ///
     /// The root dataset uses TemporalId.Empty and does not have versions
-    /// or its own DataSetData record. It is always last in the dataset
+    /// or its own DataSet record. It is always last in the dataset
     /// lookup sequence. The root dataset cannot have Imports.
     /// </summary>
-    public class DataSetData : TypedRecord<DataSetKey, DataSetData>
+    public class DataSet : TypedRecord<DataSetKey, DataSet>
     {
         /// <summary>
         /// Unique dataset name.

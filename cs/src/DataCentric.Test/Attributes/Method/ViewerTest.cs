@@ -33,23 +33,23 @@ namespace DataCentric.Test
             using (var context = CreateMethodContext())
             {
                 // Create base instance
-                var baseSampleData = new BaseSampleData();
-                baseSampleData.RecordName = "Smoke";
-                baseSampleData.RecordIndex = 1;
-                context.SaveOne(baseSampleData);
+                var baseSample = new BaseSample();
+                baseSample.RecordName = "Smoke";
+                baseSample.RecordIndex = 1;
+                context.SaveOne(baseSample);
 
                 // Invoke viewers
-                baseSampleData.DefaultNamedViewer();
-                baseSampleData.CustomNamedViewer();
+                baseSample.DefaultNamedViewer();
+                baseSample.CustomNamedViewer();
 
                 // Check for the results
                 var defaultNamedView = context
-                    .Load(new ViewKey {RecordId = baseSampleData.Id, ViewName = "DefaultNamedViewer"})
-                    .CastTo<ViewSampleData>();
+                    .Load(new ViewKey {RecordId = baseSample.Id, ViewName = "DefaultNamedViewer"})
+                    .CastTo<ViewSample>();
                 context.Log.Verify(defaultNamedView.SampleViewString);
                 var customNamedView = context
-                    .Load(new ViewKey {RecordId = baseSampleData.Id, ViewName = "CustomName"})
-                    .CastTo<ViewSampleData>();
+                    .Load(new ViewKey {RecordId = baseSample.Id, ViewName = "CustomName"})
+                    .CastTo<ViewSample>();
                 context.Log.Verify(customNamedView.SampleViewString);
             }
         }

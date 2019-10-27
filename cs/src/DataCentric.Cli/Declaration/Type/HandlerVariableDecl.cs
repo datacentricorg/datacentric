@@ -17,7 +17,7 @@ limitations under the License.
 namespace DataCentric.Cli
 {
     /// <summary>Handler parameter or return variable declaration.</summary>
-    public class HandlerVariableDeclData : TypeMemberDeclData
+    public class HandlerVariableDecl : TypeMemberDecl
     {
         /// <summary>Flag indicating variable size array (vector) container.</summary>
         public YesNo? Vector { get; set; }

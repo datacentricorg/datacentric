@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace DataCentric.Cli
 {
-    /// <summary>Key for a TypeDeclData element.</summary>
+    /// <summary>Key for a TypeDecl element.</summary>
     public class TypeDeclKey
     {
         /// <summary>Module reference.</summary>

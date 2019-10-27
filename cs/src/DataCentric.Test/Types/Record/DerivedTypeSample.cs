@@ -21,7 +21,7 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Derived type sample for unit testing.</summary>
-    public class DerivedTypeSampleData : BaseTypeSampleData
+    public class DerivedTypeSample : BaseTypeSample
     {
         /// <summary>Integer element of derived type.</summary>
         public int? IntElement { get; set; }
@@ -42,10 +42,10 @@ namespace DataCentric.Test
         public List<BaseTypeSampleKey> KeyList { get; set; }
 
         /// <summary>Data element.</summary>
-        public ElementTypeSampleData DataElement { get; set; }
+        public ElementTypeSample DataElement { get; set; }
 
         /// <summary>List of data elements.</summary>
-        public List<ElementTypeSampleData> DataList { get; set; }
+        public List<ElementTypeSample> DataList { get; set; }
 
         /// <summary>Method of derived type.</summary>
         public int GetIntElement()

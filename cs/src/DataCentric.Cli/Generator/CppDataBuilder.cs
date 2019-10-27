@@ -22,7 +22,7 @@ namespace DataCentric.Cli
 {
     public static class CppDataBuilder
     {
-        public static string BuildDataHeader(TypeDeclData decl, Dictionary<string, string> declSet)
+        public static string BuildDataHeader(TypeDecl decl, Dictionary<string, string> declSet)
         {
             var writer = new CppCodeWriter();
 
@@ -50,7 +50,7 @@ namespace DataCentric.Cli
             return writer.ToString();
         }
 
-        public static string BuildDataSource(TypeDeclData decl, Dictionary<string, string> declSet)
+        public static string BuildDataSource(TypeDecl decl, Dictionary<string, string> declSet)
         {
             var writer = new CppCodeWriter();
 
@@ -76,7 +76,7 @@ namespace DataCentric.Cli
             return writer.ToString();
         }
 
-        private static void BuildClassDeclaration(TypeDeclData decl, CppCodeWriter writer)
+        private static void BuildClassDeclaration(TypeDecl decl, CppCodeWriter writer)
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
             var type = decl.Name.Underscore();
@@ -154,7 +154,7 @@ namespace DataCentric.Cli
             writer.AppendLine($"inline {type}_data make_{type}_data() {{ return new {type}_data_impl; }}");
         }
 
-        private static void BuildClassImplementation(TypeDeclData decl, CppCodeWriter writer)
+        private static void BuildClassImplementation(TypeDecl decl, CppCodeWriter writer)
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
             var type = decl.Name.Underscore();

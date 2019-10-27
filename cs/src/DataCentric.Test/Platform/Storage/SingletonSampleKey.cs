@@ -30,7 +30,7 @@ namespace DataCentric.Test
     /// Only one record of this type can be present in a given dataset.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<SingletonSampleKey>))]
-    public sealed class SingletonSampleKey : TypedKey<SingletonSampleKey, SingletonSampleData>
+    public sealed class SingletonSampleKey : TypedKey<SingletonSampleKey, SingletonSample>
     {
     }
 }

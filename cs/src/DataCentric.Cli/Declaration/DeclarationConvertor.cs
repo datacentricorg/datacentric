@@ -70,7 +70,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Factory method which creates declaration corresponding to given type.
         /// </summary>
-        public static IDeclData ToDecl(Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
+        public static IDecl ToDecl(Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
         {
             if (type.IsSubclassOf(typeof(Enum)))
                 return EnumToDecl(type, navigator, projNavigator);
@@ -82,14 +82,14 @@ namespace DataCentric.Cli
         }
 
         /// <summary>
-        /// Converts enum to EnumDeclData
+        /// Converts enum to EnumDecl
         /// </summary>
-        public static EnumDeclData EnumToDecl(Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
+        public static EnumDecl EnumToDecl(Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
         {
             if (!type.IsSubclassOf(typeof(Enum)))
                 throw new ArgumentException($"Cannot create enum declaration from type: {type.FullName}.");
 
-            EnumDeclData decl = new EnumDeclData();
+            EnumDecl decl = new EnumDecl();
 
             decl.Name = type.Name;
             decl.Comment = type.GetCommentFromAttribute() ?? navigator?.GetXmlComment(type);
@@ -104,14 +104,14 @@ namespace DataCentric.Cli
         }
 
         /// <summary>
-        /// Converts type inherited from Data to TypeDeclData
+        /// Converts type inherited from Data to TypeDecl
         /// </summary>
-        public static TypeDeclData TypeToDecl(Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
+        public static TypeDecl TypeToDecl(Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
         {
             if (!type.IsSubclassOf(typeof(Data)))
                 throw new ArgumentException($"Cannot create type declaration from type: {type.FullName}.");
 
-            TypeDeclData decl = new TypeDeclData();
+            TypeDecl decl = new TypeDecl();
             decl.Module = new ModuleKey { ModuleName = type.Namespace };
             decl.Category = projNavigator?.GetTypeLocation(type);
             decl.Name = type.Name;
@@ -128,8 +128,8 @@ namespace DataCentric.Cli
                                            .Where(IsProperHandler)
                                            .ToList();
 
-            var declares = new List<HandlerDeclareDeclData>();
-            var implements = new List<HandlerImplementDeclData>();
+            var declares = new List<HandlerDeclareDecl>();
+            var implements = new List<HandlerImplementDecl>();
             foreach (MethodInfo method in handlers)
             {
                 // Abstract methods have only declaration
@@ -151,8 +151,8 @@ namespace DataCentric.Cli
             }
 
             // Add method information to declaration
-            if (declares.Any()) decl.Declare = new HandlerDeclareBlockDeclData {Handlers = declares};
-            if (implements.Any()) decl.Implement = new HandlerImplementBlockDeclData {Handlers = implements};
+            if (declares.Any()) decl.Declare = new HandlerDeclareBlockDecl {Handlers = declares};
+            if (implements.Any()) decl.Implement = new HandlerImplementBlockDecl {Handlers = implements};
 
             List<PropertyInfo> dataProperties = type.GetProperties(PublicInstanceDeclaredFlags)
                                                     .Where(p => IsAllowedType(p.PropertyType))
@@ -302,7 +302,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Extract type index info and add to declaration.
         /// </summary>
-        private static List<TypeIndexData> GetIndexesFromAttributes(this Type type)
+        private static List<TypeIndex> GetIndexesFromAttributes(this Type type)
         {
             var attributes = type.GetCustomAttributes<IndexElementsAttribute>().ToList();
 
@@ -310,14 +310,14 @@ namespace DataCentric.Cli
             if (!attributes.Any())
                 return null;
 
-            var result = new List<TypeIndexData>();
+            var result = new List<TypeIndex>();
 
             // Process each attribute
             foreach (var attribute in attributes)
             {
-                TypeIndexData typeIndexData = new TypeIndexData
+                TypeIndex typeIndex = new TypeIndex
                 {
-                    Element = new List<TypeElementIndexData>(), Name = attribute.Name
+                    Element = new List<TypeElementIndex>(), Name = attribute.Name
                 };
 
                 // Decompose string index definition "A, -B" to ordered list of tuples (ElementName,SortOrder): [("A",1), ("B",-1)]
@@ -330,7 +330,7 @@ namespace DataCentric.Cli
                 // Convert decomposed definition to declarations format
                 foreach ((string, int) tuple in definition)
                 {
-                    TypeElementIndexData elementIndex = new TypeElementIndexData
+                    TypeElementIndex elementIndex = new TypeElementIndex
                     {
                         Name = tuple.Item1,
                         Direction = tuple.Item2 == -1
@@ -338,10 +338,10 @@ namespace DataCentric.Cli
                                         : TypeElementIndexDirection.Ascending
                     };
 
-                    typeIndexData.Element.Add(elementIndex);
+                    typeIndex.Element.Add(elementIndex);
                 }
 
-                result.Add(typeIndexData);
+                result.Add(typeIndex);
             }
 
             return result;
@@ -359,9 +359,9 @@ namespace DataCentric.Cli
         /// <summary>
         /// Generates handler declare section which corresponds to given method.
         /// </summary>
-        private static HandlerDeclareDeclData ToDeclare(MethodInfo method, CommentNavigator navigator)
+        private static HandlerDeclareDecl ToDeclare(MethodInfo method, CommentNavigator navigator)
         {
-            return new HandlerDeclareDeclData
+            return new HandlerDeclareDecl
             {
                 Name = method.Name,
                 Type = HandlerType.Job,
@@ -377,9 +377,9 @@ namespace DataCentric.Cli
         /// <summary>
         /// Generates handler implement section which corresponds to given method.
         /// </summary>
-        private static HandlerImplementDeclData ToImplement(MethodInfo method)
+        private static HandlerImplementDecl ToImplement(MethodInfo method)
         {
-            return new HandlerImplementDeclData
+            return new HandlerImplementDecl
             {
                 Name = method.Name,
                 Language = new LanguageKey {LanguageName = "cs"}
@@ -389,9 +389,9 @@ namespace DataCentric.Cli
         /// <summary>
         /// Converts method parameter into corresponding handler parameter declaration section.
         /// </summary>
-        private static HandlerParamDeclData ToHandlerParam(ParameterInfo parameter)
+        private static HandlerParamDecl ToHandlerParam(ParameterInfo parameter)
         {
-            var handlerParam = ToTypeMember<HandlerParamDeclData>(parameter.ParameterType);
+            var handlerParam = ToTypeMember<HandlerParamDecl>(parameter.ParameterType);
 
             handlerParam.Name = parameter.Name;
             handlerParam.Optional = parameter.IsOptional ? YesNo.Y : YesNo.N;
@@ -403,9 +403,9 @@ namespace DataCentric.Cli
         /// <summary>
         /// Converts method return type into corresponding handler return type declaration section.
         /// </summary>
-        private static HandlerVariableDeclData ToReturnType(Type type)
+        private static HandlerVariableDecl ToReturnType(Type type)
         {
-            var returnType = ToTypeMember<HandlerVariableDeclData>(type);
+            var returnType = ToTypeMember<HandlerVariableDecl>(type);
 
             returnType.Vector = type.IsVector();
 
@@ -415,9 +415,9 @@ namespace DataCentric.Cli
         /// <summary>
         /// Converts given property into corresponding declaration element.
         /// </summary>
-        private static TypeElementDeclData ToElement(PropertyInfo property, CommentNavigator navigator)
+        private static TypeElementDecl ToElement(PropertyInfo property, CommentNavigator navigator)
         {
-            var element = ToTypeMember<TypeElementDeclData>(property.PropertyType);
+            var element = ToTypeMember<TypeElementDecl>(property.PropertyType);
 
             element.Vector = property.PropertyType.IsVector();
             element.Name = property.Name;
@@ -434,9 +434,9 @@ namespace DataCentric.Cli
         /// <summary>
         /// Converts to enum item declaration.
         /// </summary>
-        private static EnumItemDeclData ToEnumItem(FieldInfo field, CommentNavigator navigator)
+        private static EnumItemDecl ToEnumItem(FieldInfo field, CommentNavigator navigator)
         {
-            var item = new EnumItemDeclData();
+            var item = new EnumItemDecl();
 
             item.Name = field.Name;
             item.Comment = navigator?.GetXmlComment(field);
@@ -448,7 +448,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Creates type member declaration for the given type.
         /// </summary>
-        private static T ToTypeMember<T>(Type type) where T : TypeMemberDeclData, new()
+        private static T ToTypeMember<T>(Type type) where T : TypeMemberDecl, new()
         {
             var typeDecl = new T();
 
@@ -459,7 +459,7 @@ namespace DataCentric.Cli
             }
             else if (type.IsValueType || type == typeof(string))
             {
-                typeDecl.Value = new ValueDeclData();
+                typeDecl.Value = new ValueDecl();
 
                 TypeCode typeCode = Type.GetTypeCode(type);
                 typeDecl.Value.Type =

@@ -26,7 +26,7 @@ namespace DataCentric.Test
 {
     /// <summary>Other derived data class.</summary>
     [IndexElements("OtherDoubleElement2, OtherStringElement2, -RecordIndex")]
-    public class OtherDerivedSampleData : BaseSampleData
+    public class OtherDerivedSample : BaseSample
     {
         /// <summary>Sample element.</summary>
         public double? OtherDoubleElement2 { get; set; }

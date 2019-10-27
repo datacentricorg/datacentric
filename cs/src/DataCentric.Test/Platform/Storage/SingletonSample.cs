@@ -29,7 +29,7 @@ namespace DataCentric.Test
     ///
     /// Only one record of this type can be present in a given dataset.
     /// </summary>
-    public class SingletonSampleData : TypedRecord<SingletonSampleKey, SingletonSampleData>
+    public class SingletonSample : TypedRecord<SingletonSampleKey, SingletonSample>
     {
         /// <summary>Sample element.</summary>
         public string StringElement { get; set; }

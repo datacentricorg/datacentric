@@ -22,11 +22,11 @@ namespace DataCentric.Cli
     /// <summary>
     /// Specifies database index for the type.
     /// </summary>
-    public class TypeIndexData
+    public class TypeIndex
     {
         /// <summary>Element index definition.</summary>
         [XmlElement]
-        public List<TypeElementIndexData> Element { get; set; }
+        public List<TypeElementIndex> Element { get; set; }
 
         /// <summary>Index name.</summary>
         public string Name { get; set; }

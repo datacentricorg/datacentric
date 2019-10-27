@@ -22,7 +22,7 @@ namespace DataCentric.Test
 {
     /// <summary>Base type sample for unit testing.</summary>
     [BsonSerializer(typeof(BsonKeySerializer<BaseTypeSampleKey>))]
-    public sealed class BaseTypeSampleKey : TypedKey<BaseTypeSampleKey, BaseTypeSampleData>
+    public sealed class BaseTypeSampleKey : TypedKey<BaseTypeSampleKey, BaseTypeSample>
     {
         /// <summary>Unique name.</summary>
         public string SampleName { get; set; }

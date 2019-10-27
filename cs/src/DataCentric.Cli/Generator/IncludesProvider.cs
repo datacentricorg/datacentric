@@ -22,7 +22,7 @@ namespace DataCentric.Cli
 {
     public static class IncludesProvider
     {
-        public static IEnumerable<string> ForDataHeader(TypeDeclData decl, Dictionary<string, string> declSet)
+        public static IEnumerable<string> ForDataHeader(TypeDecl decl, Dictionary<string, string> declSet)
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
             var includes = new List<string>
@@ -68,7 +68,7 @@ namespace DataCentric.Cli
             return includes;
         }
 
-        public static IEnumerable<string> ForKeyHeader(TypeDeclData decl, Dictionary<string, string> declSet)
+        public static IEnumerable<string> ForKeyHeader(TypeDecl decl, Dictionary<string, string> declSet)
         {
             var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
             var includes = new List<string>

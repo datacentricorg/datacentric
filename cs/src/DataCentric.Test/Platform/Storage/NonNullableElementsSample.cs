@@ -21,7 +21,7 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Key class that has all of the permitted non-nullable key elements included.</summary>
-    public class NonNullableElementsSampleData : TypedRecord<NonNullableElementsSampleKey, NonNullableElementsSampleData>
+    public class NonNullableElementsSample : TypedRecord<NonNullableElementsSampleKey, NonNullableElementsSample>
     {
         /// <summary>Sample element.</summary>
         public string StringToken { get; set; }

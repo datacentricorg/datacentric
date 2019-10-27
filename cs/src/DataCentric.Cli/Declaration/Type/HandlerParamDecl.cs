@@ -17,7 +17,7 @@ limitations under the License.
 namespace DataCentric.Cli
 {
     /// <summary>Handler parameter declaration.</summary>
-    public class HandlerParamDeclData : HandlerVariableDeclData
+    public class HandlerParamDecl : HandlerVariableDecl
     {
         /// <summary>Parameter name.</summary>
         public string Name { get; set; }

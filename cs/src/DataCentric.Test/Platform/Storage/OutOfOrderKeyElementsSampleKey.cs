@@ -29,7 +29,7 @@ namespace DataCentric.Test
     /// not in the same order in the record as in the key.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<OutOfOrderKeyElementsSampleKey>))]
-    public sealed class OutOfOrderKeyElementsSampleKey : TypedKey<OutOfOrderKeyElementsSampleKey, OutOfOrderKeyElementsSampleData>
+    public sealed class OutOfOrderKeyElementsSampleKey : TypedKey<OutOfOrderKeyElementsSampleKey, OutOfOrderKeyElementsSample>
     {
         /// <summary>Key element that is out of order in data class.</summary>
         public string KeyElement1 { get; set; }

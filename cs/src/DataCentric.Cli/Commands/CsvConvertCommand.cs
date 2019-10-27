@@ -37,7 +37,7 @@ namespace DataCentric.Cli
                 InstanceType = InstanceType.USER, InstanceName = "TEMP", EnvName = "Default" // TODO - use GUID based DB name
             };
 
-            var dataSource = new TemporalMongoDataSourceData
+            var dataSource = new TemporalMongoDataSource
             {
                 DbName = dbName,
                 MongoServer = new MongoServerKey { MongoServerUri = "mongodb://localhost:27017"} // TODO - specify server URI

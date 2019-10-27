@@ -20,10 +20,10 @@ using System.Xml.Serialization;
 namespace DataCentric.Cli
 {
     /// <summary>Handler declaration block in type declaration.</summary>
-    public class HandlerDeclareBlockDeclData
+    public class HandlerDeclareBlockDecl
     {
         /// <summary>Handler declaration data.</summary>
         [XmlElement]
-        public List<HandlerDeclareDeclData> Handlers { get; set; }
+        public List<HandlerDeclareDecl> Handlers { get; set; }
     }
 }

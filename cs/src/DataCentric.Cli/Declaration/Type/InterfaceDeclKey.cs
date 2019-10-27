@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace DataCentric.Cli
 {
-    /// <summary>Key for a InterfaceDeclData element.</summary>
+    /// <summary>Key for a InterfaceDecl element.</summary>
     public class InterfaceDeclKey
     {
         /// <summary>Module reference.</summary>

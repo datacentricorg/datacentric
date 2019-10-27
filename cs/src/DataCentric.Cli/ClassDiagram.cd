@@ -56,68 +56,68 @@
       <FileName>Csv\CsvSerializer.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.EnumDeclData" Collapsed="true" BaseTypeListCollapsed="true">
+  <Class Name="DataCentric.Cli.EnumDecl" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="7.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAEEAAACAAAAAEAAAQAAAAAAAAAAAAACAAACAA=</HashCode>
-      <FileName>Declaration\Type\EnumDeclData.cs</FileName>
+      <FileName>Declaration\Type\EnumDecl.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="DataCentric.Cli.EnumItemDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.EnumItemDecl" Collapsed="true">
     <Position X="9.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAEEAAAAAAAAAEAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Declaration\Type\EnumItemDeclData.cs</FileName>
+      <FileName>Declaration\Type\EnumItemDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.HandlerDeclareBlockDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.HandlerDeclareBlockDecl" Collapsed="true">
     <Position X="9.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Declaration\Type\HandlerDeclareBlockDeclData.cs</FileName>
+      <FileName>Declaration\Type\HandlerDeclareBlockDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.HandlerDeclareDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.HandlerDeclareDecl" Collapsed="true">
     <Position X="11" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAIEEAAAAAAAAAAAAAQAAAAAAABEAQAAEIAECAA=</HashCode>
-      <FileName>Declaration\Type\HandlerDeclareDeclData.cs</FileName>
+      <FileName>Declaration\Type\HandlerDeclareDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.HandlerImplementBlockDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.HandlerImplementBlockDecl" Collapsed="true">
     <Position X="12.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAEAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Declaration\Type\HandlerImplementBlockDeclData.cs</FileName>
+      <FileName>Declaration\Type\HandlerImplementBlockDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.HandlerImplementDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.HandlerImplementDecl" Collapsed="true">
     <Position X="14.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAACQAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Declaration\Type\HandlerImplementDeclData.cs</FileName>
+      <FileName>Declaration\Type\HandlerImplementDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.HandlerParamDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.HandlerParamDecl" Collapsed="true">
     <Position X="2.75" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Declaration\Type\HandlerParamDeclData.cs</FileName>
+      <FileName>Declaration\Type\HandlerParamDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.HandlerVariableDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.HandlerVariableDecl" Collapsed="true">
     <Position X="2.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAABAAAEEAAAAAAgAAAAAAAAAAAAAAAAAEAAAAAEAAA=</HashCode>
-      <FileName>Declaration\Type\HandlerVariableDeclData.cs</FileName>
+      <FileName>Declaration\Type\HandlerVariableDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.InterfaceDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.InterfaceDecl" Collapsed="true">
     <Position X="7.5" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAEEAAAAAAAAAEQAAwQAEAAAAAAAAAACAAAAAA=</HashCode>
-      <FileName>Declaration\Type\InterfaceDeclData.cs</FileName>
+      <FileName>Declaration\Type\InterfaceDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.Cli.InterfaceDeclKey" Collapsed="true">
@@ -127,11 +127,11 @@
       <FileName>Declaration\Type\InterfaceDeclKey.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.InterfaceImplementDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.InterfaceImplementDecl" Collapsed="true">
     <Position X="11" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAACAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Declaration\Type\InterfaceImplementDeclData.cs</FileName>
+      <FileName>Declaration\Type\InterfaceImplementDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.Cli.LanguageKey" Collapsed="true">
@@ -148,18 +148,18 @@
       <FileName>Declaration\Type\ModuleKey.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.TypeArgumentDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.TypeArgumentDecl" Collapsed="true">
     <Position X="0.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Declaration\Type\TypeArgumentDeclData.cs</FileName>
+      <FileName>Declaration\Type\TypeArgumentDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.TypeDeclData" Collapsed="true" BaseTypeListCollapsed="true">
+  <Class Name="DataCentric.Cli.TypeDecl" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="12.75" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IAAIAABEEIBAAAAgCFEQBAwABCAAAUAAAAEECQAICAA=</HashCode>
-      <FileName>Declaration\Type\TypeDeclData.cs</FileName>
+      <FileName>Declaration\Type\TypeDecl.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -170,46 +170,46 @@
       <FileName>Declaration\Type\TypeDeclKey.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.TypeElementDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.TypeElementDecl" Collapsed="true">
     <Position X="5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AEABAAIEEAAABAAAEAkIAAQAAAgAgAAAAEAIAAAECCA=</HashCode>
-      <FileName>Declaration\Type\TypeElementDeclData.cs</FileName>
+      <FileName>Declaration\Type\TypeElementDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.TypeElementIndexData" Collapsed="true">
+  <Class Name="DataCentric.Cli.TypeElementIndex" Collapsed="true">
     <Position X="16.25" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAACAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Declaration\Type\TypeElementIndexData.cs</FileName>
+      <FileName>Declaration\Type\TypeElementIndex.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.TypeIndexData" Collapsed="true">
+  <Class Name="DataCentric.Cli.TypeIndex" Collapsed="true">
     <Position X="18" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAgAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Declaration\Type\TypeIndexData.cs</FileName>
+      <FileName>Declaration\Type\TypeIndex.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.TypeMemberDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.TypeMemberDecl" Collapsed="true">
     <Position X="2.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAACAAARQAABAAAAAAAAIABgAAAAgAAAAAAI=</HashCode>
-      <FileName>Declaration\Type\TypeMemberDeclData.cs</FileName>
+      <FileName>Declaration\Type\TypeMemberDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.TypeParamDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.TypeParamDecl" Collapsed="true">
     <Position X="7.5" Y="6.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAACAAAAAAAAA=</HashCode>
-      <FileName>Declaration\Type\TypeParamDeclData.cs</FileName>
+      <FileName>Declaration\Type\TypeParamDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="DataCentric.Cli.ValueDeclData" Collapsed="true">
+  <Class Name="DataCentric.Cli.ValueDecl" Collapsed="true">
     <Position X="11" Y="6.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
-      <FileName>Declaration\Type\ValueDeclData.cs</FileName>
+      <FileName>Declaration\Type\ValueDecl.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="DataCentric.Cli.CommentNavigator" Collapsed="true">
@@ -352,11 +352,11 @@
       <FileName>MainCli.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Interface Name="DataCentric.Cli.IDeclData" Collapsed="true">
+  <Interface Name="DataCentric.Cli.IDecl" Collapsed="true">
     <Position X="7.5" Y="7.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAACAAACAA=</HashCode>
-      <FileName>Declaration\Type\IDeclData.cs</FileName>
+      <FileName>Declaration\Type\IDecl.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Enum Name="DataCentric.Cli.AtomicType" Collapsed="true">

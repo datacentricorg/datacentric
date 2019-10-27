@@ -17,7 +17,7 @@ limitations under the License.
 namespace DataCentric.Cli
 {
     /// <summary>Handler implementation data.</summary>
-    public class HandlerImplementDeclData
+    public class HandlerImplementDecl
     {
         /// <summary>Handler name.</summary>
         public string Name { get; set; }

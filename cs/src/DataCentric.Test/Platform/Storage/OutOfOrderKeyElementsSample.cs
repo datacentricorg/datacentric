@@ -28,7 +28,7 @@ namespace DataCentric.Test
     /// Data type where key elements are not the first in the record, and/or
     /// not in the same order in the record as in the key.
     /// </summary>
-    public class OutOfOrderKeyElementsSampleData : TypedRecord<OutOfOrderKeyElementsSampleKey, OutOfOrderKeyElementsSampleData>
+    public class OutOfOrderKeyElementsSample : TypedRecord<OutOfOrderKeyElementsSampleKey, OutOfOrderKeyElementsSample>
     {
         /// <summary>Sample element.</summary>
         public int? InitialElement1 { get; set; }

@@ -20,7 +20,7 @@ using System.Xml.Serialization;
 namespace DataCentric.Cli
 {
     /// <summary>Defines Interface declaration.</summary>
-    public class InterfaceDeclData
+    public class InterfaceDecl
     {
         /// <summary>Module reference.</summary>
         public ModuleKey Module { get; set; }
@@ -44,14 +44,14 @@ namespace DataCentric.Cli
 
         /// <summary>Handler declaration data.</summary>
         [XmlElement]
-        public List<HandlerDeclareDeclData> Handlers { get; set; }
+        public List<HandlerDeclareDecl> Handlers { get; set; }
 
         /// <summary>Element declaration block.</summary>
         [XmlElement]
-        public List<TypeElementDeclData> Elements { get; set; }
+        public List<TypeElementDecl> Elements { get; set; }
 
         /// <summary>Attribute declaration block.</summary>
         [XmlElement]
-        public List<TypeElementDeclData> Attributes { get; set; }
+        public List<TypeElementDecl> Attributes { get; set; }
     }
 }

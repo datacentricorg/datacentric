@@ -1,4 +1,4 @@
-Verify: Record A;0 in dataset DataSet0 found and has Type=BaseSampleData.
-Verify: Record A;0 in dataset DataSet1 found and has Type=BaseSampleData.
+Verify: Record A;0 in dataset DataSet0 found and has Type=BaseSample.
+Verify: Record A;0 in dataset DataSet1 found and has Type=BaseSample.
 Verify: Record B;0 in dataset DataSet0 not found.
-Verify: Record B;0 in dataset DataSet1 found and has Type=DerivedSampleData.
+Verify: Record B;0 in dataset DataSet1 found and has Type=DerivedSample.

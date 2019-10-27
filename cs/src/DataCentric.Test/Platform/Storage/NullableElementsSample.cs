@@ -21,7 +21,7 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Key class that has all of the permitted nullable key elements included.</summary>
-    public class NullableElementsSampleData : TypedRecord<NullableElementsSampleKey, NullableElementsSampleData>
+    public class NullableElementsSample : TypedRecord<NullableElementsSampleKey, NullableElementsSample>
     {
         /// <summary>Sample element.</summary>
         public string StringToken { get; set; }

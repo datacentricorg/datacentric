@@ -62,7 +62,7 @@ namespace DataCentric.Cli
                 }
             }
 
-            List<IDeclData> declarations = new List<IDeclData>();
+            List<IDecl> declarations = new List<IDecl>();
             foreach (Assembly assembly in assemblies)
             {
                 CommentNavigator.TryCreate(assembly, out CommentNavigator docNavigator);

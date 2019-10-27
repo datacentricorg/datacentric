@@ -32,7 +32,7 @@ namespace DataCentric
     ///
     /// This class provides functionality shared by all MongoDB data source types.
     /// </summary>
-    public abstract class MongoDataSourceData : DataSourceData
+    public abstract class MongoDataSource : DataSource
     {
         protected const bool useScalarDiscriminatorConvention_ = false;
         static readonly char[] prohibitedDbNameSymbols_ = new char[] { '/', '\\', '.', ' ', '"', '$', '*', '<', '>', ':', '|', '?' };
@@ -67,7 +67,7 @@ namespace DataCentric
         /// This call is in static constructor because MongoDB driver
         /// complains if it is called more than once.
         /// </summary>
-        static MongoDataSourceData()
+        static MongoDataSource()
         {
             if (useScalarDiscriminatorConvention_)
             {

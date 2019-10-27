@@ -19,7 +19,7 @@ namespace DataCentric.Cli
     /// <summary>
     /// Interface for basic declaration types.
     /// </summary>
-    public interface IDeclData
+    public interface IDecl
     {
         /// <summary>Type name is unique when combined with module.</summary>
         string Name { get; set; }

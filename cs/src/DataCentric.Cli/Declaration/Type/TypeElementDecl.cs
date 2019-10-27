@@ -20,7 +20,7 @@ using System.Xml.Serialization;
 namespace DataCentric.Cli
 {
     /// <summary>Type element declaration.</summary>
-    public class TypeElementDeclData : TypeMemberDeclData
+    public class TypeElementDecl : TypeMemberDecl
     {
         /// <summary>Element name.</summary>
         public string Name { get; set; }

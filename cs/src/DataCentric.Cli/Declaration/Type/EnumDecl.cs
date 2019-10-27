@@ -23,7 +23,7 @@ namespace DataCentric.Cli
     /// <summary>Enum declaration.</summary>
     [Serializable]
     [XmlRoot]
-    public class EnumDeclData : IDeclData
+    public class EnumDecl : IDecl
     {
 
         /// <summary>Module reference.</summary>
@@ -47,6 +47,6 @@ namespace DataCentric.Cli
 
         /// <summary>Array of enum items.</summary>
         [XmlElement]
-        public List<EnumItemDeclData> Items { get; set; }
+        public List<EnumItemDecl> Items { get; set; }
     }
 }

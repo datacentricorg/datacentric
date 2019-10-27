@@ -33,7 +33,7 @@ namespace DataCentric
     /// This record is stored in root dataset.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<DataSourceKey>))]
-    public class DataSourceKey : TypedKey<DataSourceKey, DataSourceData>
+    public class DataSourceKey : TypedKey<DataSourceKey, DataSource>
     {
         /// <summary>Unique data source name.</summary>
         public string DataSourceName { get; set; }

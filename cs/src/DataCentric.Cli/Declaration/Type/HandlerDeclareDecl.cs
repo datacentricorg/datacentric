@@ -20,7 +20,7 @@ using System.Xml.Serialization;
 namespace DataCentric.Cli
 {
     /// <summary>Handler declaration data.</summary>
-    public class HandlerDeclareDeclData
+    public class HandlerDeclareDecl
     {
         /// <summary>Handler name.</summary>
         public string Name { get; set; }
@@ -36,10 +36,10 @@ namespace DataCentric.Cli
 
         /// <summary>Handler parameters.</summary>
         [XmlElement]
-        public List<HandlerParamDeclData> Params { get; set; }
+        public List<HandlerParamDecl> Params { get; set; }
 
         /// <summary>Handler return value.</summary>
-        public HandlerVariableDeclData Return { get; set; }
+        public HandlerVariableDecl Return { get; set; }
 
         /// <summary>If set as true, handler will be static, elsewise non-static.</summary>
         public YesNo? Static { get; set; }

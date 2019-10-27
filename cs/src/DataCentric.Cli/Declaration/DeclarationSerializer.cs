@@ -33,7 +33,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Deserializes provided input into declaration.
         /// </summary>
-        public static T Deserialize<T>(string input) where T : IDeclData
+        public static T Deserialize<T>(string input) where T : IDecl
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
 
@@ -46,7 +46,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Serializes given declaration into UTF8 encoded and formatted string.
         /// </summary>
-        public static string Serialize<T>(T decl) where T : IDeclData
+        public static string Serialize<T>(T decl) where T : IDecl
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();

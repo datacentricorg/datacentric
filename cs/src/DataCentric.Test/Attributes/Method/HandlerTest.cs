@@ -33,22 +33,22 @@ namespace DataCentric.Test
             using (var context = new UnitTestContext(this))
             {
                 // Create base instance
-                var baseSampleData = new BaseSampleData();
-                baseSampleData.RecordName = "InProcess";
-                baseSampleData.RecordIndex = 1;
-                baseSampleData.Init(context);
+                var baseSample = new BaseSample();
+                baseSample.RecordName = "InProcess";
+                baseSample.RecordIndex = 1;
+                baseSample.Init(context);
 
                 // Invoke handlers of the base class
-                baseSampleData.NonVirtualBaseHandler();
-                baseSampleData.VirtualBaseHandler();
+                baseSample.NonVirtualBaseHandler();
+                baseSample.VirtualBaseHandler();
 
                 // Create derived instance
-                var derivedSampleData = new DerivedSampleData();
-                derivedSampleData.Init(context);
+                var derivedSample = new DerivedSample();
+                derivedSample.Init(context);
 
                 // Invoke handlers of the derived class
-                derivedSampleData.NonVirtualDerivedHandler();
-                derivedSampleData.VirtualBaseHandler();
+                derivedSample.NonVirtualDerivedHandler();
+                derivedSample.VirtualBaseHandler();
             }
         }
     }

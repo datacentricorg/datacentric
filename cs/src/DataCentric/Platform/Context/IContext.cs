@@ -615,9 +615,9 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the saved dataset.
         /// </summary>
-        public static void SaveDataSet(this IContext obj, DataSetData dataSetData)
+        public static void SaveDataSet(this IContext obj, DataSet dataSetRecord)
         {
-            obj.DataSource.SaveDataSet(dataSetData, obj.DataSet);
+            obj.DataSource.SaveDataSet(dataSetRecord, obj.DataSet);
         }
 
         /// <summary>
@@ -626,9 +626,9 @@ namespace DataCentric
         /// This method updates in-memory dataset cache to include
         /// the saved dataset.
         /// </summary>
-        public static void SaveDataSet(this IContext obj, DataSetData dataSetData, TemporalId parentDataSet)
+        public static void SaveDataSet(this IContext obj, DataSet dataSetRecord, TemporalId parentDataSet)
         {
-            obj.DataSource.SaveDataSet(dataSetData, parentDataSet);
+            obj.DataSource.SaveDataSet(dataSetRecord, parentDataSet);
         }
     }
 }

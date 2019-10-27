@@ -25,7 +25,7 @@ using Xunit;
 
 namespace DataCentric.Test
 {
-    /// <summary>Unit test for TemporalMongoDataSourceData.</summary>
+    /// <summary>Unit test for TemporalMongoDataSource.</summary>
     public class TemporalMongoTest : UnitTest
     {
         /// <summary>Smoke test.</summary>
@@ -113,7 +113,7 @@ namespace DataCentric.Test
                 SaveMinimalRecord(context, "DataSet3", "B", 11, 0);
 
                 // Query for RecordName=B
-                var query = context.GetQuery<BaseSampleData>(dataSet3)
+                var query = context.GetQuery<BaseSample>(dataSet3)
                     .Where(p => p.RecordName == "B")
                     .SortBy(p => p.RecordName)
                     .SortBy(p => p.RecordIndex)
@@ -121,7 +121,7 @@ namespace DataCentric.Test
 
                 foreach (var obj in query)
                 {
-                    var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
+                    var dataSetName = context.LoadOrNull<DataSet>(obj.DataSet).DataSetName;
                     context.Log.Verify($"Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                 }
             }
@@ -176,9 +176,9 @@ namespace DataCentric.Test
                 VerifyLoad(context, "DataSet1", keyB0);
 
                 context.Log.Verify("Query in dataset DataSet0");
-                VerifyQuery<BaseSampleData>(context, "DataSet0");
+                VerifyQuery<BaseSample>(context, "DataSet0");
                 context.Log.Verify("Query in dataset DataSet1");
-                VerifyQuery<BaseSampleData>(context, "DataSet1");
+                VerifyQuery<BaseSample>(context, "DataSet1");
 
                 context.Log.Verify("Delete A0 record in B dataset");
                 context.Delete(keyA0, dataSet1);
@@ -186,9 +186,9 @@ namespace DataCentric.Test
                 VerifyLoad(context, "DataSet1", keyA0);
 
                 context.Log.Verify("Query in dataset DataSet0");
-                VerifyQuery<BaseSampleData>(context, "DataSet0");
+                VerifyQuery<BaseSample>(context, "DataSet0");
                 context.Log.Verify("Query in dataset DataSet1");
-                VerifyQuery<BaseSampleData>(context, "DataSet1");
+                VerifyQuery<BaseSample>(context, "DataSet1");
 
                 context.Log.Verify("Delete A0 record in A dataset");
                 context.Delete(keyA0, dataSet0);
@@ -196,9 +196,9 @@ namespace DataCentric.Test
                 VerifyLoad(context, "DataSet1", keyA0);
 
                 context.Log.Verify("Query in dataset DataSet0");
-                VerifyQuery<BaseSampleData>(context, "DataSet0");
+                VerifyQuery<BaseSample>(context, "DataSet0");
                 context.Log.Verify("Query in dataset DataSet1");
-                VerifyQuery<BaseSampleData>(context, "DataSet1");
+                VerifyQuery<BaseSample>(context, "DataSet1");
 
                 context.Log.Verify("Delete B0 record in B dataset");
                 context.Delete(keyB0, dataSet1);
@@ -206,9 +206,9 @@ namespace DataCentric.Test
                 VerifyLoad(context, "DataSet1", keyB0);
 
                 context.Log.Verify("Query in dataset DataSet0");
-                VerifyQuery<BaseSampleData>(context, "DataSet0");
+                VerifyQuery<BaseSample>(context, "DataSet0");
                 context.Log.Verify("Query in dataset DataSet1");
-                VerifyQuery<BaseSampleData>(context, "DataSet1");
+                VerifyQuery<BaseSample>(context, "DataSet1");
             }
         }
 
@@ -253,40 +253,40 @@ namespace DataCentric.Test
                 VerifyLoad(context, "DataSet0", keyB0);
                 VerifyLoad(context, "DataSet1", keyB0);
 
-                context.Log.Verify("Query in dataset DataSet0 for type MongoTestDerivedData");
-                VerifyQuery<DerivedSampleData>(context, "DataSet0");
-                context.Log.Verify("Query in dataset DataSet1 for type MongoTestDerivedData");
-                VerifyQuery<DerivedSampleData>(context, "DataSet1");
+                context.Log.Verify("Query in dataset DataSet0 for type DerivedSample");
+                VerifyQuery<DerivedSample>(context, "DataSet0");
+                context.Log.Verify("Query in dataset DataSet1 for type DerivedSample");
+                VerifyQuery<DerivedSample>(context, "DataSet1");
 
                 context.Log.Verify("Change A0 record type in B dataset to C");
                 SaveOtherDerivedRecord(context, "DataSet1", "A", 0);
                 VerifyLoad(context, "DataSet0", keyA0);
                 VerifyLoad(context, "DataSet1", keyA0);
 
-                context.Log.Verify("Query in dataset DataSet0 for type MongoTestDerivedData");
-                VerifyQuery<DerivedSampleData>(context, "DataSet0");
-                context.Log.Verify("Query in dataset DataSet1 for type MongoTestDerivedData");
-                VerifyQuery<DerivedSampleData>(context, "DataSet1");
+                context.Log.Verify("Query in dataset DataSet0 for type DerivedSample");
+                VerifyQuery<DerivedSample>(context, "DataSet0");
+                context.Log.Verify("Query in dataset DataSet1 for type DerivedSample");
+                VerifyQuery<DerivedSample>(context, "DataSet1");
 
                 context.Log.Verify("Change A0 record type in A dataset to C");
                 SaveOtherDerivedRecord(context, "DataSet0", "A", 0);
                 VerifyLoad(context, "DataSet0", keyA0);
                 VerifyLoad(context, "DataSet1", keyA0);
 
-                context.Log.Verify("Query in dataset DataSet0 for type MongoTestDerivedData");
-                VerifyQuery<DerivedSampleData>(context, "DataSet0");
-                context.Log.Verify("Query in dataset DataSet1 for type MongoTestDerivedData");
-                VerifyQuery<DerivedSampleData>(context, "DataSet1");
+                context.Log.Verify("Query in dataset DataSet0 for type DerivedSample");
+                VerifyQuery<DerivedSample>(context, "DataSet0");
+                context.Log.Verify("Query in dataset DataSet1 for type DerivedSample");
+                VerifyQuery<DerivedSample>(context, "DataSet1");
 
                 context.Log.Verify("Change B0 record type in B dataset to C");
                 SaveOtherDerivedRecord(context, "DataSet1", "B", 0);
                 VerifyLoad(context, "DataSet0", keyB0);
                 VerifyLoad(context, "DataSet1", keyB0);
 
-                context.Log.Verify("Query in dataset DataSet0 for type MongoTestDerivedData");
-                VerifyQuery<DerivedSampleData>(context, "DataSet0");
-                context.Log.Verify("Query in dataset DataSet1 for type MongoTestDerivedData");
-                VerifyQuery<DerivedSampleData>(context, "DataSet1");
+                context.Log.Verify("Query in dataset DataSet0 for type DerivedSample");
+                VerifyQuery<DerivedSample>(context, "DataSet0");
+                context.Log.Verify("Query in dataset DataSet1 for type DerivedSample");
+                VerifyQuery<DerivedSample>(context, "DataSet1");
             }
         }
 
@@ -301,7 +301,7 @@ namespace DataCentric.Test
 
                 // Look in B dataset
                 var dataSet1 = context.GetDataSet("DataSet1", context.DataSet);
-                var testQuery = context.GetQuery<DerivedSampleData>(dataSet1)
+                var testQuery = context.GetQuery<DerivedSample>(dataSet1)
                     .Where(p => p.DataElementList[0].DoubleElement3 == 1.0)
                     .Where(p => p.DataElementList[0].StringElement3 == "A0")
                     .Where(p => p.LocalDateElement < new LocalDate(2003, 5, 2))
@@ -363,15 +363,15 @@ namespace DataCentric.Test
                 }
                 {
                     context.Log.Verify("Query by MongoTestData, unconstrained");
-                    var query = context.GetQuery<BaseSampleData>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
+                    var query = context.GetQuery<BaseSample>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Log.Verify($"    Key={obj.Key} Type={obj.GetType().Name}");
                     }
                 }
                 {
-                    context.Log.Verify("Query by MongoTestDerivedData : MongoTestData which also picks up MongoTestDerivedFromDerivedData : MongoTestDerivedData, unconstrained");
-                    var query = context.GetQuery<DerivedSampleData>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
+                    context.Log.Verify("Query by DerivedSample : MongoTestData which also picks up MongoTestDerivedFromDerivedData : DerivedSample, unconstrained");
+                    var query = context.GetQuery<DerivedSample>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Log.Verify($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -379,15 +379,15 @@ namespace DataCentric.Test
                 }
                 {
                     context.Log.Verify("Query by MongoTestOtherDerivedData : MongoTestData, unconstrained");
-                    var query = context.GetQuery<OtherDerivedSampleData>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
+                    var query = context.GetQuery<OtherDerivedSample>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Log.Verify($"    Key={obj.Key} Type={obj.GetType().Name}");
                     }
                 }
                 {
-                    context.Log.Verify("Query by MongoTestDerivedFromDerivedData : MongoTestDerivedData, where MongoTestDerivedData : MongoTestData, unconstrained");
-                    var query = context.GetQuery<DerivedFromDerivedSampleData>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
+                    context.Log.Verify("Query by MongoTestDerivedFromDerivedData : DerivedSample, where DerivedSample : MongoTestData, unconstrained");
+                    var query = context.GetQuery<DerivedFromDerivedSample>(dataSet3).SortBy(p => p.RecordName).SortBy(p => p.RecordIndex);
                     foreach (var obj in query.AsEnumerable())
                     {
                         context.Log.Verify($"    Key={obj.Key} Type={obj.GetType().Name}");
@@ -409,7 +409,7 @@ namespace DataCentric.Test
                 var dataSet3 = context.GetDataSet("DataSet3", context.DataSet);
 
                 context.Log.Verify("Query by MongoTestData, sort by RecordIndex descending, then by DoubleElement ascending");
-                var baseQuery = context.GetQuery<BaseSampleData>(dataSet3)
+                var baseQuery = context.GetQuery<BaseSample>(dataSet3)
                     .SortByDescending(p => p.RecordIndex)
                     .SortBy(p => p.DoubleElement);
                 foreach (var obj in baseQuery.AsEnumerable())
@@ -449,10 +449,10 @@ namespace DataCentric.Test
 
                 // Load each record by TemporalId
                 context.Log.Verify("Load records by TemporalId without constraint");
-                context.Log.Verify($"Found for TemporalId(A0)={context.LoadOrNull<BaseSampleData>(objA0) != null}");
-                context.Log.Verify($"Found for TemporalId(A1)={context.LoadOrNull<BaseSampleData>(objA1) != null}");
-                context.Log.Verify($"Found for TemporalId(A2)={context.LoadOrNull<BaseSampleData>(objA2) != null}");
-                context.Log.Verify($"Found for TemporalId(C0)={context.LoadOrNull<BaseSampleData>(objC0) != null}");
+                context.Log.Verify($"Found for TemporalId(A0)={context.LoadOrNull<BaseSample>(objA0) != null}");
+                context.Log.Verify($"Found for TemporalId(A1)={context.LoadOrNull<BaseSample>(objA1) != null}");
+                context.Log.Verify($"Found for TemporalId(A2)={context.LoadOrNull<BaseSample>(objA2) != null}");
+                context.Log.Verify($"Found for TemporalId(C0)={context.LoadOrNull<BaseSample>(objC0) != null}");
 
                 // Load each record by string key
                 if (true)
@@ -468,7 +468,7 @@ namespace DataCentric.Test
                 // Query for all records
                 if (true)
                 {
-                    var query = context.GetQuery<BaseSampleData>(dataSet1)
+                    var query = context.GetQuery<BaseSample>(dataSet1)
                         .SortBy(p => p.RecordName)
                         .SortBy(p => p.RecordIndex)
                         .AsEnumerable();
@@ -476,20 +476,20 @@ namespace DataCentric.Test
                     context.Log.Verify("Query records without constraint");
                     foreach (var obj in query)
                     {
-                        var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
+                        var dataSetName = context.LoadOrNull<DataSet>(obj.DataSet).DataSetName;
                         context.Log.Verify($"    Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                     }
                 }
 
                 // Set revision time constraint
-                context.DataSource.CastTo<TemporalMongoDataSourceData>().CutoffTime = cutoffTemporalId;
+                context.DataSource.CastTo<TemporalMongoDataSource>().CutoffTime = cutoffTemporalId;
 
                 // Get each record by TemporalId
                 context.Log.Verify("Load records by TemporalId with CutoffTime constraint");
-                context.Log.Verify($"Found for TemporalId(A0)={context.LoadOrNull<BaseSampleData>(objA0) != null}");
-                context.Log.Verify($"Found for TemporalId(A1)={context.LoadOrNull<BaseSampleData>(objA1) != null}");
-                context.Log.Verify($"Found for TemporalId(A2)={context.LoadOrNull<BaseSampleData>(objA2) != null}");
-                context.Log.Verify($"Found for TemporalId(C0)={context.LoadOrNull<BaseSampleData>(objC0) != null}");
+                context.Log.Verify($"Found for TemporalId(A0)={context.LoadOrNull<BaseSample>(objA0) != null}");
+                context.Log.Verify($"Found for TemporalId(A1)={context.LoadOrNull<BaseSample>(objA1) != null}");
+                context.Log.Verify($"Found for TemporalId(A2)={context.LoadOrNull<BaseSample>(objA2) != null}");
+                context.Log.Verify($"Found for TemporalId(C0)={context.LoadOrNull<BaseSample>(objC0) != null}");
 
                 // Load each record by string key
                 if (true)
@@ -505,7 +505,7 @@ namespace DataCentric.Test
                 // Query for revised before the cutoff time
                 if (true)
                 {
-                    var query = context.GetQuery<BaseSampleData>(dataSet1)
+                    var query = context.GetQuery<BaseSample>(dataSet1)
                         .SortBy(p => p.RecordName)
                         .SortBy(p => p.RecordIndex)
                         .AsEnumerable();
@@ -513,7 +513,7 @@ namespace DataCentric.Test
                     context.Log.Verify("Query records with CutoffTime constraint");
                     foreach (var obj in query)
                     {
-                        var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
+                        var dataSetName = context.LoadOrNull<DataSet>(obj.DataSet).DataSetName;
                         context.Log.Verify($"    Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                     }
                 }
@@ -521,7 +521,7 @@ namespace DataCentric.Test
                 // Clear revision time constraint before exiting to avoid an error
                 // about deleting readonly database. The error occurs because
                 // revision time constraint makes the data source readonly.
-                context.DataSource.CastTo<TemporalMongoDataSourceData>().CutoffTime = null;
+                context.DataSource.CastTo<TemporalMongoDataSource>().CutoffTime = null;
             }
         }
 
@@ -554,13 +554,13 @@ namespace DataCentric.Test
                 // Query before deletion
                 if (true)
                 {
-                    var query = context.GetQuery<BaseSampleData>(dataSet0)
+                    var query = context.GetQuery<BaseSample>(dataSet0)
                         .Where(p => p.Version == 1)
                         .AsEnumerable();
                     int recordCount = 0;
                     foreach (var obj in query)
                     {
-                        var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
+                        var dataSetName = context.LoadOrNull<DataSet>(obj.DataSet).DataSetName;
                         context.Log.Verify($"Query returned Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                         recordCount++;
                     }
@@ -581,13 +581,13 @@ namespace DataCentric.Test
                 // Query after deletion
                 if (true)
                 {
-                    var query = context.GetQuery<BaseSampleData>(dataSet0)
+                    var query = context.GetQuery<BaseSample>(dataSet0)
                         .Where(p => p.Version == 1)
                         .AsEnumerable();
                     int recordCount = 0;
                     foreach (var obj in query)
                     {
-                        var dataSetName = context.LoadOrNull<DataSetData>(obj.DataSet).DataSetName;
+                        var dataSetName = context.LoadOrNull<DataSet>(obj.DataSet).DataSetName;
                         context.Log.Verify($"Query returned Key={obj.Key} DataSet={dataSetName} Version={obj.Version}");
                         recordCount++;
                     }
@@ -705,7 +705,7 @@ namespace DataCentric.Test
         /// <summary>Save record with minimal data for testing how the records are found. </summary>
         private TemporalId SaveMinimalRecord(IContext context, string dataSetName, string recordName, int recordIndex, int? version = null)
         {
-            var rec = new BaseSampleData();
+            var rec = new BaseSample();
             rec.RecordName = recordName;
             rec.RecordIndex = recordIndex;
             rec.Version = version;
@@ -719,7 +719,7 @@ namespace DataCentric.Test
         /// <summary>Save base record</summary>
         private TemporalId SaveBaseRecord(IContext context, string dataSetName, string recordName, int recordIndex)
         {
-            var rec = new BaseSampleData();
+            var rec = new BaseSample();
             rec.RecordName = recordName;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 100.0;
@@ -738,7 +738,7 @@ namespace DataCentric.Test
         /// <summary>Save derived record</summary>
         private TemporalId SaveDerivedRecord(IContext context, string dataSetName, string recordName, int recordIndex)
         {
-            var rec = new DerivedSampleData();
+            var rec = new DerivedSample();
             rec.RecordName = recordName;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;
@@ -763,17 +763,17 @@ namespace DataCentric.Test
             rec.ListOfNullableDouble.Add(30.0);
 
             // Data element
-            rec.DataElement = new ElementSampleData();
+            rec.DataElement = new ElementSample();
             rec.DataElement.DoubleElement3 = 1.0;
             rec.DataElement.StringElement3 = "AA";
 
             // Data element list
-            rec.DataElementList = new List<ElementSampleData>();
-            var elementList0 = new ElementSampleData();
+            rec.DataElementList = new List<ElementSample>();
+            var elementList0 = new ElementSample();
             elementList0.DoubleElement3 = 1.0;
             elementList0.StringElement3 = "A0";
             rec.DataElementList.Add(elementList0);
-            var elementList1 = new ElementSampleData();
+            var elementList1 = new ElementSample();
             elementList1.DoubleElement3 = 2.0;
             elementList1.StringElement3 = "A1";
             rec.DataElementList.Add(elementList1);
@@ -802,7 +802,7 @@ namespace DataCentric.Test
         /// <summary>Save other derived record.</summary>
         private TemporalId SaveOtherDerivedRecord(IContext context, string dataSetName, string recordName, int recordIndex)
         {
-            var rec = new OtherDerivedSampleData();
+            var rec = new OtherDerivedSample();
             rec.RecordName = recordName;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;
@@ -822,7 +822,7 @@ namespace DataCentric.Test
         /// <summary>Save record that is derived from derived.</summary>
         private TemporalId SaveDerivedFromDerivedRecord(IContext context, string dataSetName, string recordName, int recordIndex)
         {
-            var rec = new DerivedFromDerivedSampleData();
+            var rec = new DerivedFromDerivedSample();
             rec.RecordName = recordName;
             rec.RecordIndex = recordIndex;
             rec.DoubleElement = 300.0;

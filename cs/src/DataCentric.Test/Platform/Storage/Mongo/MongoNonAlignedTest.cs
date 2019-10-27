@@ -35,7 +35,7 @@ namespace DataCentric.Test
         {
             using (var context = CreateMethodContext())
             {
-                var record = new OutOfOrderKeyElementsSampleData();
+                var record = new OutOfOrderKeyElementsSample();
                 record.DataSet = context.DataSet;
                 record.KeyElement1 = "A";
                 record.KeyElement2 = "B";

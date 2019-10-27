@@ -23,7 +23,7 @@ namespace DataCentric.Cli
 {
     public static class CppMethodBuilder
     {
-        public static void WriteElements(TypeDeclData decl, CppCodeWriter writer)
+        public static void WriteElements(TypeDecl decl, CppCodeWriter writer)
         {
             foreach (var declare in decl.Declare.Handlers)
             {
@@ -53,7 +53,7 @@ namespace DataCentric.Cli
             }
         }
 
-        public static string GetType(HandlerVariableDeclData element)
+        public static string GetType(HandlerVariableDecl element)
         {
             string type = element.Value != null ? CppElementBuilder.GetValue(element.Value) :
                           element.Data != null  ? $"{element.Data.Name.Underscore()}_data" :

@@ -23,7 +23,7 @@ namespace DataCentric.Test
 {
     /// <summary>Key class that has all of the permitted nullable key elements included.</summary>
     [BsonSerializer(typeof(BsonKeySerializer<NullableElementsSampleKey>))]
-    public sealed class NullableElementsSampleKey : TypedKey<NullableElementsSampleKey, NullableElementsSampleData>
+    public sealed class NullableElementsSampleKey : TypedKey<NullableElementsSampleKey, NullableElementsSample>
     {
         /// <summary>Sample element.</summary>
         public string StringToken { get; set; }

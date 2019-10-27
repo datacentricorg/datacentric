@@ -17,7 +17,7 @@ limitations under the License.
 namespace DataCentric.Cli
 {
     /// <summary>Type element index declaration.</summary>
-    public class TypeElementIndexData
+    public class TypeElementIndex
     {
         /// <summary>Element name.</summary>
         public string Name { get; set; }

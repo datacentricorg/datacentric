@@ -20,14 +20,14 @@ using System.Xml.Serialization;
 namespace DataCentric.Cli
 {
     /// <summary>Handler implementation block in type declaration.</summary>
-    public class HandlerImplementBlockDeclData
+    public class HandlerImplementBlockDecl
     {
         /// <summary>Handler implementation data.</summary>
         [XmlElement]
-        public List<HandlerImplementDeclData> Handlers { get; set; }
+        public List<HandlerImplementDecl> Handlers { get; set; }
 
         /// <summary>Interface implementation data.</summary>
         [XmlElement]
-        public List<InterfaceImplementDeclData> Interfaces { get; set; }
+        public List<InterfaceImplementDecl> Interfaces { get; set; }
     }
 }

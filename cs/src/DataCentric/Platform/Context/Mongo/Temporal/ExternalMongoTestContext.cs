@@ -55,7 +55,7 @@ namespace DataCentric
             DbNameKey dbName = new DbNameKey();
             dbName.PopulateFrom(dbNameString);
 
-            var dataSource = new TemporalMongoDataSourceData
+            var dataSource = new TemporalMongoDataSource
             {
                 DbName = dbName,
                 MongoServer = serverKey

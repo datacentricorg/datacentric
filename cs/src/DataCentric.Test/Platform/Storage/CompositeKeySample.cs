@@ -25,7 +25,7 @@ using Xunit;
 namespace DataCentric.Test
 {
     /// <summary>Data type sample with composite key.</summary>
-    public class CompositeKeySampleData : TypedRecord<CompositeKeySampleKey, CompositeKeySampleData>
+    public class CompositeKeySample : TypedRecord<CompositeKeySampleKey, CompositeKeySample>
     {
         /// <summary>Sample element.</summary>
         public string KeyElement1 { get; set; }

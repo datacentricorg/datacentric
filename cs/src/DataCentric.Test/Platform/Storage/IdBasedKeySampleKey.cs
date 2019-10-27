@@ -28,7 +28,7 @@ namespace DataCentric.Test
     /// A sample type where the only key element is the record's Id.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<IdBasedKeySampleKey>))]
-    public sealed class IdBasedKeySampleKey : TypedKey<IdBasedKeySampleKey, IdBasedKeySampleData>
+    public sealed class IdBasedKeySampleKey : TypedKey<IdBasedKeySampleKey, IdBasedKeySample>
     {
         /// <summary>
         /// TemporalId of the record is specific to its version.

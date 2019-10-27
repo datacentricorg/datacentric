@@ -37,7 +37,7 @@ namespace DataCentric
     /// itself, its direct Imports, Imports of Imports, etc., ordered by dataset's
     /// TemporalId.
     /// </summary>
-    public class TemporalMongoDataSourceData : MongoDataSourceData
+    public class TemporalMongoDataSource : MongoDataSource
     {
         /// <summary>Dictionary of collections indexed by type T.</summary>
         private ConcurrentDictionary<Type, object> collectionDict_ = new ConcurrentDictionary<Type, object>();
@@ -388,23 +388,23 @@ namespace DataCentric
             {
                 // Otherwise load from storage (this also updates the dictionaries)
                 DataSetKey dataSetKey = new DataSetKey() { DataSetName = dataSetName };
-                DataSetData dataSetData = this.LoadOrNull(dataSetKey, loadFrom);
+                DataSet dataSetRecord = this.LoadOrNull(dataSetKey, loadFrom);
 
                 // If not found, return TemporalId.Empty
-                if (dataSetData == null) return null;
+                if (dataSetRecord == null) return null;
 
                 // Cache TemporalId for the dataset and its parent
-                dataSetDict_[dataSetName] = dataSetData.Id;
-                dataSetParentDict_[dataSetData.Id] = dataSetData.DataSet;
+                dataSetDict_[dataSetName] = dataSetRecord.Id;
+                dataSetParentDict_[dataSetRecord.Id] = dataSetRecord.DataSet;
 
                 // Build and cache dataset lookup list if not found
-                if (!importDict_.TryGetValue(dataSetData.Id, out HashSet<TemporalId> importSet))
+                if (!importDict_.TryGetValue(dataSetRecord.Id, out HashSet<TemporalId> importSet))
                 {
-                    importSet = BuildDataSetLookupList(dataSetData);
-                    importDict_.Add(dataSetData.Id, importSet);
+                    importSet = BuildDataSetLookupList(dataSetRecord);
+                    importDict_.Add(dataSetRecord.Id, importSet);
                 }
 
-                return dataSetData.Id;
+                return dataSetRecord.Id;
             }
         }
 
@@ -417,19 +417,19 @@ namespace DataCentric
         ///
         /// This method updates in-memory cache to the saved dataset.
         /// </summary>
-        public override void SaveDataSet(DataSetData dataSetData, TemporalId saveTo)
+        public override void SaveDataSet(DataSet dataSetRecord, TemporalId saveTo)
         {
             // Save dataset to storage. This updates its Id
             // to the new TemporalId created during save
-            this.SaveOne<DataSetData>(dataSetData, saveTo);
+            this.SaveOne<DataSet>(dataSetRecord, saveTo);
 
             // Cache TemporalId for the dataset and its parent
-            dataSetDict_[dataSetData.Key] = dataSetData.Id;
-            dataSetParentDict_[dataSetData.Id] = dataSetData.DataSet;
+            dataSetDict_[dataSetRecord.Key] = dataSetRecord.Id;
+            dataSetParentDict_[dataSetRecord.Id] = dataSetRecord.DataSet;
 
             // Update lookup list dictionary
-            var lookupList = BuildDataSetLookupList(dataSetData);
-            importDict_.Add(dataSetData.Id, lookupList);
+            var lookupList = BuildDataSetLookupList(dataSetRecord);
+            importDict_.Add(dataSetRecord.Id, lookupList);
         }
 
         /// <summary>
@@ -460,13 +460,13 @@ namespace DataCentric
             else
             {
                 // Otherwise load from storage (returns null if not found)
-                DataSetData dataSetData = LoadOrNull<DataSetData>(loadFrom);
+                DataSet dataSetRecord = LoadOrNull<DataSet>(loadFrom);
 
-                if (dataSetData == null) throw new Exception($"Dataset with TemporalId={loadFrom} is not found.");
-                if (dataSetData.DataSet != TemporalId.Empty) throw new Exception($"Dataset with TemporalId={loadFrom} is not stored in root dataset.");
+                if (dataSetRecord == null) throw new Exception($"Dataset with TemporalId={loadFrom} is not found.");
+                if (dataSetRecord.DataSet != TemporalId.Empty) throw new Exception($"Dataset with TemporalId={loadFrom} is not stored in root dataset.");
 
                 // Build the lookup list
-                result = BuildDataSetLookupList(dataSetData);
+                result = BuildDataSetLookupList(dataSetRecord);
 
                 // Add to dictionary and return
                 importDict_.Add(loadFrom, result);
@@ -538,7 +538,7 @@ namespace DataCentric
 
             // In dataset other than root, check for NonTemporal flag of the dataset record.
             // If not set, consider its value false.
-            var dataSetDetail = LoadOrNull<DataSetData>(dataSetId);
+            var dataSetDetail = LoadOrNull<DataSet>(dataSetId);
             if (dataSetDetail != null && dataSetDetail.NonTemporal.IsTrue()) return true;
             else return false;
         }
@@ -638,7 +638,7 @@ namespace DataCentric
                     throw new Exception(
                         $"Scalar discriminator convention is not set for type {typeof(TRecord).Name}. " +
                         $"The convention should have been set set in the static constructor of " +
-                        $"MongoDataSourceData");
+                        $"MongoDataSource");
             }
             else
             {
@@ -646,7 +646,7 @@ namespace DataCentric
                     throw new Exception(
                         $"Hierarchical discriminator convention is not set for type {typeof(TRecord).Name}. " +
                         $"The convention should have been set set in the static constructor of " +
-                        $"MongoDataSourceData");
+                        $"MongoDataSource");
             }
 
             // Collection name is root class name of the record without prefix
@@ -742,11 +742,11 @@ namespace DataCentric
         /// This private helper method should not be used directly.
         /// It provides functionality for the public API of this class.
         /// </summary>
-        private HashSet<TemporalId> BuildDataSetLookupList(DataSetData dataSetData)
+        private HashSet<TemporalId> BuildDataSetLookupList(DataSet dataSetRecord)
         {
             // Delegate to the second overload
             var result = new HashSet<TemporalId>();
-            BuildDataSetLookupList(dataSetData, result);
+            BuildDataSetLookupList(dataSetRecord, result);
             return result;
         }
 
@@ -765,17 +765,17 @@ namespace DataCentric
         /// This private helper method should not be used directly.
         /// It provides functionality for the public API of this class.
         /// </summary>
-        private void BuildDataSetLookupList(DataSetData dataSetData, HashSet<TemporalId> result)
+        private void BuildDataSetLookupList(DataSet dataSetRecord, HashSet<TemporalId> result)
         {
             // Return if the dataset is null or has no imports
-            if (dataSetData == null) return;
+            if (dataSetRecord == null) return;
 
             // Error message if dataset has no Id or Key set
-            dataSetData.Id.CheckHasValue();
-            dataSetData.Key.CheckHasValue();
+            dataSetRecord.Id.CheckHasValue();
+            dataSetRecord.Key.CheckHasValue();
 
-            TemporalId? cutoffTime = GetCutoffTime(dataSetData.DataSet);
-            if (cutoffTime != null && dataSetData.Id >= cutoffTime.Value)
+            TemporalId? cutoffTime = GetCutoffTime(dataSetRecord.DataSet);
+            if (cutoffTime != null && dataSetRecord.Id >= cutoffTime.Value)
             {
                 // Do not add if revision time constraint is set and is before this dataset.
                 // In this case the import datasets should not be added either, even if they
@@ -784,17 +784,17 @@ namespace DataCentric
             }
 
             // Add self to the result
-            result.Add(dataSetData.Id);
+            result.Add(dataSetRecord.Id);
 
             // Add imports to the result
-            if (dataSetData.Imports != null)
+            if (dataSetRecord.Imports != null)
             {
-                foreach (var dataSetId in dataSetData.Imports)
+                foreach (var dataSetId in dataSetRecord.Imports)
                 {
                     // Dataset cannot include itself as its import
-                    if (dataSetData.Id == dataSetId)
+                    if (dataSetRecord.Id == dataSetId)
                         throw new Exception(
-                            $"Dataset {dataSetData.Key} with TemporalId={dataSetData.Id} includes itself in the list of its imports.");
+                            $"Dataset {dataSetRecord.Key} with TemporalId={dataSetRecord.Id} includes itself in the list of its imports.");
 
                     // The Add method returns true if the argument is not yet present in the hashset
                     if (result.Add(dataSetId))

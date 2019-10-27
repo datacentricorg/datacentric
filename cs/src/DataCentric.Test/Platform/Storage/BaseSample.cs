@@ -29,7 +29,7 @@ namespace DataCentric.Test
     [IndexElements("LocalDateElement")]
     [IndexElements("RecordName, -Version", "CustomIndexName")]
     [IndexElements("-RecordIndex")]
-    public class BaseSampleData : TypedRecord<BaseSampleKey, BaseSampleData>
+    public class BaseSample : TypedRecord<BaseSampleKey, BaseSample>
     {
         /// <summary>Sample element.</summary>
         public string RecordName { get; set; }
@@ -81,7 +81,7 @@ namespace DataCentric.Test
         [Viewer]
         public void DefaultNamedViewer()
         {
-            var viewData = new ViewSampleData();
+            var viewData = new ViewSample();
             viewData.RecordId = Id;
             viewData.ViewName = "DefaultNamedViewer";
             viewData.SampleViewString = "Default named viewer";
@@ -92,7 +92,7 @@ namespace DataCentric.Test
         [Viewer("CustomName")]
         public void CustomNamedViewer()
         {
-            var viewData = new ViewSampleData();
+            var viewData = new ViewSample();
             viewData.RecordId = Id;
             viewData.ViewName = "CustomName";
             viewData.SampleViewString = "Custom named viewer";

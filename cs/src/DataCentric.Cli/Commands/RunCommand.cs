@@ -87,7 +87,7 @@ namespace DataCentric.Cli
             DbNameKey dbName = Activator.CreateInstance<DbNameKey>();
             dbName.PopulateFrom(dbNameString);
 
-            var dataSource = new TemporalMongoDataSourceData
+            var dataSource = new TemporalMongoDataSource
             {
                 DbName = dbName,
                 MongoServer = new MongoServerKey { MongoServerUri = $"mongodb://{url.Server}"}
