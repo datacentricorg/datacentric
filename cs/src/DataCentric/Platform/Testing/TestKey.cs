@@ -29,10 +29,6 @@ namespace DataCentric
     /// This makes it possible to test not only inside the development
     /// environment but also on a deployed version of the application where
     /// access to the xUnit test runner is not available.
-    ///
-    /// This class also provides the abstract SetUp(context) method that
-    /// is used to create test data by the tests in this class or as part
-    /// of the test data set up by other classes.
     /// </summary>
     [BsonSerializer(typeof(BsonKeySerializer<UnitTestKey>))]
     public sealed class UnitTestKey : TypedKey<UnitTestKey, UnitTest>
