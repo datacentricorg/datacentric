@@ -118,10 +118,10 @@ namespace DataCentric
         public static CityKey Utc { get; } = new CityKey() { CityName = "UTC" };
 
         /// <summary>New York City</summary>
-        public static CityKey Nyc { get; } = new CityKey() { CityName = "NYC" };
+        public static CityKey Nyc { get; } = new CityKey() { CityName = "America/New_York" };
 
         /// <summary>London</summary>
-        public static CityKey London { get; } = new CityKey() { CityName = "London" };
+        public static CityKey London { get; } = new CityKey() { CityName = "Europe/London" };
 
         //--- STATIC
 
