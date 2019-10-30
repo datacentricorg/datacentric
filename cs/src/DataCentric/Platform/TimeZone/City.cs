@@ -42,6 +42,7 @@ namespace DataCentric
     /// has two slash-delimited tokens, the first referencing the
     /// country and the other the city, for example America/New_York.
     /// </summary>
+    [Configurable]
     public class City : TypedRecord<CityKey, City>
     {
         private DateTimeZone dateTimeZone_;
@@ -110,5 +111,60 @@ namespace DataCentric
         /// country and the other the city, for example America/New_York.
         /// </summary>
         public DateTimeZone GetDateTimeZone() { return dateTimeZone_; }
+
+        //--- KEYS
+
+        /// <summary>Special city code for UTC timezone.</summary>
+        public static CityKey Utc { get; } = new CityKey() { CityName = "UTC" };
+
+        /// <summary>New York City</summary>
+        public static CityKey Nyc { get; } = new CityKey() { CityName = "NYC" };
+
+        /// <summary>London</summary>
+        public static CityKey London { get; } = new CityKey() { CityName = "London" };
+
+        //--- STATIC
+
+        /// <summary>
+        /// This method will be invoked by context.Configure() for every
+        /// class that is accessible by the executing assembly and marked
+        /// with [Configurable] attribute.
+        ///
+        /// The method Configure(context) may be used to configure:
+        ///
+        /// * Reference data, and
+        /// * In case of test mocks, test data
+        ///
+        /// The order in which Configure(context) method is invoked when
+        /// multiple classes marked by [Configurable] attribute are present
+        /// is undefined. The implementation of Configure(context) should
+        /// not rely on any existing data, and should not invoke other
+        /// Configure(context) method of other classes.
+        ///
+        /// The attribute [Configurable] is not inherited. To invoke
+        /// Configure(context) method for multiple classes within the same
+        /// inheritance chain, specify [Configurable] attribute for each
+        /// class that provides Configure(context) method.
+        /// </summary>
+        public static void Configure(IContext context)
+        {
+            // Create ticker kind records
+            var result = new List<City>
+            {
+                new City
+                {
+                    CityName = City.Utc.CityName
+                },
+                new City
+                {
+                    CityName = City.Nyc.CityName
+                },
+                new City
+                {
+                    CityName = City.London.CityName
+                }
+            };
+            context.SaveMany(result);
+        }
     }
 }
