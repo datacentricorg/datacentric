@@ -16,6 +16,8 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace DataCentric
 {
@@ -654,6 +656,50 @@ namespace DataCentric
         /// </summary>
         public static void Configure(this IContext obj)
         {
+            // Iterate over types that in every assembly loaded into the domain
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (Type type in assembly.GetTypes())
+                {
+                    // Iterate over classes that implement [Configurable] attribute directly,
+                    // not through inheritance
+                    var filteredAttributes = type.GetCustomAttributes(typeof(ConfigurableAttribute), false);
+                    if (filteredAttributes.Length > 0)
+                    {
+                        // Ensure the method is present
+                        var configureMethod = type.GetMethod("Configure");
+                        if (configureMethod == null)
+                            throw new Exception(
+                                $"Type {type.Name} is marked by [Configurable] attribute " +
+                                $"but does not implement Configure(context) method.");
+
+                        // Ensure the method is static and public
+                        if (!configureMethod.IsStatic) throw new Exception(
+                            $"Type {type.Name} is marked by [Configurable] attribute " +
+                            $"and implements Configure(...) method, but this method is " +
+                            $"not static.");
+                        if (!configureMethod.IsPublic) throw new Exception(
+                            $"Type {type.Name} is marked by [Configurable] attribute " +
+                            $"and implements Configure(...) method, but this method is " +
+                            $"not public.");
+
+                        // Ensure the method has IContext as its only parameter
+                        var paramsInfo = configureMethod.GetParameters();
+                        if (paramsInfo.Length != 1) throw new Exception(
+                            $"Type {type.Name} is marked by [Configurable] attribute " +
+                            $"and implements Configure(...) method, but this method has " +
+                            $"{paramsInfo.Length} parameters while it should have one parameter " +
+                            $"with type IContext.");
+                        if (paramsInfo[0].ParameterType != typeof(IContext)) throw new Exception(
+                            $"Type {type.Name} is marked by [Configurable] attribute " +
+                            $"and implements Configure(...) method with one parameter, but the" +
+                            $"type of this parameter is not IContext.");
+
+                        // Invoke with the current context as its only parameter
+                        configureMethod.Invoke(null, new object[] { obj });
+                    }
+                }
+            }
         }
     }
 }
