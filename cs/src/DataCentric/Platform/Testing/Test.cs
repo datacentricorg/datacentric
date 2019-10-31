@@ -130,28 +130,5 @@ namespace DataCentric
             // TODO - implement using reflection
             throw new NotImplementedException();
         }
-
-        //--- PROTECTED
-
-        /// <summary>
-        /// Generates random seed using hashcode of full class name and method name
-        /// passed as implicit parameter to this method.
-        ///
-        /// The purpose of this method is to provide the ability to set seed for
-        /// randomly generated test data without using the same seed for different
-        /// test classes and methods.
-        /// </summary>
-        protected int GetRandomSeed([CallerMemberName] string methodName = null)
-        {
-            if (string.IsNullOrEmpty(methodName))
-                throw new Exception("Empty method name is passed to GetRandomSeed method.");
-
-            // Get seed as hash of FullName.MethodName. Using hashcode of a well defined
-            // string makes it possible to reproduce the same seed in a different programming
-            // language for consistent test data across languages
-            string fullClassName = string.Join(".", GetType().FullName, methodName);
-            int result = fullClassName.GetHashCode();
-            return result;
-        }
     }
 }
