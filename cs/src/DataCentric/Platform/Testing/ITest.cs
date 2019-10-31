@@ -58,7 +58,7 @@ namespace DataCentric
         /// Higher complexity results in more comprehensive testing at
         /// the expect of longer test running times.
         /// </summary>
-        TestComplexityEnum? Complexity { get; }
+        TestComplexity? Complexity { get; }
 
         //--- METHODS
 

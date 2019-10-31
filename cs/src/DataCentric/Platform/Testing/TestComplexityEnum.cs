@@ -24,7 +24,7 @@ namespace DataCentric
     /// Higher complexity results in more comprehensive testing at
     /// the expect of longer test running times.
     /// </summary>
-    public enum TestComplexityEnum
+    public enum TestComplexity
     {
         /// <summary>Empty</summary>
         Empty,

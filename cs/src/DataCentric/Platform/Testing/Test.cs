@@ -50,7 +50,7 @@ namespace DataCentric
         /// the expect of longer test running times.
         /// </summary>
         [BsonRequired]
-        public TestComplexityEnum? Complexity { get; set; } = TestComplexityEnum.Smoke;
+        public TestComplexity? Complexity { get; set; } = TestComplexity.Smoke;
 
         //--- CONSTRUCTORS
 
