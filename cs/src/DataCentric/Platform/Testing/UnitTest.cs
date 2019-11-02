@@ -18,8 +18,6 @@ using System;
 using System.Runtime.CompilerServices;
 using MongoDB.Bson.Serialization.Attributes;
 
-#pragma warning disable xUnit1013 // Public method should be marked as test
-
 namespace DataCentric
 {
     /// <summary>
