@@ -100,7 +100,7 @@ namespace DataCentric
         /// This method may be used by the unit tests in this class or as
         /// part of the test data set up by other classes.
         /// </summary>
-        public IContext CreateMethodContext(
+        public virtual IContext CreateMethodContext(
             [CallerMemberName] string methodName = null,
             [CallerFilePath] string sourceFilePath = null)
         {
