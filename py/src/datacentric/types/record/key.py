@@ -87,6 +87,7 @@ class Key(Data, ABC):
                 raise Exception(f'Type {type(self).__name__} has key {";".join(tokens)} while '
                                 f'for a singleton the key must be an empty string. '
                                 f'Singleton key is a key that has no key elements.')
+            return 1
         if len(tokens) - token_index < len(slots):
             raise Exception(f'Key of type {type(self).__name__} requires at least {len(slots)} elements '
                             f'{";".join(slots)} while there are only {len(tokens) - token_index} remaining key tokens:'
