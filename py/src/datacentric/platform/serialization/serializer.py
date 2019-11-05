@@ -21,6 +21,7 @@ def serialize(obj: Record):
     dict_['_t'] = obj.__class__.__name__
     dict_['_dataset'] = obj.data_set
     dict_['_key'] = obj.key
+    dict_['_id'] = obj.id_
 
     return dict_
 
@@ -188,6 +189,8 @@ def _deserialize_primitive(expected_type, value):
     elif expected_type == int:
         return value
     elif expected_type == float:
+        return value
+    elif expected_type == ObjectId:
         return value
     else:
         raise TypeError(f'Cannot deduce type {expected_type}')

@@ -2,6 +2,7 @@ import unittest
 
 from bson import ObjectId
 
+from datacentric.platform.data_set import DataSetData
 from datacentric.platform.logging.in_memory_log import InMemoryLog
 from test.data_sample import *
 from datacentric.platform.context import Context
@@ -145,7 +146,6 @@ class TestTemporalDataSource(unittest.TestCase):
         self.assertEqual(verify_load(context, 'DataSet0', key_b0), 'Not found')
         self.assertEqual(verify_load(context, 'DataSet1', key_b0), 'Found. Type = DerivedSampleData')
 
-    @unittest.skip
     def test_multiple_data_set_query(self):
         context = Context()
         source = TemporalMongoDataSourceData(mongo_uri='localhost:27017', db_name='Test')
@@ -200,7 +200,23 @@ class TestTemporalDataSource(unittest.TestCase):
         save_minimal_record(context, "DataSet3", "A", 10, 0)
         save_minimal_record(context, "DataSet3", "B", 11, 0)
 
-        # TODO: implement query interface
+        query = context.data_source.get_query(data_set3, BaseSampleData) \
+            .where({'record_id': 'B'}) \
+            .sort_by('record_id') \
+            .sort_by('record_index')
+
+        query_result = []
+        for obj in query.as_iterable():  # type: BaseSampleData
+            data_set: DataSetData = context.data_source.load_or_null(obj.data_set, DataSetData)
+            data_set_name = data_set.data_set_name
+            query_result.append((obj.key, data_set_name, obj.version))
+
+        self.assertEqual(query_result[0], ('B;1', 'DataSet0', 2))
+        self.assertEqual(query_result[1], ('B;3', 'DataSet0', 2))
+        self.assertEqual(query_result[2], ('B;5', 'DataSet1', 1))
+        self.assertEqual(query_result[3], ('B;7', 'DataSet1', 1))
+        self.assertEqual(query_result[4], ('B;9', 'DataSet2', 0))
+        self.assertEqual(query_result[5], ('B;11', 'DataSet3', 0))
 
     def test_create_ordered_id(self):
         """Stress test to check ObjectIds are created in increasing order."""

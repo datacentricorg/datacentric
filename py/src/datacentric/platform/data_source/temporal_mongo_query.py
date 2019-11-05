@@ -24,7 +24,6 @@ class TemporalMongoQuery:
         self._collection = collection
         self._load_from = load_from
         self._pipeline: List[Dict[str, Dict[Any]]] = [{'$match': {'_t': self._type.__name__}}]
-        self._ordered_queryable = None
 
     def __has_sort(self) -> bool:
         stage_names = [stage_name
@@ -141,13 +140,11 @@ class TemporalMongoQuery:
             return query
 
     def as_iterable(self) -> Iterable[Record]:
-        if self._pipeline is not None and self._ordered_queryable is None:
+
+        if not self.__has_sort():
             batch_queryable = self._data_source.apply_final_constraints(self._pipeline, self._load_from)
-        elif self._pipeline is None and self._ordered_queryable is not None:
-            batch_queryable = self._ordered_queryable
         else:
-            raise Exception(f'Strictly one of _queryable or _ordered_queryable can'
-                            f'have value, not both and not neither.')
+            batch_queryable = self._pipeline
 
         projected_batch_queryable = batch_queryable
         projected_batch_queryable.append({'$project': {'Id': '$_id', 'Key': '$_key', '_id': 0}})

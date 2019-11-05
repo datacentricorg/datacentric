@@ -31,7 +31,7 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
         if saved_by is not None and id_ > saved_by:
             return
         pipeline = [
-            {'$match': {'$id': {'$eq': id_}}},
+            {'$match': {'_id': {'$eq': id_}}},
             {'$limit': 1}
         ]
         collection = self._get_or_create_collection(type_)
@@ -40,7 +40,7 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
             cursor_next = cursor.next()
             result: Record = deserialize(cursor_next)
 
-            if result is not None and isinstance(result, DeletedRecord):
+            if result is not None and not isinstance(result, DeletedRecord):
                 if not isinstance(result, type_):
                     raise Exception(f'Stored type {type(result).__name__} for ObjectId={id_} and '
                                     f'Key={result.key} is not an instance of the requested type {type_.__name__}.')
