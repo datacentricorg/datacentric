@@ -1,6 +1,5 @@
 import datetime as dt
 import numpy as np
-import re
 import inspect
 import itertools
 from bson import ObjectId
@@ -9,6 +8,7 @@ from typing import Dict, Any, get_type_hints
 from typing_inspect import get_origin, get_args
 
 import datacentric.types.date_ext as date_ext
+import datacentric.extensions.str as str_ext
 from datacentric.platform.reflection.class_info import ClassInfo
 from datacentric.types.local_minute import LocalMinute
 from datacentric.types.record import Record, Key, Data
@@ -60,7 +60,7 @@ def _serialize_class(obj):
         else:
             serialized_value = _serialize_primitive(value)
 
-        dict_[_to_pascal_case(slot)] = serialized_value
+        dict_[str_ext.to_pascal_case(slot)] = serialized_value
     return dict_
 
 
@@ -108,18 +108,7 @@ def _serialize_primitive(value):
         raise Exception(f'Cannot serialize type {value_type.__name__}')
 
 
-def _to_pascal_case(name: str):
-    return ''.join(x for x in name.title() if not x == '_')
-
-
 # Deserialization: dict -> object
-__first_cap_re = re.compile('(.)([A-Z][a-z]+)')
-__all_cap_re = re.compile('([a-z0-9])([A-Z])')
-
-
-def to_snake_case(name):
-    s1 = __first_cap_re.sub(r'\1_\2', name)
-    return __all_cap_re.sub(r'\1_\2', s1).lower()
 
 
 def deserialize(dict_: Dict) -> Record:
@@ -143,7 +132,7 @@ def _deserialize_class(dict_: Dict[str, Any]):
     new_obj = type_info()
 
     for dict_key, dict_value in dict_.items():
-        slot = to_snake_case(dict_key)
+        slot = str_ext.to_snake_case(dict_key)
         hints = get_type_hints(type_info)
         member_type = hints[slot]
         if get_origin(member_type) is not None and get_origin(member_type) is list:

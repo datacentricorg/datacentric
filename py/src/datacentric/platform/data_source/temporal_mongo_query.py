@@ -1,9 +1,10 @@
 from __future__ import annotations
-from typing import Iterable
+from typing import Iterable, Dict, Any
 from bson import ObjectId
 from pymongo.collection import Collection
 from pymongo.command_cursor import CommandCursor
 
+import datacentric.extensions.str as str_ext
 from datacentric.types.record import Record
 from datacentric.platform.serialization.serializer import deserialize
 
@@ -25,11 +26,16 @@ class TemporalMongoQuery:
                        for stage_name in stage.keys()]
         return '$sort' in stage_names
 
-    def where(self, predicate) -> TemporalMongoQuery:
+    def where(self, predicate: Dict[str, Any]) -> TemporalMongoQuery:
         if not self.__has_sort():
+            renamed_keys = dict()
+            for k, v in predicate.items():
+                new_key = str_ext.to_pascal_case(k)
+                renamed_keys[new_key] = v
+
             query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
             query._pipeline = self._pipeline.copy()
-            query._pipeline.append({'$match': predicate})
+            query._pipeline.append({'$match': renamed_keys})
             return query
         else:
             raise Exception(f'All where(...) clauses of the query must precede'
@@ -42,13 +48,13 @@ class TemporalMongoQuery:
             query._pipeline = self._pipeline.copy()
             sorts = next(stage['$sort'] for stage in query._pipeline
                          if '$sort' in stage)
-            sorts[attr] = 1
+            sorts[str_ext.to_pascal_case(attr)] = 1
             return query
         # append sort stage
         else:
             query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
             query._pipeline = self._pipeline.copy()
-            query._pipeline.append({'$sort': {attr: 1}})
+            query._pipeline.append({'$sort': {str_ext.to_pascal_case(attr): 1}})
             return query
 
     def sort_by_descending(self, attr) -> TemporalMongoQuery:
@@ -58,13 +64,13 @@ class TemporalMongoQuery:
             query._pipeline = self._pipeline.copy()
             sorts = next(stage['$sort'] for stage in query._pipeline
                          if '$sort' in stage)
-            sorts[attr] = -1
+            sorts[str_ext.to_pascal_case(attr)] = -1
             return query
         # append sort stage
         else:
             query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
             query._pipeline = self._pipeline.copy()
-            query._pipeline.append({'$sort': {attr: -1}})
+            query._pipeline.append({'$sort': {str_ext.to_pascal_case(attr): -1}})
             return query
 
     def as_iterable(self) -> Iterable[Record]:
