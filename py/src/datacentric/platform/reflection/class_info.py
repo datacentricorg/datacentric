@@ -17,7 +17,7 @@ class ClassInfo:
     @staticmethod
     def get_type(name: str) -> type:
         if not ClassInfo.__is_initialized:
-            ClassInfo.__initialize_typ_map()
+            # ClassInfo.__initialize_typ_map()
 
             from datacentric.types.record import TypedRecord, TypedKey, Data
             children = ClassInfo.__get_runtime_imported_data(Data, [])
