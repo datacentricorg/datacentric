@@ -75,8 +75,8 @@ class DerivedSampleData(BaseSampleData):
     double_element2: float
     string_element2: str
     list_of_string: List[str]
-    list_of_double: np.array
-    list_of_nullable_double: np.array
+    list_of_double: np.ndarray
+    list_of_nullable_double: np.ndarray
     data_element: ElementSampleData
     data_element_list: List[ElementSampleData]
     key_element: BaseSampleKey
