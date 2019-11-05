@@ -1,15 +1,21 @@
 from abc import ABC, abstractmethod
 from bson.objectid import ObjectId
-from typing import List, Set, Dict, Iterable, Union, TypeVar
+from typing import List, Set, Dict, Iterable, Union, TypeVar, Generic
 
-from datacentric.platform.data_set import DataSetData, DataSetKey
 from datacentric.types.record import RootRecord, TypedKey
+from datacentric.platform.data_set import DataSetData, DataSetKey
 
-TRecord = TypeVar['TRecord']
+
+#TRecord = TypeVar['TRecord']
 
 
-class DataSourceData(RootRecord, ABC):
-    empty_id = ObjectId('000000000000000000000000')
+class DataSourceKey(TypedKey['DataSourceData']):
+    def __init__(self):
+        super().__init__()
+
+
+class DataSourceData(RootRecord[DataSourceKey], ABC):
+    __empty_id = ObjectId('000000000000000000000000')
     common_id = 'Common'
 
     def __init__(self):
@@ -74,15 +80,15 @@ class DataSourceData(RootRecord, ABC):
         self._import_dict[data_set_data.id_] = lookup_list
 
     def get_data_set_lookup_list(self, load_from: ObjectId) -> Iterable[ObjectId]:
-        if load_from == self.empty_id:
-            return [self.empty_id]
+        if load_from == self.__empty_id:
+            return [self.__empty_id]
         if load_from in self._import_dict:
             return self._import_dict[load_from]
         else:
             data_set_data = self.load_or_null(load_from)  # type: DataSetData
             if data_set_data is None:
                 raise Exception(f'Dataset with ObjectId={load_from} is not found.')
-            if data_set_data.data_set != self.empty_id:
+            if data_set_data.data_set != self.__empty_id:
                 raise Exception(f'Dataset with ObjectId={load_from} is not stored in root dataset.')
             result = self.__build_data_set_lookup_list(data_set_data)
             self._import_dict[load_from] = result
@@ -97,7 +103,7 @@ class DataSourceData(RootRecord, ABC):
         data_set_data = self.load_or_null_by_key(data_set_key, load_from)  # type: DataSetData
 
         if data_set_data is None:
-            return self.empty_id
+            return self.__empty_id
         self._data_set_dict[data_set_id] = data_set_data.id_
         if data_set_data.id_ not in self._import_dict:
             import_set = self.__build_data_set_lookup_list(data_set_data)
@@ -153,12 +159,12 @@ class DataSourceData(RootRecord, ABC):
             raise Exception(f'Dataset {data_set_id} is not found in data store {self.data_source_id}.')
 
     def get_common(self):
-        return self.get_data_set(self.common_id, self.empty_id)
+        return self.get_data_set(self.common_id, self.__empty_id)
 
     def create_common(self) -> ObjectId:
         result = DataSetData()
         result.data_set_id = self.common_id
-        self.save_data_set(result, self.empty_id)
+        self.save_data_set(result, self.__empty_id)
         return result.id_
 
     def create_data_set(self, data_set_id: str, save_to: ObjectId, import_data_sets: List[ObjectId]) -> ObjectId:

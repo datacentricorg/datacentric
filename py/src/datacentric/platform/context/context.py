@@ -9,3 +9,4 @@ class Context:
     def __init__(self):
         self.data_source = None  # type_: 'DataSourceData'
         self.data_set = None  # type: ObjectId
+        self.log = None

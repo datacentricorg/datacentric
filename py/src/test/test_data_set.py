@@ -1,4 +1,6 @@
 import unittest
+from pymongo import MongoClient
+from pymongo.settings import TopologySettings
 
 from datacentric.platform.data_set import DataSetKey
 from datacentric.types.record import Record
