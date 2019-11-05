@@ -111,13 +111,13 @@ def save_minimal_record(context, data_set_id, record_id, record_index, version):
 class TestTemporalDataSource(unittest.TestCase):
     def test_instantiation(self):
         context = Context()
-        source = TemporalMongoDataSourceData(mongo_uri='localhost:27017', db_name='Test')
+        source = TemporalMongoDataSourceData(db_name='Test')
         source.init(context)
         context.data_source = source
 
     def test_create_common(self):
         context = Context()
-        source = TemporalMongoDataSourceData(mongo_uri='localhost:27017', db_name='Test')
+        source = TemporalMongoDataSourceData(db_name='Test')
         source.init(context)
         context.data_source = source
         id_ = context.data_source.create_common()
@@ -125,7 +125,7 @@ class TestTemporalDataSource(unittest.TestCase):
 
     def test_smoke(self):
         context = Context()
-        source = TemporalMongoDataSourceData(mongo_uri='localhost:27017', db_name='Test')
+        source = TemporalMongoDataSourceData(db_name='Test')
         source.init(context)
 
         context.data_source = source
@@ -148,7 +148,7 @@ class TestTemporalDataSource(unittest.TestCase):
 
     def test_multiple_data_set_query(self):
         context = Context()
-        source = TemporalMongoDataSourceData(mongo_uri='localhost:27017', db_name='Test')
+        source = TemporalMongoDataSourceData(db_name='Test')
         source.init(context)
 
         context.data_source = source
@@ -221,7 +221,7 @@ class TestTemporalDataSource(unittest.TestCase):
     def test_create_ordered_id(self):
         """Stress test to check ObjectIds are created in increasing order."""
         context = Context()
-        source = TemporalMongoDataSourceData(mongo_uri='localhost:27017', db_name='Test')
+        source = TemporalMongoDataSourceData(db_name='Test')
         source.init(context)
 
         context.data_source = source

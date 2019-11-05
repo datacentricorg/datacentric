@@ -11,7 +11,7 @@ from test.data_sample import NullableElementsSampleData, SampleEnum
 class TestQuery(unittest.TestCase):
     def test_nullable_elements(self):
         context = Context()
-        source = TemporalMongoDataSourceData(mongo_uri='localhost:27017', db_name='TestQuery')
+        source = TemporalMongoDataSourceData(db_name='TestQuery')
         source.init(context)
 
         context.data_source = source

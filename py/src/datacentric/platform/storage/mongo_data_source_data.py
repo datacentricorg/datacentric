@@ -10,7 +10,7 @@ class MongoDataSourceData(DataSourceData, ABC):
     __prohibited_symbols = '/\\. "$*<>:|?'
     __max_db_name_length = 64
 
-    def __init__(self, mongo_uri, db_name):
+    def __init__(self, db_name, mongo_uri):
         DataSourceData.__init__(self)
 
         if any(x in db_name for x in MongoDataSourceData.__prohibited_symbols):
