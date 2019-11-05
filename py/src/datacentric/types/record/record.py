@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
+from bson import ObjectId
 
 from datacentric.platform.context import Context
 from datacentric.types.record import Data
-from bson.objectid import ObjectId
 
 
 class Record(Data, ABC):
@@ -20,15 +20,6 @@ class Record(Data, ABC):
         self.context = context
 
     @property
-    def key(self) -> str:
-        raise NotImplemented
-
     @abstractmethod
-    def to_key(self) -> 'Key':
+    def key(self) -> str:
         pass
-
-    # def save(self, save_to: ObjectId = None) -> None:
-    #     raise NotImplemented
-    #
-    # def delete(self, context: Context, load_from: ObjectId = None) -> None:
-    #     raise NotImplemented

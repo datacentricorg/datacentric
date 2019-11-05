@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
-
 from bson.objectid import ObjectId
-from typing import List, Set, Dict, Iterable, Union
-from datacentric.platform.data_set import DataSetData
-from datacentric.platform.data_set.data_set import DataSetKey
-from datacentric.types.record import RootRecord, Record, Key
+from typing import List, Set, Dict, Iterable, Union, TypeVar
+
+from datacentric.platform.data_set import DataSetData, DataSetKey
+from datacentric.types.record import RootRecord, TypedKey
+
+TRecord = TypeVar['TRecord']
 
 
 class DataSourceData(RootRecord, ABC):
@@ -37,11 +38,11 @@ class DataSourceData(RootRecord, ABC):
                             f'one of SavedByTime or SavedById is set.')
 
     @abstractmethod
-    def load_or_null(self, id_: ObjectId) -> Record:
+    def load_or_null(self, id_: ObjectId) -> TRecord:
         pass
 
     @abstractmethod
-    def reload_or_null(self, key: Key, load_from: ObjectId) -> Record:
+    def reload_or_null(self, key: TypedKey, load_from: ObjectId) -> TRecord:
         pass
 
     @abstractmethod
@@ -49,11 +50,11 @@ class DataSourceData(RootRecord, ABC):
         pass
 
     @abstractmethod
-    def save(self, record: Record, save_to: ObjectId) -> None:
+    def save(self, record: TRecord, save_to: ObjectId) -> None:
         pass
 
     @abstractmethod
-    def delete(self, key: Key, delete_in: ObjectId) -> None:
+    def delete(self, key: TypedKey[TRecord], delete_in: ObjectId) -> None:
         pass
 
     @abstractmethod
@@ -132,18 +133,18 @@ class DataSourceData(RootRecord, ABC):
                     result.add(data_set_id)
 
     # From extensions
-    def load(self, id_: ObjectId) -> Record:
+    def load(self, id_: ObjectId) -> TRecord:
         result = self.load_or_null(id_)
         if result is None:
             raise Exception(f'Record with ObjectId={id_} is not found in data store {self.data_source_id}.')
         return result
 
     # renamed
-    def load_by_key(self, key_: Key, load_from: ObjectId):
+    def load_by_key(self, key_: TypedKey[TRecord], load_from: ObjectId):
         return key_.load(self.context, load_from)
 
     # renamed
-    def load_or_null_by_key(self, key_: Key, load_from: ObjectId):
+    def load_or_null_by_key(self, key_: TypedKey[TRecord], load_from: ObjectId):
         return key_.load_or_null(self.context, load_from)
 
     def get_data_set(self, data_set_id: str, load_from: ObjectId):

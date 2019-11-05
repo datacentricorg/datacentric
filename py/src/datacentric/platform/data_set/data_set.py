@@ -1,23 +1,22 @@
 from datacentric.platform.context import Context
-from datacentric.types.record import Key
-from datacentric.types.record.record import Record
-from bson.objectid import ObjectId
+from datacentric.types.record import TypedRecord, TypedKey
+from bson import ObjectId
 from typing import List
 
 
-class DataSetData(Record):
+class DataSetData(TypedRecord['DataSetKey']):
     def __init__(self):
-        Record.__init__(self)
+        TypedRecord.__init__(self)
         self.data_set_id = None  # type: str
         self.imports = None  # type: List[ObjectId]
 
     def init(self, context: Context):
-        Record.init(self, context)
+        TypedRecord.init(self, context)
 
 
-class DataSetKey(Key):
+class DataSetKey(TypedKey[DataSetData]):
     def __init__(self, id_: str = None):
-        Key.__init__(self)
+        TypedKey.__init__(self)
         if id_ is None:
             self.data_set_id = None
         else:

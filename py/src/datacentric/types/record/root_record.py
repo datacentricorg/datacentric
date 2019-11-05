@@ -1,8 +1,8 @@
 from abc import ABC
+from bson import ObjectId
 
 from datacentric.platform.context import Context
 from datacentric.types.record import Record
-from bson.objectid import ObjectId
 
 
 class RootRecord(Record, ABC):
