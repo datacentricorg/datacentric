@@ -4,7 +4,6 @@ from bson.objectid import ObjectId
 
 from datacentric.platform.context import Context
 from datacentric.types.record import Record, Key
-from datacentric.platform.reflection.class_info import ClassInfo
 
 TKey = TypeVar('TKey')
 
@@ -17,7 +16,8 @@ class TypedRecord(Generic[TKey], Record, ABC):
 
     @property
     def key(self) -> str:
-        key_type = ClassInfo.get_key_from_record(type(self))
+        key_type = type(self).__orig_bases__[0].__args__[0]
+        # forward_arg = type_.__orig_bases__[0].__args__[0].__forward_arg__
         key_slots = key_type.__slots__
         data_slots = self.__slots__
 

@@ -5,6 +5,7 @@ import os
 from typing import Dict
 
 from datacentric.types.record import Record
+from datacentric.platform.reflection import ClassMapSettings
 
 
 class ClassInfo:
@@ -24,6 +25,43 @@ class ClassInfo:
         key_type = type_.__orig_bases__[0].__args__[0]
         # forward_arg = type_.__orig_bases__[0].__args__[0].__forward_arg__
         return key_type
+
+    @staticmethod
+    def get_mapped_class_name(type_: type) -> str:
+        mapped_class_name = type_.__name__
+
+        for prefix in ClassMapSettings.ignored_class_name_prefixes():
+            if mapped_class_name.startswith(prefix):
+                mapped_class_name = mapped_class_name[len(prefix):]
+                break
+
+        for suffix in ClassMapSettings.ignored_class_name_suffixes():
+            if mapped_class_name.endswith(suffix):
+                mapped_class_name = mapped_class_name[:len(mapped_class_name) - len(suffix)]
+                break
+
+        return mapped_class_name
+
+    @staticmethod
+    def get_root_type(type_: type) -> type:
+        record_base_name = 'TypedRecord'
+        key_base_name = 'TypedKey'
+
+        if type_.__name__ == record_base_name or type_.__name__ == key_base_name:
+            raise TypeError(f'{record_base_name} and {key_base_name} are not allowed.')
+
+        mro = inspect.getmro(type_)
+        base_names = [x.__name__ for x in mro]
+
+        if record_base_name in base_names:
+            rec_idx = base_names.index(record_base_name)
+            return mro[rec_idx - 1]
+        elif key_base_name in base_names:
+            key_idx = base_names.index(key_base_name)
+            return mro[key_idx - 1]
+        else:
+            raise TypeError(f'Cannot find root type for {type_.__name__}. '
+                            f'{record_base_name} and {key_base_name} are not found in mro.')
 
     @staticmethod
     def __initialize_typ_map():
