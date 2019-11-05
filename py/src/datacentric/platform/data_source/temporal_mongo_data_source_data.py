@@ -4,6 +4,7 @@ from bson import ObjectId
 
 from datacentric.types.record import Record, TypedKey
 from datacentric.platform.data_source import MongoDataSourceData
+from datacentric.platform.serialization.serializer import serialize, deserialize
 
 
 class TemporalMongoDataSourceData(MongoDataSourceData):
@@ -23,7 +24,7 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
             return
         raise NotImplemented
 
-    def _get_saved_by(self) -> ObjectId:
+    def _get_saved_by(self):
         raise NotImplemented
 
     def delete(self, key: TypedKey[Record], delete_in: ObjectId) -> None:
@@ -45,6 +46,5 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
         record.data_set = save_to
         record.init(self.context)
         collection = self.db.get_collection('Type')
-        collection.insert_one(record)
-
-        raise NotImplemented
+        serialized_record = serialize(record)
+        collection.insert_one(serialized_record)

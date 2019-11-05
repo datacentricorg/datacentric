@@ -6,14 +6,14 @@ from datacentric.types.record import Data
 
 
 class Record(Data, ABC):
-    __slots__ = ['context', 'id_', 'data_set', 'key_']
+    __slots__ = ['context', 'id_', 'data_set', '_key']
 
     def __init__(self):
         Data.__init__(self)
         self.context = None  # type: Context
         self.id_ = None  # type: ObjectId
         self.data_set = None  # type: ObjectId
-        self.key_ = None  # type: str
+        self._key = None  # type: str
 
     def init(self, context: Context) -> None:
         if context is None:

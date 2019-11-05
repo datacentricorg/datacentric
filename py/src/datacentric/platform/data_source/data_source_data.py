@@ -1,12 +1,9 @@
 from abc import ABC, abstractmethod
 from bson.objectid import ObjectId
-from typing import List, Set, Dict, Iterable, Union, TypeVar, Generic
+from typing import List, Set, Dict, Iterable, Union, Optional
 
 from datacentric.types.record import RootRecord, TypedKey, Record
 from datacentric.platform.data_set import DataSetData, DataSetKey
-
-
-# TRecord = TypeVar['TRecord']
 
 
 class DataSourceKey(TypedKey['DataSourceData']):
@@ -76,7 +73,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
 
     def save_data_set(self, data_set_data: DataSetData, save_to: ObjectId) -> None:
         self.save(data_set_data, save_to)
-        self._data_set_dict[data_set_data.key_] = data_set_data.id_
+        self._data_set_dict[data_set_data.key] = data_set_data.id_
         lookup_list = self.__build_data_set_lookup_list(data_set_data)
         self._import_dict[data_set_data.id_] = lookup_list
 
@@ -96,7 +93,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
             return result
 
     @abstractmethod
-    def _get_saved_by(self) -> ObjectId:
+    def _get_saved_by(self) -> Optional[ObjectId]:
         pass
 
     def __load_data_set_or_empty(self, data_set_id: str, load_from: ObjectId) -> ObjectId:
@@ -117,7 +114,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
 
         if not ObjectId.is_valid(data_set_data.id_):
             raise Exception('Required ObjectId value is not set.')
-        if data_set_data.key_ is None or data_set_data.key_ == '':
+        if data_set_data.key == '':
             raise Exception('Required string value is not set.')
 
         saved_by = self._get_saved_by()
@@ -129,7 +126,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         if data_set_data.imports is not None:
             for data_set_id in data_set_data.imports:
                 if data_set_data.id_ == data_set_id:
-                    raise Exception(f'Dataset {data_set_data.key_} with ObjectId={data_set_data.id_} '
+                    raise Exception(f'Dataset {data_set_data.key} with ObjectId={data_set_data.id_} '
                                     f'includes itself in the list of its imports.')
                 if data_set_id not in result:
                     result.add(data_set_id)
