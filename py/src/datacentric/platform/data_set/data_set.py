@@ -10,7 +10,7 @@ class DataSetKey(TypedKey['DataSetData']):
     data_set_id: str
 
     def __init__(self, id_: str = None):
-        TypedKey.__init__(self)
+        super().__init__()
         self.data_set_id = None
         if id_ is not None:
             self.data_set_id = id_

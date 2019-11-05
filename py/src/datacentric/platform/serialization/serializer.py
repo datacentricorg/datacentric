@@ -1,11 +1,12 @@
 import datetime as dt
-import time
 import inspect
 from typing import Dict, List
 import numpy as np
 import inflection
 
+import datacentric.types.date_ext as date_ext
 from datacentric.platform.reflection.class_info import ClassInfo
+from datacentric.types.local_minute import LocalMinute
 from datacentric.types.record import Record
 
 
@@ -17,19 +18,22 @@ def serialize(obj: Record):
     dict_['_key'] = obj.key
     dict_['_dataset'] = obj.data_set
     for slot in obj.__slots__:
-        val = obj.__getattribute__(slot)
-        if inspect.isclass(val):
-            serialized_value = _serialize_class(val)
-        elif type(val) == dt.date:
-            serialized_value = _date_to_iso_int(val)
-        elif type(val) == dt.time:
-            serialized_value = _time_to_iso_int(val)
-        elif type(val) == dt.datetime:
-            serialized_value = _date_time_to_int(val)
+        value = obj.__getattribute__(slot)
+        value_type = type(value)
+        if inspect.isclass(value):
+            serialized_value = _serialize_class(value)
+        elif value_type == LocalMinute:
+            serialized_value = date_ext.minute_to_iso_int(value)
+        elif value_type == dt.date:
+            serialized_value = date_ext.date_to_iso_int(value)
+        elif value_type == dt.time:
+            serialized_value = date_ext.time_to_iso_int(value)
+        elif value_type == dt.datetime:
+            serialized_value = date_ext.date_time_to_iso_int(value)
         else:
-            serialized_value = val
+            serialized_value = value
 
-        if val is not None:
+        if value is not None:
             dict_[_to_pascal_case(slot)] = serialized_value
     return dict_
 
@@ -38,39 +42,28 @@ def _serialize_class(obj):
     dict_ = dict()
     dict_['_t'] = obj.__class__.__name__
     for slot in obj.__slots__:
-        val = obj.__getattribute__(slot)
-        if inspect.isclass(val):
-            serialized_value = _serialize_class(val)
-        elif type(val) == dt.date:
-            serialized_value = _date_to_iso_int(val)
-        elif type(val) == dt.time:
-            serialized_value = _time_to_iso_int(val)
-        elif type(val) == dt.datetime:
-            serialized_value = _date_time_to_int(val)
+        value = obj.__getattribute__(slot)
+        value_type = type(value)
+        if inspect.isclass(value):
+            serialized_value = _serialize_class(value)
+        elif value_type == LocalMinute:
+            serialized_value = date_ext.minute_to_iso_int(value)
+        elif value_type == dt.date:
+            serialized_value = date_ext.date_to_iso_int(value)
+        elif value_type == dt.time:
+            serialized_value = date_ext.time_to_iso_int(value)
+        elif value_type == dt.datetime:
+            serialized_value = date_ext.date_time_to_iso_int(value)
         else:
-            serialized_value = val
+            serialized_value = value
 
-        if val is not None:
+        if value is not None:
             dict_[_to_pascal_case(slot)] = serialized_value
     return dict_
 
 
 def _to_pascal_case(name: str):
     return ''.join(x for x in name.title() if not x == '_')
-
-
-def _date_to_iso_int(date: dt.date):
-    return date.year * 10_000 + date.month * 100 + date.day
-
-
-def _time_to_iso_int(time_: dt.time):
-    # todo: microseconds rounding
-    return time_.hour * 100_00_000 + time_.minute * 100_000 + time_.second * 1000 + time_.microsecond * 1000
-
-
-def _date_time_to_int(datetime: dt.datetime):
-    milliseconds = datetime.microsecond / 1000
-    return time.mktime(datetime.utctimetuple()) * 1000 + milliseconds
 
 
 # Deserialization: dict -> object
@@ -97,26 +90,27 @@ def deserialize(dict_: Dict):
     for slot in slots__:
         member_type = annotations[slot]
         camel_case_slot = inflection.camelize(slot)
+        slot_value = dict_[camel_case_slot]
         if member_type.__module__ == 'typing':
-            value = _deserialize_list(member_type, dict_[camel_case_slot])
+            value = _deserialize_list(member_type, slot_value)
         elif member_type == str:
-            value = dict_[camel_case_slot]
-        elif member_type == dt.datetime:
-            value = dict_[camel_case_slot]
+            value = slot_value
         elif member_type == np.array:
-            value = np.array(dict_[camel_case_slot])
+            value = np.array(slot_value)
         elif member_type == bool:
-            value = dict_[camel_case_slot]
+            value = slot_value
+        elif member_type == LocalMinute:
+            value = date_ext.iso_int_to_local_minute(slot_value)
         elif member_type == dt.datetime:
-            value = dict_[camel_case_slot]
+            value = date_ext.iso_int_to_date_time(slot_value)
         elif member_type == dt.date:
-            value = _parse_int_to_date(dict_[camel_case_slot])
+            value = date_ext.iso_int_to_date(slot_value)
         elif member_type == dt.time:
-            value = dict_[camel_case_slot]
+            value = date_ext.iso_int_to_time(slot_value)
         elif member_type == int:
-            value = dict_[camel_case_slot]
+            value = slot_value
         elif member_type == float:
-            value = dict_[camel_case_slot]
+            value = slot_value
         else:
             raise TypeError('Cannot deduce type')
 
@@ -124,10 +118,4 @@ def deserialize(dict_: Dict):
     return new_obj
 
 
-def _parse_int_to_date(iso_int: int):
-    year = int(iso_int / 100_00)
-    iso_int -= year * 100_00
-    month = int(iso_int / 100)
-    iso_int -= month * 100
-    day = iso_int
-    return dt.date(year, month, day)
+

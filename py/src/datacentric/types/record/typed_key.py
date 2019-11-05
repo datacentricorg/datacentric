@@ -10,7 +10,7 @@ TRecord = TypeVar('TRecord')
 
 class TypedKey(Generic[TRecord], Key, ABC):
     def __init__(self):
-        Key.__init__(self)
+        super().__init__()
 
     def load(self, context: Context, load_from: ObjectId = None) -> TRecord:
         if load_from is None:
@@ -18,7 +18,7 @@ class TypedKey(Generic[TRecord], Key, ABC):
         else:
             result = self.load_or_null(context, load_from)
         if result is None:
-            raise KeyError(f'Record with key {self.value()} is not found in dataset with ObjectId={load_from}.')
+            raise KeyError(f'Record with key {self.value} is not found in dataset with ObjectId={load_from}.')
 
         return result
 

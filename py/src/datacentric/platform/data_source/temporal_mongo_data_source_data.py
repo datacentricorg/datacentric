@@ -2,7 +2,6 @@ import datetime as dt
 from typing import Dict, Union
 from bson import ObjectId
 from pymongo.collection import Collection
-from pymongo.pi
 
 from datacentric.types.record import Record, TypedKey
 from datacentric.platform.data_source import MongoDataSourceData
@@ -39,9 +38,9 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
         raise NotImplemented
 
     def reload_or_null(self, key: TypedKey, load_from: ObjectId) -> Record:
-        self.get_data_set_lookup_list()
+        self.get_data_set_lookup_list(load_from)
         key_value = key.value
-        mong
+
         raise NotImplemented
 
     def save(self, record: Record, save_to: ObjectId) -> None:
