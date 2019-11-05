@@ -35,17 +35,31 @@ class TestQuery(unittest.TestCase):
 
             context.data_source.save(record, context.data_set)
 
-        # token0 = NullableElementsSampleData.int_token == 1
-        # # token1 = NullableElementsSampleData.int_token > False
-        # token2 = NullableElementsSampleData.int_token is None
-        # token3 = NullableElementsSampleData.int_token in []
-
         query = context.data_source.get_query(context.data_set, NullableElementsSampleData)
 
-        for obj in query.as_iterable():
-            context.log.status(f'$"    {obj.key} (record index {obj.record_index})."')
+        # Unconstrained query
+        unconstrained_results = []
+        for obj in query.as_iterable():  # type: NullableElementsSampleData
+            unconstrained_results.append((obj.key, obj.record_index))
 
-        res = str(context.log)
+        self.assertTrue(('A0;true;0;20030501;101530000;1000;20030501101500000;EnumValue1', 4) in unconstrained_results)
+        self.assertTrue(('A1;false;1;20030502;101531000;1001;20030502101500000;EnumValue2', 5) in unconstrained_results)
+        self.assertTrue(('A2;true;2;20030503;101532000;1002;20030503101500000;EnumValue1', 6) in unconstrained_results)
+        self.assertTrue(('A3;false;3;20030504;101533000;1003;20030504101500000;EnumValue2', 7) in unconstrained_results)
+
+        # Query with constraints
+        query = context.data_source.get_query(context.data_set, NullableElementsSampleData) \
+            .where({'string_token': 'A1'}).where({'bool_token': False}).where({'int_token': 1}) \
+            .where({'local_date_token': dt.date(2003, 5, 1) + dt.timedelta(days=1)}) \
+            .where({'local_time_token': dt.time(10, 15, 30 + 1)}) \
+            .where({'local_minute_token': LocalMinute(10, 1)}) \
+            .where({'local_date_time_token': dt.datetime(2003, 5, 1, 10, 15) + dt.timedelta(days=1)})
+
+        constrained_results = []
+        for obj in query.as_iterable():
+            constrained_results.append((obj.key, obj.record_index))
+
+        self.assertTrue(('A1;false;1;20030502;101531000;1001;20030502101500000;EnumValue2', 5) in constrained_results)
 
 
 if __name__ == "__main__":

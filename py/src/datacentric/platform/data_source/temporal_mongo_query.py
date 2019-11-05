@@ -1,10 +1,14 @@
 from __future__ import annotations
-from typing import Iterable, Dict, Any
+from typing import Iterable, Dict, Any, List
 from bson import ObjectId
 from pymongo.collection import Collection
 from pymongo.command_cursor import CommandCursor
+import datetime as dt
+import numpy as np
 
 import datacentric.extensions.str as str_ext
+from datacentric.types import date_ext
+from datacentric.types.local_minute import LocalMinute
 from datacentric.types.record import Record
 from datacentric.platform.serialization.serializer import deserialize
 
@@ -33,6 +37,8 @@ class TemporalMongoQuery:
                 new_key = str_ext.to_pascal_case(k)
                 renamed_keys[new_key] = v
 
+            TemporalMongoQuery.__fix_predicate_query(renamed_keys)
+
             query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
             query._pipeline = self._pipeline.copy()
             query._pipeline.append({'$match': renamed_keys})
@@ -40,6 +46,60 @@ class TemporalMongoQuery:
         else:
             raise Exception(f'All where(...) clauses of the query must precede'
                             f'sort_by(...) or sort_by_descending(...) clauses of the same query.')
+
+    @staticmethod
+    def __fix_predicate_query(dict_: Dict[str, Any]):
+        for k, value in dict_.items():
+            if type(value) is dict:
+                updated_value = TemporalMongoQuery.__process_dict(value)
+            elif type(value) is list:
+                updated_value = TemporalMongoQuery.__process_list(value)
+            else:
+                updated_value = TemporalMongoQuery.__process_primitive(value)
+            dict_[k] = updated_value
+
+    @staticmethod
+    def __process_dict(dict_: Dict[str, Any]) -> Dict[str, Any]:
+        for k, value in dict_.items():
+            if type(value) is dict:
+                updated_value = TemporalMongoQuery.__process_dict(value)
+            elif type(value) is list:
+                updated_value = TemporalMongoQuery.__process_list(value)
+            else:
+                updated_value = TemporalMongoQuery.__process_primitive(value)
+
+            dict_[k] = updated_value
+        return dict_
+
+    @staticmethod
+    def __process_list(list_: List[Any]) -> List[Any]:
+        updated_list = []
+        for value in list_:
+            if type(value) is dict:
+                updated_value = TemporalMongoQuery.__process_dict(value)
+            elif type(value) is list:
+                updated_value = TemporalMongoQuery.__process_list(value)
+            else:
+                updated_value = TemporalMongoQuery.__process_primitive(value)
+            updated_list.append(updated_value)
+        return updated_list
+
+    @staticmethod
+    def __process_primitive(value) -> Any:
+        value_type = type(value)
+        if value_type == LocalMinute:
+            return date_ext.minute_to_iso_int(value)
+        elif value_type == dt.date:
+            return date_ext.date_to_iso_int(value)
+        elif value_type == dt.time:
+            return date_ext.time_to_iso_int(value)
+        elif value_type == dt.datetime:
+            return date_ext.date_time_to_iso_int(value)
+        # TODO: check for pymongo.binary.Binary to speed-up
+        elif value_type == np.ndarray:
+            return value.tolist()
+        else:
+            return value
 
     def sort_by(self, attr: str) -> TemporalMongoQuery:
         # Adding sort argument since sort stage is already present.
