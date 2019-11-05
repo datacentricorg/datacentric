@@ -98,7 +98,45 @@ class Key(Data, ABC):
         tokenIndex is advanced by the recursive call to InitFromTokens method
         of the embedded key.
         """
+        annotations = type(self).__annotations__
         for slot in slots:
-            a = slot
+            member_type = annotations[slot]
+            if member_type == type(float):
+                raise Exception(f'Key element {slot} has type Double. Elements of this type '
+                                f'cannot be part of key due to serialization format uncertainty.')
+            if issubclass(member_type, Key):
+                key_element = member_type()
+                token_index = key_element.__populate_from_string(tokens, token_index)
+                self.__setattr__(slot, key_element)
+                continue
 
-        raise NotImplemented
+            # Check that token is not empty
+            token = tokens[token_index]
+            if token == '':
+                raise Exception(f'Key {";".join(tokens)} for key type {type(self).__name__} contains an empty token.')
+
+            if member_type == str:
+                value = token
+            elif member_type == bool:
+                value = bool(token.capitalize())
+            elif member_type == int:
+                value = int(token)
+            elif member_type == dt.date:
+                value = date_ext.iso_int_to_date(int(token))
+            elif member_type == dt.time:
+                value = date_ext.iso_int_to_time(int(token))
+            elif member_type == LocalMinute:
+                value = date_ext.iso_int_to_local_minute(int(token))
+            elif member_type == dt.datetime:
+                value = date_ext.iso_int_to_date_time(int(token))
+            elif member_type == ObjectId:
+                value = ObjectId(token)
+            elif issubclass(member_type, Enum):
+                value = member_type[token]
+            else:
+                raise Exception(f'')
+
+            self.__setattr__(slot, value)
+            token_index += 1
+
+        return token_index

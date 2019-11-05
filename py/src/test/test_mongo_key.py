@@ -1,7 +1,5 @@
 import unittest
 
-from datacentric.platform.context import Context
-from datacentric.platform.data_source import TemporalMongoDataSourceData
 from datacentric.types.record import TypedRecord, TypedKey
 
 
@@ -61,6 +59,10 @@ class TestMongoKey(unittest.TestCase):
 
         key = CompositeKeySampleKey()
         key.populate_from_string(key_value)
+        self.assertEqual(key.key_element1, rec.key_element1)
+        self.assertEqual(key.key_element2.record_id, rec.key_element2.record_id)
+        self.assertEqual(key.key_element2.record_index, rec.key_element2.record_index)
+        self.assertEqual(key.key_element3, rec.key_element3)
 
 
 if __name__ == "__main__":
