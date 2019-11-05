@@ -24,11 +24,11 @@ namespace DataCentric
 {
     /// <summary>
     /// This class provides timezone conversion between UTC
-    /// and local datetime for the specified city.
+    /// and local datetime for the specified timezone.
     ///
-    /// Only the following timezones can be defined:
+    /// Only the following timezone names are permitted:
     ///
-    /// * UTC timezone; and
+    /// * UTC; and
     /// * IANA city timezones such as America/New_York
     ///
     /// Other 3-letter regional timezones such as EST or EDT are
@@ -36,23 +36,23 @@ namespace DataCentric
     /// between winter and summer time automatically for those
     /// regions where winter time is defined.
     ///
-    /// Because CityName is used to look up timezone conventions,
+    /// Because ZoneName is used to look up timezone conventions,
     /// it must match either the string UTC or the code in IANA
     /// timezone database precisely. The IANA city timezone code
     /// has two slash-delimited tokens, the first referencing the
     /// country and the other the city, for example America/New_York.
     /// </summary>
     [Configurable]
-    public class City : TypedRecord<CityKey, City>
+    public class Zone : TypedRecord<ZoneKey, Zone>
     {
         private DateTimeZone dateTimeZone_;
 
         /// <summary>
         /// Unique timezone name.
         ///
-        /// Only the following timezones can be defined:
+        /// Only the following timezone names are permitted:
         ///
-        /// * UTC timezone; and
+        /// * UTC; and
         /// * IANA city timezones such as America/New_York
         ///
         /// Other 3-letter regional timezones such as EST or EDT are
@@ -60,14 +60,14 @@ namespace DataCentric
         /// between winter and summer time automatically for those
         /// regions where winter time is defined.
         ///
-        /// Because CityName is used to look up timezone conventions,
+        /// Because ZoneName is used to look up timezone conventions,
         /// it must match either the string UTC or the code in IANA
         /// timezone database precisely. The IANA city timezone code
         /// has two slash-delimited tokens, the first referencing the
         /// country and the other the city, for example America/New_York.
         /// </summary>
         [BsonRequired]
-        public string CityName { get; set; }
+        public string ZoneName { get; set; }
 
         //--- METHODS
 
@@ -86,17 +86,17 @@ namespace DataCentric
             // Initialize base before executing the rest of the code in this method
             base.Init(context);
 
-            // Delegate to the method of the CityKey and cache the result in private field
-            dateTimeZone_ = new CityKey() {CityName = CityName}.GetDateTimeZone();
+            // Cache NodaTime timezone value in a private field
+            dateTimeZone_ = new ZoneKey() {ZoneName = ZoneName}.GetDateTimeZone();
         }
 
         /// <summary>
         /// Returns NodaTime timezone object used for conversion between
         /// UTC and local date, time, minute, and datetime.
         ///
-        /// Only the following timezones can be defined:
+        /// Only the following timezone names are permitted:
         ///
-        /// * UTC timezone; and
+        /// * UTC; and
         /// * IANA city timezones such as America/New_York
         ///
         /// Other 3-letter regional timezones such as EST or EDT are
@@ -104,7 +104,7 @@ namespace DataCentric
         /// between winter and summer time automatically for those
         /// regions where winter time is defined.
         ///
-        /// Because CityName is used to look up timezone conventions,
+        /// Because ZoneName is used to look up timezone conventions,
         /// it must match either the string UTC or the code in IANA
         /// timezone database precisely. The IANA city timezone code
         /// has two slash-delimited tokens, the first referencing the
@@ -114,14 +114,14 @@ namespace DataCentric
 
         //--- KEYS
 
-        /// <summary>Special city code for UTC timezone.</summary>
-        public static CityKey Utc { get; } = new CityKey() { CityName = "UTC" };
+        /// <summary>UTC timezone.</summary>
+        public static ZoneKey Utc { get; } = new ZoneKey() { ZoneName = "UTC" };
 
-        /// <summary>New York City</summary>
-        public static CityKey Nyc { get; } = new CityKey() { CityName = "America/New_York" };
+        /// <summary>New York City (United States) timezone.</summary>
+        public static ZoneKey Nyc { get; } = new ZoneKey() { ZoneName = "America/New_York" };
 
-        /// <summary>London</summary>
-        public static CityKey London { get; } = new CityKey() { CityName = "Europe/London" };
+        /// <summary>London (Great Britain) timezone.</summary>
+        public static ZoneKey London { get; } = new ZoneKey() { ZoneName = "Europe/London" };
 
         //--- STATIC
 
@@ -148,19 +148,19 @@ namespace DataCentric
         /// </summary>
         public static void Configure(IContext context)
         {
-            var result = new List<City>
+            var result = new List<Zone>
             {
-                new City
+                new Zone
                 {
-                    CityName = City.Utc.CityName
+                    ZoneName = Zone.Utc.ZoneName
                 },
-                new City
+                new Zone
                 {
-                    CityName = City.Nyc.CityName
+                    ZoneName = Zone.Nyc.ZoneName
                 },
-                new City
+                new Zone
                 {
-                    CityName = City.London.CityName
+                    ZoneName = Zone.London.ZoneName
                 }
             };
             context.SaveMany(result);
