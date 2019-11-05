@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from enum import Enum
 from typing import Iterable, Dict, Any, List
 from bson import ObjectId
 from pymongo.collection import Collection
@@ -21,7 +23,7 @@ class TemporalMongoQuery:
         self._type = type_
         self._collection = collection
         self._load_from = load_from
-        self._pipeline = [{'$match': {'_t': self._type.__name__}}]
+        self._pipeline: List[Dict[str, Dict[Any]]] = [{'$match': {'_t': self._type.__name__}}]
         self._ordered_queryable = None
 
     def __has_sort(self) -> bool:
@@ -49,30 +51,33 @@ class TemporalMongoQuery:
 
     @staticmethod
     def __fix_predicate_query(dict_: Dict[str, Any]):
+        """Updated and convert user defined query to bson friendly format."""
         for k, value in dict_.items():
             if type(value) is dict:
                 updated_value = TemporalMongoQuery.__process_dict(value)
             elif type(value) is list:
                 updated_value = TemporalMongoQuery.__process_list(value)
             else:
-                updated_value = TemporalMongoQuery.__process_primitive(value)
+                updated_value = TemporalMongoQuery.__process_element(value)
             dict_[k] = updated_value
 
     @staticmethod
     def __process_dict(dict_: Dict[str, Any]) -> Dict[str, Any]:
+        """Process dictionary values."""
         for k, value in dict_.items():
             if type(value) is dict:
                 updated_value = TemporalMongoQuery.__process_dict(value)
             elif type(value) is list:
                 updated_value = TemporalMongoQuery.__process_list(value)
             else:
-                updated_value = TemporalMongoQuery.__process_primitive(value)
+                updated_value = TemporalMongoQuery.__process_element(value)
 
             dict_[k] = updated_value
         return dict_
 
     @staticmethod
     def __process_list(list_: List[Any]) -> List[Any]:
+        """Process list elements."""
         updated_list = []
         for value in list_:
             if type(value) is dict:
@@ -80,12 +85,13 @@ class TemporalMongoQuery:
             elif type(value) is list:
                 updated_value = TemporalMongoQuery.__process_list(value)
             else:
-                updated_value = TemporalMongoQuery.__process_primitive(value)
+                updated_value = TemporalMongoQuery.__process_element(value)
             updated_list.append(updated_value)
         return updated_list
 
     @staticmethod
-    def __process_primitive(value) -> Any:
+    def __process_element(value) -> Any:
+        """Serializes elements to bson valid objects."""
         value_type = type(value)
         if value_type == LocalMinute:
             return date_ext.minute_to_iso_int(value)
@@ -95,9 +101,10 @@ class TemporalMongoQuery:
             return date_ext.time_to_iso_int(value)
         elif value_type == dt.datetime:
             return date_ext.date_time_to_iso_int(value)
-        # TODO: check for pymongo.binary.Binary to speed-up
         elif value_type == np.ndarray:
             return value.tolist()
+        elif issubclass(value_type, Enum):
+            return value.name
         else:
             return value
 

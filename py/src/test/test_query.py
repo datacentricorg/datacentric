@@ -53,7 +53,8 @@ class TestQuery(unittest.TestCase):
             .where({'local_date_token': dt.date(2003, 5, 1) + dt.timedelta(days=1)}) \
             .where({'local_time_token': dt.time(10, 15, 30 + 1)}) \
             .where({'local_minute_token': LocalMinute(10, 1)}) \
-            .where({'local_date_time_token': dt.datetime(2003, 5, 1, 10, 15) + dt.timedelta(days=1)})
+            .where({'local_date_time_token': dt.datetime(2003, 5, 1, 10, 15) + dt.timedelta(days=1)}) \
+            .where({'enum_token': SampleEnum.EnumValue2})
 
         constrained_results = []
         for obj in query.as_iterable():
