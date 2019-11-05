@@ -93,7 +93,7 @@ def _serialize_primitive(value):
     elif value_type == dt.time:
         return date_ext.time_to_iso_int(value)
     elif value_type == dt.datetime:
-        return date_ext.date_time_to_iso_int(value)
+        return value
     elif value_type == str:
         return value
     elif value_type == bool:
@@ -183,7 +183,7 @@ def _deserialize_primitive(expected_type, value):
     elif expected_type == LocalMinute:
         return date_ext.iso_int_to_local_minute(value)
     elif expected_type == dt.datetime:
-        return date_ext.iso_int_to_date_time(value)
+        return value
     elif expected_type == dt.date:
         return date_ext.iso_int_to_date(value)
     elif expected_type == dt.time:

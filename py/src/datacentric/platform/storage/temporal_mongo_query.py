@@ -101,7 +101,7 @@ class TemporalMongoQuery:
         elif value_type == dt.time:
             return date_ext.time_to_iso_int(value)
         elif value_type == dt.datetime:
-            return date_ext.date_time_to_iso_int(value)
+            return value
         elif value_type == np.ndarray:
             return value.tolist()
         elif issubclass(value_type, Enum):
