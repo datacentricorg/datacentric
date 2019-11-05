@@ -86,7 +86,7 @@ def save_basic_data(context: Context):
 
 def verify_load(context, data_set_id, key):
     data_set = context.data_source.get_data_set(data_set_id, context.data_set)
-    record = key.load_or_null(context, data_set)
+    record = context.data_source.load_or_null_by_key(key, data_set)
     if record is None:
         return 'Not found'
     else:

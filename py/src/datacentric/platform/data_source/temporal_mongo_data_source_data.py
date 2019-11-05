@@ -52,9 +52,9 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
     def get_query(self, load_from: ObjectId):
         raise NotImplemented
 
-    def reload_or_null(self, key: TypedKey, load_from: ObjectId) -> Optional[Record]:
+    def load_or_null_by_key(self, key_: TypedKey[Record], load_from: ObjectId) -> Optional[Record]:
         lookup_list = self.get_data_set_lookup_list(load_from)
-        key_value = key.value
+        key_value = key_.value
         pipeline = [
             {"$match": {"_key": key_value}},
             {"$match": {"_dataset": {"$in": lookup_list}}},
@@ -62,7 +62,7 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
             {"$sort": {"_id": -1}},
             {'$limit': 1}
         ]
-        collection = self._get_or_create_collection(type(key))
+        collection = self._get_or_create_collection(type(key_))
         cursor = collection.aggregate(pipeline)
         if cursor.alive:
             cursor_next = cursor.next()

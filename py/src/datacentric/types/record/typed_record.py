@@ -8,6 +8,7 @@ TKey = TypeVar('TKey')
 
 
 class TypedRecord(Generic[TKey], Record, ABC):
+    """Base class of records stored in data source."""
     __slots__ = []
 
     def __init__(self):
@@ -15,6 +16,10 @@ class TypedRecord(Generic[TKey], Record, ABC):
 
     @property
     def key(self) -> str:
+        """String key consists of semicolon delimited primary key elements. To avoid serialization format uncertainty,
+        key elements can have any atomic type except float.
+        """
+
         key_type = type(self).__orig_bases__[0].__args__[0]
         if '__forward_arg__' in dir(key_type):
             forward_arg = type(self).__orig_bases__[0].__args__[0].__forward_arg__
@@ -38,6 +43,10 @@ class TypedRecord(Generic[TKey], Record, ABC):
         pass
 
     def to_key(self) -> TKey:
+        """This conversion method creates a new key, populates key elements of the
+        created key by the values taken from the record.
+        """
+
         key_type = type(self).__orig_bases__[0].__args__[0]
         if '__forward_arg__' in dir(key_type):
             forward_arg = type(self).__orig_bases__[0].__args__[0].__forward_arg__
@@ -45,12 +54,3 @@ class TypedRecord(Generic[TKey], Record, ABC):
         key = key_type()
         key.populate_from(self)
         return key
-
-    # def r_save(self, save_to: ObjectId = None) -> None:
-    #     if save_to is None:
-    #         self.context.data_source.save(self, self.context.data_set)
-    #     else:
-    #         self.context.data_source.save(self, self.context.data_set, save_to)
-    #
-    # def r_delete(self, context: Context, delete_in: ObjectId = None) -> None:
-    #     context.data_source.delete(self, self.key, delete_in)

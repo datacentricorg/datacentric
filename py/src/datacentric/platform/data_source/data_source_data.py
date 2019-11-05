@@ -57,10 +57,6 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         pass
 
     @abstractmethod
-    def reload_or_null(self, key: TypedKey, load_from: ObjectId) -> Union[Record, None]:
-        pass
-
-    @abstractmethod
     def get_query(self, load_from: ObjectId):
         pass
 
@@ -160,8 +156,9 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         return key_.load(self.context, load_from)
 
     # renamed
+    @abstractmethod
     def load_or_null_by_key(self, key_: TypedKey[Record], load_from: ObjectId):
-        return key_.load_or_null(self.context, load_from)
+        pass
 
     def get_data_set(self, data_set_id: str, load_from: ObjectId):
         result = self.get_data_set_or_empty(data_set_id, load_from)
