@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Iterable, Dict, Any, List
+from typing import Iterable, Dict, Any, List, TypeVar
 from bson import ObjectId
 from pymongo.collection import Collection
 from pymongo.command_cursor import CommandCursor
@@ -13,6 +13,8 @@ from datacentric.types import date_ext
 from datacentric.types.local_minute import LocalMinute
 from datacentric.types.record import Record
 from datacentric.platform.serialization.serializer import deserialize
+
+TRecord = TypeVar('TRecord', bound=Record)
 
 
 class TemporalMongoQuery:
@@ -139,7 +141,7 @@ class TemporalMongoQuery:
             query._pipeline.append({'$sort': {str_ext.to_pascal_case(attr): -1}})
             return query
 
-    def as_iterable(self) -> Iterable[Record]:
+    def as_iterable(self) -> Iterable[TRecord]:
 
         if not self.__has_sort():
             batch_queryable = self._data_source.apply_final_constraints(self._pipeline, self._load_from)

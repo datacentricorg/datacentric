@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
 from bson.objectid import ObjectId
-from typing import List, Set, Dict, Iterable, Union, Optional
+from typing import List, Set, Dict, Iterable, Optional, TypeVar
 
 from datacentric.types.record import RootRecord, TypedKey, Record
 from datacentric.platform.data_set import DataSetData, DataSetKey
+
+TRecord = TypeVar('TRecord', bound=Record)
 
 
 class DataSourceKey(TypedKey['DataSourceData']):
@@ -89,7 +91,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
                             f'one of SavedByTime or SavedById is set.')
 
     @abstractmethod
-    def load_or_null(self, id_: ObjectId, type_: type) -> Union[Record, None]:
+    def load_or_null(self, id_: ObjectId, type_: type) -> Optional[TRecord]:
         """Load record by its ObjectId.
 
         Return None if there is no record for the specified ObjectId;
@@ -99,7 +101,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         pass
 
     @abstractmethod
-    def load_or_null_by_key(self, key_: TypedKey[Record], load_from: ObjectId) -> Union[Record, None]:
+    def load_or_null_by_key(self, key_: TypedKey, load_from: ObjectId) -> Optional[TRecord]:
         """Load record by string key from the specified dataset or
         its list of imports. The lookup occurs first in descending
         order of dataset ObjectIds, and then in the descending
@@ -127,11 +129,11 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         pass
 
     @abstractmethod
-    def save(self, record: Record, save_to: ObjectId) -> None:
+    def save(self, record: TRecord, save_to: ObjectId) -> None:
         pass
 
     @abstractmethod
-    def delete(self, key: TypedKey[Record], delete_in: ObjectId) -> None:
+    def delete(self, key: TypedKey[TRecord], delete_in: ObjectId) -> None:
         pass
 
     @abstractmethod
@@ -150,7 +152,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
             return self._data_set_dict[data_set_id]
         else:
             data_set_key = DataSetKey(data_set_id)
-            # noinspection PyTypeChecker
+
             data_set_data: DataSetData = self.load_or_null_by_key(data_set_key, load_from)
 
             if data_set_data is None:
@@ -197,7 +199,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         """
         pass
 
-    def __build_data_set_lookup_list(self, data_set_data: DataSetData) -> Union[Set[ObjectId], None]:
+    def __build_data_set_lookup_list(self, data_set_data: DataSetData) -> Optional[Set[ObjectId]]:
         if data_set_data is None:
             return
 
@@ -226,13 +228,13 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
                     result.add(data_set_id)
         return result
 
-    def get_data_set(self, data_set_id: str, load_from: ObjectId):
+    def get_data_set(self, data_set_id: str, load_from: ObjectId) -> ObjectId:
         result = self.get_data_set_or_none(data_set_id, load_from)
         if result is None:
             raise Exception(f'Dataset {data_set_id} is not found in data store {self.data_source_name}.')
         return result
 
-    def get_common(self):
+    def get_common(self) -> ObjectId:
         return self.get_data_set(self.common_id, DataSourceData._empty_id)
 
     def create_common(self) -> ObjectId:

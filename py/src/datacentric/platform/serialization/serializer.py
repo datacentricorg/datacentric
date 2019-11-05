@@ -4,7 +4,7 @@ import inspect
 import itertools
 from bson import ObjectId
 from enum import Enum
-from typing import Dict, Any, get_type_hints
+from typing import Dict, Any, get_type_hints, TypeVar
 from typing_inspect import get_origin, get_args
 
 import datacentric.types.date_ext as date_ext
@@ -13,10 +13,12 @@ from datacentric.platform.reflection.class_info import ClassInfo
 from datacentric.types.local_minute import LocalMinute
 from datacentric.types.record import Record, Key, Data
 
+TRecord = TypeVar('TRecord', bound=Record)
+
 
 # Serialization: object -> dict
 
-def serialize(obj: Record):
+def serialize(obj: TRecord):
     dict_ = _serialize_class(obj)
     dict_['_t'] = obj.__class__.__name__
     dict_['_dataset'] = obj.data_set
@@ -26,7 +28,7 @@ def serialize(obj: Record):
     return dict_
 
 
-def _serialize_class(obj):
+def _serialize_class(obj: TRecord):
     dict_ = dict()
     dict_['_t'] = obj.__class__.__name__
     mro = inspect.getmro(type(obj))
@@ -112,7 +114,7 @@ def _serialize_primitive(value):
 # Deserialization: dict -> object
 
 
-def deserialize(dict_: Dict) -> Record:
+def deserialize(dict_: Dict) -> TRecord:
     data_set = dict_.pop('_dataset')
     _key = dict_.pop('_key')
     id_ = dict_.pop('_id')
@@ -126,7 +128,7 @@ def deserialize(dict_: Dict) -> Record:
     return new_obj
 
 
-def _deserialize_class(dict_: Dict[str, Any]):
+def _deserialize_class(dict_: Dict[str, Any]) -> TRecord:
     type_name: str = dict_.pop('_t')
 
     type_info = ClassInfo.get_type(type_name)
@@ -152,7 +154,7 @@ def _deserialize_class(dict_: Dict[str, Any]):
     return new_obj
 
 
-def _deserialize_list(type_, list_):
+def _deserialize_list(type_: type, list_):
     expected_item_type = get_args(type_)[0]
     if issubclass(expected_item_type, Key):
         result = []
