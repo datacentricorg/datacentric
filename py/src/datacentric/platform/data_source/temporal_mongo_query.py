@@ -16,46 +16,79 @@ class TemporalMongoQuery:
         self._type = type_
         self._collection = collection
         self._load_from = load_from
-        self._queryable = [{"$match": {"_t": self._type.__name__}}]
+        self._pipeline = [{'$match': {'_t': self._type.__name__}}]
         self._ordered_queryable = None
 
+    def __has_sort(self) -> bool:
+        stage_names = [stage_name
+                       for stage in self._pipeline
+                       for stage_name in stage.keys()]
+        return '$sort' in stage_names
+
     def where(self, predicate) -> TemporalMongoQuery:
-        if self._queryable is not None and self._ordered_queryable is None:
+        if not self.__has_sort():
             query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
-            query._queryable = self._queryable
-            query._queryable.append({'match': predicate})
+            query._pipeline = self._pipeline.copy()
+            query._pipeline.append({'$match': predicate})
             return query
-        elif self._queryable is None and self._ordered_queryable is not None:
+        else:
             raise Exception(f'All where(...) clauses of the query must precede'
                             f'sort_by(...) or sort_by_descending(...) clauses of the same query.')
+
+    def sort_by(self, attr: str) -> TemporalMongoQuery:
+        # Adding sort argument since sort stage is already present.
+        if self.__has_sort():
+            query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
+            query._pipeline = self._pipeline.copy()
+            sorts = next(stage['$sort'] for stage in query._pipeline
+                         if '$sort' in stage)
+            sorts[attr] = 1
+            return query
+        # append sort stage
         else:
-            raise Exception(f'Strictly one of _queryable or _ordered_queryable can'
-                            f'have value, not both and not neither.')
+            query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
+            query._pipeline = self._pipeline.copy()
+            query._pipeline.append({'$sort': {attr: 1}})
+            return query
 
-    def sort_by(self) -> TemporalMongoQuery:
-        raise NotImplemented
-
-    def sort_by_descending(self) -> TemporalMongoQuery:
-        raise NotImplemented
+    def sort_by_descending(self, attr) -> TemporalMongoQuery:
+        # Adding sort argument since sort stage is already present.
+        if self.__has_sort():
+            query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
+            query._pipeline = self._pipeline.copy()
+            sorts = next(stage['$sort'] for stage in query._pipeline
+                         if '$sort' in stage)
+            sorts[attr] = -1
+            return query
+        # append sort stage
+        else:
+            query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
+            query._pipeline = self._pipeline.copy()
+            query._pipeline.append({'$sort': {attr: -1}})
+            return query
 
     def as_iterable(self) -> Iterable[Record]:
-        if self._queryable is not None and self._ordered_queryable is None:
-            batch_queryable = self._data_source.apply_final_constraints(self._queryable, self._load_from)
-        elif self._queryable is None and self._ordered_queryable is not None:
+        if self._pipeline is not None and self._ordered_queryable is None:
+            batch_queryable = self._data_source.apply_final_constraints(self._pipeline, self._load_from)
+        elif self._pipeline is None and self._ordered_queryable is not None:
             batch_queryable = self._ordered_queryable
         else:
             raise Exception(f'Strictly one of _queryable or _ordered_queryable can'
                             f'have value, not both and not neither.')
+
         projected_batch_queryable = batch_queryable
-        projected_batch_queryable.append({"$project": {"Id": "$_id", "Key": "$_key", "_id": 0}})
+        projected_batch_queryable.append({'$project': {'Id': '$_id', 'Key': '$_key', '_id': 0}})
+
         with self._collection.aggregate(projected_batch_queryable) as cursor:  # type: CommandCursor
             batch_size = 1000
             continue_query = True
+
             while continue_query:
                 batch_index = 0
                 batch_keys_hash_set = set()
                 batch_ids_hash_set = set()
                 batch_ids_list = []
+
                 while True:
                     continue_query = cursor.alive
                     if continue_query:
@@ -73,17 +106,20 @@ class TemporalMongoQuery:
                         break
                 if not continue_query and batch_index == 0:
                     break
-                id_queryable = [{"$match": {"_key": {"$in": list(batch_keys_hash_set)}}}]
+
+                id_queryable = [{'$match': {'_key': {'$in': list(batch_keys_hash_set)}}}]
                 id_queryable = self._data_source.apply_final_constraints(id_queryable, self._load_from)
-                id_queryable.append({"$sort": {"_key": 1, "_dataset": -1, "_id": -1}})
+                id_queryable.append({'$sort': {'_key': 1, '_dataset': -1, '_id': -1}})
+
                 projected_id_queryable = id_queryable
                 projected_id_queryable.append(
-                    {"$project": {"Id": "$_id", "DataSet": "$_dataset", "Key": "$_key", "_id": 0}})
+                    {'$project': {'Id': '$_id', 'DataSet': '$_dataset', 'Key': '$_key', '_id': 0}})
 
                 descending_lookup_list = None
                 if self._data_source.freeze_imports:
                     data_set_lookup_enumerable = self._data_source.get_data_set_lookup_list(self._load_from)
                     descending_lookup_list = sorted(data_set_lookup_enumerable, reverse=True)
+
                 record_ids = []
                 current_key = None
                 for obj in self._collection.aggregate(projected_id_queryable):
@@ -109,7 +145,8 @@ class TemporalMongoQuery:
                                 record_ids.append(record_id)
                 if len(record_ids) == 0:
                     break
-                record_queryable = [{"$match": {"_id": {"$in": record_ids}}}]
+
+                record_queryable = [{'$match': {'_id': {'$in': record_ids}}}]
                 record_dict = dict()
                 for record in self._collection.aggregate(record_queryable):
                     rec = deserialize(record)
