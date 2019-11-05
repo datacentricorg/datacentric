@@ -174,13 +174,13 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
 
     def create_common(self) -> ObjectId:
         result = DataSetData()
-        result.data_set_id = self.common_id
+        result.data_set_name = self.common_id
         self.save_data_set(result, DataSourceData._empty_id)
         return result.id_
 
     def create_data_set(self, data_set_id: str, save_to: ObjectId, import_data_sets: List[ObjectId] = None) -> ObjectId:
         result = DataSetData()
-        result.data_set_id = data_set_id
+        result.data_set_name = data_set_id
 
         if import_data_sets is not None:
             result.imports = [x for x in import_data_sets]

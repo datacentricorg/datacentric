@@ -8,8 +8,8 @@ class TestDataSet(unittest.TestCase):
     def test_key_instantiation(self):
         null_key = DataSetKey()
         key = DataSetKey('key_id')
-        self.assertTrue(null_key.data_set_id is None)
-        self.assertTrue(key.data_set_id == 'key_id')
+        self.assertTrue(null_key.data_set_name is None)
+        self.assertTrue(key.data_set_name == 'key_id')
 
     def test_abstract_fail(self):
         with self.assertRaises(TypeError):
