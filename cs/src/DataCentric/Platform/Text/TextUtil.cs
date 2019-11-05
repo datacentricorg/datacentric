@@ -27,34 +27,41 @@ namespace DataCentric
         const string alphabet_ = "abcdefghijklmnopqrstuvwxyz";
 
         /// <summary>
-        /// Validates the format of immutable name, and returns first token
-        /// of the name, without version.
+        /// Validates the format of pipe-delimited immutable name, and returns
+        /// its components as (string, int) tuple.
         ///
         /// By convention, immutable name consists of two pipe delimited tokens.
-        /// The first token is a string identifier, and second token is integer
-        /// version number with the initial value of 1. This method raises an
-        /// error if the name does not match the format.
+        /// The first token is a string name prefix, and second token is integer
+        /// name version with the initial value of 1. This method raises an
+        /// error if the argument does not match the format.
+        /// 
+        /// For example, if the name is ABC|1, the returned tuple is (ABC,1).
+        ///
+        /// This method takes the identifier of parsed variable as nameOf parameter
+        /// to use in error messages. The recommended way to pass the identifier is
+        /// to use nameof(...) for the first argument.
         /// </summary>
-        public static string ValidateNameAndStripVersion(string propName, string value)
+        public static (string, int) ParseImmutableName(string nameOf, string name)
         {
             // Check that immutable name is not null or empty
-            if (string.IsNullOrEmpty(value)) throw new Exception($"{propName} is not set.");
+            if (string.IsNullOrEmpty(name)) throw new Exception($"{nameOf} is not set.");
 
             // By convention, immutable name consists of two pipe delimited tokens.
             // The first token is a string identifier, and second token is integer
             // version number with the initial value of 1. This code raises an
             // error if the name does not match the format.
-            string[] nameTokens = value.Split('|');
+            string[] nameTokens = name.Split('|');
             if (nameTokens.Length != 2 ||
-                !int.TryParse(nameTokens[1], out int version) ||
-                version < 1)
+                !int.TryParse(nameTokens[1], out int nameVersion) ||
+                nameVersion < 1)
             {
                 throw new Exception(
-                    $"Immutable {propName}={value} must consist of two pipe-delimited " +
+                    $"Immutable {nameOf}={name} must consist of two pipe-delimited " +
                     $"tokens where  second token is a positive integer greater than zero, e.g. ABC|1.");
             }
 
-            return nameTokens[0];
+            // If name is ABC|1, the returned tuple is (ABC,1)
+            return (nameTokens[0], nameVersion);
         }
 
         /// <summary>
