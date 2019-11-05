@@ -93,6 +93,8 @@ def _serialize_primitive(value):
         return date_ext.date_time_to_iso_int(value)
     elif value_type == str:
         return value
+    elif value_type == bool:
+        return value
     elif value_type == int:
         return value
     elif value_type == float:

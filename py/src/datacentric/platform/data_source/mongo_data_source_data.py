@@ -7,7 +7,6 @@ from datacentric.platform.data_source import DataSourceData
 
 
 class MongoDataSourceData(DataSourceData, ABC):
-
     __prohibited_symbols = '/\\. "$*<>:|?'
     __max_db_name_length = 64
 
@@ -44,8 +43,13 @@ class MongoDataSourceData(DataSourceData, ABC):
         self.__prev_object_id = result
         return result
 
-    def apply_final_constraints(self):
-        raise NotImplemented
+    def apply_final_constraints(self, pipeline, load_from: ObjectId):
+        data_set_lookup_list = self.get_data_set_lookup_list(load_from)
+        pipeline.append({'$match': {"_dataset": {"$in": data_set_lookup_list}}})
+        saved_by = self._get_saved_by()
+        if saved_by is not None:
+            pipeline.append({'$match': {'_id': {'$lte': saved_by}}})
+        return pipeline
 
     def delete_db(self) -> None:
         raise NotImplemented

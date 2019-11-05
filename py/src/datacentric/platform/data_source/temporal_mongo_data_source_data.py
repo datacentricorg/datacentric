@@ -3,6 +3,7 @@ from typing import Dict, Union, Optional
 from bson import ObjectId
 from pymongo.collection import Collection
 
+from datacentric.platform.data_source.temporal_mongo_query import TemporalMongoQuery
 from datacentric.types.record import Record, TypedKey, DeletedRecord
 from datacentric.platform.data_source import MongoDataSourceData
 from datacentric.platform.reflection import ClassInfo
@@ -49,8 +50,9 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
     def delete(self, key: TypedKey[Record], delete_in: ObjectId) -> None:
         raise NotImplemented
 
-    def get_query(self, load_from: ObjectId):
-        raise NotImplemented
+    def get_query(self, load_from: ObjectId, type_: type) -> TemporalMongoQuery:
+        collection = self._get_or_create_collection(type_)
+        return TemporalMongoQuery(self, type_, collection, load_from)
 
     def load_or_null_by_key(self, key_: TypedKey[Record], load_from: ObjectId) -> Optional[Record]:
         lookup_list = self.get_data_set_lookup_list(load_from)

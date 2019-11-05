@@ -123,7 +123,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         pass
 
     @abstractmethod
-    def get_query(self, load_from: ObjectId):
+    def get_query(self, load_from: ObjectId, type_: type):
         pass
 
     @abstractmethod

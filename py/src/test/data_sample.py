@@ -19,8 +19,8 @@ class ElementSampleData(Data):
 
 
 class SampleEnum(Enum):
-    Empty = 0,
-    EnumValue1 = 1,
+    Empty = 0
+    EnumValue1 = 1
     EnumValue2 = 2
 
 
@@ -93,3 +93,53 @@ class DerivedSampleData(BaseSampleData):
         self.data_element_list = None
         self.key_element = None
         self.key_element_list = None
+
+
+class NullableElementsSampleKey(TypedKey['NullableElementsSampleData']):
+    __slots__ = ['string_token', 'bool_token', 'int_token', 'local_date_token', 'local_time_token',
+                 'local_minute_token', 'local_date_time_token', 'enum_token']
+    string_token: str
+    bool_token: bool
+    int_token: int
+    local_date_token: dt.date
+    local_time_token: dt.time
+    local_minute_token: LocalMinute
+    local_date_time_token: dt.datetime
+    enum_token: SampleEnum
+
+    def __init__(self):
+        super().__init__()
+        self.string_token = None
+        self.bool_token = None
+        self.int_token = None
+        self.local_date_token = None
+        self.local_time_token = None
+        self.local_minute_token = None
+        self.local_date_time_token = None
+        self.enum_token = None
+
+
+class NullableElementsSampleData(TypedRecord[NullableElementsSampleKey]):
+    __slots__ = ['string_token', 'bool_token', 'int_token', 'local_date_token', 'local_time_token',
+                 'local_minute_token', 'local_date_time_token', 'enum_token', 'record_index']
+    string_token: str
+    bool_token: bool
+    int_token: int
+    local_date_token: dt.date
+    local_time_token: dt.time
+    local_minute_token: LocalMinute
+    local_date_time_token: dt.datetime
+    enum_token: SampleEnum
+    record_index: int
+
+    def __init__(self):
+        super().__init__()
+        self.string_token = None
+        self.bool_token = None
+        self.int_token = None
+        self.local_date_token = None
+        self.local_time_token = None
+        self.local_minute_token = None
+        self.local_date_time_token = None
+        self.enum_token = None
+        self.record_index = None
