@@ -3,9 +3,9 @@ import inspect
 import os
 import pkgutil
 from typing import Dict, List
+import typing_inspect
 
 from datacentric.platform.reflection import ClassMapSettings
-from datacentric.types.record import Data
 
 
 class ClassInfo:
@@ -19,7 +19,7 @@ class ClassInfo:
         if not ClassInfo.__is_initialized:
             ClassInfo.__initialize_typ_map()
 
-            from datacentric.types.record import TypedRecord, TypedKey
+            from datacentric.types.record import TypedRecord, TypedKey, Data
             children = ClassInfo.__get_runtime_imported_data(Data, [])
             for child in children:
                 if child not in ClassInfo.__data_types_map:
@@ -29,20 +29,30 @@ class ClassInfo:
         return ClassInfo.__data_types_map[name]
 
     @staticmethod
-    def __get_runtime_imported_data(type_: type, children: List[type]):
-        current_children = type_.__subclasses__()
-        for t in current_children:
-            ClassInfo.__get_runtime_imported_data(t, children)
-        children.extend(current_children)
-        return children
-
-    @staticmethod
     def get_key_from_record(type_: type) -> type:
-        key_type = type_.__orig_bases__[0].__args__[0]
-        if '__forward_arg__' in dir(key_type):
-            forward_arg = type_.__orig_bases__[0].__args__[0].__forward_arg__
-            key_type = ClassInfo.get_type(forward_arg)
-        return key_type
+        """Extracts associated key from RootRecord and TypedRecord derived types."""
+        if not typing_inspect.is_generic_type(type_):
+            raise Exception(f'Cannot get associated key from not generic type {type_.__name__}')
+
+        from datacentric.types.record import TypedKey, TypedRecord, RootRecord
+        from typing import ForwardRef
+
+        generic_base = typing_inspect.get_generic_bases(type_)[0]
+
+        generic_origin = typing_inspect.get_origin(generic_base)
+        if generic_origin is not RootRecord and generic_origin is not TypedRecord:
+            raise Exception(f'Wrong generic origin: {generic_origin.__name__}. Expected TypeRecord || RootRecord')
+
+        generic_arg = typing_inspect.get_args(generic_base)[0]  # Arg
+
+        # Generic parameter is forward ref
+        if type(generic_arg) is ForwardRef:
+            return ClassInfo.get_type(generic_arg.__forward_arg__)
+        # Generic parameter is type
+        elif issubclass(generic_arg, TypedKey):
+            return generic_arg
+        else:
+            raise Exception(f'Cannot deduce key from type {type_.__name__}')
 
     @staticmethod
     def get_mapped_class_name(type_: type) -> str:
@@ -62,24 +72,25 @@ class ClassInfo:
 
     @staticmethod
     def get_root_type(type_: type) -> type:
-        record_base_name = 'TypedRecord'
-        key_base_name = 'TypedKey'
+        from datacentric.types.record import TypedKey, TypedRecord, RootRecord, Data
+        root_types = [TypedKey, TypedRecord, RootRecord, Data]
 
-        if type_.__name__ == record_base_name or type_.__name__ == key_base_name:
-            raise TypeError(f'{record_base_name} and {key_base_name} are not allowed.')
+        if type_.mro()[0] in root_types:
+            raise Exception(f'Cannot get root type from root type.')
+        type_mro = type_.mro()
+        for root_type in root_types:
+            if root_type in type_mro:
+                index = type_mro.index(root_type)
+                return type_mro[index - 1]
+        raise Exception(f'Type is not derived from Data.')
 
-        mro = inspect.getmro(type_)
-        base_names = [x.__name__ for x in mro]
-
-        if record_base_name in base_names:
-            rec_idx = base_names.index(record_base_name)
-            return mro[rec_idx - 1]
-        elif key_base_name in base_names:
-            key_idx = base_names.index(key_base_name)
-            return mro[key_idx - 1]
-        else:
-            raise TypeError(f'Cannot find root type for {type_.__name__}. '
-                            f'{record_base_name} and {key_base_name} are not found in mro.')
+    @staticmethod
+    def __get_runtime_imported_data(type_: type, children: List[type]):
+        current_children = type_.__subclasses__()
+        for t in current_children:
+            ClassInfo.__get_runtime_imported_data(t, children)
+        children.extend(current_children)
+        return children
 
     @staticmethod
     def __initialize_typ_map():
@@ -88,6 +99,7 @@ class ClassInfo:
 
     @staticmethod
     def __explore_package(module_name):
+        from datacentric.types.record import Data
         loader = pkgutil.get_loader(module_name)
         if os.path.basename(loader.path) == '__init__.py':
             package_path = os.path.dirname(loader.path)

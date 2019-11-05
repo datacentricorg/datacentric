@@ -19,11 +19,7 @@ class TypedRecord(Generic[TKey], Record, ABC):
         """String key consists of semicolon delimited primary key elements. To avoid serialization format uncertainty,
         key elements can have any atomic type except float.
         """
-
-        key_type = type(self).__orig_bases__[0].__args__[0]
-        if '__forward_arg__' in dir(key_type):
-            forward_arg = type(self).__orig_bases__[0].__args__[0].__forward_arg__
-            key_type = ClassInfo.get_type(forward_arg)
+        key_type = ClassInfo.get_key_from_record(type(self))
 
         key_slots = key_type.__slots__
         data_slots = self.__slots__
@@ -47,10 +43,7 @@ class TypedRecord(Generic[TKey], Record, ABC):
         created key by the values taken from the record.
         """
 
-        key_type = type(self).__orig_bases__[0].__args__[0]
-        if '__forward_arg__' in dir(key_type):
-            forward_arg = type(self).__orig_bases__[0].__args__[0].__forward_arg__
-            key_type = ClassInfo.get_type(forward_arg)
+        key_type = ClassInfo.get_key_from_record(type(self))
         key = key_type()
         key.populate_from(self)
         return key
