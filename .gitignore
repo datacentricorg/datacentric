@@ -33,6 +33,7 @@ syntax: glob
 *.pch
 *.pdb
 *.png
+*.pyc
 *.pyd
 *.received.*
 *.sdf
