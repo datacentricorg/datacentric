@@ -25,10 +25,16 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
     def is_readonly(self) -> bool:
         return self.readonly or self.saved_by_id is not None or self.saved_by_time is not None
 
-    def load_or_null(self, id_: ObjectId) -> Union[Record, None]:
+    def load_or_null(self, id_: ObjectId, type_: type) -> Union[Record, None]:
         saved_by = self._get_saved_by()
         if saved_by is not None and id_ > saved_by:
             return
+        pipeline = [
+            {'$match': {'$id': {'$eq': id_}}},
+            {'$limit': 1}
+        ]
+        collection = self._get_or_create_collection(type_)
+        cursor = collection.aggregate(pipeline)
         raise NotImplemented
 
     def delete(self, key: TypedKey[Record], delete_in: ObjectId) -> None:

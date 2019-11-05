@@ -4,22 +4,7 @@ import datetime as dt
 from bson import ObjectId
 
 from datacentric.types.record import TypedRecord, TypedKey
-
-
-class BaseSampleData(TypedRecord['BaseSampleKey']):
-    pass
-
-
-class BaseSampleKey(TypedKey[BaseSampleData]):
-    __slots__ = ['record_id', 'record_index']
-
-    record_id: str
-    record_index: int
-
-    def __init__(self):
-        super().__init__()
-        self.record_id = None
-        self.record_index = None
+from test.data_sample import BaseSampleKey
 
 
 class CompositeKeySampleKey(TypedKey['CompositeKeySampleData']):

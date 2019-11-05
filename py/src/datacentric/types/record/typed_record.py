@@ -16,7 +16,10 @@ class TypedRecord(Generic[TKey], Record, ABC):
     @property
     def key(self) -> str:
         key_type = type(self).__orig_bases__[0].__args__[0]
-        # forward_arg = type_.__orig_bases__[0].__args__[0].__forward_arg__
+        if '__forward_arg__' in dir(key_type):
+            forward_arg = type(self).__orig_bases__[0].__args__[0].__forward_arg__
+            key_type = ClassInfo.get_type(forward_arg)
+
         key_slots = key_type.__slots__
         data_slots = self.__slots__
 

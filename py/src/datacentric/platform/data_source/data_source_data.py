@@ -53,7 +53,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
                             f'one of SavedByTime or SavedById is set.')
 
     @abstractmethod
-    def load_or_null(self, id_: ObjectId) -> Union[Record, None]:
+    def load_or_null(self, id_: ObjectId, type_: type) -> Union[Record, None]:
         pass
 
     @abstractmethod
@@ -166,6 +166,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         result = self.get_data_set_or_empty(data_set_id, load_from)
         if result is None:
             raise Exception(f'Dataset {data_set_id} is not found in data store {self.data_source_id}.')
+        return result
 
     def get_common(self):
         return self.get_data_set(self.common_id, DataSourceData._empty_id)
@@ -176,7 +177,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         self.save_data_set(result, DataSourceData._empty_id)
         return result.id_
 
-    def create_data_set(self, data_set_id: str, save_to: ObjectId, import_data_sets: List[ObjectId]) -> ObjectId:
+    def create_data_set(self, data_set_id: str, save_to: ObjectId, import_data_sets: List[ObjectId] = None) -> ObjectId:
         result = DataSetData()
         result.data_set_id = data_set_id
 
