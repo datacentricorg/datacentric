@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from bson.objectid import ObjectId
 from typing import List, Set, Dict, Iterable, Optional, TypeVar
 
+from datacentric.platform.storage.db_name import DbNameKey
 from datacentric.types.record import RootRecord, TypedKey, Record
 from datacentric.platform.data_set import DataSetData, DataSetKey
 
@@ -39,24 +40,35 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
     This record is stored in root dataset.
     """
 
-    __slots__ = ['data_source_name', 'db_name', 'readonly']
+    __slots__ = ('data_source_name', 'db_name', 'non_temporal', 'readonly')
 
     _empty_id = ObjectId('000000000000000000000000')
-    common_id = 'Common'
+    common_id: str = 'Common'
 
     data_source_name: str
     """Unique data source name."""
-    db_name: str
+
+    db_name: DbNameKey
     """Database name."""
-    readonly: bool
-    """Use this flag to mark data source as readonly, but use either
-    is_readonly() or check_not_readonly() method to determine the
-    readonly status because the data source may be readonly for
-    two reasons:
+
+    non_temporal: bool
+    """For the data stored in data sources where non_temporal == false,
+    the data source keeps permanent history of changes to each
+    record (except where dataset or record are marked as NonTemporal),
+    and provides the ability to access the record as of the specified
+    TemporalId, where TemporalId serves as a timeline (records created
+    later have greater TemporalId than records created earlier).
     
-    * readonly flag is true; or
-    * One of saved_by_time or saved_by_id is set
+    For the data stored in data source where NonTemporal == true,
+    the data source keeps only the latest version of the record. All
+    datasets created by a NonTemporal data source must also be non-temporal.
+    
+    In a non-temporal data source, this flag is ignored as all
+    datasets in such data source are non-temporal.
     """
+
+    readonly: bool
+    """Use this flag to mark data source as readonly."""
 
     def __init__(self):
         super().__init__()
@@ -65,6 +77,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
 
         self.data_source_name = None
         self.db_name = None
+        self.non_temporal = None
         self.readonly = None
 
     @abstractmethod

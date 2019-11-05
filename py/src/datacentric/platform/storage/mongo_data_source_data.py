@@ -2,27 +2,55 @@ from abc import ABC
 
 from bson import ObjectId
 from pymongo import MongoClient
+from pymongo.database import Database
 
+from datacentric.platform.context import Context
 from datacentric.platform.storage import DataSourceData
+from datacentric.platform.storage.instance_type import InstanceType
 
 
 class MongoDataSourceData(DataSourceData, ABC):
     __prohibited_symbols = '/\\. "$*<>:|?'
     __max_db_name_length = 64
 
-    def __init__(self, db_name, mongo_uri):
-        DataSourceData.__init__(self)
+    mongo_server: str
 
-        if any(x in db_name for x in MongoDataSourceData.__prohibited_symbols):
-            raise Exception(f'MongoDB database name {db_name} contains a space or another '
+    def __init__(self):
+        super().__init__()
+        # Data part
+        self.mongo_server = None
+
+        # Non-data part
+        self._instance_type: InstanceType = None
+        self._client: MongoClient = None
+        self._db = None
+        self._db_name: str = None
+        self.__prev_object_id = DataSourceData._empty_id
+
+    def init(self, context: Context) -> None:
+        super().init(context)
+
+        # perform database name validation
+        if self.db_name is None:
+            raise Exception('DB key is null or empty.')
+        if self.db_name.instance_type == InstanceType.Empty:
+            raise Exception('DB instance type is not specified.')
+        if not self.db_name.instance_name:
+            raise Exception('DB instance name is not specified.')
+        if not self.db_name.env_name:
+            raise Exception('DB environment name is not specified.')
+
+        self._db_name = self.db_name.value
+        self._instance_type = self.db_name.instance_type
+        if any(x in self._db_name for x in MongoDataSourceData.__prohibited_symbols):
+            raise Exception(f'MongoDB database name {self._db_name} contains a space or another '
                             f'prohibited character from the following list: /\\.\"$*<>:|?')
 
-        if len(db_name) > MongoDataSourceData.__max_db_name_length:
-            raise Exception(f'MongoDB database name {db_name} exceeds the maximum length of 64 characters.')
+        if len(self._db_name) > MongoDataSourceData.__max_db_name_length:
+            raise Exception(f'MongoDB database name {self._db_name} exceeds the maximum length of 64 characters.')
 
-        self._client = MongoClient(mongo_uri)
-        self._db = self._client.get_database(db_name)
-        self.__prev_object_id = DataSourceData._empty_id
+        self._client = MongoClient(self.mongo_server)
+        self._db: Database = self._client.get_database(self._db_name)
 
     @property
     def db(self):
@@ -52,4 +80,13 @@ class MongoDataSourceData(DataSourceData, ABC):
         return pipeline
 
     def delete_db(self) -> None:
-        raise NotImplemented
+        if self.readonly is not None and self.readonly:
+            raise Exception(f'Attempting to drop (delete) database for the data source {self.data_source_name} '
+                            f'where ReadOnly flag is set.')
+        if self._client is not None and self._db is not None:
+            if self._instance_type in [InstanceType.DEV, InstanceType.USER, InstanceType.TEST]:
+                self._client.drop_database(self._db)
+            else:
+                raise Exception(f'As an extra safety measure, database {self._db_name} cannot be '
+                                f'dropped because this operation is not permitted for database '
+                                f'instance type {self._instance_type.name}.')

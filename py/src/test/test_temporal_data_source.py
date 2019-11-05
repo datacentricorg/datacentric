@@ -2,11 +2,10 @@ import unittest
 
 from bson import ObjectId
 
-from datacentric.platform.data_set import DataSetData
-from datacentric.platform.logging.in_memory_log import InMemoryLog
-from test.data_sample import *
 from datacentric.platform.context import Context
-from datacentric.platform.storage import TemporalMongoDataSourceData
+from datacentric.platform.data_set import DataSetData
+from test.data_sample import *
+from test.temporal_test_context import TemporalTestContext
 
 
 def save_base_record(context: Context, data_set_id, record_id, record_index) -> ObjectId:
@@ -79,9 +78,8 @@ def save_derived_record(context, data_set_id, record_id, record_index) -> Object
 def save_basic_data(context: Context):
     data_set0 = context.data_source.create_data_set('DataSet0', context.data_set)
     save_base_record(context, 'DataSet0', 'A', 0)
-    data_set1 = context.data_source.create_data_set('DataSet1', context.data_set, [data_set0])
+    context.data_source.create_data_set('DataSet1', context.data_set, [data_set0])
     save_derived_record(context, 'DataSet1', 'B', 0)
-    pass
 
 
 def verify_load(context, data_set_id, key):
@@ -109,130 +107,98 @@ def save_minimal_record(context, data_set_id, record_id, record_index, version):
 
 
 class TestTemporalDataSource(unittest.TestCase):
-    def test_instantiation(self):
-        context = Context()
-        source = TemporalMongoDataSourceData(db_name='Test')
-        source.init(context)
-        context.data_source = source
-
-    def test_create_common(self):
-        context = Context()
-        source = TemporalMongoDataSourceData(db_name='Test')
-        source.init(context)
-        context.data_source = source
-        id_ = context.data_source.create_common()
-        self.assertTrue(isinstance(id_, ObjectId))
-
     def test_smoke(self):
-        context = Context()
-        source = TemporalMongoDataSourceData(db_name='Test')
-        source.init(context)
+        with TemporalTestContext(self) as context:
+            save_basic_data(context)
 
-        context.data_source = source
-        context.data_set = context.data_source.create_common()
+            key_a0 = BaseSampleKey()
+            key_a0.record_id = 'A'
+            key_a0.record_index = 0
 
-        save_basic_data(context)
+            key_b0 = BaseSampleKey()
+            key_b0.record_id = 'B'
+            key_b0.record_index = 0
 
-        key_a0 = BaseSampleKey()
-        key_a0.record_id = 'A'
-        key_a0.record_index = 0
-
-        key_b0 = BaseSampleKey()
-        key_b0.record_id = 'B'
-        key_b0.record_index = 0
-
-        self.assertEqual(verify_load(context, 'DataSet0', key_a0), 'Found. Type = BaseSampleData')
-        self.assertEqual(verify_load(context, 'DataSet1', key_a0), 'Found. Type = BaseSampleData')
-        self.assertEqual(verify_load(context, 'DataSet0', key_b0), 'Not found')
-        self.assertEqual(verify_load(context, 'DataSet1', key_b0), 'Found. Type = DerivedSampleData')
+            self.assertEqual(verify_load(context, 'DataSet0', key_a0), 'Found. Type = BaseSampleData')
+            self.assertEqual(verify_load(context, 'DataSet1', key_a0), 'Found. Type = BaseSampleData')
+            self.assertEqual(verify_load(context, 'DataSet0', key_b0), 'Not found')
+            self.assertEqual(verify_load(context, 'DataSet1', key_b0), 'Found. Type = DerivedSampleData')
 
     def test_multiple_data_set_query(self):
-        context = Context()
-        source = TemporalMongoDataSourceData(db_name='Test')
-        source.init(context)
+        with TemporalTestContext(self) as context:
+            # Begin from DataSet0
+            data_set0 = context.data_source.create_data_set('DataSet0', context.data_set)
 
-        context.data_source = source
-        context.data_set = context.data_source.create_common()
+            # Create initial version of the records
+            save_minimal_record(context, 'DataSet0', 'A', 0, 0)
+            save_minimal_record(context, 'DataSet0', 'B', 1, 0)
+            save_minimal_record(context, 'DataSet0', 'A', 2, 0)
+            save_minimal_record(context, 'DataSet0', 'B', 3, 0)
 
-        # Begin from DataSet0
-        data_set0 = context.data_source.create_data_set('DataSet0', context.data_set)
+            # Create second version of some records
+            save_minimal_record(context, 'DataSet0', 'A', 0, 1)
+            save_minimal_record(context, 'DataSet0', 'B', 1, 1)
+            save_minimal_record(context, 'DataSet0', 'A', 2, 1)
+            save_minimal_record(context, 'DataSet0', 'B', 3, 1)
 
-        # Create initial version of the records
-        save_minimal_record(context, 'DataSet0', 'A', 0, 0)
-        save_minimal_record(context, 'DataSet0', 'B', 1, 0)
-        save_minimal_record(context, 'DataSet0', 'A', 2, 0)
-        save_minimal_record(context, 'DataSet0', 'B', 3, 0)
+            # Create third version of even fewer records
+            save_minimal_record(context, 'DataSet0', 'A', 0, 2)
+            save_minimal_record(context, 'DataSet0', 'B', 1, 2)
+            save_minimal_record(context, 'DataSet0', 'A', 2, 2)
+            save_minimal_record(context, 'DataSet0', 'B', 3, 2)
 
-        # Create second version of some records
-        save_minimal_record(context, 'DataSet0', 'A', 0, 1)
-        save_minimal_record(context, 'DataSet0', 'B', 1, 1)
-        save_minimal_record(context, 'DataSet0', 'A', 2, 1)
-        save_minimal_record(context, 'DataSet0', 'B', 3, 1)
+            # Same in DataSet1
+            data_set1 = context.data_source.create_data_set("DataSet1", context.data_set, [data_set0])
 
-        # Create third version of even fewer records
-        save_minimal_record(context, 'DataSet0', 'A', 0, 2)
-        save_minimal_record(context, 'DataSet0', 'B', 1, 2)
-        save_minimal_record(context, 'DataSet0', 'A', 2, 2)
-        save_minimal_record(context, 'DataSet0', 'B', 3, 2)
+            # Create initial version of the records
+            save_minimal_record(context, "DataSet1", "A", 4, 0)
+            save_minimal_record(context, "DataSet1", "B", 5, 0)
+            save_minimal_record(context, "DataSet1", "A", 6, 0)
+            save_minimal_record(context, "DataSet1", "B", 7, 0)
 
-        # Same in DataSet1
-        data_set1 = context.data_source.create_data_set("DataSet1", context.data_set, [data_set0])
+            # Create second version of some records
+            save_minimal_record(context, "DataSet1", "A", 4, 1)
+            save_minimal_record(context, "DataSet1", "B", 5, 1)
+            save_minimal_record(context, "DataSet1", "A", 6, 1)
+            save_minimal_record(context, "DataSet1", "B", 7, 1)
 
-        # Create initial version of the records
-        save_minimal_record(context, "DataSet1", "A", 4, 0)
-        save_minimal_record(context, "DataSet1", "B", 5, 0)
-        save_minimal_record(context, "DataSet1", "A", 6, 0)
-        save_minimal_record(context, "DataSet1", "B", 7, 0)
+            # Next in DataSet2
+            data_set2 = context.data_source.create_data_set("DataSet2", context.data_set, [data_set0])
+            save_minimal_record(context, "DataSet2", "A", 8, 0)
+            save_minimal_record(context, "DataSet2", "B", 9, 0)
 
-        # Create second version of some records
-        save_minimal_record(context, "DataSet1", "A", 4, 1)
-        save_minimal_record(context, "DataSet1", "B", 5, 1)
-        save_minimal_record(context, "DataSet1", "A", 6, 1)
-        save_minimal_record(context, "DataSet1", "B", 7, 1)
+            # Next in DataSet3
+            data_set3 = context.data_source.create_data_set("DataSet3", context.data_set,
+                                                            [data_set0, data_set1, data_set2])
+            save_minimal_record(context, "DataSet3", "A", 10, 0)
+            save_minimal_record(context, "DataSet3", "B", 11, 0)
 
-        # Next in DataSet2
-        data_set2 = context.data_source.create_data_set("DataSet2", context.data_set, [data_set0])
-        save_minimal_record(context, "DataSet2", "A", 8, 0)
-        save_minimal_record(context, "DataSet2", "B", 9, 0)
+            query = context.data_source.get_query(data_set3, BaseSampleData) \
+                .where({'record_id': 'B'}) \
+                .sort_by('record_id') \
+                .sort_by('record_index')
 
-        # Next in DataSet3
-        data_set3 = context.data_source.create_data_set("DataSet3", context.data_set, [data_set0, data_set1, data_set2])
-        save_minimal_record(context, "DataSet3", "A", 10, 0)
-        save_minimal_record(context, "DataSet3", "B", 11, 0)
+            query_result = []
+            for obj in query.as_iterable():  # type: BaseSampleData
+                data_set: DataSetData = context.data_source.load_or_null(obj.data_set, DataSetData)
+                data_set_name = data_set.data_set_name
+                query_result.append((obj.key, data_set_name, obj.version))
 
-        query = context.data_source.get_query(data_set3, BaseSampleData) \
-            .where({'record_id': 'B'}) \
-            .sort_by('record_id') \
-            .sort_by('record_index')
-
-        query_result = []
-        for obj in query.as_iterable():  # type: BaseSampleData
-            data_set: DataSetData = context.data_source.load_or_null(obj.data_set, DataSetData)
-            data_set_name = data_set.data_set_name
-            query_result.append((obj.key, data_set_name, obj.version))
-
-        self.assertEqual(query_result[0], ('B;1', 'DataSet0', 2))
-        self.assertEqual(query_result[1], ('B;3', 'DataSet0', 2))
-        self.assertEqual(query_result[2], ('B;5', 'DataSet1', 1))
-        self.assertEqual(query_result[3], ('B;7', 'DataSet1', 1))
-        self.assertEqual(query_result[4], ('B;9', 'DataSet2', 0))
-        self.assertEqual(query_result[5], ('B;11', 'DataSet3', 0))
+            self.assertEqual(query_result[0], ('B;1', 'DataSet0', 2))
+            self.assertEqual(query_result[1], ('B;3', 'DataSet0', 2))
+            self.assertEqual(query_result[2], ('B;5', 'DataSet1', 1))
+            self.assertEqual(query_result[3], ('B;7', 'DataSet1', 1))
+            self.assertEqual(query_result[4], ('B;9', 'DataSet2', 0))
+            self.assertEqual(query_result[5], ('B;11', 'DataSet3', 0))
 
     def test_create_ordered_id(self):
         """Stress test to check ObjectIds are created in increasing order."""
-        context = Context()
-        source = TemporalMongoDataSourceData(db_name='Test')
-        source.init(context)
+        with TemporalTestContext(self) as context:
+            for i in range(10_000):
+                context.data_source.create_ordered_object_id()
 
-        context.data_source = source
-        context.data_set = context.data_source.create_common()
-        context.log = InMemoryLog()
-
-        for i in range(10_000):
-            context.data_source.create_ordered_object_id()
-
-        # Log should not contain warnings.
-        self.assertTrue(str(context.log) == '')
+            # Log should not contain warnings.
+            self.assertTrue(str(context.log) == '')
 
 
 if __name__ == "__main__":

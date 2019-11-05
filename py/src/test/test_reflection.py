@@ -1,7 +1,7 @@
 import unittest
 
 from datacentric.platform.reflection import ClassInfo
-from datacentric.types.record import TypedRecord, TypedKey, RootRecord, Data
+from datacentric.types.record import TypedRecord, TypedKey, Data
 
 
 class BaseKey(TypedKey['BaseData']):

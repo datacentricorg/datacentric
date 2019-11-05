@@ -19,8 +19,8 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
     saved_by_id: ObjectId
     freeze_imports: bool
 
-    def __init__(self, db_name, mongo_uri=None):
-        super().__init__(db_name, mongo_uri)
+    def __init__(self):
+        super().__init__()
         self._collection_dict = dict()  # type: Dict[type, Collection]
 
         self.saved_by_time = None
