@@ -70,17 +70,13 @@ class BaseSampleKey(TypedKey[BaseSampleData]):
 
 
 class DerivedSampleData(BaseSampleData):
-    __slots__ = ['double_element2', 'string_element2', 'array_of_string', 'list_of_string', 'array_of_double',
-                 'array_of_nullable_double', 'list_of_double', 'list_of_nullable_double', 'data_element',
-                 'data_element_list', 'key_element', 'key_element_list']
+    __slots__ = ['double_element2', 'string_element2', 'list_of_string', 'list_of_double', 'list_of_nullable_double',
+                 'data_element', 'data_element_list', 'key_element', 'key_element_list']
     double_element2: float
     string_element2: str
-    array_of_string: List[str]
     list_of_string: List[str]
-    array_of_double: np.array
-    array_of_nullable_double: np.array
-    list_of_double: List[float]
-    list_of_nullable_double: List[float]
+    list_of_double: np.array
+    list_of_nullable_double: np.array
     data_element: ElementSampleData
     data_element_list: List[ElementSampleData]
     key_element: BaseSampleKey
@@ -90,10 +86,7 @@ class DerivedSampleData(BaseSampleData):
         super().__init__()
         self.double_element2 = None
         self.string_element2 = None
-        self.array_of_string = None
         self.list_of_string = None
-        self.array_of_double = None
-        self.array_of_nullable_double = None
         self.list_of_double = None
         self.list_of_nullable_double = None
         self.data_element = None

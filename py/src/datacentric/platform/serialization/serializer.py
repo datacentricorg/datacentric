@@ -4,42 +4,22 @@ from enum import Enum
 from typing import Dict, List
 import numpy as np
 import inflection
+from bson import ObjectId
 
 import datacentric.types.date_ext as date_ext
 from datacentric.platform.reflection.class_info import ClassInfo
 from datacentric.types.local_minute import LocalMinute
-from datacentric.types.record import Record
+from datacentric.types.record import Record, Key, Data
 
 
 # Serialization: object -> dict
 
 def serialize(obj: Record):
-    dict_ = dict()
+    dict_ = _serialize_class(obj)
     dict_['_t'] = obj.__class__.__name__
-    dict_['_key'] = obj.key
     dict_['_dataset'] = obj.data_set
-    for slot in obj.__slots__:
-        value = obj.__getattribute__(slot)
-        value_type = type(value)
-        if value is None:
-            continue
-        elif inspect.isclass(value):
-            serialized_value = _serialize_class(value)
-        elif value_type == LocalMinute:
-            serialized_value = date_ext.minute_to_iso_int(value)
-        elif value_type == dt.date:
-            serialized_value = date_ext.date_to_iso_int(value)
-        elif value_type == dt.time:
-            serialized_value = date_ext.time_to_iso_int(value)
-        elif value_type == dt.datetime:
-            serialized_value = date_ext.date_time_to_iso_int(value)
-        elif issubclass(value_type, Enum):
-            serialized_value = value.name
-        else:
-            serialized_value = value
+    dict_['_key'] = obj.key
 
-        if value is not None:
-            dict_[_to_pascal_case(slot)] = serialized_value
     return dict_
 
 
@@ -48,23 +28,64 @@ def _serialize_class(obj):
     dict_['_t'] = obj.__class__.__name__
     for slot in obj.__slots__:
         value = obj.__getattribute__(slot)
-        value_type = type(value)
-        if inspect.isclass(value):
-            serialized_value = _serialize_class(value)
-        elif value_type == LocalMinute:
-            serialized_value = date_ext.minute_to_iso_int(value)
-        elif value_type == dt.date:
-            serialized_value = date_ext.date_to_iso_int(value)
-        elif value_type == dt.time:
-            serialized_value = date_ext.time_to_iso_int(value)
-        elif value_type == dt.datetime:
-            serialized_value = date_ext.date_time_to_iso_int(value)
-        else:
-            serialized_value = value
+        if value is None:
+            continue
 
-        if value is not None:
-            dict_[_to_pascal_case(slot)] = serialized_value
+        value_type = type(value)
+        if issubclass(value_type, Key):
+            serialized_value = _serialize_class(value)
+        elif issubclass(value_type, Data):
+            serialized_value = _serialize_class(value)
+        elif issubclass(value_type, Enum):
+            serialized_value = value.name
+        elif value_type is list:
+            serialized_value = _serialize_list(value)
+        else:
+            serialized_value = _serialize_primitive(value)
+
+        dict_[_to_pascal_case(slot)] = serialized_value
     return dict_
+
+
+def _serialize_list(list_):
+    result = []
+    for value in list_:
+        value_type = type(value)
+        if issubclass(value_type, Key):
+            result.append(_serialize_class(value))
+        elif issubclass(value_type, Data):
+            result.append(_serialize_class(value))
+        elif issubclass(value_type, Enum):
+            result.append(value.name)
+        elif value_type is list:
+            result.append(_serialize_list(value))
+        else:
+            result.append(_serialize_primitive(value))
+    return result
+
+
+def _serialize_primitive(value):
+    value_type = type(value)
+    if value_type == LocalMinute:
+        return date_ext.minute_to_iso_int(value)
+    elif value_type == dt.date:
+        return date_ext.date_to_iso_int(value)
+    elif value_type == dt.time:
+        return date_ext.time_to_iso_int(value)
+    elif value_type == dt.datetime:
+        return date_ext.date_time_to_iso_int(value)
+    elif value_type == str:
+        return value
+    elif value_type == int:
+        return value
+    elif value_type == float:
+        return value
+    elif value_type == ObjectId:
+        return value
+    elif value_type == np.ndarray:
+        return value.tolist()
+    else:
+        raise Exception(f'Cannot serialize type {value_type.__name__}')
 
 
 def _to_pascal_case(name: str):
@@ -121,6 +142,3 @@ def deserialize(dict_: Dict):
 
         new_obj.__setattr__(slot, value)
     return new_obj
-
-
-

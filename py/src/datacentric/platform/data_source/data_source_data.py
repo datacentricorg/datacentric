@@ -146,6 +146,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
                         result.add(import_id)
                 else:
                     result.add(data_set_id)
+        return result
 
     # From extensions
     def load(self, id_: ObjectId) -> Record:
