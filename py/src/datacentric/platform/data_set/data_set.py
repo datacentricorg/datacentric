@@ -18,6 +18,7 @@ class DataSetKey(TypedKey['DataSetData']):
 
 class DataSetData(TypedRecord[DataSetKey]):
     __slots__ = ['data_set_id', 'imports']
+
     data_set_id: str
     imports: List[ObjectId]
 

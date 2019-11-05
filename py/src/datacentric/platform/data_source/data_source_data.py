@@ -7,8 +7,15 @@ from datacentric.platform.data_set import DataSetData, DataSetKey
 
 
 class DataSourceKey(TypedKey['DataSourceData']):
-    def __init__(self):
+    data_source_id: str
+    cache: str = 'Cache'
+    master: str = 'Master'
+
+    def __init__(self, value: str = None):
         super().__init__()
+        self.data_source_id = None
+        if value is not None:
+            self.data_source_id = value
 
 
 class DataSourceData(RootRecord[DataSourceKey], ABC):
@@ -16,16 +23,20 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
     _empty_id = ObjectId('000000000000000000000000')
     common_id = 'Common'
 
+    data_source_id: str
+    db_name: str
+    data_store: str
+    readonly: str
+
     def __init__(self):
         RootRecord.__init__(self)
         self._data_set_dict = dict()  # type: Dict[str, ObjectId]
         self._import_dict = dict()  # type: Dict[ObjectId, Set[ObjectId]]
 
-        self.data_source_id = None  # type: str
-
-        self.db_name = None  # type: str
-        self.data_store = None  # type: str
-        self.readonly = None  # type: bool
+        self.data_source_id = None
+        self.db_name = None
+        self.data_store = None
+        self.readonly = None
 
     @abstractmethod
     def create_ordered_object_id(self) -> ObjectId:

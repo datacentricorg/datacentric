@@ -11,38 +11,64 @@ from datacentric.types.record import Record
 
 # Serialization: object -> dict
 
-def serialize(obj):
+def serialize(obj: Record):
     dict_ = dict()
     dict_['_t'] = obj.__class__.__name__
     dict_['_key'] = obj.key
+    dict_['_dataset'] = obj.data_set
     for slot in obj.__slots__:
         val = obj.__getattribute__(slot)
         if inspect.isclass(val):
-            serialized_value = serialize(val)
+            serialized_value = _serialize_class(val)
         elif type(val) == dt.date:
-            serialized_value = date_to_iso_int(val)
+            serialized_value = _date_to_iso_int(val)
         elif type(val) == dt.time:
-            serialized_value = time_to_iso_int(val)
+            serialized_value = _time_to_iso_int(val)
         elif type(val) == dt.datetime:
-            serialized_value = date_time_to_int(val)
+            serialized_value = _date_time_to_int(val)
         else:
             serialized_value = val
 
         if val is not None:
-            dict_[slot] = serialized_value
+            dict_[_to_pascal_case(slot)] = serialized_value
     return dict_
 
 
-def date_to_iso_int(date: dt.date):
+def _serialize_class(obj):
+    dict_ = dict()
+    dict_['_t'] = obj.__class__.__name__
+    for slot in obj.__slots__:
+        val = obj.__getattribute__(slot)
+        if inspect.isclass(val):
+            serialized_value = _serialize_class(val)
+        elif type(val) == dt.date:
+            serialized_value = _date_to_iso_int(val)
+        elif type(val) == dt.time:
+            serialized_value = _time_to_iso_int(val)
+        elif type(val) == dt.datetime:
+            serialized_value = _date_time_to_int(val)
+        else:
+            serialized_value = val
+
+        if val is not None:
+            dict_[_to_pascal_case(slot)] = serialized_value
+    return dict_
+
+
+def _to_pascal_case(name: str):
+    return ''.join(x for x in name.title() if not x == '_')
+
+
+def _date_to_iso_int(date: dt.date):
     return date.year * 10_000 + date.month * 100 + date.day
 
 
-def time_to_iso_int(time_: dt.time):
+def _time_to_iso_int(time_: dt.time):
     # todo: microseconds rounding
     return time_.hour * 100_00_000 + time_.minute * 100_000 + time_.second * 1000 + time_.microsecond * 1000
 
 
-def date_time_to_int(datetime: dt.datetime):
+def _date_time_to_int(datetime: dt.datetime):
     milliseconds = datetime.microsecond / 1000
     return time.mktime(datetime.utctimetuple()) * 1000 + milliseconds
 

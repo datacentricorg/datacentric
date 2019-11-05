@@ -13,7 +13,11 @@ class Key(Data, ABC):
 
     @property
     def value(self) -> str:
-        raise NotImplemented
+        tokens = []
+        element_array = self.__slots__
+        for element in element_array:
+            tokens.append(self.get_key_token(self, element))
+        return ';'.join(tokens)
 
     @staticmethod
     def get_key_token(obj: object, slot: str) -> str:

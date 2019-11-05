@@ -2,6 +2,7 @@ import datetime as dt
 from typing import Dict, Union
 from bson import ObjectId
 from pymongo.collection import Collection
+from pymongo.pi
 
 from datacentric.types.record import Record, TypedKey
 from datacentric.platform.data_source import MongoDataSourceData
@@ -31,16 +32,6 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
             return
         raise NotImplemented
 
-    def _get_saved_by(self):
-        if self.saved_by_time is None and self.saved_by_id is None:
-            return None
-        elif self.saved_by_time is not None and self.saved_by_id is None:
-            return ObjectId.from_datetime(self.saved_by_time)
-        elif self.saved_by_time is None and self.saved_by_id is not None:
-            return self.saved_by_id
-        raise Exception('Elements SavedByTime and SavedById are alternates; '
-                        'they cannot be specified at the same time.')
-
     def delete(self, key: TypedKey[Record], delete_in: ObjectId) -> None:
         raise NotImplemented
 
@@ -48,6 +39,9 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
         raise NotImplemented
 
     def reload_or_null(self, key: TypedKey, load_from: ObjectId) -> Record:
+        self.get_data_set_lookup_list()
+        key_value = key.value
+        mong
         raise NotImplemented
 
     def save(self, record: Record, save_to: ObjectId) -> None:
@@ -73,3 +67,13 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
         collection = self.db.get_collection(mapped_class_name)
         self._collection_dict[type_] = collection
         return collection
+
+    def _get_saved_by(self):
+        if self.saved_by_time is None and self.saved_by_id is None:
+            return None
+        elif self.saved_by_time is not None and self.saved_by_id is None:
+            return ObjectId.from_datetime(self.saved_by_time)
+        elif self.saved_by_time is None and self.saved_by_id is not None:
+            return self.saved_by_id
+        raise Exception('Elements SavedByTime and SavedById are alternates; '
+                        'they cannot be specified at the same time.')
