@@ -86,39 +86,29 @@ namespace DataCentric
             // Initialize base before executing the rest of the code in this method
             base.Init(context);
 
-            // Check that TimeZoneName is set
-            if (!TimeZoneName.HasValue()) throw new Exception("TimeZoneName is not set.");
-
-            if (TimeZoneName != "UTC" && !TimeZoneName.Contains("/"))
-                throw new Exception(
-                    $"TimeZoneName={TimeZoneName} is not UTC and is not a forward slash  " +
-                    $"delimited city timezone. Only (a) UTC timezone and (b) IANA TZDB " +
-                    $"city timezones such as America/New_York are permitted " +
-                    $"as TimeZoneName values, but not three-symbol timezones without " +
-                    $"delimiter such as EST or EDT that do not handle the switch " +
-                    $"between winter and summer time automatically when winter time " +
-                    $"is defined.");
-
-            // Initialize TimeZone property
-            dateTimeZone_ = DateTimeZoneProviders.Tzdb.GetZoneOrNull(TimeZoneName);
-
-            // If still null after initialization, TimeZoneName
-            // was not found in the IANA database of city codes
-            if (dateTimeZone_ == null)
-                throw new Exception($"TimeZoneName={TimeZoneName} not found in IANA TZDB timezone database.");
+            // Delegate to the method of the TimeZoneKey and cache the result in private field
+            dateTimeZone_ = new TimeZoneKey() {TimeZoneName = TimeZoneName}.GetDateTimeZone();
         }
 
         /// <summary>
-        /// NodaTime timezone object used for conversion between
+        /// Returns NodaTime timezone object used for conversion between
         /// UTC and local date, time, minute, and datetime.
         ///
-        /// This property is set in Init(...) method based on TimeZoneName.
-        /// Because TimeZoneName is used to look up timezone conventions,
-        /// it must match the code in IANA timezone database precisely.
+        /// Only the following timezones can be defined:
         ///
-        /// The IANA city timezone code has two slash-delimited tokens,
-        /// the first referencing the country and the other the city, for
-        /// example America/New_York.
+        /// * UTC timezone; and
+        /// * IANA city timezones such as America/New_York
+        ///
+        /// Other 3-letter regional timezones such as EST or EDT are
+        /// not permitted because they do not handle the transition
+        /// between winter and summer time automatically for those
+        /// regions where winter time is defined.
+        ///
+        /// Because TimeZoneName is used to look up timezone conventions,
+        /// it must match either the string UTC or the code in IANA
+        /// timezone database precisely. The IANA city timezone code
+        /// has two slash-delimited tokens, the first referencing the
+        /// country and the other the city, for example America/New_York.
         /// </summary>
         public DateTimeZone GetDateTimeZone() { return dateTimeZone_; }
     }
