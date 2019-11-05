@@ -1,9 +1,12 @@
 import datetime as dt
 import numpy as np
 import re
+import inspect
+import itertools
 from bson import ObjectId
 from enum import Enum
-from typing import Dict, List, Any
+from typing import Dict, Any, get_type_hints
+from typing_inspect import get_origin, get_args
 
 import datacentric.types.date_ext as date_ext
 from datacentric.platform.reflection.class_info import ClassInfo
@@ -25,7 +28,22 @@ def serialize(obj: Record):
 def _serialize_class(obj):
     dict_ = dict()
     dict_['_t'] = obj.__class__.__name__
-    for slot in obj.__slots__:
+    mro = inspect.getmro(type(obj))
+    from datacentric.types.record import Record, Data
+
+    if Record in mro:
+        idx = mro.index(Record)
+        chain = mro[:idx]
+    elif Data in mro:
+        idx = mro.index(Data)
+        chain = mro[:idx]
+    else:
+        raise Exception(f'Cannot serialize class {obj.__class__.__name__} not derived from Record or Data.')
+
+    slot_lists = [x.__slots__ for x in chain]
+    slots = list(itertools.chain.from_iterable(slot_lists))
+
+    for slot in slots:
         value = obj.__getattribute__(slot)
         if value is None:
             continue
@@ -117,23 +135,24 @@ def deserialize(dict_: Dict) -> Record:
 
 
 def _deserialize_class(dict_: Dict[str, Any]):
-    type_name = dict_.pop('_t')  # type: str
+    type_name: str = dict_.pop('_t')
 
     type_info = ClassInfo.get_type(type_name)
     new_obj = type_info()
 
     for dict_key, dict_value in dict_.items():
         slot = to_snake_case(dict_key)
-        member_type = type_info.__annotations__[slot]
-        if issubclass(member_type, Key):
+        hints = get_type_hints(type_info)
+        member_type = hints[slot]
+        if get_origin(member_type) is not None and get_origin(member_type) is list:
+            deserialized_value = _deserialize_list(member_type, dict_value)
+        elif issubclass(member_type, Key):
             deserialized_value = member_type()
             deserialized_value.populate_from_string(dict_value)
         elif issubclass(member_type, Data):
             deserialized_value = _deserialize_class(dict_value)
         elif issubclass(member_type, Enum):
             deserialized_value = member_type[dict_value]
-        elif member_type is list:
-            deserialized_value = _deserialize_list(member_type, dict_value)
         else:
             deserialized_value = _deserialize_primitive(member_type, dict_value)
 
@@ -142,22 +161,28 @@ def _deserialize_class(dict_: Dict[str, Any]):
 
 
 def _deserialize_list(type_, list_):
-    if issubclass(type_, Key):
-        raise Exception
-    elif issubclass(type_, Data):
+    expected_item_type = get_args(type_)[0]
+    if issubclass(expected_item_type, Key):
+        result = []
+        for item in list_:
+            deserialized_key = expected_item_type()
+            deserialized_key.populate_from_string(item)
+            result.append(deserialized_key)
+        return result
+    elif issubclass(expected_item_type, Data):
         return [_deserialize_class(x) for x in list_]
-    elif issubclass(type_, Enum):
-        return [type_[x] for x in list_]
-    elif type_ is list:
+    elif issubclass(expected_item_type, Enum):
+        return [expected_item_type[x] for x in list_]
+    elif expected_item_type is list:
         raise Exception(f'List of lists are prohibited.')
     else:
-        return [_deserialize_primitive(type_, x) for x in list_]
+        return [_deserialize_primitive(expected_item_type, x) for x in list_]
 
 
 def _deserialize_primitive(expected_type, value):
     if expected_type == str:
         return value
-    elif expected_type == np.array:
+    elif expected_type == np.ndarray:
         return np.array(value)
     elif expected_type == bool:
         return value
