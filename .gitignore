@@ -11,6 +11,9 @@ syntax: glob
 **/obj
 **/x64
 **/x86
+py/src/datacentric.egg-info
+py/src/build
+py/src/dist
 *.FileListAbsolute.txt
 *.aux
 *.bi
