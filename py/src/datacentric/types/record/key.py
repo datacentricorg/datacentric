@@ -4,9 +4,12 @@ from datacentric.types.record import Data
 
 
 class Key(Data, ABC):
+    __slots__ = []
+
     def __init__(self):
         Data.__init__(self)
 
+    @property
     def value(self) -> str:
         raise NotImplemented
 

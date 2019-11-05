@@ -7,7 +7,7 @@ from datacentric.platform.data_source import DataSourceData
 
 
 class MongoDataSourceData(DataSourceData, ABC):
-    __empty_id = ObjectId('000000000000000000000000')
+
     __prohibited_symbols = '/\\. "$*<>:|?'
     __max_db_name_length = 64
 

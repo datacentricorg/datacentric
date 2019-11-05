@@ -3,7 +3,6 @@ from typing import Dict
 from bson import ObjectId
 
 from datacentric.platform.data_source import MongoDataSourceData
-from datacentric.platform.data_source.data_source_data import TRecord
 
 
 class HierarchicalMongoDataSourceData(MongoDataSourceData):

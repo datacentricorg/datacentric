@@ -2,6 +2,8 @@ from datacentric.types.record import Record
 
 
 class DeletedRecord(Record):
+    __slots__ = []
+
     def __init__(self):
         self.key_ = None
         Record.__init__(self)

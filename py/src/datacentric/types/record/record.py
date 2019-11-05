@@ -6,6 +6,7 @@ from datacentric.types.record import Data
 
 
 class Record(Data, ABC):
+    __slots__ = ['context', 'id_', 'data_set', 'key_']
 
     def __init__(self):
         Data.__init__(self)

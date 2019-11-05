@@ -9,6 +9,8 @@ TKey = TypeVar('TKey')
 
 
 class TypedRecord(Generic[TKey], Record, ABC):
+    __slots__ = []
+
     def __init__(self):
         Record.__init__(self)
 
@@ -25,11 +27,11 @@ class TypedRecord(Generic[TKey], Record, ABC):
         key.assign_key_elements(self)
         return key
 
-    def save(self, save_to: ObjectId = None) -> None:
+    def r_save(self, save_to: ObjectId = None) -> None:
         if save_to is None:
             self.context.data_source.save(self, self.context.data_set)
         else:
             self.context.data_source.save(self, self.context.data_set, save_to)
 
-    def delete(self, context: Context, delete_in: ObjectId = None) -> None:
+    def r_delete(self, context: Context, delete_in: ObjectId = None) -> None:
         context.data_source.delete(self, self.key, delete_in)

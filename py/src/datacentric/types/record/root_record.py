@@ -9,6 +9,8 @@ TKey = TypeVar('TKey')
 
 
 class RootRecord(TypedRecord[TKey], ABC):
+    __slots__ = []
+
     def __init__(self):
         TypedRecord.__init__(self)
 
