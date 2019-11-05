@@ -1,11 +1,12 @@
 import datetime as dt
 from abc import ABC
 from enum import Enum
-
+from typing import List
 from bson import ObjectId
 
 from datacentric.types.local_minute import LocalMinute
 from datacentric.types.record import Data
+import datacentric.types.date_ext as date_ext
 
 
 class Key(Data, ABC):
@@ -43,17 +44,24 @@ class Key(Data, ABC):
             raise ValueError(f'Key element {slot} of type {type(obj).__name__} has type float. '
                              f'Elements of this type cannot be part of key due to serialization format uncertainty.')
         elif attr_type == dt.date:
-            raise NotImplemented
+            return str(date_ext.date_to_iso_int(attr_value))
         elif attr_type == dt.time:
-            raise NotImplemented
+            return str(date_ext.time_to_iso_int(attr_value))
         elif attr_type == LocalMinute:
-            return attr_value.to_iso_int()
+            return str(date_ext.minute_to_iso_int(attr_value))
         elif attr_type == dt.datetime:
-            raise NotImplemented
-        elif attr_type in [bool, int, ObjectId]:
-            raise NotImplemented
+            return str(date_ext.date_time_to_iso_int(attr_value))
+        elif attr_type == bool:
+            if attr_value:
+                return 'true'
+            else:
+                return 'false'
+        elif attr_type == int:
+            return str(attr_value)
+        elif attr_type == ObjectId:
+            return str(attr_value)
         elif issubclass(attr_type, Key):
-            return str(attr_type)
+            return str(attr_value)
         elif issubclass(attr_type, Enum):
             return attr_value.name
         else:
@@ -62,5 +70,35 @@ class Key(Data, ABC):
                              f'string, double, bool, int, long, LocalDate, LocalTime, LocalMinute, LocalDateTime, '
                              f'LocalMinute, ObjectId, or Enum.')
 
-    def assign_string(self, value: str) -> None:
+    def populate_from_string(self, value: str) -> None:
+        tokens = value.split(';')
+        token_index = self.__populate_from_string(tokens, 0)
+
+        if len(tokens) != token_index:
+            raise Exception(f'Key with type {type(self).__name__} requires {token_index} tokens including '
+                            f'any composite key elements, while key value {value} contains {len(tokens)} tokens.')
+
+    def __populate_from_string(self, tokens: List[str], token_index: int) -> int:
+        slots = self.__slots__
+
+        # Singleton key case
+        if len(slots) == 0:
+            if len(tokens) != 1 or tokens[0] != '':
+                raise Exception(f'Type {type(self).__name__} has key {";".join(tokens)} while '
+                                f'for a singleton the key must be an empty string. '
+                                f'Singleton key is a key that has no key elements.')
+        if len(tokens) - token_index < len(slots):
+            raise Exception(f'Key of type {type(self).__name__} requires at least {len(slots)} elements '
+                            f'{";".join(slots)} while there are only {len(tokens) - token_index} remaining key tokens:'
+                            f'{";".join(tokens)}')
+
+        """
+        Iterate over element info elements, advancing tokenIndex by the required
+        number of tokens for each element. In case of embedded keys, the value of
+        tokenIndex is advanced by the recursive call to InitFromTokens method
+        of the embedded key.
+        """
+        for slot in slots:
+            a = slot
+
         raise NotImplemented

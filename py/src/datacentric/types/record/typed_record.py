@@ -3,6 +3,7 @@ from typing import TypeVar, Generic, List
 from bson.objectid import ObjectId
 
 from datacentric.platform.context import Context
+from datacentric.platform.reflection import ClassInfo
 from datacentric.types.record import Record, Key
 
 TKey = TypeVar('TKey')
@@ -36,8 +37,12 @@ class TypedRecord(Generic[TKey], Record, ABC):
         pass
 
     def to_key(self) -> TKey:
-        key = TKey()
-        key.assign_key_elements(self)
+        key_type = type(self).__orig_bases__[0].__args__[0]
+        if '__forward_arg__' in dir(key_type):
+            forward_arg = type(self).__orig_bases__[0].__args__[0].__forward_arg__
+            key_type = ClassInfo.get_type(forward_arg)
+        key = key_type()
+        key.populate_from(self)
         return key
 
     # def r_save(self, save_to: ObjectId = None) -> None:

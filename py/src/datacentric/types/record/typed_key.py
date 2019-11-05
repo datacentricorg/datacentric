@@ -3,6 +3,7 @@ from typing import TypeVar, Generic
 from bson import ObjectId
 
 from datacentric.platform.context import Context
+from datacentric.platform.reflection import ClassInfo
 from datacentric.types.record import Key, DeletedRecord
 
 TRecord = TypeVar('TRecord')
@@ -27,17 +28,27 @@ class TypedKey(Generic[TRecord], Key, ABC):
             result = context.data_source.reload_or_null(context, context.data_set)
         else:
             result = context.data_source.reload_or_null(context, load_from)
-        if result is not None and self.value() != result.key:
+        if result is not None and self.value != result.key:
             if isinstance(result, DeletedRecord):
                 raise Exception(f'Delete marker with Type={type(result).__name__} stored for '
-                                f'Key={self.value()} has a non-matching Key={result.key_}.')
+                                f'Key={self.value} has a non-matching Key={result.key_}.')
             else:
                 raise Exception(f'Delete marker with Type={type(result).__name__} stored for '
-                                f'Key={self.value()} has a non-matching Key={result.key_}.')
+                                f'Key={self.value} has a non-matching Key={result.key_}.')
         return result
 
     def delete(self, context: Context, delete_in: ObjectId = None) -> None:
         context.data_source.delete(self, delete_in)
 
-    def assign_key_elements(self, record) -> None:
-        raise NotImplemented
+    def populate_from(self, record: TRecord) -> None:
+        root_type_name = ClassInfo.get_root_type(type(self))
+        record_elements = type(record).__slots__
+        key_elements = type(self).__slots__
+
+        if len(record_elements) < len(key_elements):
+            raise Exception(f'Root data type {root_type_name} has fewer elements than key type {type(self).__name__}.')
+
+        for key_element in key_elements:
+            value = record.__getattribute__(key_element)
+            self.__setattr__(key_element, value)
+
