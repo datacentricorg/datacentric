@@ -1,5 +1,6 @@
 import datetime as dt
 import inspect
+from enum import Enum
 from typing import Dict, List
 import numpy as np
 import inflection
@@ -20,7 +21,9 @@ def serialize(obj: Record):
     for slot in obj.__slots__:
         value = obj.__getattribute__(slot)
         value_type = type(value)
-        if inspect.isclass(value):
+        if value is None:
+            continue
+        elif inspect.isclass(value):
             serialized_value = _serialize_class(value)
         elif value_type == LocalMinute:
             serialized_value = date_ext.minute_to_iso_int(value)
@@ -30,6 +33,8 @@ def serialize(obj: Record):
             serialized_value = date_ext.time_to_iso_int(value)
         elif value_type == dt.datetime:
             serialized_value = date_ext.date_time_to_iso_int(value)
+        elif issubclass(value_type, Enum):
+            serialized_value = value.name
         else:
             serialized_value = value
 
