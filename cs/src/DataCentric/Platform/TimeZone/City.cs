@@ -148,7 +148,6 @@ namespace DataCentric
         /// </summary>
         public static void Configure(IContext context)
         {
-            // Create ticker kind records
             var result = new List<City>
             {
                 new City
