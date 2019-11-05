@@ -13,7 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     install_requires=['typing_inspect>=0.4', 'numpy>=1.17'],
     url="https://github.com/datacentricorg/datacentric-py",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(include=('datacentric', 'datacentric.*'), exclude=['test', 'test.*']),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",
