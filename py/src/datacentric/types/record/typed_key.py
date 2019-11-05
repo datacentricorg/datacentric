@@ -10,14 +10,23 @@ TRecord = TypeVar('TRecord')
 
 
 class TypedKey(Generic[TRecord], Key, ABC):
+    """Base class of a foreign key.
+    Generic parameter TRecord make it possible to bound key type to its record.
+    Any elements of defined in the class derived from this one
+    become key tokens.
+    """
     def __init__(self):
         super().__init__()
 
     def load(self, context: Context, load_from: ObjectId = None) -> TRecord:
+        """Load record from context.data_source
+        Error message if the record is not found or is a DeletedRecord.
+        """
         if load_from is None:
             result = self.load_or_null(context, context.data_set)
         else:
             result = self.load_or_null(context, load_from)
+
         if result is None:
             raise KeyError(f'Record with key {self.value} is not found in dataset with ObjectId={load_from}.')
 

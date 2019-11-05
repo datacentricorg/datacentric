@@ -9,11 +9,14 @@ TKey = TypeVar('TKey')
 
 
 class RootRecord(TypedRecord[TKey], ABC):
+    """Base class of records stored in root dataset of the data store.
+    This class overrides DataSet property to always return ObjectId('000000000000000000000000').
+    """
     __slots__ = []
 
     def __init__(self):
-        TypedRecord.__init__(self)
+        super().__init__()
         self.data_set = ObjectId('000000000000000000000000')
 
     def init(self, context: Context) -> None:
-        TypedRecord.init(self, context)
+        super().init(context)

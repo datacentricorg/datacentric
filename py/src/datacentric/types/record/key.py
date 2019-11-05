@@ -10,6 +10,10 @@ import datacentric.types.date_ext as date_ext
 
 
 class Key(Data, ABC):
+    """Base class of a foreign key.
+    Any slots defined in type specific become key tokens. Property value and str(self) consists of key tokens with
+    semicolon delimiter.
+    """
     __slots__ = []
 
     def __init__(self):
@@ -20,6 +24,13 @@ class Key(Data, ABC):
 
     @property
     def value(self) -> str:
+        """String key consists of semicolon delimited primary key elements:
+
+        key_element1;key_element2
+
+        To avoid serialization format uncertainty, key elements
+        can have any atomic type except float.
+        """
         tokens = []
         element_array = self.__slots__
         for element in element_array:
@@ -28,6 +39,8 @@ class Key(Data, ABC):
 
     @staticmethod
     def get_key_token(obj: object, slot: str) -> str:
+        """Convert key element to string key token.
+        """
         attr_value = obj.__getattribute__(slot)
         attr_type = type(attr_value)
         if attr_value is None:
@@ -71,6 +84,19 @@ class Key(Data, ABC):
                              f'LocalMinute, ObjectId, or Enum.')
 
     def populate_from_string(self, value: str) -> None:
+        """Populate key attributes from semicolon delimited string.
+        Attributes that are themselves keys may use more than
+        one token.
+
+        If key AKey has two elements, B and C, where
+
+        * B has type BKey which has two string elements, and
+        * C has type string,
+
+        the semicolon delimited key has the following format:
+
+        BToken1;BToken2;CToken
+        """
         tokens = value.split(';')
         token_index = self.__populate_from_string(tokens, 0)
 
@@ -79,6 +105,9 @@ class Key(Data, ABC):
                             f'any composite key elements, while key value {value} contains {len(tokens)} tokens.')
 
     def __populate_from_string(self, tokens: List[str], token_index: int) -> int:
+        """Populate key elements from an array of tokens starting
+        at the specified token index.
+        """
         slots = self.__slots__
 
         # Singleton key case

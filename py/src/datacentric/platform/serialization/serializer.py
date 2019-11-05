@@ -33,7 +33,7 @@ def _serialize_class(obj):
 
         value_type = type(value)
         if issubclass(value_type, Key):
-            serialized_value = _serialize_class(value)
+            serialized_value = value.value
         elif issubclass(value_type, Data):
             serialized_value = _serialize_class(value)
         elif issubclass(value_type, Enum):
@@ -52,13 +52,14 @@ def _serialize_list(list_):
     for value in list_:
         value_type = type(value)
         if issubclass(value_type, Key):
-            result.append(_serialize_class(value))
+            result.append(value.value)
         elif issubclass(value_type, Data):
             result.append(_serialize_class(value))
         elif issubclass(value_type, Enum):
             result.append(value.name)
         elif value_type is list:
-            result.append(_serialize_list(value))
+            raise Exception(f'List of lists are prohibited.')
+            # result.append(_serialize_list(value))
         else:
             result.append(_serialize_primitive(value))
     return result
@@ -82,6 +83,7 @@ def _serialize_primitive(value):
         return value
     elif value_type == ObjectId:
         return value
+    # TODO: check for pymongo.binary.Binary to speed-up
     elif value_type == np.ndarray:
         return value.tolist()
     else:
@@ -111,7 +113,7 @@ def deserialize(dict_: Dict):
     annotations = type_info.__annotations__
     slots__ = type_info.__slots__
     mro = inspect.getmro(type_info)
-    a = [x for x in mro if issubclass(x, Record) and x is not Record]
+    # a = [x for x in mro if issubclass(x, Record) and x is not Record]
 
     for slot in slots__:
         member_type = annotations[slot]

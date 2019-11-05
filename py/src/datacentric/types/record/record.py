@@ -6,14 +6,31 @@ from datacentric.types.record import Data
 
 
 class Record(Data, ABC):
+    """Base class of records stored in data source.
+    """
     __slots__ = ['context', 'id_', 'data_set', '_key']
+    context: Context
+    """Execution context"""
+    id_: ObjectId
+    """ObjectId of the record is specific to its version.
+    For the record's history to be captured correctly, all
+    update operations must assign a new ObjectId with the
+    timestamp that matches update time.
+    """
+    data_set: ObjectId
+    """ObjectId of the dataset where the record is stored.
+    For records stored in root dataset, the value of
+    data_set element should be ObjectId('000000000000000000000000').
+    """
+    _key: str
+    """Backing attribute for key() property."""
 
     def __init__(self):
-        Data.__init__(self)
-        self.context = None  # type: Context
-        self.id_ = None  # type: ObjectId
-        self.data_set = None  # type: ObjectId
-        self._key = None  # type: str
+        super().__init__()
+        self.context = None
+        self.id_ = None
+        self.data_set = None
+        self._key = None
 
     def init(self, context: Context) -> None:
         if context is None:
@@ -23,4 +40,11 @@ class Record(Data, ABC):
     @property
     @abstractmethod
     def key(self) -> str:
+        """String key consists of semicolon delimited primary key elements:
+
+        key_element1;key_element2
+
+        To avoid serialization format uncertainty, key elements
+        can have any atomic type except float.
+        """
         pass

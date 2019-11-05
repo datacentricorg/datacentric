@@ -23,6 +23,7 @@ def save_base_record(context: Context, data_set_id, record_id, record_index) -> 
 
     data_set = context.data_source.get_data_set(data_set_id, context.data_set)
     context.data_source.save(rec, data_set)
+
     return rec.id_
 
 
