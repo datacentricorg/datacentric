@@ -23,7 +23,7 @@ class MongoDataSourceData(DataSourceData, ABC):
 
         self._client = MongoClient(mongo_uri)
         self._db = self._client.get_database(db_name)
-        self.__prev_object_id = MongoDataSourceData.__empty_id
+        self.__prev_object_id = DataSourceData._empty_id
 
     @property
     def db(self):

@@ -5,7 +5,7 @@ from typing import List
 
 
 class DataSetData(TypedRecord['DataSetKey']):
-    __slots__ = ['imports']
+    __slots__ = ['data_set_id', 'imports']
 
     def __init__(self):
         TypedRecord.__init__(self)
