@@ -1,5 +1,5 @@
 import datetime as dt
-from typing import Dict, Union
+from typing import Dict, Union, Optional
 from bson import ObjectId
 from pymongo.collection import Collection
 
@@ -43,7 +43,7 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
     def get_query(self, load_from: ObjectId):
         raise NotImplemented
 
-    def reload_or_null(self, key: TypedKey, load_from: ObjectId) -> Record:
+    def reload_or_null(self, key: TypedKey, load_from: ObjectId) -> Optional[Record]:
         self.get_data_set_lookup_list(load_from)
         key_value = key.value
         pipeline = [
@@ -55,7 +55,11 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
         ]
         collection = self._get_or_create_collection(type(key))
         cursor = collection.aggregate(pipeline)
-        return deserialize(cursor.next())
+        if cursor.alive:
+            cursor_next = cursor.next()
+            return deserialize(cursor_next)
+        else:
+            return None
 
     def save(self, record: Record, save_to: ObjectId) -> None:
         self.check_not_readonly()

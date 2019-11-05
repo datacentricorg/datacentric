@@ -164,7 +164,7 @@ class Key(Data, ABC):
             elif issubclass(member_type, Enum):
                 value = member_type[token]
             else:
-                raise Exception(f'')
+                raise Exception(f'Unexpected type {member_type.__name__} in key tokens.')
 
             self.__setattr__(slot, value)
             token_index += 1

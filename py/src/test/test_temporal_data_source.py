@@ -85,6 +85,18 @@ def save_basic_data(context: Context):
     pass
 
 
+def verify_load(context, data_set_id, key):
+    data_set = context.data_source.get_data_set(data_set_id, context.data_set)
+    record = key.load_or_null(context, data_set)
+    if record is None:
+        return 'Not found'
+    else:
+        if record.key != str(key):
+            return 'Found. Wrong key'
+        else:
+            return f'Found. Type = {type(record).__name__}'
+
+
 class TestTemporalDataSource(unittest.TestCase):
     def test_instantiation(self):
         context = Context()
@@ -109,6 +121,25 @@ class TestTemporalDataSource(unittest.TestCase):
         context.data_set = context.data_source.create_common()
 
         save_basic_data(context)
+
+        key_a0 = BaseSampleKey()
+        key_a0.record_id = 'A'
+        key_a0.record_index = 0
+
+        key_b0 = BaseSampleKey()
+        key_b0.record_id = 'B'
+        key_b0.record_index = 0
+
+        r1 = verify_load(context, 'DataSet0', key_a0)
+        r2 = verify_load(context, 'DataSet1', key_a0)
+        r3 = verify_load(context, 'DataSet0', key_b0)
+        r4 = verify_load(context, 'DataSet1', key_b0)
+        '''
+        Verify.Text: Record A;0 in dataset DataSet0 found and has Type=BaseSampleData.
+        Verify.Text: Record A;0 in dataset DataSet1 found and has Type=BaseSampleData.
+        Verify.Text: Record B;0 in dataset DataSet0 not found.
+        Verify.Text: Record B;0 in dataset DataSet1 found and has Type=DerivedSampleData.
+        '''
 
 
 if __name__ == "__main__":
