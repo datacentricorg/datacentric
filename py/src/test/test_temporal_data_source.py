@@ -2,7 +2,6 @@ import unittest
 
 from bson import ObjectId
 
-from datacentric.platform.data_set import DataSetData
 from datacentric.platform.logging.in_memory_log import InMemoryLog
 from test.data_sample import *
 from datacentric.platform.context import Context

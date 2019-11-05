@@ -37,7 +37,7 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
         cursor = collection.aggregate(pipeline)
         if cursor.alive:
             cursor_next = cursor.next()
-            result = deserialize(cursor_next)
+            result: Record = deserialize(cursor_next)
 
             if result is not None and isinstance(result, DeletedRecord):
                 if not isinstance(result, type_):

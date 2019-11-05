@@ -111,13 +111,13 @@ def _to_pascal_case(name: str):
 
 
 # Deserialization: dict -> object
-first_cap_re = re.compile('(.)([A-Z][a-z]+)')
-all_cap_re = re.compile('([a-z0-9])([A-Z])')
+__first_cap_re = re.compile('(.)([A-Z][a-z]+)')
+__all_cap_re = re.compile('([a-z0-9])([A-Z])')
 
 
 def to_snake_case(name):
-    s1 = first_cap_re.sub(r'\1_\2', name)
-    return all_cap_re.sub(r'\1_\2', s1).lower()
+    s1 = __first_cap_re.sub(r'\1_\2', name)
+    return __all_cap_re.sub(r'\1_\2', s1).lower()
 
 
 def deserialize(dict_: Dict) -> Record:

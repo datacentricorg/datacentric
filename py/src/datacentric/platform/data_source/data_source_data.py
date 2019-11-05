@@ -7,39 +7,75 @@ from datacentric.platform.data_set import DataSetData, DataSetKey
 
 
 class DataSourceKey(TypedKey['DataSourceData']):
-    data_source_id: str
+    """Key class for DataSourceData.
+    Record associated with this key is stored in root dataset.
+    """
+    __slots__ = ['data_source_name']
+
+    data_source_name: str
     cache: str = 'Cache'
     master: str = 'Master'
 
     def __init__(self, value: str = None):
         super().__init__()
-        self.data_source_id = None
+        self.data_source_name = None
         if value is not None:
-            self.data_source_id = value
+            self.data_source_name = value
 
 
 class DataSourceData(RootRecord[DataSourceKey], ABC):
-    __slots__ = ['data_source_id', 'db_name', 'data_store', 'readonly']
+    """Data source is a logical concept similar to database
+    that can be implemented for a document DB, relational DB,
+    key-value store, or filesystem.
+
+    Data source API provides the ability to:
+
+    (a) store and query datasets;
+    (b) store records in a specific dataset; and
+    (c) query record across a group of datasets.
+
+    This record is stored in root dataset.
+    """
+
+    __slots__ = ['data_source_name', 'db_name', 'readonly']
+
     _empty_id = ObjectId('000000000000000000000000')
     common_id = 'Common'
 
-    data_source_id: str
+    data_source_name: str
+    """Unique data source name."""
     db_name: str
-    data_store: str
-    readonly: str
+    """Database name."""
+    readonly: bool
+    """Use this flag to mark data source as readonly, but use either
+    is_readonly() or check_not_readonly() method to determine the
+    readonly status because the data source may be readonly for
+    two reasons:
+    
+    * readonly flag is true; or
+    * One of saved_by_time or saved_by_id is set
+    """
 
     def __init__(self):
-        RootRecord.__init__(self)
+        super().__init__()
         self._data_set_dict = dict()  # type: Dict[str, ObjectId]
         self._import_dict = dict()  # type: Dict[ObjectId, Set[ObjectId]]
 
-        self.data_source_id = None
+        self.data_source_name = None
         self.db_name = None
-        self.data_store = None
         self.readonly = None
 
     @abstractmethod
     def create_ordered_object_id(self) -> ObjectId:
+        """The returned ObjectIds have the following order guarantees:
+
+        * For this data source instance, to arbitrary resolution; and
+        * Across all processes and machines, to one second resolution
+
+        One second resolution means that two ObjectIds created within
+        the same second by different instances of the data source
+        class may not be ordered chronologically unless they are at
+        least one second apart."""
         pass
 
     @abstractmethod
@@ -48,12 +84,42 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
 
     def check_not_readonly(self):
         if self.is_readonly():
-            raise Exception(f'Attempting write operation for readonly data source {self.data_source_id}. '
+            raise Exception(f'Attempting write operation for readonly data source {self.data_source_name}. '
                             f'A data source is readonly if either (a) its ReadOnly flag is set, or (b) '
                             f'one of SavedByTime or SavedById is set.')
 
     @abstractmethod
     def load_or_null(self, id_: ObjectId, type_: type) -> Union[Record, None]:
+        """Load record by its ObjectId.
+
+        Return None if there is no record for the specified ObjectId;
+        however an exception will be thrown if the record exists but
+        is not derived from type_.
+        """
+        pass
+
+    @abstractmethod
+    def load_or_null_by_key(self, key_: TypedKey[Record], load_from: ObjectId) -> Union[Record, None]:
+        """Load record by string key from the specified dataset or
+        its list of imports. The lookup occurs first in descending
+        order of dataset ObjectIds, and then in the descending
+        order of record ObjectIds within the first dataset that
+        has at least one record. Both dataset and record ObjectIds
+        are ordered chronologically to one second resolution,
+        and are unique within the database server or cluster.
+
+        The root dataset has empty ObjectId value that is less
+        than any other ObjectId value. Accordingly, the root
+        dataset is the last one in the lookup order of datasets.
+
+        The first record in this lookup order is returned, or null
+        if no records are found or if DeletedRecord is the first
+        record.
+
+        Return None if there is no record for the specified ObjectId;
+        however an exception will be thrown if the record exists but
+        is not derived from TRecord.
+        """
         pass
 
     @abstractmethod
@@ -72,25 +138,50 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
     def delete_db(self) -> None:
         pass
 
-    def get_data_set_or_empty(self, data_set_id: str, load_from: ObjectId) -> ObjectId:
+    def get_data_set_or_none(self, data_set_id: str, load_from: ObjectId) -> Optional[ObjectId]:
+        """Get ObjectId of the dataset with the specified name.
+
+        All of the previously requested data_set_ids are cached by
+        the data source.
+
+        Returns null if not found.
+        """
         if data_set_id in self._data_set_dict:
             return self._data_set_dict[data_set_id]
         else:
-            return self.__load_data_set_or_empty(data_set_id, load_from)
+            data_set_key = DataSetKey(data_set_id)
+            # noinspection PyTypeChecker
+            data_set_data: DataSetData = self.load_or_null_by_key(data_set_key, load_from)
+
+            if data_set_data is None:
+                return None
+
+            # If found cache in dictionary
+            self._data_set_dict[data_set_id] = data_set_data.id_
+            if data_set_data.id_ not in self._import_dict:
+                import_set = self.__build_data_set_lookup_list(data_set_data)
+                self._import_dict[data_set_data.id_] = import_set
+            return data_set_data.id_
 
     def save_data_set(self, data_set_data: DataSetData, save_to: ObjectId) -> None:
+        """Save new version of the dataset and update in-memory cache to the saved dataset."""
         self.save(data_set_data, save_to)
         self._data_set_dict[data_set_data.key] = data_set_data.id_
         lookup_list = self.__build_data_set_lookup_list(data_set_data)
         self._import_dict[data_set_data.id_] = lookup_list
 
     def get_data_set_lookup_list(self, load_from: ObjectId) -> Iterable[ObjectId]:
+        """Returns enumeration of import datasets for specified dataset data,
+        including imports of imports to unlimited depth with cyclic
+        references and duplicates removed.
+        """
         if load_from == DataSourceData._empty_id:
             return [DataSourceData._empty_id]
         if load_from in self._import_dict:
             return list(self._import_dict[load_from])
         else:
-            data_set_data = self.load_or_null(load_from)  # type: DataSetData
+            # noinspection PyTypeChecker
+            data_set_data: DataSetData = self.load_or_null(load_from, DataSetData)
             if data_set_data is None:
                 raise Exception(f'Dataset with ObjectId={load_from} is not found.')
             if data_set_data.data_set != DataSourceData._empty_id:
@@ -101,19 +192,10 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
 
     @abstractmethod
     def _get_saved_by(self) -> Optional[ObjectId]:
+        """Records where id_ is greater than the returned value will be
+        ignored by the data source.
+        """
         pass
-
-    def __load_data_set_or_empty(self, data_set_id: str, load_from: ObjectId) -> ObjectId:
-        data_set_key = DataSetKey(data_set_id)
-        data_set_data = self.load_or_null_by_key(data_set_key, load_from)  # type: DataSetData
-
-        if data_set_data is None:
-            return DataSourceData._empty_id
-        self._data_set_dict[data_set_id] = data_set_data.id_
-        if data_set_data.id_ not in self._import_dict:
-            import_set = self.__build_data_set_lookup_list(data_set_data)
-            self._import_dict[data_set_data.id_] = import_set
-        return data_set_data.id_
 
     def __build_data_set_lookup_list(self, data_set_data: DataSetData) -> Union[Set[ObjectId], None]:
         if data_set_data is None:
@@ -144,26 +226,10 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
                     result.add(data_set_id)
         return result
 
-    # From extensions
-    def load(self, id_: ObjectId) -> Record:
-        result = self.load_or_null(id_)
-        if result is None:
-            raise Exception(f'Record with ObjectId={id_} is not found in data store {self.data_source_id}.')
-        return result
-
-    # renamed
-    def load_by_key(self, key_: TypedKey[Record], load_from: ObjectId):
-        return key_.load(self.context, load_from)
-
-    # renamed
-    @abstractmethod
-    def load_or_null_by_key(self, key_: TypedKey[Record], load_from: ObjectId):
-        pass
-
     def get_data_set(self, data_set_id: str, load_from: ObjectId):
-        result = self.get_data_set_or_empty(data_set_id, load_from)
+        result = self.get_data_set_or_none(data_set_id, load_from)
         if result is None:
-            raise Exception(f'Dataset {data_set_id} is not found in data store {self.data_source_id}.')
+            raise Exception(f'Dataset {data_set_id} is not found in data store {self.data_source_name}.')
         return result
 
     def get_common(self):
