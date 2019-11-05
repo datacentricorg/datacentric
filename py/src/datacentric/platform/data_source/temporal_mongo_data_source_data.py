@@ -44,11 +44,11 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
         raise NotImplemented
 
     def reload_or_null(self, key: TypedKey, load_from: ObjectId) -> Optional[Record]:
-        self.get_data_set_lookup_list(load_from)
+        lookup_list = self.get_data_set_lookup_list(load_from)
         key_value = key.value
         pipeline = [
             {"$match": {"_key": key_value}},
-            {"$match": {"_dataset": {"$in": [load_from]}}},
+            {"$match": {"_dataset": {"$in": lookup_list}}},
             {"$sort": {"_dataset": -1}},
             {"$sort": {"_id": -1}},
             {'$limit': 1}

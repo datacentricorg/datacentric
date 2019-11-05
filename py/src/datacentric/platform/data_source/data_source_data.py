@@ -92,7 +92,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         if load_from == DataSourceData._empty_id:
             return [DataSourceData._empty_id]
         if load_from in self._import_dict:
-            return self._import_dict[load_from]
+            return list(self._import_dict[load_from])
         else:
             data_set_data = self.load_or_null(load_from)  # type: DataSetData
             if data_set_data is None:
@@ -101,7 +101,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
                 raise Exception(f'Dataset with ObjectId={load_from} is not stored in root dataset.')
             result = self.__build_data_set_lookup_list(data_set_data)
             self._import_dict[load_from] = result
-            return result
+            return list(result)
 
     @abstractmethod
     def _get_saved_by(self) -> Optional[ObjectId]:
