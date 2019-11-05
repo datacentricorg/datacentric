@@ -5,12 +5,14 @@ import pkgutil
 from typing import Dict, List
 
 from datacentric.platform.reflection import ClassMapSettings
-from datacentric.types.record import Record
+from datacentric.types.record import Data
 
 
 class ClassInfo:
-    __is_initialized = False
-    __data_types_map = dict()  # type: Dict[str, type]
+    """Contains reflection based helper static methods.
+    """
+    __is_initialized: bool = False
+    __data_types_map: Dict[str, type] = dict()
 
     @staticmethod
     def get_type(name: str) -> type:
@@ -18,8 +20,7 @@ class ClassInfo:
             ClassInfo.__initialize_typ_map()
 
             from datacentric.types.record import TypedRecord, TypedKey
-            children = ClassInfo.__get_imported_records(TypedRecord, [])
-            children = ClassInfo.__get_imported_records(TypedKey, children)
+            children = ClassInfo.__get_runtime_imported_data(Data, [])
             for child in children:
                 if child not in ClassInfo.__data_types_map:
                     ClassInfo.__data_types_map[child.__name__] = child
@@ -28,11 +29,10 @@ class ClassInfo:
         return ClassInfo.__data_types_map[name]
 
     @staticmethod
-    def __get_imported_records(type_: type, children: List[type]):
-        # children.append(type_)
+    def __get_runtime_imported_data(type_: type, children: List[type]):
         current_children = type_.__subclasses__()
         for t in current_children:
-            ClassInfo.__get_imported_records(t, children)
+            ClassInfo.__get_runtime_imported_data(t, children)
         children.extend(current_children)
         return children
 
@@ -102,7 +102,7 @@ class ClassInfo:
 
                 for element_name in module_attrs:
                     element = getattr(inner_module, element_name)
-                    if inspect.isclass(element) and issubclass(element, Record):
+                    if inspect.isclass(element) and issubclass(element, Data):
                         ClassInfo.__data_types_map[element.__name__] = element
 
             qualified_name = module_name + "." + sub_module.name
