@@ -36,7 +36,7 @@ class TypedKey(Generic[TRecord], Key, ABC):
         if load_from is None:
             result = context.data_source.reload_or_null(context, context.data_set)
         else:
-            result = context.data_source.reload_or_null(context, load_from)
+            result = context.data_source.reload_or_null(self, load_from)
         if result is not None and self.value != result.key:
             if isinstance(result, DeletedRecord):
                 raise Exception(f'Delete marker with Type={type(result).__name__} stored for '

@@ -46,8 +46,16 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
     def reload_or_null(self, key: TypedKey, load_from: ObjectId) -> Record:
         self.get_data_set_lookup_list(load_from)
         key_value = key.value
-
-        raise NotImplemented
+        pipeline = [
+            {"$match": {"_key": key_value}},
+            {"$match": {"_dataset": {"$in": [load_from]}}},
+            {"$sort": {"_dataset": -1}},
+            {"$sort": {"_id": -1}},
+            {'$limit': 1}
+        ]
+        collection = self._get_or_create_collection(type(key))
+        cursor = collection.aggregate(pipeline)
+        return deserialize(cursor.next())
 
     def save(self, record: Record, save_to: ObjectId) -> None:
         self.check_not_readonly()
