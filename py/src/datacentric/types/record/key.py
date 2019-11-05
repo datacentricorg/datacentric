@@ -10,9 +10,9 @@ import datacentric.types.date_ext as date_ext
 
 
 class Key(Data, ABC):
-    """Base class of a foreign key.
-    Any slots defined in type specific become key tokens. Property value and str(self) consists of key tokens with
-    semicolon delimiter.
+    """Base class of a foreign key. Any slots defined in
+    type specific become key tokens. Property value and str(self)
+    consists of key tokens with semicolon delimiter.
     """
     __slots__ = []
 

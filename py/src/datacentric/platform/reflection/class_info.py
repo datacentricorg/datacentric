@@ -1,7 +1,3 @@
-import importlib
-import inspect
-import os
-import pkgutil
 from typing import Dict, List
 import typing_inspect
 
@@ -16,16 +12,18 @@ class ClassInfo:
 
     @staticmethod
     def get_type(name: str) -> type:
+        """Returns data derived type given its name."""
         if not ClassInfo.__is_initialized:
-            # ClassInfo.__initialize_typ_map()
-
             from datacentric.types.record import TypedRecord, TypedKey, Data
             children = ClassInfo.__get_runtime_imported_data(Data, [])
             for child in children:
                 if child not in ClassInfo.__data_types_map:
                     ClassInfo.__data_types_map[child.__name__] = child
+            ClassInfo.__is_initialized = True
+
         if name not in ClassInfo.__data_types_map:
             raise KeyError
+
         return ClassInfo.__data_types_map[name]
 
     @staticmethod
@@ -72,6 +70,9 @@ class ClassInfo:
 
     @staticmethod
     def get_root_type(type_: type) -> type:
+        """Returns type of the class at the root of the inheritance chain, one
+        before Data, TypedKey[TRecord], TypedRecord[TKey] or RootRecord[TKey].
+        """
         from datacentric.types.record import TypedKey, TypedRecord, RootRecord, Data
         root_types = [TypedKey, TypedRecord, RootRecord, Data]
 
@@ -85,37 +86,10 @@ class ClassInfo:
         raise Exception(f'Type is not derived from Data.')
 
     @staticmethod
-    def __get_runtime_imported_data(type_: type, children: List[type]):
+    def __get_runtime_imported_data(type_: type, children: List[type]) -> List[type]:
+        """For the given type recursively adds its children."""
         current_children = type_.__subclasses__()
         for t in current_children:
             ClassInfo.__get_runtime_imported_data(t, children)
         children.extend(current_children)
         return children
-
-    @staticmethod
-    def __initialize_typ_map():
-        ClassInfo.__explore_package('datacentric')
-        ClassInfo.__is_initialized = True
-
-    @staticmethod
-    def __explore_package(module_name):
-        from datacentric.types.record import Data
-        loader = pkgutil.get_loader(module_name)
-        if os.path.basename(loader.path) == '__init__.py':
-            package_path = os.path.dirname(loader.path)
-        else:
-            package_path = loader.path
-
-        packages = pkgutil.walk_packages([package_path])
-        for sub_module in packages:
-            if not sub_module.ispkg:
-                inner_module = importlib.import_module('.' + sub_module.name, module_name)
-                module_attrs = dir(inner_module)
-
-                for element_name in module_attrs:
-                    element = getattr(inner_module, element_name)
-                    if inspect.isclass(element) and issubclass(element, Data):
-                        ClassInfo.__data_types_map[element.__name__] = element
-
-            qualified_name = module_name + "." + sub_module.name
-            ClassInfo.__explore_package(qualified_name)
