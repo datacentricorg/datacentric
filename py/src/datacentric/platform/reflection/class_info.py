@@ -1,11 +1,11 @@
-import pkgutil
 import importlib
 import inspect
 import os
-from typing import Dict
+import pkgutil
+from typing import Dict, List
 
-from datacentric.types.record import Record
 from datacentric.platform.reflection import ClassMapSettings
+from datacentric.types.record import Record
 
 
 class ClassInfo:
@@ -16,14 +16,32 @@ class ClassInfo:
     def get_type(name: str) -> type:
         if not ClassInfo.__is_initialized:
             ClassInfo.__initialize_typ_map()
+
+            from datacentric.types.record import TypedRecord, TypedKey
+            children = ClassInfo.__get_imported_records(TypedRecord, [])
+            children = ClassInfo.__get_imported_records(TypedKey, children)
+            for child in children:
+                if child not in ClassInfo.__data_types_map:
+                    ClassInfo.__data_types_map[child.__name__] = child
         if name not in ClassInfo.__data_types_map:
             raise KeyError
         return ClassInfo.__data_types_map[name]
 
     @staticmethod
+    def __get_imported_records(type_: type, children: List[type]):
+        # children.append(type_)
+        current_children = type_.__subclasses__()
+        for t in current_children:
+            ClassInfo.__get_imported_records(t, children)
+        children.extend(current_children)
+        return children
+
+    @staticmethod
     def get_key_from_record(type_: type) -> type:
         key_type = type_.__orig_bases__[0].__args__[0]
-        # forward_arg = type_.__orig_bases__[0].__args__[0].__forward_arg__
+        if '__forward_arg__' in dir(key_type):
+            forward_arg = type_.__orig_bases__[0].__args__[0].__forward_arg__
+            key_type = ClassInfo.get_type(forward_arg)
         return key_type
 
     @staticmethod
