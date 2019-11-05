@@ -33,6 +33,9 @@ class Key(Data, ABC):
         """
         tokens = []
         element_array = self.__slots__
+        if type(self.__slots__) is str:
+            element_array = [element_array]
+
         for element in element_array:
             tokens.append(self.get_key_token(self, element))
         return ';'.join(tokens)
@@ -109,6 +112,8 @@ class Key(Data, ABC):
         at the specified token index.
         """
         slots = self.__slots__
+        if type(slots) is str:
+            slots = [slots]
 
         # Singleton key case
         if len(slots) == 0:
