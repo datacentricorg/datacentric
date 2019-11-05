@@ -6,6 +6,7 @@ syntax: glob
 **/CMakeFiles
 **/_NCrunch_*
 **/_ReSharper*
+**/venv
 **/bin
 **/obj
 **/x64
