@@ -3,7 +3,7 @@ from typing import Dict, Union, Optional
 from bson import ObjectId
 from pymongo.collection import Collection
 
-from datacentric.types.record import Record, TypedKey
+from datacentric.types.record import Record, TypedKey, DeletedRecord
 from datacentric.platform.data_source import MongoDataSourceData
 from datacentric.platform.reflection import ClassInfo
 from datacentric.platform.serialization.serializer import serialize, deserialize
@@ -35,7 +35,16 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
         ]
         collection = self._get_or_create_collection(type_)
         cursor = collection.aggregate(pipeline)
-        raise NotImplemented
+        if cursor.alive:
+            cursor_next = cursor.next()
+            result = deserialize(cursor_next)
+
+            if result is not None and isinstance(result, DeletedRecord):
+                if not isinstance(result, type_):
+                    raise Exception(f'Stored type {type(result).__name__} for ObjectId={id_} and '
+                                    f'Key={result.key} is not an instance of the requested type {type_.__name__}.')
+                result.init(self.context)
+                return result
 
     def delete(self, key: TypedKey[Record], delete_in: ObjectId) -> None:
         raise NotImplemented
