@@ -21,9 +21,8 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>
-    /// This interface provides timezone for the conversion between
-    /// datetime (by convention, always in UTC) and date, time,
-    /// and minute (by convention, always in a specific timezone).
+    /// This class provides timezone conversion between UTC
+    /// and local datetime for the specified city.
     ///
     /// Only the following timezones can be defined:
     ///
@@ -35,14 +34,14 @@ namespace DataCentric
     /// between winter and summer time automatically for those
     /// regions where winter time is defined.
     ///
-    /// Because TimeZoneName is used to look up timezone conventions,
+    /// Because CityName is used to look up timezone conventions,
     /// it must match either the string UTC or the code in IANA
     /// timezone database precisely. The IANA city timezone code
     /// has two slash-delimited tokens, the first referencing the
     /// country and the other the city, for example America/New_York.
     /// </summary>
-    [BsonSerializer(typeof(BsonKeySerializer<TimeZoneKey>))]
-    public sealed class TimeZoneKey : TypedKey<TimeZoneKey, TimeZone>
+    [BsonSerializer(typeof(BsonKeySerializer<CityKey>))]
+    public sealed class CityKey : TypedKey<CityKey, City>
     {
         /// <summary>
         /// Unique timezone name.
@@ -57,13 +56,13 @@ namespace DataCentric
         /// between winter and summer time automatically for those
         /// regions where winter time is defined.
         ///
-        /// Because TimeZoneName is used to look up timezone conventions,
+        /// Because CityName is used to look up timezone conventions,
         /// it must match either the string UTC or the code in IANA
         /// timezone database precisely. The IANA city timezone code
         /// has two slash-delimited tokens, the first referencing the
         /// country and the other the city, for example America/New_York.
         /// </summary>
-        public string TimeZoneName { get; set; }
+        public string CityName { get; set; }
 
         /// <summary>
         /// Returns NodaTime timezone object used for conversion between
@@ -79,7 +78,7 @@ namespace DataCentric
         /// between winter and summer time automatically for those
         /// regions where winter time is defined.
         ///
-        /// Because TimeZoneName is used to look up timezone conventions,
+        /// Because CityName is used to look up timezone conventions,
         /// it must match either the string UTC or the code in IANA
         /// timezone database precisely. The IANA city timezone code
         /// has two slash-delimited tokens, the first referencing the
@@ -87,26 +86,26 @@ namespace DataCentric
         /// </summary>
         public DateTimeZone GetDateTimeZone()
         {
-            // Check that TimeZoneName is set
-            if (!TimeZoneName.HasValue()) throw new Exception("TimeZoneName is not set.");
+            // Check that CityName is set
+            if (!CityName.HasValue()) throw new Exception("CityName is not set.");
 
-            if (TimeZoneName != "UTC" && !TimeZoneName.Contains("/"))
+            if (CityName != "UTC" && !CityName.Contains("/"))
                 throw new Exception(
-                    $"TimeZoneName={TimeZoneName} is not UTC and is not a forward slash  " +
+                    $"CityName={CityName} is not UTC and is not a forward slash  " +
                     $"delimited city timezone. Only (a) UTC timezone and (b) IANA TZDB " +
                     $"city timezones such as America/New_York are permitted " +
-                    $"as TimeZoneName values, but not three-symbol timezones without " +
+                    $"as CityName values, but not three-symbol timezones without " +
                     $"delimiter such as EST or EDT that do not handle the switch " +
                     $"between winter and summer time automatically when winter time " +
                     $"is defined.");
 
             // Initialize DateTimeZone
-            var result = DateTimeZoneProviders.Tzdb.GetZoneOrNull(TimeZoneName);
+            var result = DateTimeZoneProviders.Tzdb.GetZoneOrNull(CityName);
 
-            // If still null after initialization, TimeZoneName
+            // If still null after initialization, CityName
             // was not found in the IANA database of city codes
             if (result == null)
-                throw new Exception($"TimeZoneName={TimeZoneName} not found in IANA TZDB timezone database.");
+                throw new Exception($"CityName={CityName} not found in IANA TZDB timezone database.");
 
             return result;
         }

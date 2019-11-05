@@ -23,9 +23,8 @@ using NodaTime;
 namespace DataCentric
 {
     /// <summary>
-    /// This interface provides timezone for the conversion between
-    /// datetime (by convention, always in UTC) and date, time,
-    /// and minute (by convention, always in a specific timezone).
+    /// This class provides timezone conversion between UTC
+    /// and local datetime for the specified city.
     ///
     /// Only the following timezones can be defined:
     ///
@@ -37,13 +36,13 @@ namespace DataCentric
     /// between winter and summer time automatically for those
     /// regions where winter time is defined.
     ///
-    /// Because TimeZoneName is used to look up timezone conventions,
+    /// Because CityName is used to look up timezone conventions,
     /// it must match either the string UTC or the code in IANA
     /// timezone database precisely. The IANA city timezone code
     /// has two slash-delimited tokens, the first referencing the
     /// country and the other the city, for example America/New_York.
     /// </summary>
-    public class TimeZone : TypedRecord<TimeZoneKey, TimeZone>
+    public class City : TypedRecord<CityKey, City>
     {
         private DateTimeZone dateTimeZone_;
 
@@ -60,14 +59,14 @@ namespace DataCentric
         /// between winter and summer time automatically for those
         /// regions where winter time is defined.
         ///
-        /// Because TimeZoneName is used to look up timezone conventions,
+        /// Because CityName is used to look up timezone conventions,
         /// it must match either the string UTC or the code in IANA
         /// timezone database precisely. The IANA city timezone code
         /// has two slash-delimited tokens, the first referencing the
         /// country and the other the city, for example America/New_York.
         /// </summary>
         [BsonRequired]
-        public string TimeZoneName { get; set; }
+        public string CityName { get; set; }
 
         //--- METHODS
 
@@ -86,8 +85,8 @@ namespace DataCentric
             // Initialize base before executing the rest of the code in this method
             base.Init(context);
 
-            // Delegate to the method of the TimeZoneKey and cache the result in private field
-            dateTimeZone_ = new TimeZoneKey() {TimeZoneName = TimeZoneName}.GetDateTimeZone();
+            // Delegate to the method of the CityKey and cache the result in private field
+            dateTimeZone_ = new CityKey() {CityName = CityName}.GetDateTimeZone();
         }
 
         /// <summary>
@@ -104,7 +103,7 @@ namespace DataCentric
         /// between winter and summer time automatically for those
         /// regions where winter time is defined.
         ///
-        /// Because TimeZoneName is used to look up timezone conventions,
+        /// Because CityName is used to look up timezone conventions,
         /// it must match either the string UTC or the code in IANA
         /// timezone database precisely. The IANA city timezone code
         /// has two slash-delimited tokens, the first referencing the
