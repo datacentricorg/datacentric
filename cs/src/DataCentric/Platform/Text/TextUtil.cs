@@ -27,6 +27,37 @@ namespace DataCentric
         const string alphabet_ = "abcdefghijklmnopqrstuvwxyz";
 
         /// <summary>
+        /// Validates the format of immutable name, and returns first token
+        /// of the name, without version.
+        ///
+        /// By convention, immutable name consists of two pipe delimited tokens.
+        /// The first token is a string identifier, and second token is integer
+        /// version number with the initial value of 1. This method raises an
+        /// error if the name does not match the format.
+        /// </summary>
+        public static string ValidateNameAndStripVersion(string propName, string value)
+        {
+            // Check that immutable name is not null or empty
+            if (string.IsNullOrEmpty(value)) throw new Exception($"{propName} is not set.");
+
+            // By convention, immutable name consists of two pipe delimited tokens.
+            // The first token is a string identifier, and second token is integer
+            // version number with the initial value of 1. This code raises an
+            // error if the name does not match the format.
+            string[] nameTokens = value.Split('|');
+            if (nameTokens.Length != 2 ||
+                !int.TryParse(nameTokens[1], out int version) ||
+                version < 1)
+            {
+                throw new Exception(
+                    $"Immutable {propName}={value} must consist of two pipe-delimited " +
+                    $"tokens where  second token is a positive integer greater than zero, e.g. ABC|1.");
+            }
+
+            return nameTokens[0];
+        }
+
+        /// <summary>
         /// Generate a random sequence of lowercase ASCII strings of specified length.
         /// This method generates pure alphabetical strings, without including numbers.
         /// 
