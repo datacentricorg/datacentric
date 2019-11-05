@@ -3,9 +3,9 @@ from typing import Dict, Optional, TypeVar
 from bson import ObjectId
 from pymongo.collection import Collection
 
-from datacentric.platform.data_source.temporal_mongo_query import TemporalMongoQuery
+from datacentric.platform.storage.temporal_mongo_query import TemporalMongoQuery
 from datacentric.types.record import Record, TypedKey, DeletedRecord
-from datacentric.platform.data_source import MongoDataSourceData
+from datacentric.platform.storage import MongoDataSourceData
 from datacentric.platform.reflection import ClassInfo
 from datacentric.platform.serialization.serializer import serialize, deserialize
 

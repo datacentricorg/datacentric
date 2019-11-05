@@ -3,7 +3,7 @@ from abc import ABC
 from bson import ObjectId
 from pymongo import MongoClient
 
-from datacentric.platform.data_source import DataSourceData
+from datacentric.platform.storage import DataSourceData
 
 
 class MongoDataSourceData(DataSourceData, ABC):

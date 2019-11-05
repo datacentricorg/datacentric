@@ -20,7 +20,7 @@ TRecord = TypeVar('TRecord', bound=Record)
 class TemporalMongoQuery:
     def __init__(self, data_source: 'TemporalMongoDataSourceData', type_: type, collection: Collection,
                  load_from: ObjectId):
-        from datacentric.platform.data_source import TemporalMongoDataSourceData
+        from datacentric.platform.storage import TemporalMongoDataSourceData
         self._data_source: TemporalMongoDataSourceData = data_source
         self._type = type_
         self._collection = collection

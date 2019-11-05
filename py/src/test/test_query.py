@@ -2,7 +2,7 @@ import unittest
 import datetime as dt
 
 from datacentric.platform.context import Context
-from datacentric.platform.data_source import TemporalMongoDataSourceData
+from datacentric.platform.storage import TemporalMongoDataSourceData
 from datacentric.platform.logging.in_memory_log import InMemoryLog
 from datacentric.types.local_minute import LocalMinute
 from test.data_sample import NullableElementsSampleData, SampleEnum

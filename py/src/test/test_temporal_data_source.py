@@ -6,7 +6,7 @@ from datacentric.platform.data_set import DataSetData
 from datacentric.platform.logging.in_memory_log import InMemoryLog
 from test.data_sample import *
 from datacentric.platform.context import Context
-from datacentric.platform.data_source import TemporalMongoDataSourceData
+from datacentric.platform.storage import TemporalMongoDataSourceData
 
 
 def save_base_record(context: Context, data_set_id, record_id, record_index) -> ObjectId:
