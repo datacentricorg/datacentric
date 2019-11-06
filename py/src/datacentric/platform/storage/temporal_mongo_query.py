@@ -187,10 +187,7 @@ class TemporalMongoQuery:
                 projected_id_queryable.append(
                     {'$project': {'Id': '$_id', 'DataSet': '$_dataset', 'Key': '$_key', '_id': 0}})
 
-                descending_lookup_list = None
-                if self._data_source.freeze_imports:
-                    data_set_lookup_enumerable = self._data_source.get_data_set_lookup_list(self._load_from)
-                    descending_lookup_list = sorted(data_set_lookup_enumerable, reverse=True)
+                imports_cutoff = self._data_source.get_imports_cutoff_time(self._load_from)
 
                 record_ids = []
                 current_key = None
@@ -198,23 +195,14 @@ class TemporalMongoQuery:
                     obj_key = obj['Key']
                     if current_key == obj_key:
                         pass
-                        # self._data_source.context.log.warning(obj_key)
                     else:
-                        if self._data_source.freeze_imports:
-                            record_id = obj['Id']
-                            record_data_set = obj['DataSet']
-                            for data_set_id in descending_lookup_list:
-                                if data_set_id == record_data_set:
-                                    current_key = obj_key
-                                    if record_id in batch_ids_hash_set:
-                                        record_ids.append(record_id)
-                                if data_set_id < record_id:
-                                    break
-                        else:
+                        record_id = obj['Id']
+                        record_data_set = obj['DataSet']
+                        if imports_cutoff is None or record_data_set == self._load_from or record_id < imports_cutoff:
                             current_key = obj_key
-                            record_id = obj['Id']
                             if record_id in batch_ids_hash_set:
                                 record_ids.append(record_id)
+
                 if len(record_ids) == 0:
                     break
 

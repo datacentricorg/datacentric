@@ -256,7 +256,7 @@ class TemporalMongoDataSource(MongoDataSource):
         result = set()
         self._fill_data_set_lookup_set(data_set_record, result)
 
-        return result
+        return list(result)
 
     def _fill_data_set_lookup_set(self, data_set_record: DataSet, result: Set[ObjectId]) -> None:
         if data_set_record is None:
