@@ -27,4 +27,4 @@ class TemporalTestContext:
         return context
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        print('Exit test context')
+        print('Exit tests context')

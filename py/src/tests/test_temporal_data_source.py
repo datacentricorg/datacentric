@@ -4,8 +4,8 @@ from bson import ObjectId
 
 from datacentric.platform.context import Context
 from datacentric.platform.data_set import DataSetData
-from test.data_sample import *
-from test.temporal_test_context import TemporalTestContext
+from tests.data_sample import *
+from tests.temporal_test_context import TemporalTestContext
 
 
 def save_base_record(context: Context, data_set_id, record_id, record_index) -> ObjectId:
@@ -192,7 +192,7 @@ class TestTemporalDataSource(unittest.TestCase):
             self.assertEqual(query_result[5], ('B;11', 'DataSet3', 0))
 
     def test_create_ordered_id(self):
-        """Stress test to check ObjectIds are created in increasing order."""
+        """Stress tests to check ObjectIds are created in increasing order."""
         with TemporalTestContext(self) as context:
             for i in range(10_000):
                 context.data_source.create_ordered_object_id()

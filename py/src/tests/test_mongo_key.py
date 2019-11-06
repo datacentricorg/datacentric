@@ -4,7 +4,7 @@ import datetime as dt
 from bson import ObjectId
 
 from datacentric.types.record import TypedRecord, TypedKey
-from test.data_sample import BaseSampleKey
+from tests.data_sample import BaseSampleKey
 
 
 class CompositeKeySampleKey(TypedKey['CompositeKeySampleData']):
