@@ -16,7 +16,7 @@ class DataSetKey(TypedKey['DataSetData']):
             self.data_set_name = id_
 
 
-class DataSetData(TypedRecord[DataSetKey]):
+class DataSet(TypedRecord[DataSetKey]):
     """Dataset is a concept similar to a folder, applied to data in any
     data source including relational or document databases, OData
     endpoints, etc.

@@ -39,11 +39,6 @@ class TestClassInfo(unittest.TestCase):
         self.assertTrue(ClassInfo.get_root_type(DerivedData) == BaseData)
         self.assertTrue(ClassInfo.get_root_type(SimpleData) == SimpleData)
 
-    def test_mapped_name(self):
-        self.assertTrue(ClassInfo.get_mapped_class_name(BaseKey) == 'Base')
-        self.assertTrue(ClassInfo.get_mapped_class_name(BaseData) == 'Base')
-        self.assertTrue(ClassInfo.get_mapped_class_name(DerivedData) == 'Derived')
-
     def test_key_type(self):
         self.assertEqual(ClassInfo.get_key_from_record(BaseData), BaseKey)
         self.assertEqual(ClassInfo.get_key_from_record(DerivedData), BaseKey)

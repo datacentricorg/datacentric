@@ -72,7 +72,8 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
             {"$sort": {"_id": -1}},
             {'$limit': 1}
         ]
-        collection = self._get_or_create_collection(type(key_))
+        key_type = ClassInfo.get_record_from_key(type(key_))
+        collection = self._get_or_create_collection(key_type)
         cursor = collection.aggregate(pipeline)
         if cursor.alive:
             cursor_next = cursor.next()
@@ -99,8 +100,8 @@ class TemporalMongoDataSourceData(MongoDataSourceData):
         if type_ in self._collection_dict:
             return self._collection_dict[type_]
         root_type = ClassInfo.get_root_type(type_)
-        mapped_class_name = ClassInfo.get_mapped_class_name(root_type)
-        collection = self.db.get_collection(mapped_class_name)
+        collection_name = root_type.__name__
+        collection = self.db.get_collection(collection_name)
         self._collection_dict[type_] = collection
         return collection
 

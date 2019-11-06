@@ -3,7 +3,7 @@ import unittest
 from bson import ObjectId
 
 from datacentric.platform.context import Context
-from datacentric.platform.data_set import DataSetData
+from datacentric.platform.data_set import DataSet
 from tests.data_sample import *
 from tests.temporal_test_context import TemporalTestContext
 
@@ -180,7 +180,7 @@ class TestTemporalDataSource(unittest.TestCase):
 
             query_result = []
             for obj in query.as_iterable():  # type: BaseSampleData
-                data_set: DataSetData = context.data_source.load_or_null(obj.data_set, DataSetData)
+                data_set: DataSet = context.data_source.load_or_null(obj.data_set, DataSet)
                 data_set_name = data_set.data_set_name
                 query_result.append((obj.key, data_set_name, obj.version))
 

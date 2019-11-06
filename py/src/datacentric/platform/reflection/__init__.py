@@ -1,2 +1,1 @@
-from datacentric.platform.reflection.class_map_settings import ClassMapSettings
 from datacentric.platform.reflection.class_info import ClassInfo

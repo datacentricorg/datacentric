@@ -4,7 +4,7 @@ from typing import List, Set, Dict, Iterable, Optional, TypeVar
 
 from datacentric.platform.storage.db_name import DbNameKey
 from datacentric.types.record import RootRecord, TypedKey, Record
-from datacentric.platform.data_set import DataSetData, DataSetKey
+from datacentric.platform.data_set import DataSet, DataSetKey
 
 TRecord = TypeVar('TRecord', bound=Record)
 
@@ -169,7 +169,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         else:
             data_set_key = DataSetKey(data_set_id)
 
-            data_set_data: DataSetData = self.load_or_null_by_key(data_set_key, load_from)
+            data_set_data: DataSet = self.load_or_null_by_key(data_set_key, load_from)
 
             if data_set_data is None:
                 return None
@@ -181,7 +181,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
                 self._import_dict[data_set_data.id_] = import_set
             return data_set_data.id_
 
-    def save_data_set(self, data_set_data: DataSetData, save_to: ObjectId) -> None:
+    def save_data_set(self, data_set_data: DataSet, save_to: ObjectId) -> None:
         """Save new version of the dataset and update in-memory cache to the saved dataset."""
         self.save(data_set_data, save_to)
         self._data_set_dict[data_set_data.key] = data_set_data.id_
@@ -199,7 +199,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
             return list(self._import_dict[load_from])
         else:
             # noinspection PyTypeChecker
-            data_set_data: DataSetData = self.load_or_null(load_from, DataSetData)
+            data_set_data: DataSet = self.load_or_null(load_from, DataSet)
             if data_set_data is None:
                 raise Exception(f'Dataset with ObjectId={load_from} is not found.')
             if data_set_data.data_set != DataSourceData._empty_id:
@@ -215,7 +215,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         """
         pass
 
-    def __build_data_set_lookup_list(self, data_set_data: DataSetData) -> Optional[Set[ObjectId]]:
+    def __build_data_set_lookup_list(self, data_set_data: DataSet) -> Optional[Set[ObjectId]]:
         if data_set_data is None:
             return
 
@@ -254,13 +254,13 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         return self.get_data_set(self.common_id, DataSourceData._empty_id)
 
     def create_common(self) -> ObjectId:
-        result = DataSetData()
+        result = DataSet()
         result.data_set_name = self.common_id
         self.save_data_set(result, DataSourceData._empty_id)
         return result.id_
 
     def create_data_set(self, data_set_id: str, save_to: ObjectId, import_data_sets: List[ObjectId] = None) -> ObjectId:
-        result = DataSetData()
+        result = DataSet()
         result.data_set_name = data_set_id
 
         if import_data_sets is not None:

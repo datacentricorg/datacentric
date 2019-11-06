@@ -1,8 +1,6 @@
 from typing import Dict, List
 import typing_inspect
 
-from datacentric.platform.reflection import ClassMapSettings
-
 
 class ClassInfo:
     """Contains reflection based helper static methods.
@@ -39,7 +37,7 @@ class ClassInfo:
 
         generic_origin = typing_inspect.get_origin(generic_base)
         if generic_origin is not RootRecord and generic_origin is not TypedRecord:
-            raise Exception(f'Wrong generic origin: {generic_origin.__name__}. Expected TypeRecord || RootRecord')
+            raise Exception(f'Wrong generic origin: {generic_origin.__name__}. Expected TypedRecord || RootRecord')
 
         generic_arg = typing_inspect.get_args(generic_base)[0]  # Arg
 
@@ -53,20 +51,30 @@ class ClassInfo:
             raise Exception(f'Cannot deduce key from type {type_.__name__}')
 
     @staticmethod
-    def get_mapped_class_name(type_: type) -> str:
-        mapped_class_name = type_.__name__
+    def get_record_from_key(type_: type) -> type:
+        """Extracts associated key from RootRecord and TypedRecord derived types."""
+        if not typing_inspect.is_generic_type(type_):
+            raise Exception(f'Cannot get associated key from not generic type {type_.__name__}')
 
-        for prefix in ClassMapSettings.ignored_class_name_prefixes():
-            if mapped_class_name.startswith(prefix):
-                mapped_class_name = mapped_class_name[len(prefix):]
-                break
+        from datacentric.types.record import TypedKey, TypedRecord, RootRecord
+        from typing import ForwardRef
 
-        for suffix in ClassMapSettings.ignored_class_name_suffixes():
-            if mapped_class_name.endswith(suffix):
-                mapped_class_name = mapped_class_name[:len(mapped_class_name) - len(suffix)]
-                break
+        generic_base = typing_inspect.get_generic_bases(type_)[0]
 
-        return mapped_class_name
+        generic_origin = typing_inspect.get_origin(generic_base)
+        if generic_origin is not TypedKey:
+            raise Exception(f'Wrong generic origin: {generic_origin.__name__}. Expected TypedKey')
+
+        generic_arg = typing_inspect.get_args(generic_base)[0]  # Arg
+
+        # Generic parameter is forward ref
+        if type(generic_arg) is ForwardRef:
+            return ClassInfo.get_type(generic_arg.__forward_arg__)
+        # Generic parameter is type
+        elif issubclass(generic_arg, TypedRecord) or issubclass(generic_arg, RootRecord):
+            return generic_arg
+        else:
+            raise Exception(f'Cannot deduce key from type {type_.__name__}')
 
     @staticmethod
     def get_root_type(type_: type) -> type:
