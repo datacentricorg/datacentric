@@ -1,0 +1,21 @@
+{
+    "python.pythonPath": "venv\\Scripts\\python.exe",
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./tests",
+        "-p",
+        "test_*.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.unittestEnabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.linting.mypyEnabled": true,
+    "python.linting.enabled": true,
+    "python.linting.pycodestyleEnabled": true
+    "python.linting.pycodestyleArgs": ["--ignore=E501"],
+    "terminal.integrated.env.windows": {
+        "PYTHONPATH" : "${workspaceRoot};${env:PYTHONPATH}"
+    },
+}
