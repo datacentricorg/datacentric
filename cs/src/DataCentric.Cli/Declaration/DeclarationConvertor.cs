@@ -20,7 +20,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
-using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using NodaTime;
 
 namespace DataCentric.Cli
@@ -33,19 +33,33 @@ namespace DataCentric.Cli
         /// <summary>
         /// Contains all allowed primitive types which could be converted in declarations.
         /// </summary>
-        private static readonly System.Type[] AllowedPrimitiveTypes = {
-            typeof(ObjectId),
+        private static readonly Type[] AllowedPrimitiveTypes = {
+            typeof(string),
+
             typeof(bool),
             typeof(DateTime),
             typeof(double),
-            typeof(string),
             typeof(int),
             typeof(long),
-            // NodaTime types
-            typeof(LocalDateTime),
             typeof(LocalDate),
             typeof(LocalTime),
-            typeof(LocalMinute)
+            typeof(LocalMinute),
+            typeof(LocalDateTime),
+            typeof(Instant),
+            typeof(TemporalId),
+
+            // Nullables
+            typeof(bool?),
+            typeof(DateTime?),
+            typeof(double?),
+            typeof(int?),
+            typeof(long?),
+            typeof(LocalDate?),
+            typeof(LocalTime?),
+            typeof(LocalMinute?),
+            typeof(LocalDateTime?),
+            typeof(Instant?),
+            typeof(TemporalId?),
         };
 
         /// <summary>
@@ -56,7 +70,7 @@ namespace DataCentric.Cli
         /// <summary>
         /// Factory method which creates declaration corresponding to given type.
         /// </summary>
-        public static IDeclData ToDecl(System.Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
+        public static IDecl ToDecl(Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
         {
             if (type.IsSubclassOf(typeof(Enum)))
                 return EnumToDecl(type, navigator, projNavigator);
@@ -64,23 +78,23 @@ namespace DataCentric.Cli
             if (type.IsSubclassOf(typeof(Data)))
                 return TypeToDecl(type, navigator, projNavigator);
 
-            throw new ArgumentException($"{type.FullName} is not subclass of Enum or ClData", nameof(type));
+            throw new ArgumentException($"{type.FullName} is not subclass of Enum or Data", nameof(type));
         }
 
         /// <summary>
-        /// Converts enum to EnumDeclData
+        /// Converts enum to EnumDecl
         /// </summary>
-        public static EnumDeclData EnumToDecl(System.Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
+        public static EnumDecl EnumToDecl(Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
         {
             if (!type.IsSubclassOf(typeof(Enum)))
                 throw new ArgumentException($"Cannot create enum declaration from type: {type.FullName}.");
 
-            EnumDeclData decl = new EnumDeclData();
+            EnumDecl decl = new EnumDecl();
 
             decl.Name = type.Name;
             decl.Comment = type.GetCommentFromAttribute() ?? navigator?.GetXmlComment(type);
-            decl.Category = projNavigator.GetTypeLocation(type);
-            decl.Module = new ModuleKey { ModuleID = type.Namespace };
+            decl.Category = projNavigator?.GetTypeLocation(type);
+            decl.Module = new ModuleKey { ModuleName = type.Namespace };
             decl.Label = type.GetLabelFromAttribute() ?? type.Name;
 
             List<FieldInfo> items = type.GetFields(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Static).ToList();
@@ -90,44 +104,43 @@ namespace DataCentric.Cli
         }
 
         /// <summary>
-        /// Converts type inherited from Data to TypeDeclData
+        /// Converts type inherited from Data to TypeDecl
         /// </summary>
-        public static TypeDeclData TypeToDecl(System.Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
+        public static TypeDecl TypeToDecl(Type type, CommentNavigator navigator, ProjectNavigator projNavigator)
         {
             if (!type.IsSubclassOf(typeof(Data)))
                 throw new ArgumentException($"Cannot create type declaration from type: {type.FullName}.");
 
-            TypeDeclData decl = new TypeDeclData();
-            decl.Module = new ModuleKey { ModuleID = type.Namespace };
+            TypeDecl decl = new TypeDecl();
+            decl.Module = new ModuleKey { ModuleName = type.Namespace };
             decl.Category = projNavigator?.GetTypeLocation(type);
-            decl.Name = type.Name.TrimEnd("Data");
-            decl.Label = type.GetLabelFromAttribute() ?? type.Name.TrimEnd("Data");
+            decl.Name = type.Name;
+            decl.Label = type.GetLabelFromAttribute() ?? type.Name;
             decl.Comment = type.GetCommentFromAttribute() ?? navigator?.GetXmlComment(type);
             decl.Kind = type.GetKind();
             decl.Inherit = IsRoot(type.BaseType)
                                ? null
-                               : CreateTypeDeclKey(type.BaseType.Namespace, type.BaseType.Name.TrimEnd("Data"));
+                               : CreateTypeDeclKey(type.BaseType.Namespace, type.BaseType.Name);
+            decl.Index = type.GetIndexesFromAttributes();
 
             // Skip special (property getters, setters, etc) and inherited methods
-            List<MethodInfo> methods = type.GetMethods(PublicInstanceDeclaredFlags)
-                                           .Where(IsAllowed)
+            List<MethodInfo> handlers = type.GetMethods(PublicInstanceDeclaredFlags)
+                                           .Where(IsProperHandler)
                                            .ToList();
 
-            var declares = new List<HandlerDeclareDeclData>();
-            var implements = new List<HandlerImplementDeclData>();
-            foreach (MethodInfo method in methods)
+            var declares = new List<HandlerDeclareDecl>();
+            var implements = new List<HandlerImplementDecl>();
+            foreach (MethodInfo method in handlers)
             {
                 // Abstract methods have only declaration
                 if (method.IsAbstract)
                 {
                     declares.Add(ToDeclare(method, navigator));
                 }
-                // Overriden methods have only implementation tag and are marked with ovveride
+                // Overriden methods are marked with ovveride
                 else if(method.GetBaseDefinition() != method)
                 {
-                    HandlerImplementDeclData implement = ToImplement(method);
-                    implement.Override = YesNo.Y;
-                    implements.Add(implement);
+                    implements.Add(ToImplement(method));
                 }
                 // Case for methods without modifiers
                 else
@@ -138,8 +151,8 @@ namespace DataCentric.Cli
             }
 
             // Add method information to declaration
-            if (declares.Any()) decl.Declare = new HandlerDeclareBlockDeclData {Handlers = declares};
-            if (implements.Any()) decl.Implement = new HandlerImplementBlockDeclData {Handlers = implements};
+            if (declares.Any()) decl.Declare = new HandlerDeclareBlockDecl {Handlers = declares};
+            if (implements.Any()) decl.Implement = new HandlerImplementBlockDecl {Handlers = implements};
 
             List<PropertyInfo> dataProperties = type.GetProperties(PublicInstanceDeclaredFlags)
                                                     .Where(p => IsAllowedType(p.PropertyType))
@@ -157,39 +170,47 @@ namespace DataCentric.Cli
         /// <summary>
         /// Checks if given type is any of Data, Record&lt;,&gt;, RootRecord&lt;,&gt;
         /// </summary>
-        private static bool IsRoot(System.Type type)
+        private static bool IsRoot(Type type)
         {
-            if (type == typeof(DataType) || type == typeof(RecordBase))
+            if (type == typeof(Data) || type == typeof(Record))
                 return true;
 
             if (type.IsGenericType)
             {
-                System.Type genericType = type.GetGenericTypeDefinition();
-                return genericType == typeof(Record<,>) ||
-                       genericType == typeof(Key<,>) ||
-                       genericType == typeof(RootRecord<,>) ||
-                       genericType == typeof(RootKey<,>);
+                Type genericType = type.GetGenericTypeDefinition();
+                return genericType == typeof(RootRecord<,>) ||
+                       genericType == typeof(TypedRecord<,>) ||
+                       genericType == typeof(TypedKey<,>);
             }
 
             return false;
         }
 
         /// <summary>
-        /// Determines if given method could be converted to handler.
+        /// Checks if method fits handler restrictions. Take parameters that are either
+        /// atomic types or classes derived from Data; and its return type is void.
         /// </summary>
-        private static bool IsAllowed(MethodInfo method)
+        private static bool IsProperHandler(MethodInfo method)
         {
-            // Check if return type is allowed
-            bool isAllowedReturnType = (IsAllowedType(method.ReturnType) || method.ReturnType == typeof(void));
-            // Check if all method parameters are allowed
-            bool isAllowedParameterTypes = method.GetParameters().All(p => IsAllowedType(p.ParameterType));
-            // Check if method is declared in Data, Record or other root classes
-            bool isRootMethod = TypesExtractor.BasicTypes.Contains(method.GetBaseDefinition().ReflectedType);
+            // Only void methods are allowed
+            if (method.ReturnType != typeof(void))
+                return false;
 
-            return !method.IsSpecialName &&
-                   !isRootMethod &&
-                   isAllowedReturnType &&
-                   isAllowedParameterTypes;
+            // Filter out internal and private methods
+            if (method.IsSpecialName)
+                return false;
+
+            // Check if method is declared in Data, Record or other root classes
+            if (TypesExtractor.BasicTypes.Contains(method.GetBaseDefinition().ReflectedType))
+                return false;
+
+            var hasHandlerAttribute = method.GetCustomAttribute<HandlerMethodAttribute>() != null;
+
+            // Check if all method parameters are allowed:
+            // either atomic types or classes derived from Data
+            bool hasAllowedParameters = method.GetParameters().All(p => IsAllowedType(p.ParameterType));
+
+            return hasAllowedParameters && hasHandlerAttribute;
         }
 
         /// <summary>
@@ -201,16 +222,14 @@ namespace DataCentric.Cli
         }
 
         /// <summary>
-        /// Extracts argument type from List&lt;&gt;, [], Nullable&lt;&gt;.
+        /// Extracts argument type from List&lt;&gt;, [].
         /// </summary>
-        private static System.Type ResolveGenericType(System.Type type)
+        private static Type GetListArgument(Type type)
         {
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
-                type = type.GetGenericArgument(0);
+                return type.GetGenericArgument(0);
             if (type.IsArray)
-                type = type.GetElementType();
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                type = type.GetGenericArgument(0);
+                return type.GetElementType();
 
             return type;
         }
@@ -219,7 +238,7 @@ namespace DataCentric.Cli
         /// Checks if type could be used in declaration.
         /// Namely, it checks if it is one of the following: is primitive, is enum or derived from Data
         /// </summary>
-        private static bool IsAllowedType(System.Type type)
+        private static bool IsAllowedType(Type type)
         {
             if (type.IsGenericMethodParameter)
                 return false;
@@ -227,20 +246,20 @@ namespace DataCentric.Cli
             if (IsRoot(type))
                 return false;
 
-            type = ResolveGenericType(type);
+            type = GetListArgument(type);
 
             return AllowedPrimitiveTypes.Contains(type) ||
-                   type.IsSubclassOf(typeof(DataType)) ||
+                   type.IsSubclassOf(typeof(Data)) ||
                    type.IsEnum;
         }
 
         /// <summary>
         /// Returns properties for corresponding key class if exist.
         /// </summary>
-        private static List<PropertyInfo> GetKeyProperties(this System.Type type)
+        private static List<PropertyInfo> GetKeyProperties(this Type type)
         {
             var baseType = type.BaseType;
-            if (baseType.IsGenericType && (baseType.GetGenericTypeDefinition() == typeof(Record<,>) ||
+            if (baseType.IsGenericType && (baseType.GetGenericTypeDefinition() == typeof(TypedRecord<,>) ||
                                            baseType.GetGenericTypeDefinition() == typeof(RootRecord<,>)))
             {
                 var keyType = baseType.GenericTypeArguments[0];
@@ -253,13 +272,13 @@ namespace DataCentric.Cli
         /// <summary>
         /// Determines kind of declaration.
         /// </summary>
-        private static TypeKind? GetKind(this System.Type type)
+        private static TypeKind? GetKind(this Type type)
         {
             // Kind
-            return type.IsAbstract                        ? TypeKind.Abstract :
-                   type.IsSealed                          ? TypeKind.Final :
-                   !type.IsSubclassOf(typeof(RecordBase)) ? TypeKind.Element :
-                                                            (TypeKind?) null;
+            return type.IsAbstract                    ? TypeKind.Abstract :
+                   type.IsSealed                      ? TypeKind.Final :
+                   !type.IsSubclassOf(typeof(Record)) ? TypeKind.Element :
+                                                        (TypeKind?) null;
         }
 
         /// <summary>
@@ -281,6 +300,54 @@ namespace DataCentric.Cli
         }
 
         /// <summary>
+        /// Extract type index info and add to declaration.
+        /// </summary>
+        private static List<TypeIndex> GetIndexesFromAttributes(this Type type)
+        {
+            var attributes = type.GetCustomAttributes<IndexElementsAttribute>().ToList();
+
+            // Type does not have index info - skip
+            if (!attributes.Any())
+                return null;
+
+            var result = new List<TypeIndex>();
+
+            // Process each attribute
+            foreach (var attribute in attributes)
+            {
+                TypeIndex typeIndex = new TypeIndex
+                {
+                    Element = new List<TypeElementIndex>(), Name = attribute.Name
+                };
+
+                // Decompose string index definition "A, -B" to ordered list of tuples (ElementName,SortOrder): [("A",1), ("B",-1)]
+                MethodInfo parseDefinitionMethod = typeof(IndexElementsAttribute)
+                                                  .GetMethod(nameof(IndexElementsAttribute.ParseDefinition),
+                                                             BindingFlags.Static | BindingFlags.Public)
+                                                 ?.MakeGenericMethod(type);
+                var definition = (List<(string, int)>) parseDefinitionMethod?.Invoke(null, new object[] {attribute.Definition});
+
+                // Convert decomposed definition to declarations format
+                foreach ((string, int) tuple in definition)
+                {
+                    TypeElementIndex elementIndex = new TypeElementIndex
+                    {
+                        Name = tuple.Item1,
+                        Direction = tuple.Item2 == -1
+                                        ? TypeElementIndexDirection.Descending
+                                        : TypeElementIndexDirection.Ascending
+                    };
+
+                    typeIndex.Element.Add(elementIndex);
+                }
+
+                result.Add(typeIndex);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Tries to get comment from DisplayName or Display attributes.
         /// </summary>
         private static string GetCommentFromAttribute(this MemberInfo member)
@@ -292,15 +359,16 @@ namespace DataCentric.Cli
         /// <summary>
         /// Generates handler declare section which corresponds to given method.
         /// </summary>
-        private static HandlerDeclareDeclData ToDeclare(MethodInfo method, CommentNavigator navigator)
+        private static HandlerDeclareDecl ToDeclare(MethodInfo method, CommentNavigator navigator)
         {
-            return new HandlerDeclareDeclData
+            return new HandlerDeclareDecl
             {
                 Name = method.Name,
                 Type = HandlerType.Job,
                 Label = method.GetLabelFromAttribute(),
                 Comment = method.GetCommentFromAttribute() ?? navigator?.GetXmlComment(method),
                 Hidden = method.IsHidden(),
+                Static = method.IsStatic ? YesNo.Y : (YesNo?) null,
                 Params = method.GetParameters().Select(ToHandlerParam).ToList(),
                 Return = method.ReturnType != typeof(void) ? ToReturnType(method.ReturnType) : null
             };
@@ -309,21 +377,21 @@ namespace DataCentric.Cli
         /// <summary>
         /// Generates handler implement section which corresponds to given method.
         /// </summary>
-        private static HandlerImplementDeclData ToImplement(MethodInfo method)
+        private static HandlerImplementDecl ToImplement(MethodInfo method)
         {
-            return new HandlerImplementDeclData
+            return new HandlerImplementDecl
             {
                 Name = method.Name,
-                Language = new LanguageKey {LanguageID = "cs"}
+                Language = new LanguageKey {LanguageName = "cs"}
             };
         }
 
         /// <summary>
         /// Converts method parameter into corresponding handler parameter declaration section.
         /// </summary>
-        private static HandlerParamDeclData ToHandlerParam(ParameterInfo parameter)
+        private static HandlerParamDecl ToHandlerParam(ParameterInfo parameter)
         {
-            var handlerParam = ToTypeMember<HandlerParamDeclData>(parameter.ParameterType);
+            var handlerParam = ToTypeMember<HandlerParamDecl>(parameter.ParameterType);
 
             handlerParam.Name = parameter.Name;
             handlerParam.Optional = parameter.IsOptional ? YesNo.Y : YesNo.N;
@@ -335,9 +403,9 @@ namespace DataCentric.Cli
         /// <summary>
         /// Converts method return type into corresponding handler return type declaration section.
         /// </summary>
-        private static HandlerVariableDeclData ToReturnType(System.Type type)
+        private static HandlerVariableDecl ToReturnType(Type type)
         {
-            var returnType = ToTypeMember<HandlerVariableDeclData>(type);
+            var returnType = ToTypeMember<HandlerVariableDecl>(type);
 
             returnType.Vector = type.IsVector();
 
@@ -347,9 +415,9 @@ namespace DataCentric.Cli
         /// <summary>
         /// Converts given property into corresponding declaration element.
         /// </summary>
-        private static TypeElementDeclData ToElement(PropertyInfo property, CommentNavigator navigator)
+        private static TypeElementDecl ToElement(PropertyInfo property, CommentNavigator navigator)
         {
-            var element = ToTypeMember<TypeElementDeclData>(property.PropertyType);
+            var element = ToTypeMember<TypeElementDecl>(property.PropertyType);
 
             element.Vector = property.PropertyType.IsVector();
             element.Name = property.Name;
@@ -357,32 +425,18 @@ namespace DataCentric.Cli
             element.Comment = property.GetCommentFromAttribute() ?? navigator?.GetXmlComment(property);
             element.Viewer = property.GetCustomAttribute<DisplayAttribute>()?.GetGroupName();
             element.Optional = property.GetCustomAttribute<RequiredAttribute>() == null ? YesNo.Y : (YesNo?) null;
+            element.BsonIgnore = property.GetCustomAttribute<BsonIgnoreAttribute>() != null ? YesNo.Y : (YesNo?) null;
             element.Hidden = property.IsHidden();
-            element.Indices = Attribute.IsDefined(property, typeof(IndexedAttribute))
-                                ? property.GetCustomAttributes<IndexedAttribute>().Select(ToIndex).ToList()
-                                : null;
 
             return element;
         }
 
         /// <summary>
-        /// Handles index attribute conversion.
-        /// </summary>
-        private static TypeElementIndexData ToIndex(IndexedAttribute attribute){
-            TypeElementIndexData indexData = new TypeElementIndexData
-            {
-                Name = attribute.Index != string.Empty ? attribute.Index : null,
-                Order = attribute.Order != IntUtils.Empty ? attribute.Order : (int?) null
-            };
-            return indexData;
-        }
-
-        /// <summary>
         /// Converts to enum item declaration.
         /// </summary>
-        private static EnumItemDeclData ToEnumItem(FieldInfo field, CommentNavigator navigator)
+        private static EnumItemDecl ToEnumItem(FieldInfo field, CommentNavigator navigator)
         {
-            var item = new EnumItemDeclData();
+            var item = new EnumItemDecl();
 
             item.Name = field.Name;
             item.Comment = navigator?.GetXmlComment(field);
@@ -394,42 +448,62 @@ namespace DataCentric.Cli
         /// <summary>
         /// Creates type member declaration for the given type.
         /// </summary>
-        private static T ToTypeMember<T>(System.Type type) where T : TypeMemberDeclData, new()
+        private static T ToTypeMember<T>(Type type) where T : TypeMemberDecl, new()
         {
             var typeDecl = new T();
 
-            type = ResolveGenericType(type);
+            type = GetListArgument(type);
             if (type.IsEnum)
             {
                 typeDecl.Enum = CreateTypeDeclKey(type.Namespace, type.Name);
             }
-            else if (type.IsValueType || type == typeof(string) || type == typeof(ObjectId))
+            else if (type.IsValueType || type == typeof(string))
             {
-                typeDecl.Value = new ValueDeclData();
+                typeDecl.Value = new ValueDecl();
 
-                TypeCode typeCode = System.Type.GetTypeCode(type);
+                TypeCode typeCode = Type.GetTypeCode(type);
                 typeDecl.Value.Type =
+                    typeCode == TypeCode.String ? AtomicType.String :
+                    // Basic value types
                     typeCode == TypeCode.Boolean  ? AtomicType.Bool :
                     typeCode == TypeCode.DateTime ? AtomicType.DateTime :
                     typeCode == TypeCode.Double   ? AtomicType.Double :
-                    typeCode == TypeCode.String   ? AtomicType.String :
                     typeCode == TypeCode.Int32    ? AtomicType.Int :
                     typeCode == TypeCode.Int64    ? AtomicType.Long :
-                    // NodaTime types
+                    // Basic nullable value types
+                    type == typeof(bool?)     ? AtomicType.NullableBool :
+                    type == typeof(DateTime?) ? AtomicType.NullableDateTime :
+                    type == typeof(double?)   ? AtomicType.NullableDouble :
+                    type == typeof(int?)      ? AtomicType.NullableInt :
+                    type == typeof(long?)     ? AtomicType.NullableLong :
+                    // Noda types
                     type == typeof(LocalDateTime) ? AtomicType.DateTime :
+                    type == typeof(Instant) ? AtomicType.DateTime :
                     type == typeof(LocalDate)     ? AtomicType.Date :
                     type == typeof(LocalTime)     ? AtomicType.Time :
-                    type == typeof(LocalMinute)   ? AtomicType.Int :
-                    type == typeof(ObjectId)      ? AtomicType.String :
-                                                    throw new ArgumentException($"Unknown value type: {type.FullName}");
+                    type == typeof(LocalMinute)   ? AtomicType.Minute :
+                    // Nullable Noda types
+                    type == typeof(LocalDateTime?) ? AtomicType.NullableDateTime :
+                    type == typeof(Instant?) ? AtomicType.NullableDateTime :
+                    type == typeof(LocalDate?)     ? AtomicType.NullableDate :
+                    type == typeof(LocalTime?)     ? AtomicType.NullableTime :
+                    type == typeof(LocalMinute?)   ? AtomicType.NullableMinute :
+                    // TemporalId
+                    type == typeof(TemporalId)  ? AtomicType.TemporalId :
+                    type == typeof(TemporalId?) ? AtomicType.NullableTemporalId :
+                                                throw new ArgumentException($"Unknown value type: {type.FullName}");
             }
-            else if (type.IsSubclassOf(typeof(KeyBase)) && type.Name.EndsWith("Key"))
+            else if (type.IsSubclassOf(typeof(Key)))
             {
-                typeDecl.Key = CreateTypeDeclKey(type.Namespace, type.Name.TrimEnd("Key"));
+                // Extract TRecord type from key base class TypedKey[TKey, TRecord]
+                Type recordParameter = type.BaseType.GenericTypeArguments[1];
+                if (!recordParameter.IsSubclassOf(typeof(Record)))
+                    throw new ArgumentException($"Wrong generic argument of {type.Name} key.");
+                typeDecl.Key = CreateTypeDeclKey(type.Namespace, recordParameter.Name);
             }
-            else if (type.IsSubclassOf(typeof(DataType)) && type.Name.EndsWith("Data"))
+            else if (type.IsSubclassOf(typeof(Data)))
             {
-                typeDecl.Data = CreateTypeDeclKey(type.Namespace, type.Name.TrimEnd("Data"));
+                typeDecl.Data = CreateTypeDeclKey(type.Namespace, type.Name);
             }
             else
                 throw new ArgumentException($"Unknown type: {type.FullName}");
@@ -442,13 +516,13 @@ namespace DataCentric.Cli
         /// </summary>
         private static TypeDeclKey CreateTypeDeclKey(string ns, string name)
         {
-            return new TypeDeclKey { Name = name, Module = new ModuleKey { ModuleID = ns } };
+            return new TypeDeclKey { Name = name, Module = new ModuleKey { ModuleName = ns } };
         }
 
         /// <summary>
         /// Check if given type is List&lt;&gt; or array instance.
         /// </summary>
-        private static YesNo? IsVector(this System.Type type)
+        private static YesNo? IsVector(this Type type)
         {
             bool isList = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>);
             bool isArray = type.IsArray;

@@ -17,7 +17,7 @@ limitations under the License.
 namespace DataCentric.Cli
 {
     /// <summary>List of values and immutable types, including string and binary.</summary>
-    public enum AtomicType
+    public enum AtomicType // TODO Rename to ValuePropertyType or otherwise avoid name collision with DataCentric.AtomicType
     {
         /// <summary>None value is defined.</summary>
         EnumNone = -1,
@@ -25,20 +25,38 @@ namespace DataCentric.Cli
         /// <summary>Bool value.</summary>
         Bool,
 
+        /// <summary>Nullable bool value.</summary>
+        NullableBool,
+
         /// <summary>Int value.</summary>
         Int,
+
+        /// <summary>Nullable int value.</summary>
+        NullableInt,
 
         /// <summary>Long value.</summary>
         Long,
 
+        /// <summary>Nullable long value.</summary>
+        NullableLong,
+
         /// <summary>Double value.</summary>
         Double,
+
+        /// <summary>Nullable double value.</summary>
+        NullableDouble,
 
         /// <summary>Date value.</summary>
         Date,
 
+        /// <summary>Nullable date value.</summary>
+        NullableDate,
+
         /// <summary>DateTime value.</summary>
         DateTime,
+
+        /// <summary>Nullable DateTime value.</summary>
+        NullableDateTime,
 
         /// <summary>String value.</summary>
         String,
@@ -58,7 +76,25 @@ namespace DataCentric.Cli
         /// <summary>Decimal value.</summary>
         Decimal,
 
+        /// <summary>Nullable decimal value.</summary>
+        NullableDecimal,
+
         /// <summary>Time value.</summary>
-        Time
+        Time,
+
+        /// <summary>Nullable time value.</summary>
+        NullableTime,
+
+        /// <summary>TemporalId.</summary>
+        TemporalId,
+
+        /// <summary>Nullable TemporalId.</summary>
+        NullableTemporalId,
+
+        /// <summary>Minute.</summary>
+        Minute,
+
+        /// <summary>Nullable minute.</summary>
+        NullableMinute,
     }
 }

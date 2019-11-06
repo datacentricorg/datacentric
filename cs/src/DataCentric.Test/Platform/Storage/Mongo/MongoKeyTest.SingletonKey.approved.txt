@@ -1,0 +1,2 @@
+Verify: Serialized key for a singleton must be String.Empty assert.
+Verify: Deserialized key for a singleton must be String.Empty assert.

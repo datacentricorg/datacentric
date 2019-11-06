@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DataCentric.Cli.Cs": {
+      "commandName": "Project",
+      "commandLineArgs": "csv2mongo -p $(SolutionDir)\\..\\data"
+    }
+  }
+}

@@ -17,24 +17,22 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
 using NodaTime;
 using Xunit;
 using DataCentric;
-using MongoDB.Bson;
 
 namespace DataCentric.Test
 {
     /// <summary>Unit test for key serialization in Mongo 2.1 format.</summary>
-    public class MongoKeyTest
+    public class MongoKeyTest : UnitTest
     {
         /// <summary>>Key class that has all of the permitted non-nullable key elements included.</summary>
         [Fact]
         public void CompleteNonNullableKey()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
-                var record = new MongoKeyTestNonNullableSampleData();
+                var record = new NonNullableElementsSample();
                 record.DataSet = context.DataSet;
                 record.StringToken = "A";
                 record.BoolToken = true;
@@ -44,26 +42,22 @@ namespace DataCentric.Test
                 record.LocalTimeToken = new LocalTime(10, 15, 30); // 10:15:30
                 record.LocalMinuteToken = new LocalMinute(10, 15); // 10:15
                 record.LocalDateTimeToken = new LocalDateTime(2003, 5, 1, 10, 15); // 2003-05-01T10:15:00
-                record.EnumToken = MongoTestEnum.EnumValue2;
+                record.InstantToken = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(DateTimeZone.Utc); // 2003-05-01T10:15:00
+                record.EnumToken = SampleEnum.EnumValue2;
 
                 // Verify key serialization
-                context.Verify.Text(record.Key);
+                context.Log.Verify(record.Key);
 
                 // Verify key creation
                 var key = record.ToKey();
-                context.Verify.Text(key.Value);
-
-                // Load using record cached inside the key
-                var cachedRecord = key.LoadOrNull(context);
-                context.Verify.Text(cachedRecord.Key);
+                context.Log.Verify(key.Value);
 
                 // Save
-                context.Save(record, context.DataSet);
+                context.SaveOne(record, context.DataSet);
 
                 // Load from storage
-                key.ClearCachedRecord();
                 var loadedRecord = context.LoadOrNull(key, context.DataSet);
-                context.Verify.Text(loadedRecord.Key);
+                context.Log.Verify(loadedRecord.Key);
             }
         }
 
@@ -71,10 +65,11 @@ namespace DataCentric.Test
         [Fact]
         public void CompleteNullableKey()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
-                var record = new MongoKeyTestNullableSampleData();
+                var record = new NullableElementsSample();
                 record.DataSet = context.DataSet;
+                record.StringToken = "A";
                 record.BoolToken = true;
                 record.IntToken = 123;
                 record.LongToken = 12345678912345;
@@ -82,26 +77,103 @@ namespace DataCentric.Test
                 record.LocalTimeToken = new LocalTime(10, 15, 30); // 10:15:30
                 record.LocalMinuteToken = new LocalMinute(10, 15); // 10:15
                 record.LocalDateTimeToken = new LocalDateTime(2003, 5, 1, 10, 15); // 2003-05-01T10:15:00
-                record.EnumToken = MongoTestEnum.EnumValue2;
+                record.InstantToken = new LocalDateTime(2003, 5, 1, 10, 15).ToInstant(DateTimeZone.Utc); // 2003-05-01T10:15:00
+                record.EnumToken = SampleEnum.EnumValue2;
 
                 // Verify key serialization
-                context.Verify.Text(record.Key);
+                context.Log.Verify(record.Key);
 
                 // Verify key creation
                 var key = record.ToKey();
-                context.Verify.Text(key.Value);
-
-                // Load using record cached inside the key
-                var cachedRecord = key.LoadOrNull(context);
-                context.Verify.Text(cachedRecord.Key);
+                context.Log.Verify(key.Value);
 
                 // Save
-                context.Save(record, context.DataSet);
+                context.SaveOne(record, context.DataSet);
 
                 // Load from storage
-                key.ClearCachedRecord();
                 var loadedRecord = context.LoadOrNull(key, context.DataSet);
-                context.Verify.Text(loadedRecord.Key);
+                context.Log.Verify(loadedRecord.Key);
+            }
+        }
+
+        /// <summary>
+        /// Test composite key that has an embedded key with more than one token.
+        /// </summary>
+        [Fact]
+        public void CompositeKey()
+        {
+            using (var context = CreateMethodContext())
+            {
+                context.KeepTestData();
+
+                var rec = new CompositeKeySample();
+                rec.KeyElement1 = "abc";
+                rec.KeyElement2 = new BaseSampleKey();
+                rec.KeyElement2.RecordName = "def";
+                rec.KeyElement2.RecordIndex = 123;
+                rec.KeyElement3 = "xyz";
+
+                // Verify key serialization
+                string keyValue = rec.ToKey().ToString();
+                context.Log.Verify($"Serialized key: {keyValue}");
+
+                // Verify key deserialization
+                var key = new CompositeKeySampleKey();
+                key.PopulateFrom(keyValue);
+                context.Log.Verify($"Deserialized key: {key}");
+            }
+        }
+
+        /// <summary>
+        /// Test empty key for a singleton.
+        /// </summary>
+        [Fact]
+        public void SingletonKey()
+        {
+            using (var context = CreateMethodContext())
+            {
+                context.KeepTestData();
+
+                var rec = new SingletonSample();
+                rec.StringElement = "abc";
+
+                // Verify key serialization
+                string keyValue = rec.ToKey().ToString();
+                context.Log.Assert(keyValue == String.Empty, "Serialized key for a singleton must be String.Empty assert.");
+
+                // Verify key deserialization
+                var key = new SingletonSampleKey();
+                key.PopulateFrom(keyValue);
+                context.Log.Assert(key.ToString() == String.Empty, "Deserialized key for a singleton must be String.Empty assert.");
+            }
+        }
+
+        /// <summary>
+        /// Test key based on the record's Id.
+        /// </summary>
+        [Fact]
+        public void IdBasedKey()
+        {
+            using (var context = CreateMethodContext())
+            {
+                context.KeepTestData();
+
+                // Create from timestamp
+                var createdTime = InstantUtil.Utc(2003, 5, 1, 10, 15, 0);
+                var rec = new IdBasedKeySample();
+                rec.Id = new TemporalId(createdTime, 1, 2, 3);
+                rec.StringElement = "abc";
+
+                // Verify key serialization
+                string keyValue = rec.ToKey().ToString();
+                context.Log.Verify($"Serialized key: {keyValue}");
+
+                // Verify key deserialization
+                var key = new IdBasedKeySampleKey();
+                key.PopulateFrom(keyValue);
+                context.Log.Verify($"Deserialized key: {key}");
+
+                context.Log.Assert(key.Id == rec.Id, "TemporalId serialization roundtrip.");
             }
         }
     }

@@ -24,58 +24,73 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Unit test for JobQueue.</summary>
-    public class JobQueueTest
+    public class JobQueueTest : UnitTest
     {
-        public class SampleJobData : JobData
+        public class SampleKey : TypedKey<SampleKey, SampleRecord>
         {
-            /// <summary>
-            /// This method is executed by the queue to run the job.
-            /// Depending on the type of queue, it may be
-            ///
-            /// * Executed in a different process or thread
-            /// * Executed on a different machine
-            /// * Executed in parallel or out of sequence
-            ///  
-            /// This method should be implemented defensively to
-            /// ensure that the job runs successfully in all of
-            /// these cases.
-            /// </summary>
-            public override void Run()
+            /// <summary>Sample field</summary>
+            public string SampleName { get; set; }
+        }
+
+        public class SampleRecord : TypedRecord<SampleKey, SampleRecord>
+        {
+            /// <summary>Sample field</summary>
+            [BsonRequired]
+            public string SampleName { get; set; }
+
+            /// <summary>Sample method.</summary>
+            public void SampleMethod()
             {
-                Context.CastTo<IVerifyable>().Verify.Text("Running");
+                Context.Log.Verify("SampleMethod Running");
             }
         }
 
-        /// <summary>Test saving and loading back the job queue record using ObjectId based key.</summary>
+        /// <summary>Test saving and loading back the job queue record using TemporalId based key.</summary>
         [Fact]
         public void Load()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
-                // Create queue record and save, then get its ID
-                var queue = new JobQueueData();
-                context.Save(queue, context.DataSet);
-                var queueId = queue.ID;
+                // Create data log record and save
+                var dataLog = new DataLog();
+                dataLog.LogName = "SampleLog";
+                context.SaveOne(dataLog);
 
-                // Create job record and save, then get its ID
-                var job = new SampleJobData();
+                // Create queue record and save, then get its id
+                var queue = new JobQueue();
+                queue.JobQueueName = "SampleQueue";
+                queue.Log = dataLog.ToKey();
+                context.SaveOne(queue, context.DataSet);
+                var queueId = queue.Id;
+
+                // Create sample record
+                var sampleRecord = new SampleRecord();
+                sampleRecord.SampleName = "SampleName";
+                context.SaveOne(sampleRecord);
+
+                // Create job record and save, then get its id
+                var job = new Job();
                 job.Queue = queue.ToKey();
-                context.Save(job, context.DataSet);
-                var jobID = job.ID;
+                job.CollectionName = DataTypeInfo.GetOrCreate<SampleRecord>().GetCollectionName();
+                job.RecordId = sampleRecord.Id;
+                job.MethodName = "SampleMethod";
+                context.SaveOne(job);
+                var jobId = job.Id;
 
                 // Load the records back
-                var queueKey = new JobQueueKey {ID = queueId};
-                var loadedQueue = queueKey.Load(context);
-                var jobKey = new JobKey { ID = jobID };
-                var loadedJob = jobKey.Load(context);
+                var queueKey = queue.ToKey();
+                var loadedQueue = context.Load(queueKey);
+                var jobKey = new JobKey { Id = jobId };
+                var loadedJob = context.Load(jobKey);
 
-                // Check that ObjectId based key works correctly
+                // Check that TemporalId based key works correctly
                 Assert.True(loadedJob.Queue.Value == loadedQueue.ToKey().Value);
 
                 // Run the job
-                loadedJob.Run();
+                // TODO - incomment when implemented
+                // loadedJob.Run();
 
-                context.Verify.Text("Completed");
+                context.Log.Verify("Completed");
             }
         }
     }

@@ -22,7 +22,7 @@ namespace DataCentric.Cli
 {
     public static class CppElementBuilder
     {
-        public static void WriteElements(List<TypeElementDeclData> elements, CppCodeWriter writer)
+        public static void WriteElements(List<TypeElementDecl> elements, CppCodeWriter writer)
         {
             foreach (var element in elements)
             {
@@ -35,7 +35,7 @@ namespace DataCentric.Cli
             }
         }
 
-        private static string GetType(TypeElementDeclData element)
+        public static string GetType(TypeElementDecl element)
         {
             string type = element.Value != null ? GetValue(element.Value) :
                           element.Data != null  ? $"{element.Data.Name.Underscore()}_data" :
@@ -43,23 +43,36 @@ namespace DataCentric.Cli
                           element.Enum != null  ? element.Enum.Name.Underscore() :
                                                   throw new ArgumentException("Can't deduct type");
 
-            return element.Vector == YesNo.Y ? $"list<{type}>" : type;
+            return element.Vector == YesNo.Y ? $"dot::list<{type}>" : type;
         }
 
-        private static string GetValue(ValueDeclData valueDecl)
+        public static string GetValue(ValueDecl valueDecl)
         {
             var atomicType = valueDecl.Type;
-            return atomicType == AtomicType.Bool     ? "Bool" :
-                   atomicType == AtomicType.DateTime ? "local_date_time" :
-                   atomicType == AtomicType.Double   ? "double" :
-                   atomicType == AtomicType.String   ? "String" :
-                   atomicType == AtomicType.Int      ? "Int" :
-                   atomicType == AtomicType.Long     ? "Long" :
-                   atomicType == AtomicType.Date     ? "local_date" :
-                   atomicType == AtomicType.Time     ? "local_time" :
-                   // Minute is mapped to int
-                   //atomicType == AtomicType.Minute   ? "LocalMinute" :
-                                                         throw new ArgumentException($"Unknown value type: {atomicType.ToString()}");
+            return
+                atomicType == AtomicType.String           ? "dot::string" :
+                atomicType == AtomicType.Bool             ? "bool" :
+                atomicType == AtomicType.DateTime         ? "dot::local_date_time" :
+                atomicType == AtomicType.Double           ? "double" :
+                atomicType == AtomicType.Int              ? "int" :
+                atomicType == AtomicType.Long             ? "long" :
+                atomicType == AtomicType.NullableBool     ? "dot::nullable<bool>" :
+                atomicType == AtomicType.NullableDateTime ? "dot::nullable<dot::local_date_time>" :
+                atomicType == AtomicType.NullableDouble   ? "dot::nullable<double>" :
+                atomicType == AtomicType.NullableInt      ? "dot::nullable<int>" :
+                atomicType == AtomicType.NullableLong     ? "dot::nullable<long>" :
+                atomicType == AtomicType.DateTime         ? "dot::local_date_time" :
+                atomicType == AtomicType.Date             ? "dot::local_date" :
+                atomicType == AtomicType.Time             ? "dot::local_time" :
+                atomicType == AtomicType.Minute           ? "dot::local_minute" :
+                atomicType == AtomicType.NullableDateTime ? "dot::nullable<dot::local_date_time>" :
+                atomicType == AtomicType.NullableDate     ? "dot::nullable<dot::local_date>" :
+                atomicType == AtomicType.NullableTime     ? "dot::nullable<dot::local_time>" :
+                atomicType == AtomicType.NullableMinute   ? "dot::nullable<dot::local_minute>" :
+                atomicType == AtomicType.TemporalId         ? "dot::object_id" :
+                atomicType == AtomicType.NullableTemporalId ? "dot::nullable<dot::object_id>" :
+                                                            throw new
+                                                                ArgumentException($"Unknown value type: {atomicType.ToString()}");
         }
     }
 }

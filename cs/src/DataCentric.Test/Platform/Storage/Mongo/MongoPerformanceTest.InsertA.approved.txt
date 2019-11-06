@@ -1,1 +1,1 @@
-Verify.Text: Inserted 10 records.
+Verify: Inserted 10 records.

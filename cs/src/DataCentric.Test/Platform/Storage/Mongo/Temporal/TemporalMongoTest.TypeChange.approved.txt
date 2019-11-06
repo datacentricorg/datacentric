@@ -1,0 +1,28 @@
+Verify: Initial load
+Verify: Record A;0 in dataset DataSet0 found and has Type=DerivedSample.
+Verify: Record A;0 in dataset DataSet1 found and has Type=DerivedSample.
+Verify: Record B;0 in dataset DataSet0 not found.
+Verify: Record B;0 in dataset DataSet1 found and has Type=DerivedFromDerivedSample.
+Verify: Query in dataset DataSet0 for type DerivedSample
+Verify: Record A;0 returned by query in dataset DataSet0 and has Type=DerivedSample.
+Verify: Query in dataset DataSet1 for type DerivedSample
+Verify: Record A;0 returned by query in dataset DataSet1 and has Type=DerivedSample.
+Verify: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedFromDerivedSample.
+Verify: Change A0 record type in B dataset to C
+Verify: Record A;0 in dataset DataSet0 found and has Type=DerivedSample.
+Verify: Record A;0 in dataset DataSet1 found and has Type=OtherDerivedSample.
+Verify: Query in dataset DataSet0 for type DerivedSample
+Verify: Record A;0 returned by query in dataset DataSet0 and has Type=DerivedSample.
+Verify: Query in dataset DataSet1 for type DerivedSample
+Verify: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedFromDerivedSample.
+Verify: Change A0 record type in A dataset to C
+Verify: Record A;0 in dataset DataSet0 found and has Type=OtherDerivedSample.
+Verify: Record A;0 in dataset DataSet1 found and has Type=OtherDerivedSample.
+Verify: Query in dataset DataSet0 for type DerivedSample
+Verify: Query in dataset DataSet1 for type DerivedSample
+Verify: Record B;0 returned by query in dataset DataSet1 and has Type=DerivedFromDerivedSample.
+Verify: Change B0 record type in B dataset to C
+Verify: Record B;0 in dataset DataSet0 not found.
+Verify: Record B;0 in dataset DataSet1 found and has Type=OtherDerivedSample.
+Verify: Query in dataset DataSet0 for type DerivedSample
+Verify: Query in dataset DataSet1 for type DerivedSample

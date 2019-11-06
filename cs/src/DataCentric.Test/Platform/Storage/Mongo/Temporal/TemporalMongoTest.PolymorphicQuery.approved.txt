@@ -1,0 +1,41 @@
+Verify: Load all records by key as MongoTestData.
+Verify:     Key=A;0 Type=BaseSample
+Verify:     Key=B;0 Type=DerivedSample
+Verify:     Key=C;0 Type=OtherDerivedSample
+Verify:     Key=D;0 Type=DerivedFromDerivedSample
+Verify: Query by MongoTestData, unconstrained
+Verify:     Key=A;0 Type=BaseSample
+Verify:     Key=A;1 Type=BaseSample
+Verify:     Key=A;2 Type=BaseSample
+Verify:     Key=A;3 Type=BaseSample
+Verify:     Key=B;0 Type=DerivedSample
+Verify:     Key=B;1 Type=DerivedSample
+Verify:     Key=B;2 Type=DerivedSample
+Verify:     Key=B;3 Type=DerivedSample
+Verify:     Key=C;0 Type=OtherDerivedSample
+Verify:     Key=C;1 Type=OtherDerivedSample
+Verify:     Key=C;2 Type=OtherDerivedSample
+Verify:     Key=C;3 Type=OtherDerivedSample
+Verify:     Key=D;0 Type=DerivedFromDerivedSample
+Verify:     Key=D;1 Type=DerivedFromDerivedSample
+Verify:     Key=D;2 Type=DerivedFromDerivedSample
+Verify:     Key=D;3 Type=DerivedFromDerivedSample
+Verify: Query by DerivedSample : BaseSample which also picks up DerivedFromDerivedSample : DerivedSample, unconstrained
+Verify:     Key=B;0 Type=DerivedSample
+Verify:     Key=B;1 Type=DerivedSample
+Verify:     Key=B;2 Type=DerivedSample
+Verify:     Key=B;3 Type=DerivedSample
+Verify:     Key=D;0 Type=DerivedFromDerivedSample
+Verify:     Key=D;1 Type=DerivedFromDerivedSample
+Verify:     Key=D;2 Type=DerivedFromDerivedSample
+Verify:     Key=D;3 Type=DerivedFromDerivedSample
+Verify: Query by OtherDerivedSample : BaseSample, unconstrained
+Verify:     Key=C;0 Type=OtherDerivedSample
+Verify:     Key=C;1 Type=OtherDerivedSample
+Verify:     Key=C;2 Type=OtherDerivedSample
+Verify:     Key=C;3 Type=OtherDerivedSample
+Verify: Query by DerivedFromDerivedSample : DerivedSample, where DerivedSample : BaseSample, unconstrained
+Verify:     Key=D;0 Type=DerivedFromDerivedSample
+Verify:     Key=D;1 Type=DerivedFromDerivedSample
+Verify:     Key=D;2 Type=DerivedFromDerivedSample
+Verify:     Key=D;3 Type=DerivedFromDerivedSample

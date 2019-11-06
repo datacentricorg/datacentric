@@ -30,19 +30,19 @@ namespace DataCentric.Test
         {
             using (var context = new UnitTestContext(this))
             {
-                var obj = new BaseTypeSampleData();
-                obj.SampleID = "ABC";
+                var obj = new BaseTypeSample();
+                obj.SampleName = "ABC";
                 obj.DoubleElement = 1.0;
 
                 string xmlString = obj.ToXml();
-                string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;
-                context.Verify.File("Original.xml", xmlString);
+                string className = obj.GetType().Name;
+                context.Log.Verify("Original", xmlString);
 
-                var deserialized = new BaseTypeSampleData();
+                var deserialized = new BaseTypeSample();
                 deserialized.ParseXml(xmlString);
                 string deserializedString = deserialized.ToXml();
-                context.Verify.File("Copy.xml", deserializedString);
-                context.Verify.Assert(xmlString == deserializedString, "Serialization roundtrip");
+                context.Log.Verify("Copy", deserializedString);
+                context.Log.Assert(xmlString == deserializedString, "Serialization roundtrip assert.");
             }
         }
 
@@ -52,12 +52,12 @@ namespace DataCentric.Test
         {
             using (var context = new UnitTestContext(this))
             {
-                var obj = new DerivedTypeSampleData();
-                obj.SampleID = "AAA";
+                var obj = new DerivedTypeSample();
+                obj.SampleName = "AAA";
                 obj.DoubleElement = 1.0;
                 obj.IntElement = 1;
                 obj.KeyElement = new BaseTypeSampleKey();
-                obj.KeyElement.SampleID = "BBB";
+                obj.KeyElement.SampleName = "BBB";
 
                 obj.NonNullableIntList = new List<int>();
                 obj.NonNullableIntList.Add(100);
@@ -75,34 +75,34 @@ namespace DataCentric.Test
                 obj.KeyList = new List<BaseTypeSampleKey>();
                 var keyListElement1 = new BaseTypeSampleKey();
                 obj.KeyList.Add(keyListElement1);
-                keyListElement1.SampleID = "BBB";
+                keyListElement1.SampleName = "BBB";
                 var keyListElement2 = new BaseTypeSampleKey();
-                keyListElement2.SampleID = "BBB";
+                keyListElement2.SampleName = "BBB";
                 obj.KeyList.Add(keyListElement2);
 
-                obj.DataElement = new ElementTypeSampleData();
-                obj.DataElement.SampleID = "CCC";
+                obj.DataElement = new ElementTypeSample();
+                obj.DataElement.SampleName = "CCC";
                 obj.DataElement.DoubleElement = 2.0;
 
-                obj.DataList = new List<ElementTypeSampleData>();
-                var dataListItem1 = new ElementTypeSampleData();
-                dataListItem1.SampleID = "DDD";
+                obj.DataList = new List<ElementTypeSample>();
+                var dataListItem1 = new ElementTypeSample();
+                dataListItem1.SampleName = "DDD";
                 dataListItem1.DoubleElement = 3.0;
                 obj.DataList.Add(dataListItem1);
-                var dataListItem2 = new ElementTypeSampleData();
-                dataListItem2.SampleID = "DDD";
+                var dataListItem2 = new ElementTypeSample();
+                dataListItem2.SampleName = "DDD";
                 dataListItem2.DoubleElement = 4.0;
                 obj.DataList.Add(dataListItem2);
 
                 string xmlString = obj.ToXml();
-                string mappedClassName = ClassInfo.GetOrCreate(obj).MappedClassName;
-                context.Verify.File("Original.xml", xmlString);
+                string className = obj.GetType().Name;
+                context.Log.Verify("Original", xmlString);
 
-                var deserialized = new DerivedTypeSampleData();
+                var deserialized = new DerivedTypeSample();
                 deserialized.ParseXml(xmlString);
                 string deserializedString = deserialized.ToXml();
-                context.Verify.File("Copy.xml", deserializedString);
-                context.Verify.Assert(xmlString == deserializedString, "Serialization roundtrip");
+                context.Log.Verify("Copy", deserializedString);
+                context.Log.Assert(xmlString == deserializedString, "Serialization roundtrip assert.");
             }
         }
     }

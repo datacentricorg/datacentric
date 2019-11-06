@@ -1,0 +1,11 @@
+Verify: Unconstrained query
+Verify:     Key=Empty IsoDayOfWeek=None
+Verify:     Key=EnumValue1 IsoDayOfWeek=Monday
+Verify:     Key=EnumValue2 IsoDayOfWeek=Tuesday
+Verify:     Key=EnumValue3 IsoDayOfWeek=Wednesday
+Verify:     Key=EnumValue4 IsoDayOfWeek=Thursday
+Verify:     Key=EnumValue5 IsoDayOfWeek=Friday
+Verify:     Key=EnumValue6 IsoDayOfWeek=Saturday
+Verify:     Key=EnumValue7 IsoDayOfWeek=Sunday
+Verify: Constrained query
+Verify:     Key=EnumValue1 IsoDayOfWeek=Monday

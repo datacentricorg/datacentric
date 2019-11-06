@@ -17,18 +17,17 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
 using Xunit;
 using DataCentric;
+using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
 
 namespace DataCentric.Test
 {
     /// <summary>Unit tests for the native functionality of the MongoDB driver.</summary>
-    public class MongoPerformanceTest
+    public class MongoPerformanceTest : UnitTest
     {
         private static int recordCount_ = 10; // 300_000;
         private static int dataSetCount_ = 2; //10;
@@ -39,42 +38,42 @@ namespace DataCentric.Test
         {
             [BsonId]
             public string KeyElement { get; set; }
-            public double DoubleElement { get; set; }
-            public double IntElement { get; set; }
+            public double? DoubleElement { get; set; }
+            public double? IntElement { get; set; }
             public List<double> ArrayElement { get; set; }
-            public int VersionElement { get; set; }
+            public int? VersionElement { get; set; }
         }
 
         public class B
         {
             [BsonId]
-            public ObjectId ID { get; set; }
-            public ObjectId DataSet { get; set; }
+            public TemporalId Id { get; set; }
+            public TemporalId DataSet { get; set; }
             public string KeyElement { get; set; }
             public string StringElement1 { get; set; }
             public string StringElement2 { get; set; }
-            public double DoubleElement { get; set; }
-            public double IntElement { get; set; }
+            public double? DoubleElement { get; set; }
+            public double? IntElement { get; set; }
             public List<double> ArrayElement { get; set; }
-            public int VersionElement { get; set; }
+            public int? VersionElement { get; set; }
         }
 
         public class Cursor
         {
             [BsonId]
-            public ObjectId ID { get; set; }
+            public TemporalId Id { get; set; }
             public string KeyElement { get; set; }
         }
 
         /// <summary>Create DB instance.</summary>
         public IMongoDatabase GetDb(IContext context)
         {
-            var result = context.DataSource.CastTo<MongoDataSourceBaseData>().Db;
+            var result = context.DataSource.CastTo<MongoDataSource>().Db;
             return result;
         }
 
         /// <summary>Insert N non-versioned instances.</summary>
-        public void InsertRecordsA(IContext context)
+        private void InsertRecordsA(IContext context)
         {
             var db = GetDb(context);
 
@@ -105,25 +104,25 @@ namespace DataCentric.Test
             collection.Indexes.CreateOne(indexModel);
             collection.InsertMany(records);
 
-            context.CastTo<IVerifyable>().Verify.Text($"Inserted {records.Count} records.");
+            context.Log.Verify($"Inserted {records.Count} records.");
         }
 
         /// <summary>Insert M copies of each of N versioned instances B.</summary>
-        public void InsertRecordsB(IContext context)
+        private void InsertRecordsB(IContext context)
         {
             var db = GetDb(context);
             var collection = db.GetCollection<B>("B");
             if (false)
             {
                 var indexOptions = new CreateIndexOptions();
-                var indexKeys = Builders<B>.IndexKeys.Descending(p => p.DataSet).Descending(p => p.ID);
+                var indexKeys = Builders<B>.IndexKeys.Descending(p => p.DataSet).Descending(p => p.Id);
                 var indexModel = new CreateIndexModel<B>(indexKeys, indexOptions);
                 collection.Indexes.CreateOne(indexModel);
             }
             if (true)
             {
                 var indexOptions = new CreateIndexOptions();
-                var indexKeys = Builders<B>.IndexKeys.Ascending(p => p.KeyElement).Descending(p => p.DataSet).Descending(p => p.ID);
+                var indexKeys = Builders<B>.IndexKeys.Ascending(p => p.KeyElement).Descending(p => p.DataSet).Descending(p => p.Id);
                 var indexModel = new CreateIndexModel<B>(indexKeys, indexOptions);
                 collection.Indexes.CreateOne(indexModel);
             }
@@ -136,7 +135,7 @@ namespace DataCentric.Test
                     .Ascending(p => p.DoubleElement)
                     .Ascending(p => p.IntElement)
                     // .Ascending(p => p.KeyElement)
-                    .Descending(p => p.DataSet).Descending(p => p.ID);
+                    .Descending(p => p.DataSet).Descending(p => p.Id);
                 var indexModel = new CreateIndexModel<B>(indexKeys, indexOptions);
                 collection.Indexes.CreateOne(indexModel);
             }
@@ -144,13 +143,13 @@ namespace DataCentric.Test
             List<B> records = new List<B>();
             for (int dataSetIndex = 0; dataSetIndex < dataSetCount_; ++dataSetIndex)
             {
-                ObjectId dataSet = ObjectId.GenerateNewId();
+                TemporalId dataSet = TemporalId.Next();
                 for (int versionIndex = 0; versionIndex < versionCount_; ++versionIndex)
                 {
                     for (int recordIndex = 0; recordIndex < recordCount_; ++recordIndex)
                     {
                         var rec = new B();
-                        rec.ID = ObjectId.GenerateNewId();
+                        rec.Id = TemporalId.Next();
                         rec.DataSet = dataSet;
                         rec.KeyElement = String.Concat("KeyPrefix", recordIndex);
                         rec.StringElement1 = (recordIndex % 2).ToString();
@@ -172,14 +171,14 @@ namespace DataCentric.Test
             }
             collection.InsertMany(records);
 
-            context.CastTo<IVerifyable>().Verify.Text($"Inserted {records.Count} record versions.");
+            context.Log.Verify($"Inserted {records.Count} record versions.");
         }
 
         /// <summary>Insert N non-versioned instances.</summary>
         [Fact]
         public void InsertA()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsA(context);
             }
@@ -189,7 +188,7 @@ namespace DataCentric.Test
         [Fact]
         public void InsertB()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsB(context);
             }
@@ -199,7 +198,7 @@ namespace DataCentric.Test
         [Fact]
         public void FindOneA()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsA(context);
 
@@ -213,11 +212,11 @@ namespace DataCentric.Test
                     var obj = collection.Find(p => p.KeyElement == key).SingleOrDefault();
 
                     count++;
-                    sum += obj.DoubleElement;
+                    sum += obj.DoubleElement.Value;
                 }
 
-                context.Verify.Text($"Found {count} records.");
-                context.Verify.Value(sum, "Sum(DoubleElement)");
+                context.Log.Verify($"Found {count} records.");
+                context.Log.Verify($"Sum(DoubleElement)={sum}");
             }
         }
 
@@ -225,7 +224,7 @@ namespace DataCentric.Test
         [Fact]
         public void FindOneB()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsB(context);
 
@@ -237,15 +236,15 @@ namespace DataCentric.Test
                 for (int recordIndex = 0; recordIndex < recordCount_; ++recordIndex)
                 {
                     string key = String.Concat("KeyPrefix", recordIndex);
-                    var query = collection.AsQueryable().Where(p => p.KeyElement == key).OrderByDescending(p => p.DataSet).ThenByDescending(p => p.ID);
+                    var query = collection.AsQueryable().Where(p => p.KeyElement == key).OrderByDescending(p => p.DataSet).ThenByDescending(p => p.Id);
                     var obj = query.FirstOrDefault();
 
                     count++;
-                    sum += obj.DoubleElement;
+                    sum += obj.DoubleElement.Value;
                 }
 
-                context.Verify.Text($"Found {count} records.");
-                context.Verify.Value(sum, "Sum(DoubleElement)");
+                context.Log.Verify($"Found {count} records.");
+                context.Log.Verify($"Sum(DoubleElement)={sum}");
             }
         }
 
@@ -253,7 +252,7 @@ namespace DataCentric.Test
         [Fact]
         public void OneStepQueryA()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsA(context);
 
@@ -267,11 +266,11 @@ namespace DataCentric.Test
                 foreach (var obj in query)
                 {
                     count++;
-                    sum += obj.DoubleElement;
+                    sum += obj.DoubleElement.Value;
                 }
 
-                context.Verify.Text($"Query returned {count} records.");
-                context.Verify.Value(sum, "Sum(DoubleElement)");
+                context.Log.Verify($"Query returned {count} records.");
+                context.Log.Verify($"Sum(DoubleElement)={sum}");
             }
         }
 
@@ -279,7 +278,7 @@ namespace DataCentric.Test
         [Fact]
         public void OneStepQueryB()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsB(context);
 
@@ -300,20 +299,20 @@ namespace DataCentric.Test
                     .ThenBy(p => p.DoubleElement)
                     .ThenBy(p => p.IntElement)
                     .ThenByDescending(p => p.DataSet)
-                    .ThenByDescending(p => p.ID);
+                    .ThenByDescending(p => p.Id);
 
                 HashSet<string> keys = new HashSet<string>();
                 foreach (var obj in query)
                 {
                     if (keys.Add(obj.KeyElement))
                     {
-                        sum += obj.DoubleElement;
+                        sum += obj.DoubleElement.Value;
                         count++;
                     }
                 }
 
-                context.Verify.Text($"Query returned {count} records.");
-                context.Verify.Value(sum, "Sum(DoubleElement)");
+                context.Log.Verify($"Query returned {count} records.");
+                context.Log.Verify($"Sum(DoubleElement)={sum}");
             }
         }
 
@@ -321,7 +320,7 @@ namespace DataCentric.Test
         [Fact]
         public void TwoStepQueryB()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 InsertRecordsB(context);
 
@@ -341,34 +340,34 @@ namespace DataCentric.Test
                     .ThenBy(p => p.DoubleElement)
                     .ThenBy(p => p.IntElement)
                     .ThenByDescending(p => p.DataSet)
-                    .ThenByDescending(p => p.ID)
-                    .Select(p => new Cursor {ID = p.ID, KeyElement = p.KeyElement});
+                    .ThenByDescending(p => p.Id)
+                    .Select(p => new Cursor {Id = p.Id, KeyElement = p.KeyElement});
 
-                // Get ObjectIds of the query results
-                int objectIdCount = 0;
+                // Get TemporalIds of the query results
+                int recordIdCount = 0;
                 HashSet<string> keys = new HashSet<string>();
-                List<ObjectId> objectIds = new List<ObjectId>();
+                List<TemporalId> recordIds = new List<TemporalId>();
                 foreach (var obj in query)
                 {
                     if (keys.Add(obj.KeyElement))
                     {
-                        objectIds.Add(obj.ID);
-                        objectIdCount++;
+                        recordIds.Add(obj.Id);
+                        recordIdCount++;
                     }
                 }
 
-                // Iterate over ObjectIds
+                // Iterate over TemporalIds
                 int recordCount = 0;
                 var recordQuery = collection.AsQueryable()
-                    .Where(p => objectIds.Contains(p.ID));
+                    .Where(p => recordIds.Contains(p.Id));
                 foreach (var record in recordQuery)
                 {
-                    sum += record.DoubleElement;
+                    sum += record.DoubleElement.Value;
                     recordCount++;
                 }
 
-                context.Verify.Text($"Query returned {recordCount} records from {objectIdCount} ObjectIds.");
-                context.Verify.Value(sum, "Sum(DoubleElement)");
+                context.Log.Verify($"Query returned {recordCount} records from {recordIdCount} TemporalIds.");
+                context.Log.Verify($"Sum(DoubleElement)={sum}");
             }
         }
     }

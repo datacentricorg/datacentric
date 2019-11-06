@@ -36,4 +36,35 @@ namespace DataCentric
         /// <summary>Table has both row and column headers.</summary>
         RowAndColHeaders
     }
+
+    /// <summary>Extension methods for TableLayout.</summary>
+    public static class TableLayoutExtensions
+    {
+        /// <summary>Indicates that table has a corner header.</summary>
+        public static bool HasCornerHeader(this TableLayout obj)
+        {
+            if (obj == TableLayout.Empty) throw new Exception("Table layout is empty");
+            return obj == TableLayout.RowAndColHeaders;
+        }
+
+        /// <summary>
+        /// Indicates that table has row headers, irrespective of
+        /// whether or not it also has column headers.
+        /// </summary>
+        public static bool HasRowHeaders(this TableLayout obj)
+        {
+            if (obj == TableLayout.Empty) throw new Exception("Table layout is empty");
+            return obj == TableLayout.RowHeaders || obj == TableLayout.RowAndColHeaders;
+        }
+
+        /// <summary>
+        /// Indicates that table has column headers, irrespective of
+        /// whether or not it also has row headers.
+        /// </summary>
+        public static bool HasColHeaders(this TableLayout obj)
+        {
+            if (obj == TableLayout.Empty) throw new Exception("Table layout is empty");
+            return obj == TableLayout.ColHeaders || obj == TableLayout.RowAndColHeaders;
+        }
+    }
 }

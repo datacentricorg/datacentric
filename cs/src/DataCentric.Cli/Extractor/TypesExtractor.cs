@@ -34,12 +34,11 @@ namespace DataCentric.Cli
         public static readonly List<Type> BasicTypes = new List<Type>
         {
             typeof(Data),
-            typeof(KeyBase),
-            typeof(RecordBase),
-            typeof(Record<,>),
-            typeof(Key<,>),
+            typeof(Key),
+            typeof(Record),
             typeof(RootRecord<,>),
-            typeof(RootKey<,>),
+            typeof(TypedRecord<,>),
+            typeof(TypedKey<,>)
         };
 
         /// <summary>
@@ -50,10 +49,9 @@ namespace DataCentric.Cli
             Regex nameFilter = CreateTypeNameFilter(filters);
 
             bool IsKeyType(Type t) => t.BaseType.IsGenericType &&
-                                      (t.BaseType.GetGenericTypeDefinition() == typeof(Key<,>) ||
-                                       t.BaseType.GetGenericTypeDefinition() == typeof(RootKey<,>));
+                                      (t.BaseType.GetGenericTypeDefinition() == typeof(TypedKey<,>));
 
-            return ActivatorUtils.EnumerateTypes(assembly)
+            return ActivatorUtil.EnumerateTypes(assembly)
                                // Get all Data successors
                               .Where(t => t.IsSubclassOf(typeof(Data)))
                                // Filter using user input or skip if none
@@ -69,7 +67,7 @@ namespace DataCentric.Cli
         {
             Regex nameFilter = CreateTypeNameFilter(filters);
 
-            return ActivatorUtils.EnumerateTypes(assembly)
+            return ActivatorUtil.EnumerateTypes(assembly)
                                // Get all Data successors
                               .Where(t => t.IsSubclassOf(typeof(Enum)))
                                // Filter using user input or skip if none
@@ -84,22 +82,22 @@ namespace DataCentric.Cli
         {
             Regex nameFilter = CreateTypeNameFilter(filters);
 
-            var interfaces = ActivatorUtils.EnumerateTypes(assembly).Where(t => t.IsInterface)
+            var interfaces = ActivatorUtil.EnumerateTypes(assembly).Where(t => t.IsInterface)
                                         .Where(t => nameFilter == null || nameFilter.IsMatch(t.FullName))
                                         .ToList();
 
             HashSet<Type> dataInterfaces = new HashSet<Type>();
             foreach (Type type in dataTypes)
             {
-                foreach (Type @interface in interfaces)
+                foreach (Type interfaceType in interfaces)
                 {
                     // Interface should be assignable from data type
-                    bool isAssignableFromData = @interface.IsAssignableFrom(type);
+                    bool isAssignableFromData = interfaceType.IsAssignableFrom(type);
                     // Skip RecordFor<> interfaces
-                    bool isAssignableFromRecord = @interface.IsAssignableFrom(typeof(Record<,>));
+                    bool isAssignableFromRecord = interfaceType.IsAssignableFrom(typeof(TypedRecord<,>));
                     if (isAssignableFromData && !isAssignableFromRecord)
                     {
-                        dataInterfaces.Add(@interface);
+                        dataInterfaces.Add(interfaceType);
                     }
                 }
             }

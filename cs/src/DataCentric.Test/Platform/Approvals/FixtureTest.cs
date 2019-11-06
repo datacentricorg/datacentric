@@ -29,41 +29,21 @@ namespace DataCentric.Test
         {
             using (var context = new UnitTestContext(this))
             {
-                // Log entries other than Exception
-                context.Log.Warning("Warning log entry with params {0} and {1}", "Param1", "Param2");
-                context.Log.Status("Status log entry with params {0} and {1}", "Param1", "Param2");
+                // Warning and Info entries
+                context.Log.Warning("Warning log entry.");
+                context.Log.Info("Status log entry.");
 
                 // Verify entries
-                context.Verify.Text("Result verify entry with params {0} and {1}", "Param1", "Param2");
-                context.Verify.Assert(true, "Assert(true) verify entry with params {0} and {1}", "Param1", "Param2");
-                context.Verify.Assert(false, "Assert(false) verify entry with params {0} and {1}", "Param1", "Param2");
-                context.Verify.Value(123, "Value(123) verify entry with params {0} and {1}", "Param1", "Param2");
+                context.Log.Verify("Single-line verify message.");
+                context.Log.Verify("Multi-line verify message." + Environment.NewLine + "Second line of message.");
+                context.Log.Verify("Single-line verify title", "Single-line verify body.");
+                context.Log.Verify(
+                    "Multi-line verify title." + Environment.NewLine + "Second line of title.",
+                    "Multi-line verify body." + Environment.NewLine + "Second line of body.");
 
-                // File verify entry and saving
-                // FIXME - check that file is saved when enabled
-                context.Verify.File("FileName.txt", "File verify entry");
-            }
-        }
-
-        /// <summary>Test exception logging after context initialization.</summary>
-        [Fact]
-        public void EngineException()
-        {
-            using (var context = new UnitTestContext(this))
-            {
-                // The test checks that the entry preceding exception is recorded
-                context.Log.Status("Normal status entry preceding exception");
-
-                try
-                {
-                    // This should record exception into the log and then throw
-                    throw context.Log.Exception("Engine exception with {0}, {1}", "Param1", "Param2");
-                }
-                catch (Exception e)
-                {
-                    // The message is recorded second time by the catch
-                    context.Verify.Value(e.Message, "Message");
-                }
+                // Asserts
+                context.Log.Assert(true, "Assert when condition is true.");
+                context.Log.Assert(false, "Assert when condition is false.");
             }
         }
 
@@ -74,17 +54,17 @@ namespace DataCentric.Test
             using (var context = new UnitTestContext(this))
             {
                 // The test checks that the entry preceding exception is recorded
-                context.Log.Status("Normal status entry preceding exception");
+                context.Log.Info("Normal status entry preceding exception");
 
                 try
                 {
                     // Exception is not recorded to log in unit test
-                    throw new Exception(string.Format("Engine exception with {0}, {1}", "Param1", "Param2"));
+                    throw new Exception("Test exception message.");
                 }
                 catch (Exception e)
                 {
                     // The message is recorded by the catch only
-                    context.Verify.Value(e.Message, "Message");
+                    context.Log.Verify($"Message={e.Message}");
                 }
             }
         }

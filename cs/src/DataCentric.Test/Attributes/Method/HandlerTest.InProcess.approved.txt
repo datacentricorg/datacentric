@@ -1,0 +1,4 @@
+Verify: NonVirtualBaseHandler
+Verify: VirtualBaseHandler implemented in Base
+Verify: NonVirtualDerivedHandler
+Verify: VirtualBaseHandler implemented in Derived

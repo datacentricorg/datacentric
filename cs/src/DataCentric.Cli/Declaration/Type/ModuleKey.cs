@@ -19,7 +19,7 @@ namespace DataCentric.Cli
     /// <summary>Key for a ModuleData element.</summary>
     public class ModuleKey
     {
-        /// <summary>Unique module identifier in dot delimited format.</summary>
-        public string ModuleID { get; set; }
+        /// <summary>Unique module name in dot delimited format.</summary>
+        public string ModuleName { get; set; }
     }
 }

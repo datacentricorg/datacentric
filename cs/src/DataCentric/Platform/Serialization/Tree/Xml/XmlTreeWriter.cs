@@ -307,15 +307,20 @@ namespace DataCentric
                     break;
                 case LocalDateTime dateTimeValue:
                     // Serialize LocalDateTime as ISO long in yyyymmddhhmmssfff format
-                    long isoLong = dateTimeValue.ToIsoLong();
-                    xmlTextWriter_.WriteString(isoLong.ToString());
+                    long isoDateTimeLong = dateTimeValue.ToIsoLong();
+                    xmlTextWriter_.WriteString(isoDateTimeLong.ToString());
+                    break;
+                case Instant instantValue:
+                    // Serialize Instant as ISO long in yyyymmddhhmmssfff format
+                    long isoInstantLong = instantValue.ToIsoLong();
+                    xmlTextWriter_.WriteString(isoInstantLong.ToString());
                     break;
                 case Enum enumValue:
                     // Serialize enum as string
                     string enumString = enumValue.AsString();
                     xmlTextWriter_.WriteString(enumString);
                     break;
-                case KeyBase keyElement:
+                case Key keyElement:
                     // Serialize key as semicolon delimited string
                     string semicolonDelimitedKeyString = keyElement.AsString();
                     xmlTextWriter_.WriteString(semicolonDelimitedKeyString);
@@ -353,8 +358,10 @@ namespace DataCentric
             xmlTextWriter_.WriteEndAttribute();
         }
 
-        /// <summary>Convert to XML string without checking that XML document is complete.
-        /// This permits the use of this method to inspect the XML content during creation.</summary>
+        /// <summary>
+        /// Convert to XML string without checking that XML document is complete.
+        /// This permits the use of this method to inspect the XML content during creation.
+        /// </summary>
         public override string ToString()
         {
             xmlTextWriter_.Flush();

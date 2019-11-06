@@ -21,7 +21,7 @@ using System.IO;
 
 namespace DataCentric
 {
-    /// <summary>Text utilities.</summary>
+    /// <summary>Static helper class for working with tables.</summary>
     public static class TableUtil // FIXME check use and refactor
     {
         /// <summary>(TableUtil) Returns a multi-line message where each line is separated by a blank line.</summary>
@@ -31,7 +31,7 @@ namespace DataCentric
             foreach (string line in lines)
             {
                 result.Append(line);
-                result.Append(StringUtils.Eols(2));
+                result.Append(StringUtil.Eols(2));
             }
             return result.ToString();
         }

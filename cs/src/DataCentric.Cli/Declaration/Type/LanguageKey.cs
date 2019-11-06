@@ -19,7 +19,7 @@ namespace DataCentric.Cli
     /// <summary>Key for a LanguageData element.</summary>
     public class LanguageKey
     {
-        /// <summary>Language.</summary>
-        public string LanguageID { get; set; }
+        /// <summary>Unique language identifier.</summary>
+        public string LanguageName { get; set; }
     }
 }

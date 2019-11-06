@@ -17,27 +17,25 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
 using NodaTime;
 using Xunit;
 using DataCentric;
-using MongoDB.Bson;
 
 namespace DataCentric.Test
 {
     /// <summary>
-    /// Test for the data type where key fields are not the first in the record,
-    /// and key fields are not in the same order in the record as in the key.
+    /// Data type where key elements are not the first in the record, and/or
+    /// not in the same order in the record as in the key.
     /// </summary>
-    public class MongoNonAlignedTest
+    public class MongoNonAlignedTest : UnitTest
     {
         /// <summary>Smoke test.</summary>
         [Fact]
         public void Smoke()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
-                var record = new MongoNonAlignedTestData();
+                var record = new OutOfOrderKeyElementsSample();
                 record.DataSet = context.DataSet;
                 record.KeyElement1 = "A";
                 record.KeyElement2 = "B";
@@ -45,23 +43,18 @@ namespace DataCentric.Test
                 record.InitialElement1 = 2;
 
                 // Verify key serialization
-                context.Verify.Text(record.Key);
+                context.Log.Verify(record.Key);
 
                 // Verify key creation
                 var key = record.ToKey();
-                context.Verify.Text(key.Value);
-
-                // Load using record cached inside the key
-                var cachedRecord = key.LoadOrNull(context);
-                context.Verify.Text(cachedRecord.Key);
+                context.Log.Verify(key.Value);
 
                 // Save
-                context.Save(record, context.DataSet);
+                context.SaveOne(record, context.DataSet);
 
                 // Load from storage
-                key.ClearCachedRecord();
                 var loadedRecord = context.LoadOrNull(key, context.DataSet);
-                context.Verify.Text(loadedRecord.Key);
+                context.Log.Verify(loadedRecord.Key);
             }
         }
     }

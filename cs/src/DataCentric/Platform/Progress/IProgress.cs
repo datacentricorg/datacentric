@@ -14,14 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+
 namespace DataCentric
 {
     /// <summary>Progress interface provides access to
     /// progress ratio and progress message.</summary>
-    public interface IProgress
+    public interface IProgress : IDisposable
     {
-        /// <summary>Context for which this interface is defined.
-        /// Use to access other interfaces of the same context.</summary>
+        /// <summary>
+        /// Execution context provides access to key resources including:
+        ///
+        /// * Logging and error reporting
+        /// * Cloud calculation service
+        /// * Data sources
+        /// * Filesystem
+        /// * Progress reporting
+        /// </summary>
         IContext Context { get; }
 
         /// <summary>Get or set progress ratio from 0 to 1 (0 if not set).</summary>
@@ -30,7 +39,21 @@ namespace DataCentric
         /// <summary>Get or set message displayed next to the progress ratio (null if not set).</summary>
         string Message { get; set; }
 
-        /// <summary>Flush progress state to permanent storage.</summary>
+        //--- METHODS
+
+        /// <summary>
+        /// Set Context property and perform validation of the record's data,
+        /// then initialize any fields or properties that depend on that data.
+        ///
+        /// This method may be called multiple times for the same instance,
+        /// possibly with a different context parameter for each subsequent call.
+        ///
+        /// IMPORTANT - Every override of this method must call base.Init()
+        /// first, and only then execute the rest of the override method's code.
+        /// </summary>
+        void Init(IContext context);
+
+        /// <summary>Flush data to permanent storage.</summary>
         void Flush();
     }
 }

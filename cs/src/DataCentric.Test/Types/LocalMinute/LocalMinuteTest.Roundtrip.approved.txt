@@ -1,4 +1,0 @@
-Verify.Passed: String roundtrip for 00:00
-Verify.Passed: Int roundtrip for 00:00
-Verify.Passed: String roundtrip for 10:15
-Verify.Passed: Int roundtrip for 10:15

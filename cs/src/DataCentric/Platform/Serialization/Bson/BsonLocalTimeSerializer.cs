@@ -29,7 +29,7 @@ namespace DataCentric
     {
         /// <summary>
         /// Deserialize LocalTime from readable int in ISO hhmmssfff format.
-        /// 
+        ///
         /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
         /// </summary>
         public override LocalTime Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
@@ -38,13 +38,13 @@ namespace DataCentric
             int isoTime = context.Reader.ReadInt32();
 
             // Create LocalTime object by parsing readable int
-            var result = LocalTimeUtils.ParseIsoInt(isoTime);
+            var result = LocalTimeUtil.FromIsoInt(isoTime);
             return result;
         }
 
         /// <summary>
         /// Serialize LocalTime to readable int in ISO hhmmssfff format.
-        /// 
+        ///
         /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
         /// </summary>
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, LocalTime value)

@@ -25,14 +25,14 @@ using System.Xml.XPath;
 namespace DataCentric.Cli
 {
     /// <summary>
-    /// Comment navigator class. Extracts comment info from xml file which is created alongside assembly.
+    /// Comment navigator class. Extracts comment info from XML file which is created alongside assembly.
     /// </summary>
     public class CommentNavigator
     {
         private readonly XPathNavigator navigator;
 
         /// <summary>
-        /// Creates navigator instance from given xml document file.
+        /// Creates navigator instance from given XML document file.
         /// </summary>
         public CommentNavigator(string documentXmlLocation)
         {
@@ -67,7 +67,7 @@ namespace DataCentric.Cli
         public string GetXmlComment(MemberInfo member)
         {
             StringBuilder nameBuilder = new StringBuilder();
-            if (member is System.Type type)
+            if (member is Type type)
                 nameBuilder.Append($"T:{type.FullName}");
             else if (member is MethodInfo method)
             {
@@ -75,8 +75,8 @@ namespace DataCentric.Cli
 
                 ParameterInfo[] parameters = method.GetParameters();
                 List<string> paramNames = parameters.Select(p => p.ParameterType.FullName).ToList();
-
-                nameBuilder.Append($"({string.Join(',', paramNames)})");
+                if (paramNames.Any())
+                    nameBuilder.Append($"({string.Join(',', paramNames)})");
             }
             else if (member is PropertyInfo property)
                 nameBuilder.Append($"P:{property.DeclaringType.FullName}.{property.Name}");

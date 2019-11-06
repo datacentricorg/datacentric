@@ -19,8 +19,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace DataCentric
 {
@@ -33,7 +31,7 @@ namespace DataCentric
     ///
     /// For tests that require MongoDB, use IDataTestDataContext.
     /// </summary>
-    public class UnitTestContext : IContext, IVerifyable, IDisposable
+    public class UnitTestContext : Context
     {
         /// <summary>
         /// Create with class name, method name, and source file path.
@@ -47,6 +45,8 @@ namespace DataCentric
             [CallerMemberName] string methodName = null,
             [CallerFilePath] string sourceFilePath = null)
         {
+            // Check that properties required by the unit test are set
+            if (classInstance == null) throw new Exception("Method name passed to UnitTestContext is null.");
             if (methodName == null) throw new Exception("Method name passed to UnitTestContext is null.");
             if (sourceFilePath == null) throw new Exception("Source file path passed to UnitTestContext is null.");
 
@@ -62,70 +62,14 @@ namespace DataCentric
             // Use log file name format assName.MethodName.approved.txt from ApprovalTests.NET.
             string logFileName = String.Join(".", className, methodName, "approved.txt");
 
-            Out =  new DiskOutputFolder(this, testFolderPath);
-            Log = new FileLog(this, logFileName);
-            Progress = new NullProgress(this);
-            Verify = new LogVerify(this, className, methodName);
-        }
+            // All properties must be set before initialization is performed
+            OutputFolder = new DiskFolder { FolderPath = testFolderPath };
+            Log = new FileLog { LogFilePath = logFileName };
+            Progress = new NullProgress();
 
-        /// <summary>Get the default data source of the context.</summary>
-        public virtual IDataSource DataSource
-        {
-            get { throw new Exception("Class UnitTestContext does not provide access to DataSource. Use MongoTestContext instead."); }
-        }
-
-        /// <summary>Returns ObjectId of the context dataset.</summary>
-        public virtual ObjectId DataSet
-        {
-            get { throw new Exception("Class UnitTestContext does not provide access to DataSet. Use MongoTestContext instead."); }
-        }
-
-        /// <summary>Output folder root of the context's virtualized filesystem.</summary>
-        public IOutputFolder Out { get; }
-
-        /// <summary>Logging interface.</summary>
-        public ILog Log { get; }
-
-        /// <summary>Progress interface.</summary>
-        public IProgress Progress { get; }
-
-        /// <summary>Approval testing interface.</summary>
-        public IVerify Verify { get; }
-
-        //--- METHODS
-
-        /// <summary>
-        /// Releases resources and calls base.Dispose().
-        ///
-        /// This method will NOT be called by the garbage
-        /// collector, therefore instantiating it inside
-        /// the ``using'' clause is essential to ensure
-        /// that Dispose() method gets invoked.
-        ///
-        /// ATTENTION:
-        ///
-        /// Each class that overrides this method must
-        ///
-        /// (a) Specify IDisposable in interface list; and
-        /// (b) Call base.Dispose() at the end of its own
-        ///     Dispose() method.
-        /// </summary>
-        public virtual void Dispose()
-        {
-            // Flush all buffers
-            Flush();
-
-            // Close the log
-            Log.Close();
-        }
-
-        /// <summary>Flush context data to permanent storage.</summary>
-        public void Flush()
-        {
-            // Flush to permanent storage
-            Log.Flush();
-            Verify.Flush();
-            Progress.Flush();
+            // Increase log verbosity to Verify from its
+            // default level set in base class Context
+            Log.Verbosity = LogVerbosityEnum.Verify;
         }
     }
 }

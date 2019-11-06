@@ -1,2 +1,2 @@
-Status: Normal status entry preceding exception
-Verify.Value: Message = Engine exception with Param1, Param2
+Info: Normal status entry preceding exception
+Verify: Message=Test exception message.

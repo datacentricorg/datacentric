@@ -56,7 +56,8 @@ namespace DataCentric.Test
                     AtomicType.LocalDate,
                     AtomicType.LocalTime,
                     AtomicType.LocalMinute,
-                    AtomicType.LocalDateTime
+                    AtomicType.LocalDateTime,
+                    AtomicType.Instant
                 };
 
                 TestSerialization(context, valueTypes, TableLayout.NoHeaders);
@@ -72,17 +73,17 @@ namespace DataCentric.Test
             // Create and resize
             int rowCount = 3;
             int colCount = Math.Max(valueTypes.Length, 4);
-            var originalTable = new ValueTableData();
+            var originalTable = new ValueTable();
             originalTable.Resize(layout, rowCount, colCount);
             PopulateHeaders(originalTable);
             PopulateValues(valueTypes, originalTable);
 
             // Serialize the generated table and save serialized string to file
             string originalNoHeadersString = originalTable.ToString();
-            context.CastTo<IVerifyable>().Verify.File($"{layout}.csv", originalNoHeadersString);
+            context.Log.Verify($"{layout}", originalNoHeadersString);
 
             // Deserialize from string back into table
-            var parsedNoHeadersTable = new ValueTableData();
+            var parsedNoHeadersTable = new ValueTable();
             parsedNoHeadersTable.ParseCsv(layout, valueTypes, originalNoHeadersString);
             string parsedNoHeadersString = parsedNoHeadersTable.ToString();
 
@@ -91,7 +92,7 @@ namespace DataCentric.Test
         }
 
         /// <summary>Populate table headers based on the specified layout.</summary>
-        private void PopulateHeaders(ValueTableData result)
+        private void PopulateHeaders(ValueTable result)
         {
             TableLayout layout = result.Layout;
 
@@ -128,7 +129,7 @@ namespace DataCentric.Test
         /// Populate with values based on the specified array
         /// of value types, repeating the types in cycle.
         /// </summary>
-        private void PopulateValues(AtomicType[] valueTypes, ValueTableData result)
+        private void PopulateValues(AtomicType[] valueTypes, ValueTable result)
         {
             // Initial values to populate the data
             int stringValueAsInt = 0;
@@ -140,6 +141,7 @@ namespace DataCentric.Test
             LocalTime localTimeValue = new LocalTime(10, 15, 30);
             LocalMinute localMinuteValue = new LocalMinute(10, 15);
             LocalDateTime localDateTimeValue = new LocalDateTime(2003, 5, 1,10, 15, 0);
+            Instant instantValue = new LocalDateTime(2003, 5, 1, 10, 15, 0).ToInstant(DateTimeZone.Utc);
 
             int valueTypeCount = valueTypes.Length;
             for (int rowIndex = 0; rowIndex < result.RowCount; rowIndex++)
@@ -181,6 +183,10 @@ namespace DataCentric.Test
                         case AtomicType.LocalDateTime:
                             result[rowIndex, colIndex] = localDateTimeValue;
                             localDateTimeValue = localDateTimeValue.PlusDays(2).PlusHours(2);
+                            break;
+                        case AtomicType.Instant:
+                            result[rowIndex, colIndex] = instantValue;
+                            instantValue = instantValue; // TODO Fix, uses previous value
                             break;
                         default: throw new Exception($"Value type {valueType} cannot be stored in ValueTable.");
                     }

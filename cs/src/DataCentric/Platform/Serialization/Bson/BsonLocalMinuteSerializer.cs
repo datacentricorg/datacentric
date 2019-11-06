@@ -29,7 +29,7 @@ namespace DataCentric
     {
         /// <summary>
         /// Deserialize LocalMinute from readable int in ISO hhmm format.
-        /// 
+        ///
         /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
         /// </summary>
         public override LocalMinute Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
@@ -38,13 +38,13 @@ namespace DataCentric
             int isoTime = context.Reader.ReadInt32();
 
             // Create LocalMinute object by parsing readable int
-            var result = LocalMinuteUtils.ParseIsoInt(isoTime);
+            var result = LocalMinuteUtil.FromIsoInt(isoTime);
             return result;
         }
 
         /// <summary>
         /// Serialize LocalMinute to readable int in ISO hhmm format.
-        /// 
+        ///
         /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
         /// </summary>
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, LocalMinute value)

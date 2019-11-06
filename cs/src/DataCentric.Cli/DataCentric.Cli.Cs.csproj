@@ -3,12 +3,29 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <LangVersion>7.3</LangVersion>
+    <PackageId>DataCentric.Cli.Cs</PackageId>
+    <Version>2.1.1</Version>
+    <Authors>The DataCentric Authors</Authors>
+    <Company>DataCentric</Company>
+    <Product>DataCentric</Product>
+    <Description>DataCentric CLI module.</Description>
+    <Copyright>The DataCentric Authors</Copyright>
+    <AssemblyName>DataCentric.Cli.Cs</AssemblyName>
+    <RootNamespace>DataCentric.Cli</RootNamespace>
+    <PackageLicense>https://licenses.nuget.org/Apache-2.0</PackageLicense>
+    <PackageProjectUrl>www.datacentric.org</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/datacentricorg/datacentric-cs</RepositoryUrl>
+    <PackageTags>data-centric, mongodb</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.4.3" />
+    <PackageReference Include="CsvHelper" Version="12.1.2" />
     <PackageReference Include="Humanizer" Version="2.6.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.utility" Version="2.4.0" />
   </ItemGroup>

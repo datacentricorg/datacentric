@@ -21,7 +21,7 @@ using MongoDB.Bson.Serialization.Serializers;
 namespace DataCentric
 {
     /// <summary>Serializes Key as readable integer using semicolon delimited string.</summary>
-    public class BsonKeySerializer<TKey> : SerializerBase<TKey> where TKey : KeyBase, new()
+    public class BsonKeySerializer<TKey> : SerializerBase<TKey> where TKey : Key, new()
     {
         /// <summary>Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.</summary>
         public override TKey Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
@@ -31,7 +31,7 @@ namespace DataCentric
 
             // Deserialize key from semicolon delimited string
             var key = new TKey();
-            key.AssignString(str);
+            key.PopulateFrom(str);
             return key;
         }
 

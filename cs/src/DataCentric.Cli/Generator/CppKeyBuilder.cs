@@ -22,12 +22,10 @@ namespace DataCentric.Cli
 {
     public static class CppKeyBuilder
     {
-        public static string BuildKeyFile(TypeDeclData decl, Dictionary<string, string> declSet)
+        public static string BuildKeyHeader(TypeDecl decl, Dictionary<string, string> declSet)
         {
             var writer = new CppCodeWriter();
-
-            var module = decl.Module.ModuleID;
-            var settings = GeneratorSettingsProvider.Get(module);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
 
             writer.AppendLines(settings.Copyright);
             writer.AppendNewLineWithoutIndent();
@@ -36,71 +34,137 @@ namespace DataCentric.Cli
             writer.AppendNewLineWithoutIndent();
 
             // includes
-            writer.AppendLine($"#include <{settings.DeclareInclude}.hpp>");
-            writer.AppendLine($"#include <dc/types/record/key_type.hpp>");
+            var includes = IncludesProvider.ForKeyHeader(decl, declSet);
+            foreach (string include in includes)
+                writer.AppendLine(include);
             writer.AppendNewLineWithoutIndent();
 
             writer.AppendLine($"namespace {settings.Namespace}");
             writer.AppendLine("{");
             writer.PushIndent();
-            BuildClass(decl, writer);
+            BuildClassDeclaration(decl, writer);
             writer.PopIndent();
             writer.AppendLine("}");
 
             return writer.ToString();
         }
 
-        private static void BuildClass(TypeDeclData decl, CppCodeWriter writer)
+        public static string BuildKeySource(TypeDecl decl, Dictionary<string, string> declSet)
         {
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
+            var writer = new CppCodeWriter();
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
+
+            writer.AppendLines(settings.Copyright);
+            writer.AppendNewLineWithoutIndent();
+
+            // includes
+            writer.AppendLine($"#include <{settings.Namespace}/precompiled.hpp>");
+            writer.AppendLine($"#include <{settings.Namespace}/implement.hpp>");
+            writer.AppendLine($"#include <{declSet[decl.Name]}/{decl.Name.Underscore()}_key.hpp>");
+            writer.AppendLine($"#include <dc/platform/context/context_base.hpp>");
+            writer.AppendNewLineWithoutIndent();
+
+            writer.AppendLine($"namespace {settings.Namespace}");
+            writer.AppendLine("{");
+            writer.PushIndent();
+            BuildClassImplementation(decl, writer);
+            writer.PopIndent();
+            writer.AppendLine("}");
+
+            return writer.ToString();
+        }
+
+        private static void BuildClassDeclaration(TypeDecl decl, CppCodeWriter writer)
+        {
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
             var type = decl.Name.Underscore();
 
             // forwards
             writer.AppendLine($"class {type}_key_impl; using {type}_key = dot::ptr<{type}_key_impl>;");
+            writer.AppendLine($"class {type}_data_impl; using {type}_data = dot::ptr<{type}_data_impl>;");
 
             // Get unique keys and data from elements
             var keyElements = decl.Elements.Where(e => decl.Keys.Contains(e.Name)).ToList();
-            var dataForwards = keyElements.Where(e => e.Data != null).Select(e => $"{e.Data.Name.Underscore()}_data").ToList();
-            var keysForwards = keyElements.Where(e => e.Key != null).Select(e => $"{e.Key.Name.Underscore()}_key").ToList();
-            var forwards = keysForwards.Union(dataForwards);
+            var dataForwards = keyElements.Where(e => e.Data != null)
+                                          .Where(e => e.Data.Module.ModuleName == decl.Module.ModuleName)
+                                          .Select(e => $"{e.Data.Name.Underscore()}_data").ToList();
+            var keysForwards = keyElements.Where(e => e.Key != null)
+                                          .Where(e => e.Key.Module.ModuleName == decl.Module.ModuleName)
+                                          .Select(e => $"{e.Key.Name.Underscore()}_key").ToList();
+            var forwards = keysForwards.Union(dataForwards).Distinct();
             // Appends forwards
             foreach (var f in forwards)
                 writer.AppendLine($"class {f}_impl; using {f} = dot::ptr<{f}_impl>;");
             writer.AppendNewLineWithoutIndent();
 
-            var declComment = decl.Comment;
-            var comment = CommentHelper.FormatComment(declComment);
-            writer.AppendLines(comment);
+            writer.AppendLine($"inline {type}_key make_{type}_key();");
+            writer.AppendNewLineWithoutIndent();
 
-            writer.AppendLine($"class {settings.DeclSpec} {type}_key_impl : public key_for_impl<{type}_key_impl,{type}_data_impl>");
+            writer.AppendLines(CommentHelper.FormatComment(decl.Comment));
+
+            writer.AppendLine($"class {settings.DeclSpec} {type}_key_impl : public key_impl<{type}_key_impl,{type}_data_impl>");
             writer.AppendLine("{");
 
             writer.PushIndent();
             writer.AppendLine($"typedef {type}_key_impl self;");
-            writer.AppendLine($"friend {type}_key new_{type}_key();");
+            writer.AppendLine($"friend {type}_key make_{type}_key();");
             writer.PopIndent();
+            writer.AppendNewLineWithoutIndent();
+
+            writer.AppendLine("public: // FIELDS");
             writer.AppendNewLineWithoutIndent();
 
             if (keyElements.Any())
             {
-                writer.AppendLine("public: // PROPERTIES");
-                writer.AppendNewLineWithoutIndent();
                 writer.PushIndent();
                 CppElementBuilder.WriteElements(keyElements, writer);
                 writer.PopIndent();
             }
 
-            writer.AppendLine("protected: // CONSTRUCTORS");
-            writer.AppendNewLineWithoutIndent();
+            writer.AppendLine("public:");
             writer.PushIndent();
-            writer.AppendLine($"inline {type}_key_impl() = default;");
+            writer.AppendLine("virtual dot::type_t type();");
+            writer.AppendLine("static dot::type_t typeof();");
             writer.PopIndent();
 
             writer.AppendLine("};");
             writer.AppendNewLineWithoutIndent();
 
             writer.AppendLine("/// Create an empty instance.");
-            writer.AppendLine($"inline {type}_key make_{type}_key() {{ return new {type}_key_impl(); }}");
+            writer.AppendLine($"inline {type}_key make_{type}_key() {{ return new {type}_key_impl; }}");
+        }
+
+        private static void BuildClassImplementation(TypeDecl decl, CppCodeWriter writer)
+        {
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
+            var type = decl.Name.Underscore();
+
+            writer.AppendLine($"dot::type_t {type}_key_impl::type() {{ return typeof(); }}");
+            writer.AppendLine($"dot::type_t {type}_key_impl::typeof()");
+
+            writer.AppendLine("{");
+            writer.PushIndent();
+
+            writer.AppendLine("static dot::type_t type_ =");
+            writer.PushIndent();
+
+            writer.AppendLine($"dot::make_type_builder<self>(\"{settings.Namespace}\", \"{type}\")");
+            var keyElements = decl.Elements.Where(e => decl.Keys.Contains(e.Name)).ToList();
+            foreach (var element in keyElements.Where(e => e.BsonIgnore != YesNo.Y))
+            {
+                var name = element.Name.Underscore();
+                writer.AppendLine($"->with_field(\"{name}\", &self::{name})");
+            }
+
+            writer.AppendLine($"->template with_base<key<{type}_key_impl, {type}_data_impl>>()");
+            writer.AppendLine($"->with_constructor(&make_{type}_key, {{  }})");
+            writer.AppendLine("->build();");
+
+            writer.PopIndent();
+            writer.AppendLine("return type_;");
+
+            writer.PopIndent();
+            writer.AppendLine("}");
         }
     }
 }

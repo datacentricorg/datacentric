@@ -23,21 +23,20 @@ using DataCentric;
 namespace DataCentric.Test
 {
     /// <summary>Unit test for Query.</summary>
-    public class QueryTest
+    public class QueryTest : UnitTest
     {
         /// <summary>Query on all permitted nullable element types.</summary>
         [Fact]
         public void NullableElements()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
                 {
                     int recordIndexMod2 = recordIndex % 2;
                     int recordIndexMod4 = recordIndex % 4;
 
-                    var record = new QueryTestNullableData();
-                    record.RecordID = recordIndexMod4.ToString();
+                    var record = new NullableElementsSample();
                     record.RecordIndex = recordIndex;
                     record.DataSet = context.DataSet;
                     record.StringToken = "A" + recordIndexMod4.ToString();
@@ -48,9 +47,10 @@ namespace DataCentric.Test
                     record.LocalTimeToken = new LocalTime(10, 15, 30).PlusMinutes(recordIndexMod4);
                     record.LocalMinuteToken = new LocalMinute(10, recordIndexMod4);
                     record.LocalDateTimeToken = new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(recordIndexMod4);
-                    record.EnumToken = (QueryTestEnum)(recordIndexMod2 + 1);
+                    record.InstantToken = new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(recordIndexMod4).ToInstant(DateTimeZone.Utc);
+                    record.EnumToken = (SampleEnum)(recordIndexMod2 + 1);
 
-                    context.Save(record, context.DataSet);
+                    context.SaveOne(record, context.DataSet);
                 }
 
                 if (true)
@@ -58,12 +58,12 @@ namespace DataCentric.Test
                     // Query for all records without restrictions,
                     // should return 4 out of 8 records because
                     // each record has two versions
-                    var query = context.DataSource.GetQuery<QueryTestNullableData>(context.DataSet);
+                    var query = context.DataSource.GetQuery<NullableElementsSample>(context.DataSet);
 
-                    context.Verify.Text("Unconstrained query");
+                    context.Log.Verify("Unconstrained query");
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    {obj.Key} (record index {obj.RecordIndex}).");
+                        context.Log.Verify($"    {obj.Key} (record index {obj.RecordIndex}).");
                     }
                 }
 
@@ -73,7 +73,7 @@ namespace DataCentric.Test
                     // should return 4 out of 8 records because
                     // each record has two versions
 
-                    var query = context.DataSource.GetQuery<QueryTestNullableData>(context.DataSet)
+                    var query = context.DataSource.GetQuery<NullableElementsSample>(context.DataSet)
                         .Where(p => p.StringToken == "A1")
                         .Where(p => p.BoolToken == false)
                         .Where(p => p.IntToken == 1)
@@ -82,12 +82,13 @@ namespace DataCentric.Test
                         .Where(p => p.LocalTimeToken == new LocalTime(10, 15, 30).PlusMinutes(1))
                         .Where(p => p.LocalMinuteToken == new LocalMinute(10, 1))
                         .Where(p => p.LocalDateTimeToken == new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(1))
-                        .Where(p => p.EnumToken == (QueryTestEnum)2);
+                        .Where(p => p.InstantToken == new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(1).ToInstant(DateTimeZone.Utc))
+                        .Where(p => p.EnumToken == (SampleEnum)2);
 
-                    context.Verify.Text("Constrained query");
+                    context.Log.Verify("Constrained query");
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    {obj.Key} (record index {obj.RecordIndex}).");
+                        context.Log.Verify($"    {obj.Key} (record index {obj.RecordIndex}).");
                     }
                 }
             }
@@ -97,15 +98,14 @@ namespace DataCentric.Test
         [Fact]
         public void NonNullableElements()
         {
-            using (var context = new MongoTestContext(this))
+            using (var context = CreateMethodContext())
             {
                 for (int recordIndex = 0; recordIndex < 8; ++recordIndex)
                 {
                     int recordIndexMod2 = recordIndex % 2;
                     int recordIndexMod4 = recordIndex % 4;
 
-                    var record = new QueryTestNonNullableData();
-                    record.RecordID = recordIndexMod4.ToString();
+                    var record = new NonNullableElementsSample();
                     record.RecordIndex = recordIndex;
                     record.DataSet = context.DataSet;
                     record.StringToken = "A" + recordIndexMod4.ToString();
@@ -116,9 +116,10 @@ namespace DataCentric.Test
                     record.LocalTimeToken = new LocalTime(10, 15, 30).PlusMinutes(recordIndexMod4);
                     record.LocalMinuteToken = new LocalMinute(10, recordIndexMod4);
                     record.LocalDateTimeToken = new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(recordIndexMod4);
-                    record.EnumToken = (QueryTestEnum) (recordIndexMod2 + 1);
+                    record.InstantToken = new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(recordIndexMod4).ToInstant(DateTimeZone.Utc);
+                    record.EnumToken = (SampleEnum) (recordIndexMod2 + 1);
 
-                    context.Save(record, context.DataSet);
+                    context.SaveOne(record, context.DataSet);
                 }
 
                 if (true)
@@ -126,12 +127,12 @@ namespace DataCentric.Test
                     // Query for all records without restrictions,
                     // should return 4 out of 8 records because
                     // each record has two versions
-                    var query = context.DataSource.GetQuery<QueryTestNonNullableData>(context.DataSet);
+                    var query = context.DataSource.GetQuery<NonNullableElementsSample>(context.DataSet);
 
-                    context.Verify.Text("Unconstrained query");
+                    context.Log.Verify("Unconstrained query");
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    {obj.Key} (record index {obj.RecordIndex}).");
+                        context.Log.Verify($"    {obj.Key} (record index {obj.RecordIndex}).");
                     }
                 }
 
@@ -141,7 +142,7 @@ namespace DataCentric.Test
                     // should return 4 out of 8 records because
                     // each record has two versions
 
-                    var query = context.DataSource.GetQuery<QueryTestNonNullableData>(context.DataSet)
+                    var query = context.DataSource.GetQuery<NonNullableElementsSample>(context.DataSet)
                         .Where(p => p.StringToken == "A1")
                         .Where(p => p.BoolToken == false)
                         .Where(p => p.IntToken == 1)
@@ -150,12 +151,12 @@ namespace DataCentric.Test
                         .Where(p => p.LocalTimeToken == new LocalTime(10, 15, 30).PlusMinutes(1))
                         .Where(p => p.LocalMinuteToken == new LocalMinute(10, 1))
                         .Where(p => p.LocalDateTimeToken == new LocalDateTime(2003, 5, 1, 10, 15).PlusDays(1))
-                        .Where(p => p.EnumToken == (QueryTestEnum)2);
+                        .Where(p => p.EnumToken == (SampleEnum)2);
 
-                    context.Verify.Text("Constrained query");
+                    context.Log.Verify("Constrained query");
                     foreach (var obj in query.AsEnumerable())
                     {
-                        context.Verify.Text($"    {obj.Key} (record index {obj.RecordIndex}).");
+                        context.Log.Verify($"    {obj.Key} (record index {obj.RecordIndex}).");
                     }
                 }
             }

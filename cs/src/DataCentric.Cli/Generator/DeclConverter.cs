@@ -21,7 +21,7 @@ using Humanizer;
 
 namespace DataCentric.Cli
 {
-    public class HeaderFileInfo
+    public class CppFileInfo
     {
         public string Content { get; set; }
         public string FileName { get; set; }
@@ -30,86 +30,120 @@ namespace DataCentric.Cli
 
     public static class DeclConverter
     {
-        public static List<IDeclData> ReadDeclUnits(string path)
+        public static List<IDecl> ReadDeclUnits(string path)
         {
-            var result = new List<IDeclData>();
+            var result = new List<IDecl>();
 
             var typeFiles = Directory.GetFiles(path, "*.cltype", SearchOption.AllDirectories);
             foreach (var file in typeFiles)
             {
                 string text = File.ReadAllText(file);
-                result.Add(DeclarationSerializer.Deserialize<TypeDeclData>(text));
+                result.Add(DeclarationSerializer.Deserialize<TypeDecl>(text));
             }
 
             var enumFiles = Directory.GetFiles(path, "*.clenum", SearchOption.AllDirectories);
             foreach (var file in enumFiles)
             {
                 string text = File.ReadAllText(file);
-                result.Add(DeclarationSerializer.Deserialize<EnumDeclData>(text));
+                result.Add(DeclarationSerializer.Deserialize<EnumDecl>(text));
             }
 
             return result;
         }
 
-        public static List<HeaderFileInfo> ConvertSet(List<IDeclData> declarations)
+        public static List<CppFileInfo> ConvertSet(List<IDecl> declarations)
         {
-            List<TypeDeclData> typeDecls = declarations.OfType<TypeDeclData>().ToList();
-            List<EnumDeclData> enumDecls = declarations.OfType<EnumDeclData>().ToList();
+            List<TypeDecl> typeDecls = declarations.OfType<TypeDecl>().ToList();
+            List<EnumDecl> enumDecls = declarations.OfType<EnumDecl>().ToList();
 
-            var structureInfo = typeDecls.ToDictionary(t => t.Name, GetIncludePath);
+            var typeIncludes = typeDecls.ToDictionary(t => t.Name, GetIncludePath);
+            var enumIncludes = enumDecls.ToDictionary(t => t.Name, GetIncludePath);
 
-            var typeHeaders = typeDecls.SelectMany(d => ConvertType(d, structureInfo));
-            var enumHeaders = enumDecls.Select(ConvertEnum);
+            var includes = typeIncludes.Concat(enumIncludes).ToDictionary(t => t.Key, t => t.Value);
 
-            return typeHeaders.Concat(enumHeaders).ToList();
+            var types = typeDecls.SelectMany(d => ConvertType(d, includes));
+            var enums = enumDecls.SelectMany(d => ConvertEnum(d, includes));
+
+            return types.Concat(enums).ToList();
         }
 
-        private static string GetIncludePath(TypeDeclData decl)
+        private static string GetIncludePath(IDecl decl)
         {
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
 
-            return $"{settings.Namespace}.{decl.Category}".ToLower().Replace('.', '/');
+            // Avoid adding trailing path separator
+            return !string.IsNullOrEmpty(decl.Category) && !decl.Category.Equals(".")
+                       ? $"{settings.Namespace}.{decl.Category}".Underscore().Replace('.', '/')
+                       : $"{settings.Namespace}".Underscore().Replace('.', '/');
         }
 
-        private static List<HeaderFileInfo> ConvertType(TypeDeclData decl, Dictionary<string, string> structureInfo)
+        private static List<CppFileInfo> ConvertType(TypeDecl decl, Dictionary<string, string> includePath)
         {
-            string pathInProject = structureInfo[decl.Name];
+            string pathInProject = includePath[decl.Name];
 
-            List<HeaderFileInfo> result = new List<HeaderFileInfo>();
+            List<CppFileInfo> result = new List<CppFileInfo>();
 
-            var data = new HeaderFileInfo
+            var dataHeader = new CppFileInfo
             {
-                Content = CppDataBuilder.BuildDataFile(decl, structureInfo),
+                Content = CppDataBuilder.BuildDataHeader(decl, includePath),
                 FileName = $"{decl.Name.Underscore()}_data.hpp",
                 FolderName = pathInProject
             };
-            result.Add(data);
+            result.Add(dataHeader);
+
+            var dataSource = new CppFileInfo
+            {
+                Content = CppDataBuilder.BuildDataSource(decl, includePath),
+                FileName = $"{decl.Name.Underscore()}_data.cpp",
+                FolderName = pathInProject
+            };
+            result.Add(dataSource);
 
             if (decl.Keys.Any())
             {
-                var key = new HeaderFileInfo
+                var keyHeader = new CppFileInfo
                 {
-                    Content = CppKeyBuilder.BuildKeyFile(decl, structureInfo),
+                    Content = CppKeyBuilder.BuildKeyHeader(decl, includePath),
                     FileName = $"{decl.Name.Underscore()}_key.hpp",
                     FolderName = pathInProject
                 };
-                result.Add(key);
+                result.Add(keyHeader);
+
+                var keySource = new CppFileInfo
+                {
+                    Content = CppKeyBuilder.BuildKeySource(decl, includePath),
+                    FileName = $"{decl.Name.Underscore()}_key.cpp",
+                    FolderName = pathInProject
+                };
+                result.Add(keySource);
             }
 
             return result;
         }
 
-        private static HeaderFileInfo ConvertEnum(EnumDeclData decl)
+        private static List<CppFileInfo> ConvertEnum(EnumDecl decl, Dictionary<string, string> includePath)
         {
-            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleID);
-            var data = new HeaderFileInfo
-            {
-                Content = CppEnumBuilder.BuildEnumFile(decl),
-                FileName = $"{decl.Name.Underscore()}.hpp",
-                FolderName = $"{settings.Namespace}.{decl.Category}".ToLower().Replace('.', '/')
-            };
+            var result = new List<CppFileInfo>();
+            var settings = GeneratorSettingsProvider.Get(decl.Module.ModuleName);
+            string folderName = $"{settings.Namespace}.{decl.Category}".Underscore().Replace('.', '/');
 
-            return data;
+            var enumHeader = new CppFileInfo
+            {
+                Content = CppEnumBuilder.BuildEnumHeader(decl, includePath),
+                FileName = $"{decl.Name.Underscore()}.hpp",
+                FolderName = folderName
+            };
+            result.Add(enumHeader);
+
+            var enumSource = new CppFileInfo
+            {
+                Content = CppEnumBuilder.BuildEnumSource(decl, includePath),
+                FileName = $"{decl.Name.Underscore()}.cpp",
+                FolderName = folderName
+            };
+            result.Add(enumSource);
+
+            return result;
         }
     }
 }

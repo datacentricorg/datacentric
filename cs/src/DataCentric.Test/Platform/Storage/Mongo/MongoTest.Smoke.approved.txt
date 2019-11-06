@@ -1,4 +1,0 @@
-Verify.Text: Record A;0 in dataset A found and has Type=Data.
-Verify.Text: Record A;0 in dataset B found and has Type=Data.
-Verify.Text: Record B;0 in dataset A not found.
-Verify.Text: Record B;0 in dataset B found and has Type=DerivedData.

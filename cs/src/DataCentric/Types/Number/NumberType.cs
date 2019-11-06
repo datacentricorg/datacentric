@@ -36,17 +36,16 @@ namespace DataCentric
         /// <summary>32-bit signed integer value.</summary>
         Int,
 
-        /// <summary>Date without time, serialized as YYYYMMDD integer.
-        /// Timezone or city is UTC unless specified otherwise.</summary>
+        /// <summary>Date without time or timezone, serialized as YYYYMMDD integer.</summary>
         Date,
 
-        /// <summary>Time without date at millisecond resolution, serialized as HHMMSSSSS integer.
-        /// Timezone or city is UTC unless specified otherwise.</summary>
+        /// <summary>Time without date or timezone at millisecond resolution, serialized as HHMMSSSSS integer.</summary>
         Time,
 
-        /// <summary>Datetime at millisecond resolution, serialized as YYYYMMDDHHMMSSSSS integer.
-        /// Timezone or city is UTC unless specified otherwise.</summary>
-        DateTime,
+        /// <summary>Datetime without timezone at millisecond resolution, serialized as YYYYMMDDHHMMSSSSS integer.</summary>
+        DateTime, 
+        
+        // TODO - add value for Instant
 
         /// <summary>Byte (char) value, serialized as a number from 0 to 255.</summary>
         Byte,

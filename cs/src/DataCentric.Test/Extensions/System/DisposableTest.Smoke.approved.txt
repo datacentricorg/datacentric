@@ -1,0 +1,5 @@
+Verify: Disposing resources of BaseClassSample
+Verify: Disposing resources of DerivedClassSample
+Verify: Disposing resources of BaseClassSample
+Verify: Disposing resources of DerivedClassSample
+Verify: Disposing resources of BaseClassSample

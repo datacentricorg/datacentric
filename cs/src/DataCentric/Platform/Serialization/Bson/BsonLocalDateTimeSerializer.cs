@@ -18,6 +18,7 @@ using System;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using NodaTime;
+using NodaTime.TimeZones;
 
 namespace DataCentric
 {
@@ -26,9 +27,9 @@ namespace DataCentric
     ///
     /// 2003-04-21T11:10:00.000Z
     ///
-    /// All datetime values are assumed to be in UTC timezone
-    /// and serialized with suffix Z.
-    /// 
+    /// LocalDateTime values are assumed to be in UTC (Z) timezone
+    /// when serialized and deserialized to/from BSON.
+    ///
     /// This serializer is used for both the type itself
     /// and for its nullable counterpart.
     /// </summary>
@@ -41,7 +42,7 @@ namespace DataCentric
         ///
         /// All datetime values are assumed to be in UTC timezone
         /// and serialized with suffix Z.
-        /// 
+        ///
         /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
         /// </summary>
         public override LocalDateTime Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
@@ -56,20 +57,20 @@ namespace DataCentric
             return result;
         }
 
-        /// <summary>Serialize LocalDateTime to readable long in ISO 8601 format:
+        /// <summary>
+        /// Serialize LocalDateTime to readable long in ISO 8601 format:
         ///
         /// 2003-04-21T11:10:00.000Z
         ///
         /// All datetime values are assumed to be in UTC timezone
         /// and serialized with suffix Z.
-        /// 
-        /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.</summary>
+        ///
+        /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
+        /// </summary>
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, LocalDateTime value)
         {
             // Convert to milliseconds since the Unix epoch
-            DateTime utcDateTime = value.ToUtcDateTime();
-            DateTimeOffset dateTimeOffset = new DateTimeOffset(utcDateTime);
-            long unixEpochMillis = dateTimeOffset.ToUnixTimeMilliseconds();
+            long unixEpochMillis = value.ToInstant(DateTimeZone.Utc).ToUnixTimeMilliseconds();
 
             // Write milliseconds since the Unix epoch to BSON
             context.Writer.WriteDateTime(unixEpochMillis);

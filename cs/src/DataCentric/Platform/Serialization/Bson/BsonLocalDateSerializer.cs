@@ -21,24 +21,33 @@ using NodaTime;
 
 namespace DataCentric
 {
-    /// <summary>Serializes LocalDate as readable int using yyyymmdd format.
-    /// This serializer is used for both the type itself and for its nullable counterpart.</summary>
+    /// <summary>
+    /// Serializes LocalDate as readable int using yyyymmdd format.
+    ///
+    /// This serializer is used for both the type itself and for its nullable counterpart.
+    /// </summary>
     public class BsonLocalDateSerializer : SerializerBase<LocalDate>
     {
-        /// <summary>Deserialize LocalDate from readable int in ISO yyyymmdd format.
-        /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.</summary>
+        /// <summary>
+        /// Deserialize LocalDate from readable int in ISO yyyymmdd format.
+        ///
+        /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
+        /// </summary>
         public override LocalDate Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
             // LocalDate is serialized as readable int in ISO yyyymmdd format
             int isoDate = context.Reader.ReadInt32();
 
             // Create LocalDate object by parsing readable int
-            var result = LocalDateUtils.ParseIsoInt(isoDate);
+            var result = LocalDateUtil.FromIsoInt(isoDate);
             return result;
         }
 
-        /// <summary>Serialize LocalDate to readable int in ISO yyyymmdd format.
-        /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.</summary>
+        /// <summary>
+        /// Serialize LocalDate to readable int in ISO yyyymmdd format.
+        ///
+        /// Null value is handled via [BsonIgnoreIfNull] attribute and is not expected here.
+        /// </summary>
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, LocalDate value)
         {
             // LocalDate is serialized as readable int in ISO yyyymmdd format
