@@ -9,28 +9,33 @@ class Record(Data, ABC):
     """Base class of records stored in data source.
     """
     __slots__ = ['context', 'id_', 'data_set', '_key']
+
     context: Context
-    """Execution context"""
     id_: ObjectId
-    """ObjectId of the record is specific to its version.
-    For the record's history to be captured correctly, all
-    update operations must assign a new ObjectId with the
-    timestamp that matches update time.
-    """
     data_set: ObjectId
-    """ObjectId of the dataset where the record is stored.
-    For records stored in root dataset, the value of
-    data_set element should be ObjectId('000000000000000000000000').
-    """
     _key: str
-    """Backing attribute for key() property."""
 
     def __init__(self):
         super().__init__()
+
         self.context = None
+        """Execution context"""
+
         self.id_ = None
+        """ObjectId of the record is specific to its version.
+        For the record's history to be captured correctly, all
+        update operations must assign a new ObjectId with the
+        timestamp that matches update time.
+        """
+
         self.data_set = None
+        """ObjectId of the dataset where the record is stored.
+        For records stored in root dataset, the value of
+        data_set element should be ObjectId('000000000000000000000000').
+        """
+
         self._key = None
+        """Backing attribute for key() property."""
 
     def init(self, context: Context) -> None:
         if context is None:
