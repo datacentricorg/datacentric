@@ -1,6 +1,6 @@
 import unittest
 import datetime as dt
-from datacentric.types.local_minute import LocalMinute
+from datacentric.types.time import LocalMinute
 
 
 class TestLocalMinute(unittest.TestCase):
@@ -47,3 +47,4 @@ class TestLocalMinute(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+    c = dt.date.toordinal()

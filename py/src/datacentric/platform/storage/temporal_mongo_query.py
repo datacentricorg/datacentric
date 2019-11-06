@@ -9,8 +9,8 @@ import datetime as dt
 import numpy as np
 
 import datacentric.extensions.str as str_ext
-from datacentric.types import date_ext
-from datacentric.types.local_minute import LocalMinute
+from datacentric.types.time import date_ext
+from datacentric.types.time.local_minute import LocalMinute
 from datacentric.types.record import Record
 from datacentric.platform.serialization.serializer import deserialize
 

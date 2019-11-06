@@ -3,7 +3,7 @@ import numpy as np
 from enum import Enum
 from typing import List
 
-from datacentric.types.local_minute import LocalMinute
+from datacentric.types.time import LocalMinute
 from datacentric.types.record import TypedRecord, TypedKey, Data
 
 

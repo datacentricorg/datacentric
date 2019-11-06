@@ -1,8 +1,8 @@
 from datacentric.platform.context import Context
-from datacentric.platform.logging.in_memory_log import InMemoryLog
+from datacentric.platform.logging import InMemoryLog
 from datacentric.platform.storage import TemporalMongoDataSource
-from datacentric.platform.storage.db_name import DbNameKey
-from datacentric.platform.storage.instance_type import InstanceType
+from datacentric.platform.storage import DbNameKey
+from datacentric.platform.storage import InstanceType
 
 
 class TemporalTestContext:

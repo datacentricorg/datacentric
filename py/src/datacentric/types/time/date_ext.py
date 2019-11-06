@@ -1,5 +1,5 @@
 import datetime as dt
-from datacentric.types.local_minute import LocalMinute
+from datacentric.types.time.local_minute import LocalMinute
 
 
 def date_to_iso_int(value: dt.date) -> int:

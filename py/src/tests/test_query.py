@@ -1,7 +1,7 @@
 import unittest
 import datetime as dt
 
-from datacentric.types.local_minute import LocalMinute
+from datacentric.types.time import LocalMinute
 from tests.data_sample import NullableElementsSample, SampleEnum
 from tests.temporal_test_context import TemporalTestContext
 

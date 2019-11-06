@@ -7,10 +7,10 @@ from enum import Enum
 from typing import Dict, Any, get_type_hints, TypeVar
 from typing_inspect import get_origin, get_args
 
-import datacentric.types.date_ext as date_ext
+import datacentric.types.time.date_ext as date_ext
 import datacentric.extensions.str as str_ext
 from datacentric.platform.reflection.class_info import ClassInfo
-from datacentric.types.local_minute import LocalMinute
+from datacentric.types.time import LocalMinute
 from datacentric.types.record import Record, Key, Data
 
 TRecord = TypeVar('TRecord', bound=Record)
