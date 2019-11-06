@@ -10,8 +10,14 @@ from datacentric.platform.storage.instance_type import InstanceType
 
 
 class MongoDataSourceData(DataSourceData, ABC):
+    __slots__ = ['mongo_server', '_instance_type', '_client', '_db', '_db_name', '__prev_object_id']
     __prohibited_symbols = '/\\. "$*<>:|?'
     __max_db_name_length = 64
+
+    _instance_type: InstanceType
+    _client: MongoClient
+    _db: Database
+    _db_name: str
 
     mongo_server: str
 
@@ -21,10 +27,10 @@ class MongoDataSourceData(DataSourceData, ABC):
         self.mongo_server = None
 
         # Non-data part
-        self._instance_type: InstanceType = None
-        self._client: MongoClient = None
+        self._instance_type = None
+        self._client = None
         self._db = None
-        self._db_name: str = None
+        self._db_name = None
         self.__prev_object_id = DataSourceData._empty_id
 
     def init(self, context: Context) -> None:
@@ -50,7 +56,7 @@ class MongoDataSourceData(DataSourceData, ABC):
             raise Exception(f'MongoDB database name {self._db_name} exceeds the maximum length of 64 characters.')
 
         self._client = MongoClient(self.mongo_server)
-        self._db: Database = self._client.get_database(self._db_name)
+        self._db = self._client.get_database(self._db_name)
 
     @property
     def db(self):

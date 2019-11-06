@@ -40,10 +40,13 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
     This record is stored in root dataset.
     """
 
-    __slots__ = ('data_source_name', 'db_name', 'non_temporal', 'readonly')
+    __slots__ = ('data_source_name', 'db_name', 'non_temporal', 'readonly', '_data_set_dict', '_import_dict')
 
     _empty_id = ObjectId('000000000000000000000000')
     common_id: str = 'Common'
+
+    _data_set_dict: Dict[str, ObjectId]
+    _import_dict: Dict[ObjectId, Set[ObjectId]]
 
     data_source_name: str
     """Unique data source name."""
@@ -72,8 +75,8 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
 
     def __init__(self):
         super().__init__()
-        self._data_set_dict = dict()  # type: Dict[str, ObjectId]
-        self._import_dict = dict()  # type: Dict[ObjectId, Set[ObjectId]]
+        self._data_set_dict = dict()
+        self._import_dict = dict()
 
         self.data_source_name = None
         self.db_name = None

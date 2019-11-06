@@ -13,15 +13,16 @@ TRecord = TypeVar('TRecord', bound=Record)
 
 
 class TemporalMongoDataSourceData(MongoDataSourceData):
-    __slots__ = ('_collection_dict', 'saved_by_time', 'saved_by_id', 'freeze_imports')
+    __slots__ = ('saved_by_time', 'saved_by_id', 'freeze_imports', '_collection_dict')
 
     saved_by_time: dt.datetime
     saved_by_id: ObjectId
     freeze_imports: bool
+    _collection_dict: Dict[type, Collection]
 
     def __init__(self):
         super().__init__()
-        self._collection_dict = dict()  # type: Dict[type, Collection]
+        self._collection_dict = dict()
 
         self.saved_by_time = None
         self.saved_by_id = None
