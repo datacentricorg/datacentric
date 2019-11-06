@@ -2,12 +2,16 @@
 syntax: glob
 
 !paket.exe
+**/.mypy_cache
 **/.vs
 **/CMakeFiles
 **/_NCrunch_*
 **/_ReSharper*
+**/__pycache__
 **/bin
+**/html
 **/obj
+**/venv
 **/x64
 **/x86
 *.FileListAbsolute.txt
@@ -53,6 +57,9 @@ syntax: glob
 CMakeCache.txt
 Makefile
 cmake_install.cmake
+py/src/build
+py/src/datacentric.egg-info
+py/src/dist
 testCaseCollection.xml
 
 # Using regexp syntax
