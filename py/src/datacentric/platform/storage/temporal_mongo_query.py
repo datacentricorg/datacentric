@@ -23,11 +23,11 @@ class TemporalMongoQuery:
     This implementation adds additional constraints and ordering to retrieve the correct version
     of the record across multiple datasets.
     """
-    def __init__(self, data_source: 'TemporalMongoDataSource', type_: type, collection: Collection,
+    def __init__(self, record_type: type, data_source: 'TemporalMongoDataSource', collection: Collection,
                  load_from: ObjectId):
         from datacentric.platform.storage import TemporalMongoDataSource
         self._data_source: TemporalMongoDataSource = data_source
-        self._type = type_
+        self._type = record_type
         self._collection = collection
         self._load_from = load_from
         self._pipeline: List[Dict[str, Dict[Any]]] = [{'$match': {'_t': self._type.__name__}}]
@@ -50,7 +50,7 @@ class TemporalMongoQuery:
 
             TemporalMongoQuery.__fix_predicate_query(renamed_keys)
 
-            query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
+            query = TemporalMongoQuery(self._type, self._data_source, self._collection, self._load_from)
             query._pipeline = self._pipeline.copy()
             query._pipeline.append({'$match': renamed_keys})
             return query
@@ -121,7 +121,7 @@ class TemporalMongoQuery:
         """Sorts the elements of a sequence in ascending order according to provided attribute name."""
         # Adding sort argument since sort stage is already present.
         if self.__has_sort():
-            query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
+            query = TemporalMongoQuery(self._type, self._data_source, self._collection, self._load_from)
             query._pipeline = self._pipeline.copy()
             sorts = next(stage['$sort'] for stage in query._pipeline
                          if '$sort' in stage)
@@ -129,7 +129,7 @@ class TemporalMongoQuery:
             return query
         # append sort stage
         else:
-            query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
+            query = TemporalMongoQuery(self._type, self._data_source, self._collection, self._load_from)
             query._pipeline = self._pipeline.copy()
             query._pipeline.append({'$sort': {str_ext.to_pascal_case(attr): 1}})
             return query
@@ -138,7 +138,7 @@ class TemporalMongoQuery:
         """Sorts the elements of a sequence in descending order according to provided attribute name."""
         # Adding sort argument since sort stage is already present.
         if self.__has_sort():
-            query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
+            query = TemporalMongoQuery(self._type, self._data_source, self._collection, self._load_from)
             query._pipeline = self._pipeline.copy()
             sorts = next(stage['$sort'] for stage in query._pipeline
                          if '$sort' in stage)
@@ -146,7 +146,7 @@ class TemporalMongoQuery:
             return query
         # append sort stage
         else:
-            query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
+            query = TemporalMongoQuery(self._type, self._data_source, self._collection, self._load_from)
             query._pipeline = self._pipeline.copy()
             query._pipeline.append({'$sort': {str_ext.to_pascal_case(attr): -1}})
             return query

@@ -55,7 +55,7 @@ class TemporalMongoDataSource(MongoDataSource):
         two values will be used.
         """
 
-    def load_or_null(self, id_: ObjectId, type_: type) -> Optional[TRecord]:
+    def load_or_null(self, record_type: type, id_: ObjectId) -> Optional[TRecord]:
         """Load record by its ObjectId.
 
         Return None if there is no record for the specified ObjectId;
@@ -70,7 +70,7 @@ class TemporalMongoDataSource(MongoDataSource):
             {'$match': {'_id': {'$eq': id_}}},
             {'$limit': 1}
         ]
-        collection = self._get_or_create_collection(type_)
+        collection = self._get_or_create_collection(record_type)
         cursor = collection.aggregate(pipeline)
         if cursor.alive:
             cursor_next = cursor.next()
@@ -83,10 +83,10 @@ class TemporalMongoDataSource(MongoDataSource):
                     if id_ >= cutoff_time:
                         return None
 
-                is_requested_instance = isinstance(result, type_)
+                is_requested_instance = isinstance(result, record_type)
                 if not is_requested_instance:
                     raise Exception(f'Stored type {type(result).__name__} for ObjectId={id_} and '
-                                    f'Key={result.key} is not an instance of the requested type {type_.__name__}.')
+                                    f'Key={result.key} is not an instance of the requested type {record_type.__name__}.')
                 result.init(self.context)
                 return result
 
@@ -142,7 +142,7 @@ class TemporalMongoDataSource(MongoDataSource):
                 result.init(self.context)
                 return result
 
-    def get_query(self, load_from: ObjectId, type_: type) -> TemporalMongoQuery:
+    def get_query(self, record_type: type, load_from: ObjectId) -> TemporalMongoQuery:
         """Get query for the specified type.
 
         After applying query parameters, the lookup occurs first in
@@ -156,8 +156,8 @@ class TemporalMongoDataSource(MongoDataSource):
         than any other ObjectId value. Accordingly, the root
         dataset is the last one in the lookup order of datasets.
         """
-        collection = self._get_or_create_collection(type_)
-        return TemporalMongoQuery(self, type_, collection, load_from)
+        collection = self._get_or_create_collection(record_type)
+        return TemporalMongoQuery(record_type, self, collection, load_from)
 
     def save_many(self, record_type: type, records: Iterable[TRecord], save_to: ObjectId):
         """Save multiple records to the specified dataset. After the method exits,
@@ -271,7 +271,7 @@ class TemporalMongoDataSource(MongoDataSource):
             return self.__import_dict[load_from]
 
         else:
-            data_set_data: DataSet = self.load_or_null(load_from, DataSet)
+            data_set_data: DataSet = self.load_or_null(DataSet, load_from)
             if data_set_data is None:
                 raise Exception(f'Dataset with ObjectId={load_from} is not found.')
             if data_set_data.data_set != DataSource._empty_id:
@@ -313,7 +313,7 @@ class TemporalMongoDataSource(MongoDataSource):
             return True
         if data_set_id == DataSource._empty_id:
             return False
-        data_set_detail: DataSet = self.load_or_null(data_set_id, DataSet)
+        data_set_detail: DataSet = self.load_or_null(DataSet, data_set_id)
         if data_set_detail is not None and data_set_detail.non_temporal:
             return True
         else:

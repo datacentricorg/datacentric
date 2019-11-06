@@ -173,14 +173,14 @@ class TestTemporalDataSource(unittest.TestCase):
             save_minimal_record(context, "DataSet3", "A", 10, 0)
             save_minimal_record(context, "DataSet3", "B", 11, 0)
 
-            query = context.data_source.get_query(data_set3, BaseSample) \
+            query = context.data_source.get_query(BaseSample, data_set3) \
                 .where({'record_id': 'B'}) \
                 .sort_by('record_id') \
                 .sort_by('record_index')
 
             query_result = []
             for obj in query.as_iterable():  # type: BaseSample
-                data_set: DataSet = context.data_source.load_or_null(obj.data_set, DataSet)
+                data_set: DataSet = context.data_source.load_or_null(DataSet, obj.data_set)
                 data_set_name = data_set.data_set_name
                 query_result.append((obj.key, data_set_name, obj.version))
 

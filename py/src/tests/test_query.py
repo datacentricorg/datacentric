@@ -27,7 +27,7 @@ class TestQuery(unittest.TestCase):
 
                 context.data_source.save_one(NullableElementsSample, record, context.data_set)
 
-            query = context.data_source.get_query(context.data_set, NullableElementsSample)
+            query = context.data_source.get_query(NullableElementsSample, context.data_set)
 
             # Unconstrained query
             unconstrained_results = []
@@ -43,7 +43,7 @@ class TestQuery(unittest.TestCase):
                 self.assertTrue(expected_sample in unconstrained_results)
 
             # Query with constraints
-            query = context.data_source.get_query(context.data_set, NullableElementsSample) \
+            query = context.data_source.get_query(NullableElementsSample, context.data_set) \
                 .where({'string_token': 'A1'}).where({'bool_token': False}).where({'int_token': 1}) \
                 .where({'local_date_token': dt.date(2003, 5, 1) + dt.timedelta(days=1)}) \
                 .where({'local_time_token': dt.time(10, 15, 30 + 1)}) \

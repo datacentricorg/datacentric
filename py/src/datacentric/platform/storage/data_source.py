@@ -93,7 +93,7 @@ class DataSource(RootRecord[DataSourceKey], ABC):
         pass
 
     @abstractmethod
-    def load_or_null(self, id_: ObjectId, type_: type) -> Optional[TRecord]:
+    def load_or_null(self, record_type: type, id_: ObjectId) -> Optional[TRecord]:
         """Load record by its ObjectId.
 
         Return None if there is no record for the specified ObjectId;
@@ -127,7 +127,7 @@ class DataSource(RootRecord[DataSourceKey], ABC):
         pass
 
     @abstractmethod
-    def get_query(self, load_from: ObjectId, type_: type):
+    def get_query(self, record_type: type, load_from: ObjectId):
         """Get query for the specified type.
 
         After applying query parameters, the lookup occurs first in
