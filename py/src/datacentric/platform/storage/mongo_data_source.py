@@ -10,6 +10,9 @@ from datacentric.platform.storage.instance_type import InstanceType
 
 
 class MongoDataSource(DataSource, ABC):
+    """Abstract base class for data source implementations based on MongoDB.
+    This class provides functionality shared by all MongoDB data source types.
+    """
     __slots__ = ['mongo_server', '__instance_type', '__client', '__db', '__db_name', '__prev_object_id']
 
     # Class attributes
@@ -19,7 +22,6 @@ class MongoDataSource(DataSource, ABC):
     # Instance attributes
     mongo_server: str
 
-    #
     __instance_type: InstanceType
     __db: Database
     __db_name: str
@@ -28,8 +30,9 @@ class MongoDataSource(DataSource, ABC):
 
     def __init__(self):
         super().__init__()
-        # Data part
+
         self.mongo_server = None
+        """Specifies Mongo server for this data source."""
 
         # Private part
         self.__instance_type = None
@@ -39,6 +42,11 @@ class MongoDataSource(DataSource, ABC):
         self.__prev_object_id = DataSource._empty_id
 
     def init(self, context: Context) -> None:
+        """Set context and perform validation of the record's data,
+        then initialize any fields or properties that depend on that data.
+
+        Connects to mongo server and picks database defined by db_name.
+        """
         super().init(context)
 
         # perform database name validation
@@ -64,7 +72,8 @@ class MongoDataSource(DataSource, ABC):
         self.__db = self.__client.get_database(self.__db_name)
 
     @property
-    def db(self):
+    def db(self) -> Database:
+        """Interface to Mongo database in pymongo driver."""
         return self.__db
 
     def create_ordered_object_id(self) -> ObjectId:
@@ -84,6 +93,16 @@ class MongoDataSource(DataSource, ABC):
         return result
 
     def delete_db(self) -> None:
+        """Permanently deletes (drops) the database with all records
+        in it without the possibility to recover them later.
+
+        This method should only be used to free storage. For
+        all other purposes, methods that preserve history should
+        be used.
+
+        ATTENTION - THIS METHOD WILL DELETE ALL DATA WITHOUT
+        THE POSSIBILITY OF RECOVERY. USE WITH CAUTION.
+        """
         if self.readonly is not None and self.readonly:
             raise Exception(f'Attempting to drop (delete) database for the data source {self.data_source_name} '
                             f'where ReadOnly flag is set.')

@@ -14,6 +14,15 @@ TRecord = TypeVar('TRecord', bound=Record)
 
 
 class TemporalMongoDataSource(MongoDataSource):
+    """Temporal data source with datasets based on MongoDB.
+
+    The term Temporal applied means the data source stores complete revision
+    history including copies of all previous versions of each record.
+
+    In addition to being temporal, this data source is also hierarchical; the
+    records are looked up across a hierarchy of datasets, including the dataset
+    itself, its direct imports, imports of imports, etc., ordered by dataset's
+    ObjectId"""
     __slots__ = ('cutoff_time', '__collection_dict', '__data_set_dict', '__data_set_parent_dict',
                  '__data_set_detail_dict', '__import_dict')
 
@@ -34,8 +43,25 @@ class TemporalMongoDataSource(MongoDataSource):
         self.__import_dict = dict()
 
         self.cutoff_time = None
+        """Records with ObjectId that is greater than or equal to cutoff_time
+        will be ignored by load methods and queries, and the latest available
+        record where ObjectId is less than cutoff_time will be returned instead.
+        
+        cutoff_time applies to both the records stored in the dataset itself,
+        and the reports loaded through the imports list.
+        
+        cutoff_time may be set in data source globally, or for a specific dataset
+        in its details record. If cutoff_time is set for both, the earlier of the
+        two values will be used.
+        """
 
     def load_or_null(self, id_: ObjectId, type_: type) -> Optional[TRecord]:
+        """Load record by its ObjectId.
+
+        Return None if there is no record for the specified ObjectId;
+        however an exception will be thrown if the record exists but
+        is not derived from type_.
+        """
         if self.cutoff_time is not None:
             if id_ >= self.cutoff_time:
                 return None
@@ -65,6 +91,26 @@ class TemporalMongoDataSource(MongoDataSource):
                 return result
 
     def load_or_null_by_key(self, key_: TypedKey[Record], load_from: ObjectId) -> Optional[TRecord]:
+        """Load record by string key from the specified dataset or
+        its list of imports. The lookup occurs first in descending
+        order of dataset ObjectIds, and then in the descending
+        order of record ObjectIds within the first dataset that
+        has at least one record. Both dataset and record ObjectIds
+        are ordered chronologically to one second resolution,
+        and are unique within the database server or cluster.
+
+        The root dataset has empty ObjectId value that is less
+        than any other ObjectId value. Accordingly, the root
+        dataset is the last one in the lookup order of datasets.
+
+        The first record in this lookup order is returned, or null
+        if no records are found or if DeletedRecord is the first
+        record.
+
+        Return None if there is no record for the specified ObjectId;
+        however an exception will be thrown if the record exists but
+        is not derived from TRecord.
+        """
         key_value = key_.value
 
         base_pipe = [{"$match": {"_key": key_value}}]
@@ -97,10 +143,36 @@ class TemporalMongoDataSource(MongoDataSource):
                 return result
 
     def get_query(self, load_from: ObjectId, type_: type) -> TemporalMongoQuery:
+        """Get query for the specified type.
+
+        After applying query parameters, the lookup occurs first in
+        descending order of dataset ObjectIds, and then in the descending
+        order of record ObjectIds within the first dataset that
+        has at least one record. Both dataset and record ObjectIds
+        are ordered chronologically to one second resolution,
+        and are unique within the database server or cluster.
+
+        The root dataset has empty ObjectId value that is less
+        than any other ObjectId value. Accordingly, the root
+        dataset is the last one in the lookup order of datasets.
+        """
         collection = self._get_or_create_collection(type_)
         return TemporalMongoQuery(self, type_, collection, load_from)
 
     def save_many(self, record_type: type, records: Iterable[TRecord], save_to: ObjectId):
+        """Save multiple records to the specified dataset. After the method exits,
+        for each record the property record.data_set will be set to the value of
+        the save_to parameter.
+
+        All save methods ignore the value of record.data_set before the
+        save method is called. When dataset is not specified explicitly,
+        the value of dataset from the context, not from the record, is used.
+        The reason for this behavior is that the record may be stored from
+        a different dataset than the one where it is used.
+
+        This method guarantees that ObjectIds of the saved records will be in
+        strictly increasing order.
+        """
         self._check_not_readonly(save_to)
         collection = self._get_or_create_collection(record_type)
         if records is None:
@@ -120,6 +192,14 @@ class TemporalMongoDataSource(MongoDataSource):
             collection.insert_many([serialize(x) for x in records])
 
     def delete(self, key: TypedKey[Record], delete_in: ObjectId) -> None:
+        """Write a DeletedRecord in delete_in dataset for the specified key
+        instead of actually deleting the record. This ensures that
+        a record in another dataset does not become visible during
+        lookup in a sequence of datasets.
+
+        To avoid an additional roundtrip to the data store, the delete
+        marker is written even when the record does not exist.
+        """
         self._check_not_readonly(delete_in)
         record = DeletedRecord()
         record.key = key.value
@@ -133,6 +213,11 @@ class TemporalMongoDataSource(MongoDataSource):
         collection.insert_one(record)
 
     def apply_final_constraints(self, pipeline, load_from: ObjectId):
+        """Apply the final constraints after all prior where clauses but before sort_by clause:
+
+        * The constraint on dataset lookup list, restricted by cutoff_time (if not none)
+        * The constraint on ID being strictly less than cutoff_time (if not none).
+        """
         data_set_lookup_list = self.get_data_set_lookup_list(load_from)
         pipeline.append({'$match': {"_dataset": {"$in": data_set_lookup_list}}})
 
@@ -143,6 +228,9 @@ class TemporalMongoDataSource(MongoDataSource):
         return pipeline
 
     def get_data_set_or_none(self, data_set_name: str, load_from: ObjectId) -> Optional[ObjectId]:
+        """Get ObjectId of the dataset with the specified name.
+        Returns null if not found.
+        """
         if data_set_name in self.__data_set_dict:
             return self.__data_set_dict[data_set_name]
         data_set_key = DataSetKey()
@@ -163,6 +251,7 @@ class TemporalMongoDataSource(MongoDataSource):
         return data_set_record.id_
 
     def save_data_set(self, data_set: DataSet, save_to: ObjectId) -> None:
+        """Save new version of the dataset and update in-memory cache to the saved dataset."""
         self.save_one(DataSet, data_set, save_to)
         self.__data_set_dict[data_set.key] = data_set.id_
         self.__data_set_parent_dict[data_set.id_] = data_set.data_set
@@ -192,6 +281,12 @@ class TemporalMongoDataSource(MongoDataSource):
             return result
 
     def get_data_set_detail_or_none(self, detail_for: ObjectId) -> Optional[DataSetDetail]:
+        """Get detail of the specified dataset.
+
+        Returns None if the details record does not exist.
+
+        The detail is loaded for the dataset specified in the first argument.
+        """
         if detail_for == DataSource._empty_id:
             return None
         if detail_for in self.__data_set_detail_dict:
@@ -206,6 +301,12 @@ class TemporalMongoDataSource(MongoDataSource):
         return result
 
     def is_non_temporal(self, record_type: type, data_set_id: ObjectId) -> bool:
+        """Returns true if either dataset has non_temporal flag set, or record type
+        has non_temporal attribute.
+
+        Note that if data source has non_temporal flag set, then dataset will
+        also have non_temporal flag set.
+        """
         if self.non_temporal is not None and self.non_temporal:
             return True
         if hasattr(record_type, 'non_temporal') and record_type.non_temporal:
@@ -219,6 +320,20 @@ class TemporalMongoDataSource(MongoDataSource):
             return False
 
     def get_cutoff_time(self, data_set_id: ObjectId) -> Optional[ObjectId]:
+        """cutoff_time should only be used via this method which also takes into
+        account the cutoff_time set in dataset detail record, and never directly.
+
+        cutoff_time may be set in data source globally, or for a specific dataset
+        in its details record. If cutoff_time is set for both, this method will
+        return the earlier of the two values will be used.
+
+        Records with ObjectId that is greater than or equal to cutoff_time
+        will be ignored by load methods and queries, and the latest available
+        record where ObjectId is less than cutoff_time will be returned instead.
+
+        cutoff_time applies to both the records stored in the dataset itself,
+        and the reports loaded through the imports list.
+        """
         data_set_detail = self.get_data_set_detail_or_none(data_set_id)
         if data_set_detail is not None:
             data_set_cutoff_time = data_set_detail.cutoff_time
@@ -239,6 +354,22 @@ class TemporalMongoDataSource(MongoDataSource):
         return self.cutoff_time
 
     def get_imports_cutoff_time(self, data_set_id: ObjectId) -> Optional[ObjectId]:
+        """Gets ImportsCutoffTime from the dataset detail record.
+        Returns None if dataset detail record is not found.
+
+        Imported records (records loaded through the imports list)
+        where ObjectId is greater than or equal to cutoff_time
+        will be ignored by load methods and queries, and the latest
+        available record where ObjectId is less than cutoff_time will
+        be returned instead.
+
+        This setting only affects records loaded through the imports
+        list. It does not affect records stored in the dataset itself.
+
+        Use this feature to freeze imports as of a given created time
+        (part of ObjectId), isolating the dataset from changes to the
+        data in imported datasets that occur after that time.
+        """
         data_set_detail = self.get_data_set_detail_or_none(data_set_id)
         if data_set_detail is not None:
             return data_set_detail.imports_cutoff_time

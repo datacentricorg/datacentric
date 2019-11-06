@@ -18,6 +18,11 @@ TRecord = TypeVar('TRecord', bound=Record)
 
 
 class TemporalMongoQuery:
+    """Implements query methods for temporal MongoDB data source.
+
+    This implementation adds additional constraints and ordering to retrieve the correct version
+    of the record across multiple datasets.
+    """
     def __init__(self, data_source: 'TemporalMongoDataSource', type_: type, collection: Collection,
                  load_from: ObjectId):
         from datacentric.platform.storage import TemporalMongoDataSource
@@ -34,6 +39,9 @@ class TemporalMongoQuery:
         return '$sort' in stage_names
 
     def where(self, predicate: Dict[str, Any]) -> TemporalMongoQuery:
+        """Filters a sequence of values based on passed dictionary parameter.
+        Corresponds to appending $match stage to the pipeline.
+        """
         if not self.__has_sort():
             renamed_keys = dict()
             for k, v in predicate.items():
@@ -110,6 +118,7 @@ class TemporalMongoQuery:
             return value
 
     def sort_by(self, attr: str) -> TemporalMongoQuery:
+        """Sorts the elements of a sequence in ascending order according to provided attribute name."""
         # Adding sort argument since sort stage is already present.
         if self.__has_sort():
             query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
@@ -126,6 +135,7 @@ class TemporalMongoQuery:
             return query
 
     def sort_by_descending(self, attr) -> TemporalMongoQuery:
+        """Sorts the elements of a sequence in descending order according to provided attribute name."""
         # Adding sort argument since sort stage is already present.
         if self.__has_sort():
             query = TemporalMongoQuery(self._data_source, self._type, self._collection, self._load_from)
@@ -142,7 +152,7 @@ class TemporalMongoQuery:
             return query
 
     def as_iterable(self) -> Iterable[TRecord]:
-
+        """Applies aggregation on collection and returns its result as Iterable."""
         if not self.__has_sort():
             batch_queryable = self._data_source.apply_final_constraints(self._pipeline, self._load_from)
         else:

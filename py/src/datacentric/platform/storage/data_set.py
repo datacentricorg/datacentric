@@ -6,12 +6,15 @@ from datacentric.types.record import TypedRecord, TypedKey
 
 
 class DataSetKey(TypedKey['DataSet']):
+    """Key for DataSet."""
     __slots__ = ['data_set_name']
     data_set_name: str
 
     def __init__(self, id_: str = None):
         super().__init__()
         self.data_set_name = None
+        """Unique dataset name."""
+
         if id_ is not None:
             self.data_set_name = id_
 
@@ -36,38 +39,40 @@ class DataSet(TypedRecord[DataSetKey]):
     __slots__ = ['data_set_name', 'non_temporal', 'imports']
 
     data_set_name: str
-    """Unique dataset name."""
-
     non_temporal: bool
-    """Flag indicating that the dataset is non-temporal even if the
-    data source supports temporal data.
-    For the data stored in datasets where non_temporal == False, a
-    temporal data source keeps permanent history of changes to each
-    record within the dataset, and provides the ability to access
-    the record as of the specified ObjectId, where ObjectId serves
-    as a timeline (records created later have greater ObjectId than
-    records created earlier).
-    For the data stored in datasets where non_temporal == True, the
-    data source keeps only the latest version of the record. All
-    child datasets of a non-temporal dataset must also be non-temporal.
-    In a non-temporal data source, this flag is ignored as all
-    datasets in such data source are non-temporal."""
-
     imports: List[ObjectId]
-    """List of datasets where records are looked up if they are
-    not found in the current dataset.
-    The specific lookup rules are specific to the data source
-    type and described in detail in the data source documentation.
-    
-    The parent dataset is not included in the list of imports by
-    default and must be included in the list of imports explicitly.
-    """
 
     def __init__(self):
         super().__init__()
+
         self.data_set_name = None
+        """Unique dataset name."""
+
         self.non_temporal = None
+        """Flag indicating that the dataset is non-temporal even if the
+        data source supports temporal data.
+        For the data stored in datasets where non_temporal == False, a
+        temporal data source keeps permanent history of changes to each
+        record within the dataset, and provides the ability to access
+        the record as of the specified ObjectId, where ObjectId serves
+        as a timeline (records created later have greater ObjectId than
+        records created earlier).
+        For the data stored in datasets where non_temporal == True, the
+        data source keeps only the latest version of the record. All
+        child datasets of a non-temporal dataset must also be non-temporal.
+        In a non-temporal data source, this flag is ignored as all
+        datasets in such data source are non-temporal.
+        """
+
         self.imports = None
+        """List of datasets where records are looked up if they are
+        not found in the current dataset.
+        The specific lookup rules are specific to the data source
+        type and described in detail in the data source documentation.
+
+        The parent dataset is not included in the list of imports by
+        default and must be included in the list of imports explicitly.
+        """
 
     def init(self, context: Context):
         super().init(context)
