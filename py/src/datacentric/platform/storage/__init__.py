@@ -1,3 +1,3 @@
-from datacentric.platform.storage.data_source_data import DataSource
-from datacentric.platform.storage.mongo_data_source_data import MongoDataSource
-from datacentric.platform.storage.temporal_mongo_data_source_data import TemporalMongoDataSource
+from datacentric.platform.storage.data_source import DataSource
+from datacentric.platform.storage.mongo_data_source import MongoDataSource
+from datacentric.platform.storage.temporal_mongo_data_source import TemporalMongoDataSource
