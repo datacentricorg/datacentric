@@ -52,7 +52,7 @@ class ClassInfo:
 
     @staticmethod
     def get_record_from_key(type_: type) -> type:
-        """Extracts associated key from RootRecord and TypedRecord derived types."""
+        """Extracts associated record from TypedKey derived types."""
         if not typing_inspect.is_generic_type(type_):
             raise Exception(f'Cannot get associated key from not generic type {type_.__name__}')
 
