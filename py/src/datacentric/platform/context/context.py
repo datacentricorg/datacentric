@@ -4,7 +4,7 @@ from datacentric.platform.logging.log import Log
 
 
 class Context:
-    data_source: 'DataSourceData'
+    data_source: 'DataSource'
     data_set: ObjectId
     log: Log
 

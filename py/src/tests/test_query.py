@@ -2,7 +2,7 @@ import unittest
 import datetime as dt
 
 from datacentric.types.local_minute import LocalMinute
-from tests.data_sample import NullableElementsSampleData, SampleEnum
+from tests.data_sample import NullableElementsSample, SampleEnum
 from tests.temporal_test_context import TemporalTestContext
 
 
@@ -13,7 +13,7 @@ class TestQuery(unittest.TestCase):
             for record_index in range(8):
                 record_index_mod2 = record_index % 2
                 record_index_mod4 = record_index % 4
-                record = NullableElementsSampleData()
+                record = NullableElementsSample()
                 record.record_index = record_index
                 record.data_set = context.data_set
                 record.string_token = 'A' + str(record_index_mod4)
@@ -27,11 +27,11 @@ class TestQuery(unittest.TestCase):
 
                 context.data_source.save(record, context.data_set)
 
-            query = context.data_source.get_query(context.data_set, NullableElementsSampleData)
+            query = context.data_source.get_query(context.data_set, NullableElementsSample)
 
             # Unconstrained query
             unconstrained_results = []
-            for obj in query.as_iterable():  # type: NullableElementsSampleData
+            for obj in query.as_iterable():  # type: NullableElementsSample
                 unconstrained_results.append((obj.key, obj.record_index))
 
             expected = [('A0;true;0;20030501;101530000;1000;20030501101500000;EnumValue1', 4),
@@ -43,7 +43,7 @@ class TestQuery(unittest.TestCase):
                 self.assertTrue(expected_sample in unconstrained_results)
 
             # Query with constraints
-            query = context.data_source.get_query(context.data_set, NullableElementsSampleData) \
+            query = context.data_source.get_query(context.data_set, NullableElementsSample) \
                 .where({'string_token': 'A1'}).where({'bool_token': False}).where({'int_token': 1}) \
                 .where({'local_date_token': dt.date(2003, 5, 1) + dt.timedelta(days=1)}) \
                 .where({'local_time_token': dt.time(10, 15, 30 + 1)}) \

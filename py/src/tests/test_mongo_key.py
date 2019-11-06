@@ -7,7 +7,7 @@ from datacentric.types.record import TypedRecord, TypedKey
 from tests.data_sample import BaseSampleKey
 
 
-class CompositeKeySampleKey(TypedKey['CompositeKeySampleData']):
+class CompositeKeySampleKey(TypedKey['CompositeKeySample']):
     __slots__ = ['key_element1', 'key_element2', 'key_element3']
 
     key_element1: str
@@ -21,7 +21,7 @@ class CompositeKeySampleKey(TypedKey['CompositeKeySampleData']):
         self.key_element3 = None
 
 
-class CompositeKeySampleData(TypedRecord[CompositeKeySampleKey]):
+class CompositeKeySample(TypedRecord[CompositeKeySampleKey]):
     __slots__ = ['key_element1', 'key_element2', 'key_element3']
 
     key_element1: str
@@ -35,14 +35,14 @@ class CompositeKeySampleData(TypedRecord[CompositeKeySampleKey]):
         self.key_element3 = None
 
 
-class SingletonSampleKey(TypedKey['SingletonSampleData']):
+class SingletonSampleKey(TypedKey['SingletonSample']):
     __slots__ = []
 
     def __init__(self):
         super().__init__()
 
 
-class SingletonSampleData(TypedRecord[SingletonSampleKey]):
+class SingletonSample(TypedRecord[SingletonSampleKey]):
     __slots__ = ['string_element']
     string_element: str
 
@@ -51,7 +51,7 @@ class SingletonSampleData(TypedRecord[SingletonSampleKey]):
         self.string_element = None
 
 
-class IdBasedKeySampleKey(TypedKey['IdBasedKeySampleData']):
+class IdBasedKeySampleKey(TypedKey['IdBasedKeySample']):
     __slots__ = ['id_']
     id_: ObjectId
 
@@ -60,7 +60,7 @@ class IdBasedKeySampleKey(TypedKey['IdBasedKeySampleData']):
         self.id_ = None
 
 
-class IdBasedKeySampleData(TypedRecord[IdBasedKeySampleKey]):
+class IdBasedKeySample(TypedRecord[IdBasedKeySampleKey]):
     __slots__ = ['string_element']
     string_element: str
 
@@ -71,7 +71,7 @@ class IdBasedKeySampleData(TypedRecord[IdBasedKeySampleKey]):
 
 class TestMongoKey(unittest.TestCase):
     def test_composite_key(self):
-        rec = CompositeKeySampleData()
+        rec = CompositeKeySample()
         rec.key_element1 = 'abc'
         rec.key_element2 = BaseSampleKey()
         rec.key_element2.record_id = 'def'
@@ -87,7 +87,7 @@ class TestMongoKey(unittest.TestCase):
         self.assertEqual(key.key_element3, rec.key_element3)
 
     def test_singleton_key(self):
-        rec = SingletonSampleData()
+        rec = SingletonSample()
         rec.string_element = 'abc'
 
         key_value = rec.to_key().value
@@ -98,7 +98,7 @@ class TestMongoKey(unittest.TestCase):
         self.assertEqual(key.value, key_value)
 
     def test_id_based_key(self):
-        rec = IdBasedKeySampleData()
+        rec = IdBasedKeySample()
         rec.id_ = ObjectId.from_datetime(dt.datetime.fromtimestamp(123456789))
         rec.string_element = 'abc'
 

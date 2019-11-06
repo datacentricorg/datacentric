@@ -9,7 +9,7 @@ from datacentric.platform.data_set import DataSet, DataSetKey
 TRecord = TypeVar('TRecord', bound=Record)
 
 
-class DataSourceKey(TypedKey['DataSourceData']):
+class DataSourceKey(TypedKey['DataSource']):
     """Key class for DataSourceData.
     Record associated with this key is stored in root dataset.
     """
@@ -26,7 +26,7 @@ class DataSourceKey(TypedKey['DataSourceData']):
             self.data_source_name = value
 
 
-class DataSourceData(RootRecord[DataSourceKey], ABC):
+class DataSource(RootRecord[DataSourceKey], ABC):
     """Data source is a logical concept similar to database
     that can be implemented for a document DB, relational DB,
     key-value store, or filesystem.
@@ -193,8 +193,8 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         including imports of imports to unlimited depth with cyclic
         references and duplicates removed.
         """
-        if load_from == DataSourceData._empty_id:
-            return [DataSourceData._empty_id]
+        if load_from == DataSource._empty_id:
+            return [DataSource._empty_id]
         if load_from in self._import_dict:
             return list(self._import_dict[load_from])
         else:
@@ -202,7 +202,7 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
             data_set_data: DataSet = self.load_or_null(load_from, DataSet)
             if data_set_data is None:
                 raise Exception(f'Dataset with ObjectId={load_from} is not found.')
-            if data_set_data.data_set != DataSourceData._empty_id:
+            if data_set_data.data_set != DataSource._empty_id:
                 raise Exception(f'Dataset with ObjectId={load_from} is not stored in root dataset.')
             result = self.__build_data_set_lookup_list(data_set_data)
             self._import_dict[load_from] = result
@@ -251,12 +251,12 @@ class DataSourceData(RootRecord[DataSourceKey], ABC):
         return result
 
     def get_common(self) -> ObjectId:
-        return self.get_data_set(self.common_id, DataSourceData._empty_id)
+        return self.get_data_set(self.common_id, DataSource._empty_id)
 
     def create_common(self) -> ObjectId:
         result = DataSet()
         result.data_set_name = self.common_id
-        self.save_data_set(result, DataSourceData._empty_id)
+        self.save_data_set(result, DataSource._empty_id)
         return result.id_
 
     def create_data_set(self, data_set_id: str, save_to: ObjectId, import_data_sets: List[ObjectId] = None) -> ObjectId:

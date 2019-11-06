@@ -5,11 +5,11 @@ from pymongo import MongoClient
 from pymongo.database import Database
 
 from datacentric.platform.context import Context
-from datacentric.platform.storage import DataSourceData
+from datacentric.platform.storage import DataSource
 from datacentric.platform.storage.instance_type import InstanceType
 
 
-class MongoDataSourceData(DataSourceData, ABC):
+class MongoDataSource(DataSource, ABC):
     __slots__ = ['mongo_server', '_instance_type', '_client', '_db', '_db_name', '__prev_object_id']
     __prohibited_symbols = '/\\. "$*<>:|?'
     __max_db_name_length = 64
@@ -31,7 +31,7 @@ class MongoDataSourceData(DataSourceData, ABC):
         self._client = None
         self._db = None
         self._db_name = None
-        self.__prev_object_id = DataSourceData._empty_id
+        self.__prev_object_id = DataSource._empty_id
 
     def init(self, context: Context) -> None:
         super().init(context)
@@ -48,11 +48,11 @@ class MongoDataSourceData(DataSourceData, ABC):
 
         self._db_name = self.db_name.value
         self._instance_type = self.db_name.instance_type
-        if any(x in self._db_name for x in MongoDataSourceData.__prohibited_symbols):
+        if any(x in self._db_name for x in MongoDataSource.__prohibited_symbols):
             raise Exception(f'MongoDB database name {self._db_name} contains a space or another '
                             f'prohibited character from the following list: /\\.\"$*<>:|?')
 
-        if len(self._db_name) > MongoDataSourceData.__max_db_name_length:
+        if len(self._db_name) > MongoDataSource.__max_db_name_length:
             raise Exception(f'MongoDB database name {self._db_name} exceeds the maximum length of 64 characters.')
 
         self._client = MongoClient(self.mongo_server)

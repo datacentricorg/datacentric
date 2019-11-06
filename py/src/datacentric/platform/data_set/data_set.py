@@ -5,7 +5,7 @@ from datacentric.platform.context import Context
 from datacentric.types.record import TypedRecord, TypedKey
 
 
-class DataSetKey(TypedKey['DataSetData']):
+class DataSetKey(TypedKey['DataSet']):
     __slots__ = ['data_set_name']
     data_set_name: str
 

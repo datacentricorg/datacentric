@@ -1,6 +1,6 @@
 from datacentric.platform.context import Context
 from datacentric.platform.logging.in_memory_log import InMemoryLog
-from datacentric.platform.storage import TemporalMongoDataSourceData
+from datacentric.platform.storage import TemporalMongoDataSource
 from datacentric.platform.storage.db_name import DbNameKey
 from datacentric.platform.storage.instance_type import InstanceType
 
@@ -12,7 +12,7 @@ class TemporalTestContext:
     def __enter__(self):
         context = Context()
 
-        source = TemporalMongoDataSourceData()
+        source = TemporalMongoDataSource()
         db_name = DbNameKey()
         db_name.instance_type = InstanceType.TEST
         db_name.instance_name = self.test.id().split('.')[-2]

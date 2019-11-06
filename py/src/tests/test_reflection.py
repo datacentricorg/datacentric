@@ -4,45 +4,36 @@ from datacentric.platform.reflection import ClassInfo
 from datacentric.types.record import TypedRecord, TypedKey, Data
 
 
-class BaseKey(TypedKey['BaseData']):
+class BaseKey(TypedKey['BaseRecord']):
     pass
 
 
-class BaseData(TypedRecord[BaseKey]):
+class BaseRecord(TypedRecord[BaseKey]):
     pass
 
 
-class DerivedData(BaseData):
+class DerivedRecord(BaseRecord):
     pass
 
 
-class SampleData(TypedRecord['SampleKey']):
-    pass
-
-
-class SampleKey(TypedKey[SampleData]):
-    pass
-
-
-class SimpleData(Data):
+class ElementData(Data):
     pass
 
 
 class TestClassInfo(unittest.TestCase):
     def test_root_type(self):
         with self.assertRaises(Exception):
-            ClassInfo.get_root_type(TypedKey[BaseData])
+            ClassInfo.get_root_type(TypedKey[BaseRecord])
         with self.assertRaises(Exception):
             ClassInfo.get_root_type(ClassInfo)
         self.assertTrue(ClassInfo.get_root_type(BaseKey) == BaseKey)
-        self.assertTrue(ClassInfo.get_root_type(BaseData) == BaseData)
-        self.assertTrue(ClassInfo.get_root_type(DerivedData) == BaseData)
-        self.assertTrue(ClassInfo.get_root_type(SimpleData) == SimpleData)
+        self.assertTrue(ClassInfo.get_root_type(BaseRecord) == BaseRecord)
+        self.assertTrue(ClassInfo.get_root_type(DerivedRecord) == BaseRecord)
+        self.assertTrue(ClassInfo.get_root_type(ElementData) == ElementData)
 
     def test_key_type(self):
-        self.assertEqual(ClassInfo.get_key_from_record(BaseData), BaseKey)
-        self.assertEqual(ClassInfo.get_key_from_record(DerivedData), BaseKey)
-        self.assertEqual(ClassInfo.get_key_from_record(SampleData), SampleKey)
+        self.assertEqual(ClassInfo.get_key_from_record(BaseRecord), BaseKey)
+        self.assertEqual(ClassInfo.get_key_from_record(DerivedRecord), BaseKey)
 
 
 if __name__ == "__main__":

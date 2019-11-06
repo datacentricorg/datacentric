@@ -5,14 +5,14 @@ from pymongo.collection import Collection
 
 from datacentric.platform.storage.temporal_mongo_query import TemporalMongoQuery
 from datacentric.types.record import Record, TypedKey, DeletedRecord
-from datacentric.platform.storage import MongoDataSourceData
+from datacentric.platform.storage import MongoDataSource
 from datacentric.platform.reflection import ClassInfo
 from datacentric.platform.serialization.serializer import serialize, deserialize
 
 TRecord = TypeVar('TRecord', bound=Record)
 
 
-class TemporalMongoDataSourceData(MongoDataSourceData):
+class TemporalMongoDataSource(MongoDataSource):
     __slots__ = ('saved_by_time', 'saved_by_id', 'freeze_imports', '_collection_dict')
 
     saved_by_time: dt.datetime

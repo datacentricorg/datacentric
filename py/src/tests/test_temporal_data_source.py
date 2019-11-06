@@ -9,7 +9,7 @@ from tests.temporal_test_context import TemporalTestContext
 
 
 def save_base_record(context: Context, data_set_id, record_id, record_index) -> ObjectId:
-    rec = BaseSampleData()
+    rec = BaseSample()
     rec.record_id = record_id
     rec.record_index = record_index
     rec.double_element = 100.0
@@ -26,7 +26,7 @@ def save_base_record(context: Context, data_set_id, record_id, record_index) -> 
 
 
 def save_derived_record(context, data_set_id, record_id, record_index) -> ObjectId:
-    rec = DerivedSampleData()
+    rec = DerivedSample()
     rec.record_id = record_id
     rec.record_index = record_index
     rec.double_element = 300.
@@ -42,16 +42,16 @@ def save_derived_record(context, data_set_id, record_id, record_index) -> Object
     rec.list_of_nullable_double = np.array([10.0, None, 30.0])
 
     # Data element
-    rec.data_element = ElementSampleData()
+    rec.data_element = ElementSample()
     rec.data_element.double_element3 = 1.0
     rec.data_element.string_element3 = 'AA'
 
     # Data element list
 
-    element_list0 = ElementSampleData()
+    element_list0 = ElementSample()
     element_list0.double_element3 = 1.0
     element_list0.string_element3 = "A0"
-    element_list1 = ElementSampleData()
+    element_list1 = ElementSample()
     element_list1.double_element3 = 2.0
     element_list1.string_element3 = "A1"
     rec.data_element_list = [element_list0, element_list1]
@@ -95,7 +95,7 @@ def verify_load(context, data_set_id, key):
 
 
 def save_minimal_record(context, data_set_id, record_id, record_index, version):
-    rec = BaseSampleData()
+    rec = BaseSample()
     rec.record_id = record_id
     rec.record_index = record_index
     rec.version = version
@@ -119,10 +119,10 @@ class TestTemporalDataSource(unittest.TestCase):
             key_b0.record_id = 'B'
             key_b0.record_index = 0
 
-            self.assertEqual(verify_load(context, 'DataSet0', key_a0), 'Found. Type = BaseSampleData')
-            self.assertEqual(verify_load(context, 'DataSet1', key_a0), 'Found. Type = BaseSampleData')
+            self.assertEqual(verify_load(context, 'DataSet0', key_a0), 'Found. Type = BaseSample')
+            self.assertEqual(verify_load(context, 'DataSet1', key_a0), 'Found. Type = BaseSample')
             self.assertEqual(verify_load(context, 'DataSet0', key_b0), 'Not found')
-            self.assertEqual(verify_load(context, 'DataSet1', key_b0), 'Found. Type = DerivedSampleData')
+            self.assertEqual(verify_load(context, 'DataSet1', key_b0), 'Found. Type = DerivedSample')
 
     def test_multiple_data_set_query(self):
         with TemporalTestContext(self) as context:
@@ -173,13 +173,13 @@ class TestTemporalDataSource(unittest.TestCase):
             save_minimal_record(context, "DataSet3", "A", 10, 0)
             save_minimal_record(context, "DataSet3", "B", 11, 0)
 
-            query = context.data_source.get_query(data_set3, BaseSampleData) \
+            query = context.data_source.get_query(data_set3, BaseSample) \
                 .where({'record_id': 'B'}) \
                 .sort_by('record_id') \
                 .sort_by('record_index')
 
             query_result = []
-            for obj in query.as_iterable():  # type: BaseSampleData
+            for obj in query.as_iterable():  # type: BaseSample
                 data_set: DataSet = context.data_source.load_or_null(obj.data_set, DataSet)
                 data_set_name = data_set.data_set_name
                 query_result.append((obj.key, data_set_name, obj.version))

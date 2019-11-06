@@ -7,7 +7,7 @@ from datacentric.types.local_minute import LocalMinute
 from datacentric.types.record import TypedRecord, TypedKey, Data
 
 
-class ElementSampleData(Data):
+class ElementSample(Data):
     __slots__ = ['double_element3', 'string_element3']
     double_element3: float
     string_element3: str
@@ -24,7 +24,7 @@ class SampleEnum(Enum):
     EnumValue2 = 2
 
 
-class BaseSampleData(TypedRecord['BaseSampleKey']):
+class BaseSample(TypedRecord['BaseSampleKey']):
     __slots__ = ['record_id',
                  'record_index',
                  'double_element',
@@ -57,7 +57,7 @@ class BaseSampleData(TypedRecord['BaseSampleKey']):
         self.version = None
 
 
-class BaseSampleKey(TypedKey[BaseSampleData]):
+class BaseSampleKey(TypedKey[BaseSample]):
     __slots__ = ['record_id', 'record_index']
 
     record_id: str
@@ -69,7 +69,7 @@ class BaseSampleKey(TypedKey[BaseSampleData]):
         self.record_index = None
 
 
-class DerivedSampleData(BaseSampleData):
+class DerivedSample(BaseSample):
     __slots__ = ['double_element2', 'string_element2', 'list_of_string', 'list_of_double', 'list_of_nullable_double',
                  'data_element', 'data_element_list', 'key_element', 'key_element_list']
     double_element2: float
@@ -77,8 +77,8 @@ class DerivedSampleData(BaseSampleData):
     list_of_string: List[str]
     list_of_double: np.ndarray
     list_of_nullable_double: np.ndarray
-    data_element: ElementSampleData
-    data_element_list: List[ElementSampleData]
+    data_element: ElementSample
+    data_element_list: List[ElementSample]
     key_element: BaseSampleKey
     key_element_list: List[BaseSampleKey]
 
@@ -95,7 +95,7 @@ class DerivedSampleData(BaseSampleData):
         self.key_element_list = None
 
 
-class NullableElementsSampleKey(TypedKey['NullableElementsSampleData']):
+class NullableElementsSampleKey(TypedKey['NullableElementsSample']):
     __slots__ = ['string_token', 'bool_token', 'int_token', 'local_date_token', 'local_time_token',
                  'local_minute_token', 'local_date_time_token', 'enum_token']
     string_token: str
@@ -119,7 +119,7 @@ class NullableElementsSampleKey(TypedKey['NullableElementsSampleData']):
         self.enum_token = None
 
 
-class NullableElementsSampleData(TypedRecord[NullableElementsSampleKey]):
+class NullableElementsSample(TypedRecord[NullableElementsSampleKey]):
     __slots__ = ['string_token', 'bool_token', 'int_token', 'local_date_token', 'local_time_token',
                  'local_minute_token', 'local_date_time_token', 'enum_token', 'record_index']
     string_token: str
