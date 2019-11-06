@@ -20,7 +20,7 @@ def save_base_record(context: Context, data_set_id, record_id, record_index) -> 
     rec.enum_value = SampleEnum.EnumValue2
 
     data_set = context.data_source.get_data_set(data_set_id, context.data_set)
-    context.data_source.save(rec, data_set)
+    context.data_source.save_one(BaseSample, rec, data_set)
 
     return rec.id_
 
@@ -71,7 +71,7 @@ def save_derived_record(context, data_set_id, record_id, record_index) -> Object
     rec.key_element_list = [key_list0, key_list1]
 
     data_set = context.data_source.get_data_set(data_set_id, context.data_set)
-    context.data_source.save(rec, data_set)
+    context.data_source.save_one(DerivedSample, rec, data_set)
     return rec.id_
 
 
@@ -101,7 +101,7 @@ def save_minimal_record(context, data_set_id, record_id, record_index, version):
     rec.version = version
 
     data_set = context.data_source.get_data_set(data_set_id, context.data_set)
-    context.data_source.save(rec, data_set)
+    context.data_source.save_one(BaseSample, rec, data_set)
 
     return rec.id_
 

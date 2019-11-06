@@ -25,7 +25,7 @@ class TestQuery(unittest.TestCase):
                 record.local_date_time_token = dt.datetime(2003, 5, 1, 10, 15) + dt.timedelta(days=record_index_mod4)
                 record.enum_token = SampleEnum(record_index_mod2 + 1)
 
-                context.data_source.save(record, context.data_set)
+                context.data_source.save_one(NullableElementsSample, record, context.data_set)
 
             query = context.data_source.get_query(context.data_set, NullableElementsSample)
 
