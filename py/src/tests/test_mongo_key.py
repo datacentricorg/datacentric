@@ -36,7 +36,7 @@ class CompositeKeySample(TypedRecord[CompositeKeySampleKey]):
 
 
 class SingletonSampleKey(TypedKey['SingletonSample']):
-    __slots__ = []
+    __slots__ : list = []
 
     def __init__(self):
         super().__init__()
