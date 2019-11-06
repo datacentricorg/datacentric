@@ -3,7 +3,7 @@ import unittest
 from bson import ObjectId
 
 from datacentric.platform.context import Context
-from datacentric.platform.data_set import DataSet
+from datacentric.platform.storage import DataSet
 from tests.data_sample import *
 from tests.temporal_test_context import TemporalTestContext
 

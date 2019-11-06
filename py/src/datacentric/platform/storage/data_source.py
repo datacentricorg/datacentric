@@ -4,7 +4,7 @@ from typing import List, Set, Dict, Iterable, Optional, TypeVar
 
 from datacentric.platform.storage.db_name import DbNameKey
 from datacentric.types.record import RootRecord, TypedKey, Record
-from datacentric.platform.data_set import DataSet, DataSetKey
+from datacentric.platform.storage import DataSet, DataSetKey
 
 TRecord = TypeVar('TRecord', bound=Record)
 

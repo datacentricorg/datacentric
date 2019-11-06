@@ -1,6 +1,6 @@
 import unittest
 
-from datacentric.platform.data_set import DataSetKey
+from datacentric.platform.storage import DataSetKey
 from datacentric.types.record import Record
 
 
